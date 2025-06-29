@@ -116,10 +116,10 @@ java overview/
 
 ## 🤝 Contributing
 
-This educational resource is designed for FTC robotics teams and programming educators. Contributions welcome!
+This educational resource is designed for FRC robotics teams and programming educators.
 
 ### Content Guidelines
-- Keep examples relevant to robotics and FTC competition
+- Keep examples relevant to robotics and FRC competition
 - Include practical, real-world scenarios
 - Maintain consistent difficulty progression
 - Add interactive exercises for each major concept
@@ -136,14 +136,10 @@ This educational resource is provided under the MIT License. Free to use, modify
 
 ## 🎓 Educational Context
 
-Created for FTC (FIRST Tech Challenge) robotics teams learning Java programming. Content follows University of Helsinki's Java Programming MOOC methodology while maintaining practical robotics applications throughout.
+Created for FRC (FIRST Robotics Competition) robotics teams learning Java programming. Content follows University of Helsinki's Java Programming MOOC methodology while maintaining practical robotics applications throughout.
 
 Perfect for:
-- FTC teams learning Java for robot programming
+- FRC and FTC teams learning Java for robot programming
 - Computer science students needing practical examples
 - Educators teaching programming with robotics context
 - Self-learners wanting interactive programming tutorials
-
----
-
-**Made with ❤️ for the FTC community** 
