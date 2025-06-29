@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-content_root="./">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Java Overview - Programming Fundamentals</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+    <label class="overlay sidebar-overlay" for="__navigation">
+        <div class="visually-hidden">Hide navigation sidebar</div>
+    </label>
+
+    <div class="page">
+        <header class="mobile-header">
+            <div class="header-left">
+                <label class="nav-overlay-icon" for="__navigation">
+                    <div class="visually-hidden">Toggle site navigation sidebar</div>
+                    <i class="icon">☰</i>
+                </label>
+            </div>
+            <div class="header-center">
+                <div class="brand">Java Overview</div>
+            </div>
+            <div class="header-right">
+                <div class="theme-toggle-container theme-toggle-header">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <div class="visually-hidden">Toggle Light / Dark theme</div>
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <aside class="sidebar-drawer">
+            <div class="sidebar-container">
+                <div class="sidebar-sticky">
+                    <a class="sidebar-brand" href="#">
+                        <span class="sidebar-brand-text">Java Overview</span>
+                    </a>
+                    
+                    <div class="sidebar-scroll">
+                        <div class="sidebar-tree">
+                            <p class="caption" role="heading">
+                                <span class="caption-text">Contents:</span>
+                            </p>
+                            <ul id="sidebar-navigation">
+                                <!-- Navigation will be dynamically loaded here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main">
+            <div class="content">
+                <div class="article-container">
+                    <article role="main" id="furo-main-content">
+                        <div id="tab-container">
+                            <!-- Tab content will be dynamically loaded here -->
+                        </div>
+                    </article>
+                </div>
+                
+                <footer>
+                    <div class="bottom-of-page">
+                        <div class="left-details">
+                            <div class="copyright">
+                                Copyright © 2024, Java Overview - Programming Education Resource
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
