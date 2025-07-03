@@ -41,7 +41,7 @@
     {
       "type": "code",
       "title": "Variable Scope Example:",
-      "content": "public class Robot {\n    // Class-level variable (can be used anywhere in the class)\n    private String robotName = \"FTC Bot\";\n    \n    public void startRobot() {\n        // Method-level variable (only used in this method)\n        int startupTime = 5;\n        \n        if (startupTime > 0) {\n            // Block-level variable (only used in this if block)\n            String message = \"Starting up...\";\n            System.out.println(message);\n        }\n        // 'message' cannot be used here - out of scope!\n    }\n}"
+      "content": "public class Robot {\n    // Class-level variable (can be used anywhere in the class)\n    private String robotName = \"FRC Bot\";\n    \n    public void startRobot() {\n        // Method-level variable (only used in this method)\n        int startupTime = 5;\n        \n        if (startupTime > 0) {\n            // Block-level variable (only used in this if block)\n            String message = \"Starting up...\";\n            System.out.println(message);\n        }\n        // 'message' cannot be used here - out of scope!\n    }\n}"
     },
     {
       "type": "exercise-box",

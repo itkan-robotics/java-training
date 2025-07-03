@@ -40,7 +40,7 @@
     {
       "type": "code",
       "title": "Reference Data Types",
-      "content": "// String - sequence of characters\nString message = \"Hello, World!\";\n\n// Arrays - collection of same-type elements  \nint[] numbers = {1, 2, 3, 4, 5};\n\n// Objects - instances of classes\nRobot myRobot = new Robot();"
+      "content": "// String - sequence of characters\nString sensorName = \"rev_color_sensor\";\n\n// Arrays - collection of same-type elements  \nint[] driveMotors = {1, 4, 7, 10};\n\n// Objects - instances of classes\nRobot myRobot = new Robot();"
     }
   ]
 } 

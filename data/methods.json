@@ -99,7 +99,7 @@
       "answers": [
         {
           "task": "Create a simple greet method and call it multiple times",
-          "code": "public class GreetingProgram {\n    public static void main(String[] args) {\n        System.out.println(\"Welcome to FTC Robot Programming!\");\n        \n        // Call greet method multiple times\n        greetRobot();\n        greetRobot();\n        greetRobot();\n        \n        System.out.println(\"All robots greeted!\");\n    }\n    \n    // Simple method with no parameters and no return value\n    public static void greetRobot() {\n        System.out.println(\"Hello, FTC Robot! Ready to compete!\");\n    }\n}\n\n/* Output:\nWelcome to FTC Robot Programming!\nHello, FTC Robot! Ready to compete!\nHello, FTC Robot! Ready to compete!\nHello, FTC Robot! Ready to compete!\nAll robots greeted!\n*/"
+          "code": "public class GreetingProgram {\n    public static void main(String[] args) {\n        System.out.println(\"Welcome to FRC Robot Programming!\");\n        \n        // Call greet method multiple times\n        greetRobot();\n        greetRobot();\n        greetRobot();\n        \n        System.out.println(\"All robots greeted!\");\n    }\n    \n    // Simple method with no parameters and no return value\n    public static void greetRobot() {\n        System.out.println(\"Hello, FRC Robot! Ready to compete!\");\n    }\n}\n\n/* Output:\nWelcome to FRC Robot Programming!\nHello, FRC Robot! Ready to compete!\nHello, FRC Robot! Ready to compete!\nHello, FRC Robot! Ready to compete!\nAll robots greeted!\n*/"
         },
         {
           "task": "Build a method with parameters that prints robot status",

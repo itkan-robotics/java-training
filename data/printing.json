@@ -82,6 +82,22 @@
           "code": "// In your IDE:\n// 1. Type 'sout' on a blank line\n// 2. Press Tab key\n// 3. The IDE will expand it to:\nSystem.out.println();\n// 4. Add your text between the quotes"
         }
       ]
+    },
+    {
+      "type": "text",
+      "title": "Applications in FRC",
+      "content": "In FRC, printing to the console is a powerful tool for debugging and monitoring robot behavior. It allows developers to quickly access important data without relying on external tools like SmartDashboard. This can be especially useful during testing and characterization."
+    },
+    {
+      "type": "code",
+      "title": "FRC Console Printing Example:",
+      "content": "System.out.println(\"********** Drive FF Characterization Results **********\");\nSystem.out.println(\"\\tkS: \" + formatter.format(kS));\nSystem.out.println(\"\\tkV: \" + formatter.format(kV));"
+    },
+    {
+      "type": "text",
+      "title": "Explanation",
+      "content": "The example above demonstrates how to print formatted feedforward characterization results directly to the console. By using <code>System.out.println()</code>, we can easily display values like <code>kS</code> and <code>kV</code> in a readable format. This approach eliminates the need to configure SmartDashboard or other external tools, making it a quick and efficient way to debug and analyze data during development."
     }
+    
   ]
 } 

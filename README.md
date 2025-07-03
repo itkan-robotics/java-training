@@ -1,11 +1,11 @@
 # Java Overview - Interactive Learning Platform
 
-A comprehensive, interactive web-based learning platform for Java programming fundamentals, specifically designed for FTC (FIRST Tech Challenge) robotics teams.
+A comprehensive, interactive web-based learning platform for Java programming fundamentals, specifically designed for FRC (FIRST Robotics Competition) robotics teams.
 
 ## 🎯 Features
 
 - **Interactive Learning**: Tabbed navigation with hierarchical content organization
-- **Robotics-Focused**: All examples use FTC robotics scenarios and contexts
+- **Robotics-Focused**: All examples use FRC robotics scenarios and contexts
 - **Comprehensive Coverage**: 15+ topics from basic syntax to advanced OOP concepts
 - **Modern UI**: Professional Furo-inspired theme with dark/light mode toggle
 - **Mobile Responsive**: Works seamlessly on all devices

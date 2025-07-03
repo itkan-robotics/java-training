@@ -5,7 +5,7 @@
     {
       "type": "text",
       "title": "Introduction to Object-Oriented Programming",
-      "content": "Object-oriented programming is concerned with isolating concepts of a problem domain into separate entities and then using those entities to solve problems. In FTC robotics, we can think of concepts like 'Robot', 'Motor', 'Sensor', and 'GameController' as separate entities that work together to create a complete robot system."
+      "content": "Object-oriented programming is concerned with isolating concepts of a problem domain into separate entities and then using those entities to solve problems. In FRC robotics, we can think of concepts like 'Robot', 'Motor', 'Sensor', and 'GameController' as separate entities that work together to create a complete robot system."
     },
     {
       "type": "text",
@@ -15,7 +15,7 @@
     {
       "type": "code",
       "title": "Real-World Example:",
-      "content": "// Just like ArrayList is a class provided by Java:\nArrayList<Integer> integers = new ArrayList<>();\nintegers.add(15);\nintegers.add(34);\nintegers.add(65);\nintegers.add(111);\nSystem.out.println(integers.size());\n\n// We can create our own classes for robotics:\nFTCRobot competitionBot = new FTCRobot(\"TeamBot\");\ncompetitionBot.initializeHardware();\ncompetitionBot.startAutonomous();"
+      "content": "// Just like ArrayList is a class provided by Java:\nArrayList<Integer> integers = new ArrayList<>();\nintegers.add(15);\nintegers.add(34);\nintegers.add(65);\nintegers.add(111);\nSystem.out.println(integers.size());\n\n// We can create our own classes for robotics:\nFRCRobot competitionBot = new FRCRobot(\"TeamBot\");\ncompetitionBot.initializeHardware();\ncompetitionBot.startAutonomous();"
     },
     {
       "type": "text",
@@ -25,7 +25,7 @@
     {
       "type": "text",
       "title": "Creating Our Own Classes",
-      "content": "A class specifies what objects instantiated from it are like. The object's <strong>instance variables</strong> specify the internal state of the object, and the object's <strong>methods</strong> specify what the object does. Let's create a class to represent an FTC robot team member."
+      "content": "A class specifies what objects instantiated from it are like. The object's <strong>instance variables</strong> specify the internal state of the object, and the object's <strong>methods</strong> specify what the object does. Let's create a class to represent an FRC robot team member."
     },
     {
       "type": "code",
