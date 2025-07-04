@@ -1,0 +1,62 @@
+{
+    "id": "commandbased",
+    "title": "Command-Based Programming in FRC",
+    "sections": [
+      {
+        "type": "text",
+        "title": "What is Command-Based Programming?",
+        "content": "Command-based programming is a structured approach to robot programming in FRC that centers around the concept of 'commands'. Think of a command as a specific action the robot can perform, like 'Drive Forward', 'Shoot Ball', or 'Extend Arm'. This paradigm organizes your robot's functionality into discrete, reusable units, making your code easier to understand, maintain, and debug."
+      },
+      {
+        "type": "text",
+        "title": "Key Concepts",
+        "content": "Command-based programming revolves around three core elements:\n<ul>\n  <li><strong>Commands:</strong> Individual actions the robot can perform (e.g., intake, shoot, turn). Each command encapsulates the logic for a specific task.</li>\n  <li><strong>Subsystems:</strong> Hardware components of the robot (e.g., drivetrain, shooter, arm). Subsystems manage the interaction with physical mechanisms and sensors.</li>\n  <li><strong>Triggers/Bindings:</strong> Mechanisms that initiate commands (e.g., joystick buttons, sensor events). They link user input or robot conditions to specific actions.</li>\n</ul>"
+      },
+      {
+        "type": "text",
+        "title": "Commands in Detail",
+        "content": "A command is the fundamental building block in this programming style.  Each command is a class that inherits from a base `Command` class provided by WPILib.  Inside a command, you define:\n<ul>\n  <li><strong>Requirements:</strong> The subsystems the command needs to control.  This helps prevent conflicts (e.g., two commands trying to use the same motor at the same time).</li>\n  <li><strong>Initialization (initialize()):</strong> Code that runs once when the command starts (e.g., setting initial motor speeds).</li>\n  <li><strong>Execution (execute()):</strong> Code that runs repeatedly while the command is active (e.g., adjusting motor speeds, monitoring sensors).</li>\n  <li><strong>Termination Condition (isFinished()):</strong> A condition that, when true, tells the command to stop (e.g., a timer expires, a sensor reaches a target).</li>\n  <li><strong>End Behavior (end(interrupted)):</strong> Code that runs once when the command finishes normally or is interrupted (e.g., stopping motors, resetting a mechanism).</li>\n</ul>"
+      },
+      {
+        "type": "code",
+        "title": "Simple Command Example (Java)",
+        "content": "// Example: DriveForward Command\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.Subsystem;\n\npublic class DriveForward extends Command {\n  private final Drivetrain m_drivetrain;\n  private final double m_speed;\n  private final double m_duration;\n  private double m_startTime;\n\n  public DriveForward(Drivetrain drivetrain, double speed, double duration) {\n    m_drivetrain = drivetrain;\n    m_speed = speed;\n    m_duration = duration;\n    addRequirements(m_drivetrain); // Command requires the drivetrain subsystem\n  }\n\n  @Override\n  public void initialize() {\n    m_startTime = System.currentTimeMillis() / 1000.0;\n    m_drivetrain.setSpeed(m_speed, m_speed);  // Set both sides to same speed (for basic tank drive)\n  }\n\n  @Override\n  public void execute() {\n    // In a more complex command, you might adjust speeds here\n  }\n\n  @Override\n  public boolean isFinished() {\n    double currentTime = System.currentTimeMillis() / 1000.0;\n    return currentTime - m_startTime >= m_duration;\n  }\n\n  @Override\n  public void end(boolean interrupted) {\n    m_drivetrain.stop();\n    if (interrupted) {\n      System.out.println(\"DriveForward command interrupted!\");\n    } else {\n      System.out.println(\"DriveForward command finished.\");\n    }\n  }\n}"
+      },
+      {
+        "type": "text",
+        "title": "Subsystems in Detail",
+        "content": "Subsystems represent the physical parts of your robot that you want to control. Each subsystem is also a class that extends a base `Subsystem` class. Inside a subsystem, you:\n<ul>\n  <li><strong>Manage Hardware:</strong> This includes initializing motors, sensors, and other physical components, as well as getting readings from sensors and setting motor outputs.</li>\n  <li><strong>Provide Methods for Commands:</strong>  Commands interact with the robot through public methods provided by the subsystem (e.g., `setSpeed()`, `getDistance()`).</li>\n  <li><strong>Encapsulate Complexity:</strong> Subsystems hide the low-level details of hardware interaction from the commands, making commands simpler and more focused on robot behavior.</li>\n</ul>"
+      },
+      {
+        "type": "code",
+        "title": "Simple Subsystem Example (Java)",
+        "content": "// Example: Drivetrain Subsystem\nimport edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;\nimport edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n  private final PWMVictorSPX m_leftFront = new PWMVictorSPX(0);\n  private final PWMVictorSPX m_leftBack = new PWMVictorSPX(1);\n  private final PWMVictorSPX m_rightFront = new PWMVictorSPX(2);\n  private final PWMVictorSPX m_rightBack = new PWMVictorSPX(3);\n\n  private final MotorControllerGroup m_leftMotors = new MotorControllerGroup(m_leftFront, m_leftBack);\n  private final MotorControllerGroup m_rightMotors = new MotorControllerGroup(m_rightFront, m_rightBack);\n\n  public Drivetrain() {\n    m_rightMotors.setInverted(true);  // Invert one side of the drive\n  }\n\n  public void setSpeed(double leftSpeed, double rightSpeed) {\n    m_leftMotors.set(leftSpeed);\n    m_rightMotors.set(rightSpeed);\n  }\n\n  public void stop() {\n    setSpeed(0, 0);\n  }\n\n  // In a real robot, you might have sensor readings, etc. here\n}"
+      },
+      {
+        "type": "text",
+        "title": "Triggers and Command Bindings",
+        "content": "Triggers (or command bindings) connect user input (like joystick buttons) or robot conditions (like a sensor reaching a threshold) to specific commands.  This is how you control your robot's actions during a match or in autonomous mode.\n\nWPILib provides flexible ways to create bindings, allowing you to:\n<ul>\n  <li><strong>Run a command once when a button is pressed.</strong></li>\n  <li><strong>Cancel a running command when a button is pressed.</strong></li>\n  <li><strong>Run a command while a button is held down.</strong></li>\n  <li><strong>Toggle a command on and off with repeated button presses.</strong></li>\n  <li><strong>Trigger commands based on more complex conditions (e.g., sensor values).</strong></li>\n</ul>"
+      },
+      {
+        "type": "code",
+        "title": "Command Binding Example (Java)",
+        "content": "// Example: Robot Container (where bindings are defined)\nimport edu.wpi.first.wpilibj.PS5Controller;\nimport edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;\n\npublic class RobotContainer {\n  private final Drivetrain m_drivetrain = new Drivetrain();\n  private final CommandPS5Controller m_controller = new CommandPS5Controller(0);  // PS5 Controller on port 0\n\n  public RobotContainer() {\n    configureButtonBindings();\n  }\n\n  private void configureButtonBindings() {\n    // Buttons on PS5 Controller using built-in functions\n    m_controller.square().onTrue(new DriveForward(m_drivetrain, 0.3, 2.0));    // Run once on press\n    m_controller.cross().whileTrue(new DriveForward(m_drivetrain, 0.7, 1.0)); // Run while held\n    \n    // More complex bindings possible (toggle, cancel, etc.)\n  }\n\n  // You might have a method here to get the autonomous command\n  // public Command getAutonomousCommand() { ... }\n}"
+      },
+      {
+        "type": "text",
+        "title": "Benefits of Command-Based Programming",
+        "content": "Using a command-based framework offers numerous advantages for FRC teams:\n<ul>\n  <li><strong>Organization:</strong>  Code is naturally organized into logical units (commands and subsystems), making it easier to navigate and understand.</li>\n  <li><strong>Reusability:</strong> Commands can be reused in different parts of the robot's operation (e.g., autonomous and teleop).</li>\n  <li><strong>Maintainability:</strong> Bugs are easier to find and fix because code is well-structured and separated by functionality.</li>\n  <li><strong>Collaboration:</strong> Multiple programmers can work on different commands or subsystems concurrently with reduced risk of conflicts.</li>\n  <li><strong>Testability:</strong> Individual commands and subsystems can be tested in isolation, improving code reliability.</li>\n  <li><strong>Flexibility:</strong>  Easy to add new functionality or modify existing behavior without affecting other parts of the code.</li>\n  <li><strong>Concurrency Management:</strong> The framework handles command scheduling and resource management, preventing conflicts between commands that might try to control the same hardware.</li>\n</ul>"
+      },
+      {
+        "type": "list",
+        "title": "Further Learning Resources",
+        "items": [
+          "<a href=\"https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html\" target=\"_blank\">WPILib Command-Based Programming Documentation</a>: Official documentation on the command-based framework.",
+          "<a href=\"https://www.spectrum3847.org/resources/training\" target=\"_blank\">Spectrum's Training Resources</a>: Not exclusive to just programming, but have multiple well-made lessons on FRC programming (for command-based specifically, go to &quotC2.2&quot.",
+          "<a href=\"https://docs.lynkrobotics.org/programming/index.html#gsc.tab=0\" target=\"_blank\">LYNK Library of Knowledge</a>: Another great general programming resource that provides links to a variety of programming resources for FRC",
+          "<a href=\"https://docs.wpilib.org/en/stable/docs/software/examples-tutorials/wpilib-examples.html#command-based-examples\" target=\"_blank\">WPILib Command-Based Examples</a>: Example Command-Based projects created by WPILib."
+        ]
+      }
+    ]
+  }
+  

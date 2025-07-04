@@ -119,5 +119,34 @@
         }
       ]
     }
+  ,
+  {
+    "id": "frc-specific",
+    "label": "FRC Specific Programming",
+    "type": "parent",
+    "expanded": false,
+    "children": [
+      {
+        "id": "wpilib",
+        "label": "About WPILib",
+        "file": "data/wpilib.json"
+      },
+      {
+        "id": "motors",
+        "label": "Motors in FRC",
+        "file": "data/frcmotors.json"
+      },
+      {
+        "id": "command-based",
+        "label": "Command-Based Programming",
+        "file": "data/commandbased.json"
+      },
+      {
+        "id": "commands",
+        "label": "All About Commands",
+        "file": "data/frccommands.json"
+      }
+    ]
+  }
   ]
 } 

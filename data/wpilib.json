@@ -1,0 +1,31 @@
+  {
+    "id": "wpilib",
+  "title": "WPILib: The FRC Robotics Library",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is WPILib?",
+      "content": "WPILib (pronounced 'WPI-Lib') is the official software library provided by FIRST for programming FRC robots in Java, C++, and Python. It provides a comprehensive set of tools, classes, and utilities that abstract away the complexities of interacting with robot hardware, allowing teams to focus on robot behavior and strategy. Think of it as the operating system and toolkit for your robot."
+    },
+    {
+      "type": "text",
+      "title": "Why Use WPILib?",
+      "content": "WPILib is essential for FRC teams because it:\n<ul>\n  <li><strong>Simplifies Hardware Control:</strong> Provides easy-to-use classes for motors, sensors, joysticks, and more.</li>\n  <li><strong>Standardizes Robot Code:</strong> Ensures consistency across teams and years, making it easier to share knowledge.</li>\n  <li><strong>Includes Advanced Features:</strong> Offers built-in support for advanced topics like PID control, odometry, path planning, and vision processing.</li>\n  <li><strong>Provides Debugging Tools:</strong> Integrates with tools like SmartDashboard, Shuffleboard, and Glass for real-time data visualization and debugging.</li>\n  <li><strong>Is Actively Maintained:</strong> Regularly updated by the WPILib development team with new features and bug fixes.</li>\n</ul>"
+    },
+    {
+      "type": "text",
+      "title": "Key Components of WPILib",
+      "content": "WPILib is structured into several key packages, each handling different aspects of robot control:\n<ul>\n  <li><code>edu.wpi.first.wpilibj</code>: Core robot hardware and control classes (motors, sensors, joysticks, etc.).</li>\n  <li><code>edu.wpi.first.wpilibj.command</code>: (Deprecated, but still seen in older code) Framework for command-based programming.</li>\n  <li><code>edu.wpi.first.wpilibj2.command</code>: The modern, updated command-based framework (recommended for new projects).</li>\n  <li><code>edu.wpi.first.math</code>: Mathematical utilities, including geometry, kinematics, and control algorithms.</li>\n  <li><code>edu.wpi.first.cameraserver</code>: For integrating USB cameras and streaming video.</li>\n  <li><code>edu.wpi.first.networktables</code>: Provides a way for the robot and driver station to communicate data.</li>\n</ul>"
+    },
+    {
+      "type": "list",
+      "title": "Further References:",
+      "items": [
+        "<a href=\"https://docs.wpilib.org/en/stable/\" target=\"_blank\">WPILib Documentation</a>: The official documentation for WPILib, covering all aspects of robot programming.",
+        "<a href=\"https://github.wpilib.org/allwpilib/docs/release/java/index.html\" target=\"_blank\">WPILib API Javadocs</a>: Detailed API documentation for all WPILib classes and methods.",
+        "<a href=\"https://github.com/wpilibsuite/allwpilib\" target=\"_blank\">WPILib GitHub Repository</a>: The source code for WPILib, useful for advanced users and contributors."
+      ]
+    }
+
+  ]
+}
