@@ -1,4 +1,4 @@
-// Furo-inspired Documentation JavaScript for Java Overview
+// Furo-inspired Documentation JavaScript for FRCProgramming
 
 // Global variables
 let config = null;
@@ -9,15 +9,39 @@ let allTabs = []; // Flattened list of all child tabs for easy access
 // Initialize theme immediately
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const theme = savedTheme || systemTheme;
-    
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const theme = savedTheme || systemTheme;
+
     document.documentElement.setAttribute('data-theme', theme);
     const themeIcon = document.querySelector('.theme-icon');
+    const themeButton = document.querySelector('.theme-toggle'); // Assuming your button has this class
+
     if (themeIcon) {
         themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
+    if (themeButton) {
+        themeButton.style.display = 'block'; // Or 'inline-block' depending on your layout
+    }
 }
+
+let lastScrollTop = 0;
+const mobileHeader = document.querySelector('.mobile-header');
+
+window.addEventListener('scroll', function() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  if (scrollTop < lastScrollTop) {
+    // Scrolling up
+    mobileHeader.classList.remove('visible');
+  } else {
+    // Scrolling down
+    mobileHeader.classList.add('visible');
+  }
+
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+}, false);
+
+
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
@@ -100,7 +124,7 @@ function generateNavigation() {
             parentA.className = 'reference parent-reference';
             parentA.href = '#';
             parentA.innerHTML = `
-                <span class="expand-icon">${parentTab.expanded ? '▼' : '▶'}</span>
+                <span class="expand-icon expand-icon-${parentTab.id}">${parentTab.expanded ? '▼' : '▶'}</span>  <!-- Added specific class -->
                 ${parentTab.label}
             `;
             parentA.onclick = (e) => {
@@ -155,10 +179,24 @@ function generateNavigation() {
     });
 }
 
-// Toggle parent tab expand/collapse
+// Toggle parent tab expand/`collapse
+// function toggleParentTab(parentId) {
+//     const childrenNav = document.getElementById(`children-${parentId}`);
+//     const expandIcon = document.querySelector(`[onclick*="${parentId}"] .expand-icon`);
+    
+//     if (childrenNav.classList.contains('expanded')) {
+//         childrenNav.classList.remove('expanded');
+//         childrenNav.classList.add('collapsed');
+//         expandIcon.textContent = '▶';
+//     } else {
+//         childrenNav.classList.add('expanded');
+//         childrenNav.classList.remove('collapsed');
+//         expandIcon.textContent = '▼';
+//     }
+// }
 function toggleParentTab(parentId) {
     const childrenNav = document.getElementById(`children-${parentId}`);
-    const expandIcon = document.querySelector(`[onclick*="${parentId}"] .expand-icon`);
+    const expandIcon = document.querySelector(`.expand-icon-${parentId}`); // Use the specific class
     
     if (childrenNav.classList.contains('expanded')) {
         childrenNav.classList.remove('expanded');
@@ -170,6 +208,7 @@ function toggleParentTab(parentId) {
         expandIcon.textContent = '▼';
     }
 }
+
 
 // Show the default tab
 function showDefaultTab() {
@@ -663,15 +702,25 @@ function showError(message) {
 // Theme toggle functionality
 function toggleTheme() {
     const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
+    // const currentTheme = html.getAttribute('data-theme');
+    // const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    // html.setAttribute('data-theme', newTheme);
+    // localStorage.setItem('theme', newTheme);
+    const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    html.setAttribute('data-theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
-    
-    const themeIcon = document.querySelector('.theme-icon');
-    themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    updateThemeIcon(newTheme); // Ensure this updates the icon correctly
 }
+
+function updateThemeIcon(theme) {
+    const themeIcon = document.querySelector('.theme-icon'); // Make sure this class matches your icon element
+    if (themeIcon) {
+      themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️'; // Assuming sun for dark, moon for light
+    }
+  }
+  
 
 // Add CSS for notification animation
 const style = document.createElement('style');

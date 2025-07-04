@@ -1,7 +1,12 @@
 {
   "id": "landing-page",
-  "title": "Welcome to FRCJava - FRC Programming Fundamentals",
+  "title": "Welcome to FRCProgramming",
   "sections": [
+    {
+      "type": "text",
+      "title": "",
+      "content": "ㅤㅤㅤㅤ"
+    },
     {
       "type": "text",
       "title": "Explore Java Programming for FRC Robotics",

@@ -1,10 +1,16 @@
-/* Furo-inspired Documentation Theme for Java Overview */
+/* Furo-inspired Documentation Theme for FRCProgramming */
 
 /* CSS Variables - Light Theme */
 :root {
-  --font-stack: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  /* --font-stack: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   --font-stack--monospace: "SFMono-Regular", Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-  --font-stack--headings: var(--font-stack);
+  --font-stack--headings: var(--font-stack); */
+  /* Typography */
+  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Example, adjust as needed */
+  --font-color-base: #000000; /* Black text */
+  --font-color-headings: #000000; /* Black headings (or slightly darker if needed) */
+  --font-weight-base: 400;      /* Normal font weight */
+  --font-weight-bold: 700; 
   
   --font-size--normal: 100%;
   --font-size--small: 87.5%;
@@ -51,21 +57,24 @@
   --color-link: var(--color-brand-content);
 }
 
-/* Dark Theme */
+/* Light Theme */
 @media (prefers-color-scheme: dark) {
-  body:not([data-theme="light"]) {
-    --color-foreground-primary: #FFFFFF; /* White text in dark mode */
-    --color-foreground-secondary: #CCCCCC;
-    --color-foreground-muted: #999999;
-    --color-foreground-border: #555555;
-    --color-background-primary: #1C1C1E; /* Dark background */
-    --color-background-secondary: #2C2C2E;
-    --color-background-hover: #3A3A3C;
-    --color-background-border: #444444;
-    --color-brand-primary: #5AC8FA;      /* Lighter blue in dark mode */
-    --color-brand-content: #99D6FF;
-    --color-code-background: #202020;
-    --color-code-foreground: #d0d0d0;
+  html:not([data-theme="dark"])[data-theme="light"],
+    html:not([data-theme="dark"]):not([data-theme]) {
+    /* Colors (Light Theme - Inspired by Dark Theme Palette) */
+  --color-background-primary: #FFFFFF; /* White background */
+  --color-background-secondary: #F0F8FF; /* Very light blue-ish background (hint of the brand color) */
+  --color-background-hover: #E3F2FD;   /* Light blue hover */
+  --color-background-border: #B3E5FC;  /* Light blue border */
+  --color-foreground-primary: #333333; /* Dark gray text */
+  --color-foreground-secondary: #555555; /* Medium gray text */
+  --color-foreground-muted: #777777;    /* Muted gray text */
+  --color-foreground-border: #BDBDBD;   /* Light gray border */
+  --color-brand-primary: #2196F3;      /* Solid blue (complementary to dark theme) */
+  --color-brand-content: #1976D2;      /* Slightly darker blue for links/active */
+  --color-code-background: #F8F8F8; /* Light gray for code */
+  --color-code-foreground: #333333; /* Dark gray for code text */
+
     
     /* Update derived sidebar colors for dark theme */
     --color-sidebar-background: var(--color-background-secondary);
@@ -84,10 +93,10 @@
     /* Update other derived colors */
     --color-inline-code-background: var(--color-background-secondary);
     --color-link: var(--color-brand-content);
-  }
+    }
 }
 
-body[data-theme="dark"] {
+html[data-theme="dark"] {
   --color-foreground-primary: #cfd0d0;
   --color-foreground-secondary: #9ca0a5;
   --color-foreground-muted: #81868d;
@@ -179,15 +188,24 @@ body {
   background-color: var(--color-header-background);
   border-bottom: 1px solid var(--color-header-border);
   color: var(--color-header-text);
-  display: none;
+  display: flex;
   height: var(--header-height);
   width: 100%;
   z-index: 10;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
+  position: fixed;
   top: 0;
+  transform: translateY(-100%); /*Initially off-screen*/
+  transition: transform 0.3s ease-in-out; /*Smooth transition*/
+
 }
+
+.mobile-header.visible {
+  transform: translateY(0);  /* Slide it back into view */
+}
+
+
 
 .mobile-header .header-left,
 .mobile-header .header-right {
@@ -562,7 +580,6 @@ ul li > p:last-child {
   border-radius: 0.5rem;
   padding: 1.5rem;
   margin: 1.5rem 0;
-  border-left: 4px solid var(--color-brand-primary);
 }
 
 .data-types-grid {
@@ -712,13 +729,18 @@ footer {
     display: flex;
   }
   
-  .mobile-header {
+  /* .mobile-header {
     display: flex;
-  }
+  } */
   
   .page {
     flex-direction: column;
     justify-content: center;
+  }
+
+  .mobile-header {
+    display: flex; /* Make sure it's displayed within this media query */
+    /* The positioning and transform styles above will still apply */
   }
 }
 
