@@ -21,16 +21,16 @@
   --sidebar-item-spacing-horizontal: 1rem;
   --sidebar-item-height: calc(var(--sidebar-item-line-height) + var(--sidebar-item-spacing-vertical) * 2);
   
-  --color-foreground-primary: #000;
-  --color-foreground-secondary: #5a5c63;
-  --color-foreground-muted: #6b6f76;
-  --color-foreground-border: #878787;
-  --color-background-primary: #fff;
-  --color-background-secondary: #f8f9fb;
-  --color-background-hover: #efeff4;
-  --color-background-border: #eeebee;
-  --color-brand-primary: #0a4bff;
-  --color-brand-content: #2757dd;
+  --color-foreground-primary: #000000; /* Black */
+  --color-foreground-secondary: #333333; /* Dark Gray */
+  --color-foreground-muted: #777777;    /* Medium Gray */
+  --color-foreground-border: #CCCCCC;   /* Light Gray */
+  --color-background-primary: #FFFFFF; /* White */
+  --color-background-secondary: #F2F2F7; /* Light Gray background */
+  --color-background-hover: #E6E6EA;   /* Slightly darker hover */
+  --color-background-border: #DDDDDD;  /* Subtle border */
+  --color-brand-primary: #007AFF;      /* Primary Blue */
+  --color-brand-content: #0056B3;      /* Darker Blue */
   
   --color-sidebar-background: var(--color-background-secondary);
   --color-sidebar-background-border: var(--color-background-border);
@@ -54,16 +54,16 @@
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
   body:not([data-theme="light"]) {
-    --color-foreground-primary: #cfd0d0;
-    --color-foreground-secondary: #9ca0a5;
-    --color-foreground-muted: #81868d;
-    --color-foreground-border: #666;
-    --color-background-primary: #131416;
-    --color-background-secondary: #1a1c1e;
-    --color-background-hover: #1e2124;
-    --color-background-border: #303335;
-    --color-brand-primary: #3d94ff;
-    --color-brand-content: #5ca5ff;
+    --color-foreground-primary: #FFFFFF; /* White text in dark mode */
+    --color-foreground-secondary: #CCCCCC;
+    --color-foreground-muted: #999999;
+    --color-foreground-border: #555555;
+    --color-background-primary: #1C1C1E; /* Dark background */
+    --color-background-secondary: #2C2C2E;
+    --color-background-hover: #3A3A3C;
+    --color-background-border: #444444;
+    --color-brand-primary: #5AC8FA;      /* Lighter blue in dark mode */
+    --color-brand-content: #99D6FF;
     --color-code-background: #202020;
     --color-code-foreground: #d0d0d0;
     

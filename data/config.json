@@ -2,6 +2,20 @@
   "title": "Java Overview - Programming Fundamentals",
   "tabs": [
     {
+      "id": "landing-page",
+      "label": "Landing Page",
+      "type": "parent",
+      "expanded": true,
+      "children": [
+        {
+          "id": "default",
+          "label": "Home Page",
+          "file": "data/landing.json",
+          "default": true
+        }
+      ]
+    },
+    {
       "id": "java-basics",
       "label": "Java Basics",
       "type": "parent",
@@ -10,8 +24,7 @@
         {
           "id": "printing",
           "label": "Printing",
-          "file": "data/printing.json",
-          "default": true
+          "file": "data/printing.json"
         },
         {
           "id": "variables",
