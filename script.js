@@ -282,6 +282,9 @@ function renderSection(container, sectionData) {
         case 'logical-operators':
             renderLogicalOperators(container, sectionData);
             break;
+        case 'emphasis-box':
+            renderEmphasisBox(container, sectionData);
+            break;
         default:
             console.warn(`Unknown section type: ${sectionData.type}`);
     }
@@ -316,6 +319,37 @@ function renderListSection(container, data) {
     });
     container.appendChild(ul);
 }
+
+// Render section box
+function renderEmphasisBox(container, data) {
+    const sectionBox = document.createElement('div');
+    sectionBox.className = 'emphasis-box';
+
+    if (data.title) {
+        const h3 = document.createElement('h3');
+        h3.textContent = data.title;
+        sectionBox.appendChild(h3);
+    }
+
+    if (data.content) {
+        const p = document.createElement('p');
+        p.innerHTML = data.content;
+        sectionBox.appendChild(p);
+    }
+
+    if (data.items) {
+        const ul = document.createElement('ul');
+        data.items.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = item;
+            ul.appendChild(li);
+        });
+        sectionBox.appendChild(ul);
+    }
+
+    container.appendChild(sectionBox);
+}
+
 
 // Render code section
 function renderCodeSection(container, data) {

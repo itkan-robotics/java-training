@@ -19,7 +19,7 @@
       "id": "java-basics",
       "label": "Java Basics",
       "type": "parent",
-      "expanded": true,
+      "expanded": false,
       "children": [
         {
           "id": "printing",
