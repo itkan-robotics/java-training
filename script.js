@@ -1,4 +1,4 @@
-// Furo-inspired Documentation JavaScript for FRCProgramming
+// Furo-inspired Documentation JavaScript for FRCCodeLab
 
 // Global variables
 let config = null;
@@ -124,7 +124,7 @@ function generateNavigation() {
             parentA.className = 'reference parent-reference';
             parentA.href = '#';
             parentA.innerHTML = `
-                <span class="expand-icon expand-icon-${parentTab.id}">${parentTab.expanded ? '▼' : '▶'}</span>  <!-- Added specific class -->
+                <span class="expand-icon expand-icon-${parentTab.id}">${parentTab.expanded ? '▼' : '\u25B6\uFE0E'}</span>  <!-- Added specific class -->
                 ${parentTab.label}
             `;
             parentA.onclick = (e) => {
@@ -180,34 +180,21 @@ function generateNavigation() {
 }
 
 // Toggle parent tab expand/`collapse
-// function toggleParentTab(parentId) {
-//     const childrenNav = document.getElementById(`children-${parentId}`);
-//     const expandIcon = document.querySelector(`[onclick*="${parentId}"] .expand-icon`);
-    
-//     if (childrenNav.classList.contains('expanded')) {
-//         childrenNav.classList.remove('expanded');
-//         childrenNav.classList.add('collapsed');
-//         expandIcon.textContent = '▶';
-//     } else {
-//         childrenNav.classList.add('expanded');
-//         childrenNav.classList.remove('collapsed');
-//         expandIcon.textContent = '▼';
-//     }
-// }
 function toggleParentTab(parentId) {
     const childrenNav = document.getElementById(`children-${parentId}`);
     const expandIcon = document.querySelector(`.expand-icon-${parentId}`); // Use the specific class
-    
+
     if (childrenNav.classList.contains('expanded')) {
         childrenNav.classList.remove('expanded');
         childrenNav.classList.add('collapsed');
-        expandIcon.textContent = '▶';
+        expandIcon.textContent = '\u25B6\uFE0E';
     } else {
         childrenNav.classList.add('expanded');
         childrenNav.classList.remove('collapsed');
         expandIcon.textContent = '▼';
     }
 }
+
 
 
 // Show the default tab

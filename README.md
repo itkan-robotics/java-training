@@ -1,4 +1,4 @@
-# FRCProgramming - Interactive Learning Platform
+# FRCCodeLab - Interactive Learning Platform
 
 A comprehensive, interactive web-based learning platform for Java programming fundamentals, specifically designed for FRC (FIRST Robotics Competition) robotics teams.
 

@@ -1,16 +1,10 @@
-/* Furo-inspired Documentation Theme for FRCProgramming */
+/* Furo-inspired Documentation Theme for FRCCodeLab */
 
 /* CSS Variables - Light Theme */
 :root {
-  /* --font-stack: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  --font-stack: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   --font-stack--monospace: "SFMono-Regular", Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-  --font-stack--headings: var(--font-stack); */
-  /* Typography */
-  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Example, adjust as needed */
-  --font-color-base: #000000; /* Black text */
-  --font-color-headings: #000000; /* Black headings (or slightly darker if needed) */
-  --font-weight-base: 400;      /* Normal font weight */
-  --font-weight-bold: 700; 
+  --font-stack--headings: var(--font-stack);
   
   --font-size--normal: 100%;
   --font-size--small: 87.5%;
