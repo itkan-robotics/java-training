@@ -108,6 +108,8 @@ java overview/
    - `code`: Syntax-highlighted code blocks
    - `rules-box`: Important rules and guidelines
    - `exercise-box`: Interactive practice problems
+   - `list`: Key points
+   - `emphasis-box`: Important information
 
 ### Theming
 - Modify CSS custom properties in `styles.css`

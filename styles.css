@@ -90,6 +90,7 @@
     }
 }
 
+/*Dark Theme*/
 html[data-theme="dark"] {
   --color-foreground-primary: #cfd0d0;
   --color-foreground-secondary: #9ca0a5;
