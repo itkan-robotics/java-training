@@ -9,20 +9,26 @@ let allTabs = []; // Flattened list of all child tabs for easy access
 // Initialize theme immediately
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
-  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  const theme = savedTheme || systemTheme;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    let theme = savedTheme || systemTheme;
+
+    // Change the default to light mode
+    if (!savedTheme) {
+        theme = 'light'; 
+    }
 
     document.documentElement.setAttribute('data-theme', theme);
     const themeIcon = document.querySelector('.theme-icon');
-    const themeButton = document.querySelector('.theme-toggle'); // Assuming your button has this class
+    const themeButton = document.querySelector('.theme-toggle');
 
     if (themeIcon) {
-        themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
     }
     if (themeButton) {
-        themeButton.style.display = 'block'; // Or 'inline-block' depending on your layout
+        themeButton.style.display = 'block';
     }
 }
+
 
 let lastScrollTop = 0;
 const mobileHeader = document.querySelector('.mobile-header');
@@ -122,9 +128,9 @@ function generateNavigation() {
             
             const parentA = document.createElement('a');
             parentA.className = 'reference parent-reference';
-            parentA.href = '#';
+            parentA.href = '#'; // Keep this as '#' for parent links (they don't directly open a tab)
             parentA.innerHTML = `
-                <span class="expand-icon expand-icon-${parentTab.id}">${parentTab.expanded ? '▼' : '\u25B6\uFE0E'}</span>  <!-- Added specific class -->
+                <span class="expand-icon expand-icon-${parentTab.id}">${parentTab.expanded ? '▼' : '\u25B6\uFE0E'}</span>
                 ${parentTab.label}
             `;
             parentA.onclick = (e) => {
@@ -146,10 +152,12 @@ function generateNavigation() {
                 
                 const childA = document.createElement('a');
                 childA.className = 'reference child-reference';
-                childA.href = '#';
+                childA.href = `#${childTab.id}`;  // Construct the URL
                 childA.textContent = childTab.label;
                 childA.onclick = (e) => {
                     e.preventDefault();
+                    // Update the URL
+                    window.location.hash = `#${childTab.id}`;
                     openTab(e, childTab.id);
                 };
                 
@@ -160,16 +168,18 @@ function generateNavigation() {
             parentLi.appendChild(childrenUl);
             navigationUl.appendChild(parentLi);
         } else {
-            // Handle non-hierarchical tabs if any exist
+            // Handle non-hierarchical tabs
             const li = document.createElement('li');
             li.className = `toctree-l1 ${parentTab.default ? 'current-page' : ''}`;
             
             const a = document.createElement('a');
             a.className = 'reference';
-            a.href = '#';
+            a.href = `#${parentTab.id}`; // Construct the URL
             a.textContent = parentTab.label;
             a.onclick = (e) => {
                 e.preventDefault();
+                // Update the URL
+                window.location.hash = `#${parentTab.id}`;
                 openTab(e, parentTab.id);
             };
             
@@ -178,6 +188,7 @@ function generateNavigation() {
         }
     });
 }
+
 
 // Toggle parent tab expand/`collapse
 function toggleParentTab(parentId) {
@@ -199,7 +210,24 @@ function toggleParentTab(parentId) {
 
 // Show the default tab
 function showDefaultTab() {
-    const defaultTab = allTabs.find(tab => tab.default) || allTabs[0];
+    let defaultTab;
+    const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
+    const urlTabId = window.location.hash ? window.location.hash.substring(1) : null; // Get tab ID from URL
+
+    if (urlTabId) {
+        defaultTab = allTabs.find(tab => tab.id === urlTabId);
+        if (defaultTab) {
+            // If there's a valid tab ID in the URL, remove the last opened tab
+            localStorage.removeItem('lastOpenedTab');
+        }
+    } else if (lastOpenedTabId) {
+        defaultTab = allTabs.find(tab => tab.id === lastOpenedTabId);
+    }
+
+    if (!defaultTab) {
+        defaultTab = allTabs.find(tab => tab.default) || allTabs[0];
+    }
+
     if (defaultTab) {
         // Ensure parent is expanded if needed
         if (defaultTab.parentId) {
@@ -212,8 +240,12 @@ function showDefaultTab() {
     }
 }
 
+
 // Open a specific tab
 function openTab(event, tabId) {
+    // Store the last opened tab ID
+    localStorage.setItem('lastOpenedTab', tabId);
+
     // Remove current-page class from all tabs
     document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
         li.classList.remove('current-page');

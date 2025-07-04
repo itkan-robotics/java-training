@@ -8,7 +8,7 @@
       "expanded": true,
       "children": [
         {
-          "id": "default",
+          "id": "home",
           "label": "Home Page",
           "file": "data/landing.json",
           "default": true
