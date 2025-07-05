@@ -526,6 +526,25 @@ function renderExerciseBox(container, data) {
         exerciseBox.appendChild(hintBox);
     }
 
+    // Handle "code" subtype
+    if (data.code) {
+        const codeBlock = document.createElement("div");
+        codeBlock.className = "code-block exercise-code"; // Apply styling
+    
+        const pre = document.createElement("pre");
+        const codeElement = document.createElement("code");
+        codeElement.textContent = data.code;
+    
+        // Add language class for syntax highlighting (if available)
+        if (data.code.language) {
+          codeElement.className = `language-${data.code.language}`;
+        }
+    
+        pre.appendChild(codeElement);
+        codeBlock.appendChild(pre);
+        exerciseBox.appendChild(codeBlock);
+      }
+
     // Add answer button and section if answers exist
     if (data.answers && data.answers.length > 0) {
         const answerButton = document.createElement('button');
@@ -755,6 +774,10 @@ function updateThemeIcon(theme) {
     if (themeIcon) {
       themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️'; // Assuming sun for dark, moon for light
     }
+
+    // const theme = document.documentElement.getAttribute("data-theme");
+    // document.getElementById("git-logo").src =
+    // theme === "dark" ? "/media/Git-Icon-White.svg" : "/media/Git-Icon-Black.svg";
   }
   
 

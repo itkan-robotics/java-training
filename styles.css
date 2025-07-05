@@ -267,6 +267,11 @@ body {
   color: var(--color-foreground-primary);
 }
 
+.theme-icon {
+  font-size: 1.25rem;
+  color: var(--color-foreground-primary);
+}
+
 /* Sidebar */
 .sidebar-drawer {
   position: fixed; /* Fixed position, stays in place on scroll */
@@ -311,6 +316,20 @@ body {
   flex-shrink: 0;
   padding: var(--sidebar-item-spacing-vertical) var(--sidebar-item-spacing-horizontal);
   text-decoration: none;
+}
+
+.git-logo {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+[data-theme="light"] #git-logo {
+  filter: invert(100%)
+}
+
+[data-theme="dark"] #git-logo {
+  filter: invert(0%)
 }
 
 .sidebar-brand-text {
@@ -564,7 +583,8 @@ code {
   overflow: visible;
 }
 
-.code-block code {
+.code-block code
+{
   color: var(--color-code-foreground);
   background: transparent;
 }
@@ -619,6 +639,25 @@ ul li > p:last-child {
   margin-top: 0;
   color: #333333;
 }
+
+
+.exercise-code {
+  margin-top: 0.5rem;
+  border-left: 4px solid var(--color-header-border);
+  background: var(--color-code-background);
+}
+
+.exercise-code pre {
+  margin: 0;
+  padding: 1rem;
+}
+
+.exercise-code code {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-code-foreground);
+}
+
 
 .emphasis-box {
   background: var(--color-background-secondary);

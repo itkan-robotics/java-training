@@ -10,7 +10,7 @@
       {
         "type": "text",
         "title": "Command Types Overview",
-        "content": "WPILib provides several fundamental command types that cater to different programming needs. These can be broadly categorized as:\n<ul>\n  <li><strong>Instant Commands:</strong> Commands that execute once and finish immediately.</li>\n  <li><strong>Sequential Commands:</strong> Commands that run a sequence of other commands.</li>\n  <li><strong>Parallel Commands:</strong> Commands that run multiple commands concurrently.</li>\n  <li><strong>Functional Commands:</strong> Commands created using lambda expressions for simple, concise actions.</li>\n  <li><strong>Proxy Commands:</strong> Commands that defer to another command.</li>\n</ul>\nLet's explore each of these in detail."
+        "content": "WPILib provides several fundamental command types that cater to different programming needs. These can be broadly categorized as:\n<ul>\n  <li><strong>Instant Commands:</strong> Commands that execute once and finish immediately.</li>\n  <li><strong>Sequential Commands:</strong> Commands that run a sequence of other commands.</li>\n  <li><strong>Parallel Commands:</strong> Commands that run multiple commands concurrently.</li>\n  <li><strong>Functional Commands:</strong> Commands created using lambda expressions for simple, concise actions.</li>\n  <li><strong>Proxy Commands:</strong> Commands that defer to another command.</li>\n <li><strong>Run Commands:</strong> Commands that run repeatedly until interrupted or explicitly stopped.</li>\n <li><strong>Deferred Commands:</strong> Commands that are initialized as they are called.\n</li></ul>Let's explore each of these in detail."
       },
       {
         "type": "text",
@@ -72,9 +72,51 @@
         "content": "import edu.wpi.first.wpilibj2.command.ProxyCommand;\nimport edu.wpi.first.wpilibj2.command.SequentialCommandGroup;\n\npublic class ComplexAutonomous extends SequentialCommandGroup {\n  public ComplexAutonomous(Drivetrain drivetrain) {\n    addCommands(\n      //Do some initial setup\n      new InitializeCommand(),\n\n      //Drive to a location.\n      new ProxyCommand(() -> chooseDriveCommand(drivetrain)),\n\n      // Do some final tasks\n      new FinishCommand()\n    );\n  }\n\n  //This function will choose what command to run for the proxy command.\n  private Command chooseDriveCommand(Drivetrain drivetrain) {\n    if (shouldDoComplexPath()) {\n      return new ComplexPathCommand(drivetrain);\n    } else {\n      return new SimpleDriveCommand(drivetrain);\n    }\n  }\n\n  // This function checks the current conditions of the game and returns a boolean.\n  private boolean shouldDoComplexPath() {\n    //Implementation hidden.\n    return true;\n  }\n}"
       }, 
       {
-        "type": "emphasis-box",
+        "type": "text",
+        "title": "6. Run Commands",
+        "content": "Run commands are designed for actions that need to run continuously until interrupted or explicitly stopped. Unlike InstantCommand which finishes immediately, or commands with a defined duration, RunCommand will keep executing its execute() method repeatedly as long as it is scheduled. This is particularly useful for default commands of subsystems, or for actions that need to persist until a new command takes over."
+      },
+      {
+        "type": "code",
+        "title": "Run Command Example (Java)",
+        "content": "// Example: Default Drive Command\nimport edu.wpi.first.wpilibj2.command.RunCommand;\nimport edu.wpi.first.wpilibj2.command.Subsystem;\n\npublic class DefaultDrive extends RunCommand {\n  private final Drivetrain m_drivetrain;\n  private final double m_forwardSpeed;\n  private final double m_turnSpeed;\n\n  public DefaultDrive(Drivetrain drivetrain, double forwardSpeed, double turnSpeed) {\n    super(\n        // This lambda will be executed repeatedly in the command's execute() method\n        () -> drivetrain.arcadeDrive(forwardSpeed, turnSpeed),\n        drivetrain // Specify the subsystem requirement\n    );\n    m_drivetrain = drivetrain;\n    m_forwardSpeed = forwardSpeed;\n    m_turnSpeed = turnSpeed;\n  }\n\n  // No need to override initialize() or isFinished() for a simple RunCommand\n  // The command will run until interrupted or a new command takes the drivetrain\n\n  @Override\n  public void end(boolean interrupted) {\n    m_drivetrain.stop(); // Stop the motors when the command ends\n    if (interrupted) {\n      System.out.println(\"DefaultDrive command interrupted!\");\n    } else {\n      System.out.println(\"DefaultDrive command finished normally.\");\n    }\n  }\n}\n\n// Usage in RobotContainer (as a default command):\n// m_drivetrain.setDefaultCommand(new DefaultDrive(m_drivetrain, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));"
+      },
+      {
+        "type": "text",
+        "title": "7. Deferred Commands",
+        "content": "Deferred commands are a special type of command that allows you to specify the command to be run at the time of execution, rather than at the time of creation. This is particularly useful when the exact command to be run depends on runtime conditions or user input that isn't available when the command is initially defined. It ensures that the command's requirements are correctly registered with the scheduler, even if the actual command object is created later."
+      },
+      {
+        "type": "code",
+        "title": "Deferred Command Example (Java)",
+        "content": "import edu.wpi.first.wpilibj2.command.DeferredCommand;\nimport edu.wpi.first.wpilibj2.command.InstantCommand;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Set;\n\n// Assume these are your subsystems\nclass Drivetrain extends SubsystemBase {\n    public void drive(double speed) { System.out.println(\"Driving at \" + speed); }\n    public void stop() { System.out.println(\"Drivetrain stopped.\"); }\n}\n\nclass Shooter extends SubsystemBase {\n    public void shoot() { System.out.println(\"Shooting!\"); }\n    public void stop() { System.out.println(\"Shooter stopped.\"); }\n}\n\npublic class DeferredCommandExample {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Shooter m_shooter = new Shooter();\n    private boolean m_isAutonomous = true; // Simulate a runtime condition\n\n    public Command getActionCommand() {\n        // This DeferredCommand will decide which action to take when it's scheduled\n        return new DeferredCommand(\n            () -> {\n                if (m_isAutonomous) {\n                    // In autonomous, drive forward\n                    return new InstantCommand(() -> m_drivetrain.drive(0.5), m_drivetrain);\n                } else {\n                    // In teleop, shoot\n                    return new InstantCommand(() -> m_shooter.shoot(), m_shooter); \n                }\n            }\n        );\n    }"
+      },{
+        "type": "exercise-box",
+        "title": "Putting it All Together",
+        "subtitle": "Explain the following code to a peer:",
+        "tasks": ["Code Snippet From Team 9128, Itkan Robotics"],
+        "code": "operatorCommand.L2().whileTrue(\n        new RepeatCommand(\n            new DeferredCommand(\n                () -> {\n                    storedState.setOperatorReefAngle(\n                        () -> -operatorCommand.getRightY(),\n                        () -> operatorCommand.getRightX());\n                }, Set.of())\n        )\n    );",
+        "answers": [
+          {"task": "This line of code sets up a command-based trigger so that while the operator holds the L2 button, the robot continuously executes a nested command structure: a RepeatCommand wraps a DeferredCommand, which on each initialization dynamically supplies a new command defined by the lambda. That deferred command calls storedState.setOperatorReefAngle(...), providing two suppliers that read the controller’s right stick Y and X positions at runtime. In effect, this continuously updates the subsystem’s target reef angle using live controller input, handling button-held behavior smoothly.",
+          "code": "operatorCommand.L2().whileTrue(  // While the L2 button is held down...\n    new RepeatCommand(            // ...continuously repeat this command:\n        new DeferredCommand(      // ...deferred until execution, so controller inputs are current\n            () -> {\n                storedState.setOperatorReefAngle(\n                    () -> -operatorCommand.getRightY(),  // supply current right Y\n                    () -> operatorCommand.getRightX()); // supply current right X\n              }, Set.of()   // no subsystem requirements\n        )\n    )\n);"
+          }]
+      },
+      {
+        "type": "text",
         "title": "Choosing the Right Command Type",
-        "content": "The key to effective command-based programming is selecting the appropriate command type for each task. Consider the following guidelines:\n\n<ul>\n<li>Use <strong>InstantCommand</strong> for single, immediate actions without duration (e.g., setting initial states).</li>\n<li>Use <strong>SequentialCommandGroup</strong> for ordered, multi-step processes that must happen one after another.</li>\n<li>Use <strong>ParallelCommandGroup</strong> when you want all commands to run to completion simultaneously.</li>\n<li>Use <strong>ParallelRaceGroup</strong> to run commands concurrently, stopping all when the first one completes.  Good for tasks like \"run until a sensor triggers.\"</li>\n<li>Use <strong>ParallelDeadlineGroup</strong> to run commands concurrently, stopping all when a specific \"deadline\" command completes.  Good for timed operations with other actions happening in the background.</li>\n<li>Use <strong>Functional Commands</strong> for simple, short commands that can be expressed concisely with lambda expressions.</li>\n<li>Use <strong>Proxy Commands</strong> when you need to decide on the fly which command should be running in the current circumstance.</li>\n</ul>"
+        "content": "The key to effective command-based programming is selecting the appropriate command type for each task. Consider the following guidelines:"
+      },
+      {
+        "type": "rules-box",
+        "items": [
+        "Use <strong>InstantCommand</strong> for single, immediate actions without duration (e.g., setting initial states).",
+        "Use <strong>SequentialCommandGroup</strong> for ordered, multi-step processes that must happen one after another.",
+        "Use <strong>ParallelCommandGroup</strong> when you want all commands to run to completion simultaneously.",
+        "Use <strong>ParallelRaceGroup</strong> to run commands concurrently, stopping all when the first one completes.  Good for tasks like \"run until a sensor triggers.\"",
+        "Use <strong>ParallelDeadlineGroup</strong> to run commands concurrently, stopping all when a specific \"deadline\" command completes.  Good for timed operations with other actions happening in the background.",
+        "Use <strong>Functional Commands</strong> for simple, short commands that can be expressed concisely with lambda expressions.",
+        "Use <strong>Proxy Commands</strong> when you need to decide on the fly which command should be running in the current circumstance."
+      ]
       }
     ]
   }

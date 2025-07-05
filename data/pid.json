@@ -1,6 +1,6 @@
 {
     "id": "pid",
-    "title": "PID Control and Motion Magic in FRC",
+    "title": "PID Control and Implementations in FRC",
     "sections": [
       {
         "type": "text",
@@ -18,6 +18,10 @@
       {
         "type": "text",
         "content": "These three terms work together to produce a control output that quickly reaches the setpoint, minimizes overshoot, and eliminates steady-state error."
+      },
+      {
+        "type": "text",
+        "content": "<i>More examples coming soon!</i>"
       }
       ]
       }  
