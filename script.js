@@ -490,18 +490,18 @@ function renderExerciseBox(container, data) {
     const h3 = document.createElement('h3');
     h3.textContent = data.title;
     container.appendChild(h3);
-    
+
     const exerciseBox = document.createElement('div');
     exerciseBox.className = 'exercise-box';
-    
+
     const h4 = document.createElement('h4');
     h4.textContent = data.subtitle;
     exerciseBox.appendChild(h4);
-    
+
     const p = document.createElement('p');
     p.textContent = data.content;
     exerciseBox.appendChild(p);
-    
+
     const ol = document.createElement('ol');
     data.tasks.forEach(task => {
         const li = document.createElement('li');
@@ -509,7 +509,23 @@ function renderExerciseBox(container, data) {
         ol.appendChild(li);
     });
     exerciseBox.appendChild(ol);
-    
+
+    // Add hint box if hint exists
+    if (data.hint) { // Modified this part
+        const hintBox = document.createElement('div');
+        hintBox.className = 'hint-box';
+
+        const hintTitle = document.createElement('h5');
+        hintTitle.textContent = '🔑 Hint';
+        hintBox.appendChild(hintTitle);
+
+        const hintContent = document.createElement('p');
+        hintContent.innerHTML = data.hint;
+        hintBox.appendChild(hintContent);
+
+        exerciseBox.appendChild(hintBox);
+    }
+
     // Add answer button and section if answers exist
     if (data.answers && data.answers.length > 0) {
         const answerButton = document.createElement('button');
@@ -517,42 +533,43 @@ function renderExerciseBox(container, data) {
         answerButton.textContent = '💡 Show Answers';
         answerButton.onclick = () => toggleAnswers(answerButton, answerSection);
         exerciseBox.appendChild(answerButton);
-        
+
         const answerSection = document.createElement('div');
         answerSection.className = 'answer-section hidden';
-        
+
         const answerTitle = document.createElement('h5');
         answerTitle.textContent = '📝 Exercise Answers:';
         answerTitle.className = 'answer-title';
         answerSection.appendChild(answerTitle);
-        
+
         data.answers.forEach((answer, index) => {
             const answerItem = document.createElement('div');
             answerItem.className = 'answer-item';
-            
+
             const taskLabel = document.createElement('h6');
             taskLabel.textContent = `${index + 1}. ${answer.task}`;
             taskLabel.className = 'answer-task-label';
             answerItem.appendChild(taskLabel);
-            
+
             const codeBlock = document.createElement('div');
             codeBlock.className = 'code-block answer-code';
-            
+
             const pre = document.createElement('pre');
             const code = document.createElement('code');
             code.textContent = answer.code;
             pre.appendChild(code);
             codeBlock.appendChild(pre);
-            
+
             answerItem.appendChild(codeBlock);
             answerSection.appendChild(answerItem);
         });
-        
+
         exerciseBox.appendChild(answerSection);
     }
-    
+
     container.appendChild(exerciseBox);
 }
+
 
 // Toggle answers visibility
 function toggleAnswers(button, answerSection) {

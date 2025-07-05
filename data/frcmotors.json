@@ -44,7 +44,36 @@
       {
         "type": "code",
         "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\n\npublic class Robot {\n    private TalonFX m_leftMotor;\n    private TalonFX m_rightMotor;\n\n    public Robot() {\n        // Initialize Talon FX controllers on CAN bus IDs 1 and 2\n        m_leftMotor = new TalonFX(1);\n        m_rightMotor = new TalonFX(2);\n\n        // Configure factory defaults (optional but recommended)\n        m_leftMotor.getConfigurator().apply(new TalonFXConfiguration());\n        m_rightMotor.getConfigurator().apply(new TalonFXConfiguration());\n\n        // Set neutral mode to brake (optional but common for drivetrains)\n        m_leftMotor.setNeutralMode(NeutralModeValue.Brake);\n        m_rightMotor.setNeutralMode(NeutralModeValue.Brake);\n\n        // Invert one side of the drivetrain if necessary\n        m_rightMotor.setInverted(true);\n    }\n\n    /**\n     * Sets the speed of the drivetrain motors.\n     *\n     * @param leftSpeed  Speed for the left motor (-1.0 to 1.0)\n     * @param rightSpeed Speed for the right motor (-1.0 to 1.0)\n     */\n    public void drive(double leftSpeed, double rightSpeed) {\n        m_leftMotor.set(leftSpeed);\n        m_rightMotor.set(rightSpeed);\n    }\n\n    /**\n     * Stops both drivetrain motors.\n     */\n    public void stop() {\n        m_leftMotor.set(0);\n        m_rightMotor.set(0);\n    }\n}\n"
-      }
-      
-    ]
+      },
+      {
+        "type": "exercise-box",
+        "title": "Exercise: Talon FX Motor Control",
+        "subtitle": "Create a simple control system for two Talon FX motors",
+        "content": "Design a Java class to control two Talon FX motors (simulating an intake/shooting mechanism) with the following specifications:",
+        "hint": "Remember that positive power rotates a motor clockwise. Use appropriate power levels (between -1.0 and 1.0) to achieve the desired actions. In this scenario, assume that intaking requires the left motor to spin counterclockwise.",
+        "tasks": [
+          "intake(): Sets both motors to rotate in opposite directions to simulate intaking an object. Assume positive power rotates a motor clockwise, and negative power counterclockwise.",
+          "shoot(): Sets both motors to rotate in the oppposite directions to simulate shooting an object.",
+          "stop(): Stops both motors.",
+          "Each method should print a message to the console indicating the action taken and the power levels sent to the motors (e.g., \"Intaking: Left motor -0.5, Right motor 0.5\")."
+        ],
+        "answers": [
+          {
+            "task": "intake(): Sets both motors to rotate in opposite directions to simulate intaking an object. Assume positive power rotates a motor clockwise, and negative power counterclockwise.",
+            "code": "public void intake() {\n    double intakePower = 0.5; // Adjust as needed (0.0 to 1.0)\n    System.out.println(\"Intaking: \" + leftMotorName + \" \" + -intakePower + \", \" + rightMotorName + \" \" + intakePower);\n    // In a real implementation, you would set motor powers here:\n    // m_leftMotor.set(-intakePower);\n    // m_rightMotor.set(intakePower);\n}"
+          },
+          {
+            "task": "shoot(): Sets both motors to rotate in the same direction to simulate shooting an object.",
+            "code": "public void shoot() {\n    double shootPower = 0.8; // Adjust as needed (0.0 to 1.0)\n    System.out.println(\"Shooting: \" + leftMotorName + \" \" + shootPower + \", \" + rightMotorName + \" \" + shootPower);\n    // In a real implementation, you would set motor powers here:\n    // m_leftMotor.set(shootPower);\n    // m_rightMotor.set(shootPower);\n}"
+          },
+          {
+            "task": "stop(): Sets both motors to stop.",
+            "code": "public void stop() {\n    System.out.println(\"Stopping motors: \" + leftMotorName + \" 0.0, \" + rightMotorName + \" 0.0\");\n    // In a real implementation, you would stop the motors here:\n    // m_leftMotor.set(0.0);\n    // m_rightMotor.set(0.0);\n}"
+          },
+          { "task": "Final Code",
+            "code": "// TalonFXMotorControl.java\npublic class TalonFXMotorControl {\n    private final String leftMotorName = \"Left Motor\";\n    private final String rightMotorName = \"Right Motor\";\n\n    public void intake() {\n        double intakePower = 0.5; // Adjust as needed (0.0 to 1.0)\n        System.out.println(\"Intaking: \" + leftMotorName + \" \" + -intakePower + \", \" + rightMotorName + \" \" + intakePower);\n        // In a real implementation, you would set motor powers here:\n        // m_leftMotor.set(-intakePower);\n        // m_rightMotor.set(intakePower);\n    }\n\n    public void shoot() {\n        double shootPower = 0.8; // Adjust as needed (0.0 to 1.0)\n        System.out.println(\"Shooting: \" + leftMotorName + \" \" + shootPower + \", \" + rightMotorName + \" \" + shootPower);\n        // In a real implementation, you would set motor powers here:\n        // m_leftMotor.set(shootPower);\n        // m_rightMotor.set(shootPower);\n    }\n\n    public void stop() {\n        System.out.println(\"Stopping motors: \" + leftMotorName + \" 0.0, \" + rightMotorName + \" 0.0\");\n        // In a real implementation, you would stop the motors here:\n        // m_leftMotor.set(0.0);\n        // m_rightMotor.set(0.0);\n    }\n}\n\n// Example Usage:\n// public class Main {\n//     public static void main(String[] args) {\n//         TalonFXMotorControl mechanism = new TalonFXMotorControl();\n//         mechanism.intake();\n//         mechanism.shoot();\n//         mechanism.stop();\n//     }\n// }"
+          }  
+        ]
+    }
+  ]
 }      
