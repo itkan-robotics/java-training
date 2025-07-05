@@ -24,6 +24,15 @@
       },
       {
         "type": "text",
+        "content": "Instant commands are also useful for creating commands on-the-fly in your button bindings when the commmand is very simple. For instance, rather than creating an entirely new command file for setting the intake to full speed, you can instead do the following:"
+
+      },
+      {
+        "type": "code",
+        "content": "package edu.wpi.first.wpilibj.templates.commandbased;\nimport edu.wpi.first.wpilibj2.command.Command;...\n\npublic class RobotContainer {\n  //Initialize subsystem(s)...\n\n  /**\n   * Use this method to define your trigger->command mappings.\n   */\n  private void configureBindings() {\n    // Use an InstantCommand to set the intake speed to 1 when right bumper (R1) held\n\n    m_driverController.R1().whileTrue(new InstantCommand(() -> m_intakeSubsystem.setIntakeSpeed(1.0)));\n\n    //Other button bindings...\n  }\n\n  //Rest of RobotContainer...\n}"
+      },
+      {
+        "type": "text",
         "title": "2. Sequential Commands",
         "content": "Sequential commands allow you to chain together multiple commands, ensuring they execute one after another in a specific order. This is useful for automating multi-step processes, like an entire shooting sequence or a complex autonomous routine."
       },
