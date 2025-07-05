@@ -608,13 +608,16 @@ ul li > p:last-child {
 .hint-box {
   background-color: #faf2e6;
   border: 2px solid #ff9c08;
+  color: #333333;
   padding: 1em;
   margin-top: 1em;
   border-radius: 4px;
 }
 
-.hint-box h5 {
+.hint-box h5,
+.hint-box p {
   margin-top: 0;
+  color: #333333;
 }
 
 .emphasis-box {
