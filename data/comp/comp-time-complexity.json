@@ -1,0 +1,31 @@
+{
+  "id": "comp-time-complexity",
+  "title": "Time & Space Complexity",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Complexity Analysis?",
+      "content": "Complexity analysis helps us understand how our algorithms perform as input size grows. It's crucial for choosing the right algorithm and optimizing solutions."
+    },
+    {
+      "type": "text",
+      "title": "Time Complexity",
+      "content": "Time complexity measures how the runtime of an algorithm grows with input size. Common complexities from best to worst:<br><br><strong>O(1)</strong> - Constant time<br><strong>O(log n)</strong> - Logarithmic time<br><strong>O(n)</strong> - Linear time<br><strong>O(n log n)</strong> - Linearithmic time<br><strong>O(n²)</strong> - Quadratic time<br><strong>O(2ⁿ)</strong> - Exponential time"
+    },
+    {
+      "type": "text",
+      "title": "Space Complexity",
+      "content": "Space complexity measures how much extra memory an algorithm uses beyond the input. It's especially important for memory-constrained environments."
+    },
+    {
+      "type": "code",
+      "title": "Complexity Examples",
+      "content": "// O(1) - Constant time\nint getFirst(int[] arr) {\n    return arr[0];\n}\n\n// O(n) - Linear time\nint sum(int[] arr) {\n    int total = 0;\n    for (int num : arr) {\n        total += num;\n    }\n    return total;\n}\n\n// O(n²) - Quadratic time\nvoid bubbleSort(int[] arr) {\n    for (int i = 0; i < arr.length; i++) {\n        for (int j = 0; j < arr.length - 1; j++) {\n            if (arr[j] > arr[j + 1]) {\n                // swap\n            }\n        }\n    }\n}\n\n// O(log n) - Logarithmic time\nint binarySearch(int[] arr, int target) {\n    int left = 0, right = arr.length - 1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (arr[mid] == target) return mid;\n        if (arr[mid] < target) left = mid + 1;\n        else right = mid - 1;\n    }\n    return -1;\n}"
+    },
+    {
+      "type": "text",
+      "title": "Practical Guidelines",
+      "content": "<ul><li><strong>n ≤ 10⁶:</strong> O(n) or O(n log n) algorithms are usually acceptable</li><li><strong>n ≤ 10⁴:</strong> O(n²) might be acceptable</li><li><strong>n ≤ 10²:</strong> O(n³) or even exponential might work</li><li><strong>Memory:</strong> Usually 256MB-512MB available for most problems</li></ul>"
+    }
+  ]
+} 

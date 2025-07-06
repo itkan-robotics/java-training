@@ -29,9 +29,18 @@
                 </label>
             </div>
             <div class="header-center">
-                <div class="brand">FRCCodeLab</div>
+                <nav class="header-navigation">
+                    <a href="#homepage" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
+                    <a href="#java-training" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
+                    <a href="#ftc-specific" class="header-nav-link" onclick="openTab(event, 'ftc-specific')">FTC Training</a>
+                    <a href="#frc-specific" class="header-nav-link" onclick="openTab(event, 'frc-specific')">FRC Training</a>
+                    <a href="#competitive-training" class="header-nav-link" onclick="openTab(event, 'competitive-training')">Competitive</a>
+                </nav>
             </div>
             <div class="header-right">
+                <div class="search-container-header">
+                    <input type="text" class="search-input-header" placeholder="Search (Ctrl+K)..." id="header-search">
+                </div>
                 <div class="theme-toggle-container theme-toggle-header">
                     <button class="theme-toggle" onclick="toggleTheme()">
                         <div class="visually-hidden">Toggle Light / Dark theme</div>
@@ -45,7 +54,7 @@
             <div class="sidebar-container">
                 <div class="sidebar-sticky">
                     <a class="sidebar-brand" href="https://github.com/itkan-robotics/java-training" target="_blank">
-                        <img width="24px" height="24px" id="git-logo" src="/media/Git-Icon-White.svg">
+                        <!-- <img width="24px" height="24px" id="git-logo" src="/media/Git-Icon-White.svg"> -->
                         <span class="sidebar-brand-text">FRCCodeLab</span>
                     </a>
                     

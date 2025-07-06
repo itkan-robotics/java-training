@@ -1,0 +1,48 @@
+{
+  "id": "java-training",
+  "label": "Java Training",
+  "intro": { "id": "java-intro", "label": "Introduction to Java", "file": "data/java/java-intro.json" },
+  "groups": [
+    {
+      "id": "java-basics",
+      "label": "Java Basics",
+      "items": [
+        { "id": "printing", "label": "Printing", "file": "data/java/java-printing.json" },
+        { "id": "variables", "label": "Variables", "file": "data/java/java-variables.json" },
+        { "id": "datatypes", "label": "Data Types", "file": "data/java/java-datatypes.json" },
+        { "id": "calculations", "label": "Calculations", "file": "data/java/java-calculations.json" },
+        { "id": "arrays", "label": "Arrays", "file": "data/java/java-arrays.json" }
+      ]
+    },
+    {
+      "id": "programming-logic",
+      "label": "Programming Logic",
+      "items": [
+        { "id": "conditionals", "label": "Conditional Statements", "file": "data/java/java-conditionals.json" },
+        { "id": "methods", "label": "Methods", "file": "data/java/java-methods.json" },
+        { "id": "control", "label": "Control Structures", "file": "data/java/java-control.json" },
+        { "id": "try-catch", "label": "Try-Catch", "file": "data/java/java-try-catch.json" }
+      ]
+    },
+    {
+      "id": "loops",
+      "label": "Loops",
+      "items": [
+        { "id": "while-loops", "label": "While Loops", "file": "data/java/java-while-loops.json" },
+        { "id": "for-loops", "label": "For Loops", "file": "data/java/java-for-loops.json" },
+        { "id": "loop-control", "label": "Loop Control", "file": "data/java/java-loop-control.json" },
+        { "id": "loop-best-practices", "label": "Best Practices", "file": "data/java/java-loop-best-practices.json" }
+      ]
+    },
+    {
+      "id": "object-oriented",
+      "label": "Object-Oriented Programming",
+      "items": [
+        { "id": "classes", "label": "Classes", "file": "data/java/java-classes.json" },
+        { "id": "objects", "label": "Objects", "file": "data/java/java-objects.json" },
+        { "id": "objects-references", "label": "Objects & References", "file": "data/java/java-objects-references.json" },
+        { "id": "overloading", "label": "Overloading", "file": "data/java/java-overloading.json" }
+      ]
+    }
+  ]
+} 

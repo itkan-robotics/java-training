@@ -1,0 +1,21 @@
+{
+  "id": "ftc-intro",
+  "title": "FTC Introduction",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Welcome to FTC Programming",
+      "content": "FIRST Tech Challenge (FTC) is a robotics competition for students in grades 7-12. This section will introduce you to the programming concepts and tools specific to FTC robotics."
+    },
+    {
+      "type": "text",
+      "title": "What is FTC?",
+      "content": "FTC combines the excitement of sport with the rigors of science and technology. Teams design, build, and program robots to compete in an alliance format against other teams. The programming aspect focuses on Android-based development using Java."
+    },
+    {
+      "type": "text",
+      "title": "Coming Soon",
+      "content": "This section is under development. More content will be added soon covering FTC-specific programming concepts, hardware integration, and competition strategies."
+    }
+  ]
+} 

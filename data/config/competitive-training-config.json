@@ -1,0 +1,65 @@
+{
+  "id": "competitive-training",
+  "label": "Competitive Coding Training",
+  "intro": { "id": "comp-intro", "label": "Introduction to Competitive Coding", "file": "data/comp/comp-intro.json" },
+  "groups": [
+    {
+      "id": "competitive-foundation",
+      "label": "Phase 1: Foundation & Problem-Solving Basics",
+      "items": [
+        { "id": "comp-problem-solving", "label": "Problem-Solving Framework", "file": "data/comp/comp-problem-solving.json" },
+        { "id": "comp-time-complexity", "label": "Time & Space Complexity", "file": "data/comp/comp-time-complexity.json" },
+        { "id": "comp-big-o", "label": "Big O Notation Mastery", "file": "data/comp/comp-big-o.json" }
+      ]
+    },
+    {
+      "id": "competitive-data-structures",
+      "label": "Phase 2: Essential Data Structures",
+      "items": [
+        { "id": "comp-arrays-strings", "label": "Arrays & Strings", "file": "data/comp/comp-arrays-strings.json" },
+        { "id": "comp-linked-lists", "label": "Linked Lists", "file": "data/comp/comp-linked-lists.json" },
+        { "id": "comp-stacks-queues", "label": "Stacks & Queues", "file": "data/comp/comp-stacks-queues.json" },
+        { "id": "comp-trees", "label": "Trees & Binary Trees", "file": "data/comp/comp-trees.json" },
+        { "id": "comp-heaps", "label": "Heaps & Priority Queues", "file": "data/comp/comp-heaps.json" },
+        { "id": "comp-hash-tables", "label": "Hash Tables & Sets", "file": "data/comp/comp-hash-tables.json" },
+        { "id": "comp-graphs", "label": "Graphs & Graph Algorithms", "file": "data/comp/comp-graphs.json" }
+      ]
+    },
+    {
+      "id": "competitive-algorithms",
+      "label": "Phase 3: Core Algorithms",
+      "items": [
+        { "id": "comp-sorting", "label": "Sorting Algorithms", "file": "data/comp/comp-sorting.json" },
+        { "id": "comp-searching", "label": "Searching Algorithms", "file": "data/comp/comp-searching.json" },
+        { "id": "comp-two-pointers", "label": "Two Pointers Technique", "file": "data/comp/comp-two-pointers.json" },
+        { "id": "comp-sliding-window", "label": "Sliding Window", "file": "data/comp/comp-sliding-window.json" },
+        { "id": "comp-binary-search", "label": "Binary Search", "file": "data/comp/comp-binary-search.json" },
+        { "id": "comp-dynamic-programming", "label": "Dynamic Programming Basics", "file": "data/comp/comp-dynamic-programming.json" },
+        { "id": "comp-greedy", "label": "Greedy Algorithms", "file": "data/comp/comp-greedy.json" }
+      ]
+    },
+    {
+      "id": "competitive-advanced",
+      "label": "Phase 4: Advanced Techniques",
+      "items": [
+        { "id": "comp-advanced-dp", "label": "Advanced Dynamic Programming", "file": "data/comp/comp-advanced-dp.json" },
+        { "id": "comp-backtracking", "label": "Backtracking", "file": "data/comp/comp-backtracking.json" },
+        { "id": "comp-union-find", "label": "Union Find (Disjoint Sets)", "file": "data/comp/comp-union-find.json" },
+        { "id": "comp-trie", "label": "Trie Data Structure", "file": "data/comp/comp-trie.json" },
+        { "id": "comp-segment-trees", "label": "Segment Trees", "file": "data/comp/comp-segment-trees.json" },
+        { "id": "comp-bit-manipulation", "label": "Bit Manipulation", "file": "data/comp/comp-bit-manipulation.json" }
+      ]
+    },
+    {
+      "id": "competitive-mastery",
+      "label": "Phase 5: LeetCode Mastery",
+      "items": [
+        { "id": "comp-patterns", "label": "Common Problem Patterns", "file": "data/comp/comp-patterns.json" },
+        { "id": "comp-optimization", "label": "Code Optimization Techniques", "file": "data/comp/comp-optimization.json" },
+        { "id": "comp-interview-prep", "label": "Interview Preparation", "file": "data/comp/comp-interview-prep.json" },
+        { "id": "comp-contest-strategies", "label": "Contest Strategies", "file": "data/comp/comp-contest-strategies.json" },
+        { "id": "comp-advanced-problems", "label": "Advanced Problem Solving", "file": "data/comp/comp-advanced-problems.json" }
+      ]
+    }
+  ]
+} 

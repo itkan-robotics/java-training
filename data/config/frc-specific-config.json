@@ -1,0 +1,18 @@
+{
+  "id": "frc-specific",
+  "label": "FRC-Specific Training",
+  "intro": { "id": "frc-intro", "label": "Introduction to FRC", "file": "data/frc/frc-intro.json" },
+  "groups": [
+    {
+      "id": "frc-basics",
+      "label": "FRC Basics",
+      "items": [
+        { "id": "frc-wpilib", "label": "WPILib Introduction", "file": "data/frc/frc-wpilib.json" },
+        { "id": "frc-motors", "label": "Motor Control", "file": "data/frc/frc-motors.json" },
+        { "id": "frc-commands", "label": "Commands & Subsystems", "file": "data/frc/frc-commands.json" },
+        { "id": "frc-command-based", "label": "Command-Based Programming", "file": "data/frc/frc-command-based.json" },
+        { "id": "frc-pid", "label": "PID Control", "file": "data/frc/frc-pid.json" }
+      ]
+    }
+  ]
+} 

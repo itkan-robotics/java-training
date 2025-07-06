@@ -1,0 +1,47 @@
+{
+  "id": "ftc-specific",
+  "label": "FTC-Specific Training",
+  "intro": { "id": "ftc-intro", "label": "Introduction to FTC", "file": "data/ftc/ftc-intro.json" },
+  "groups": [
+    {
+      "id": "ftc-basics",
+      "label": "FTC Basics",
+      "items": [
+        { "id": "ftc-intro", "label": "Introduction to FTC", "file": "data/ftc/ftc-intro.json" },
+        { "id": "ftc-basic-control", "label": "Basic Robot Control", "file": "data/ftc/ftc-basic-control.json" },
+        { "id": "ftc-advanced-motors", "label": "Advanced Motor Control", "file": "data/ftc/ftc-advanced-motors.json" },
+        { "id": "ftc-sensors", "label": "Sensors & Feedback", "file": "data/ftc/ftc-sensors.json" },
+        { "id": "ftc-game-controllers", "label": "Game Controllers", "file": "data/ftc/ftc-game-controllers.json" }
+      ]
+    },
+    {
+      "id": "ftc-autonomous",
+      "label": "Autonomous Programming",
+      "items": [
+        { "id": "ftc-autonomous-basics", "label": "Autonomous Basics", "file": "data/ftc/ftc-autonomous-basics.json" },
+        { "id": "ftc-advanced-autonomous", "label": "Advanced Autonomous", "file": "data/ftc/ftc-advanced-autonomous.json" },
+        { "id": "ftc-advanced-sensors", "label": "Advanced Sensors", "file": "data/ftc/ftc-advanced-sensors.json" },
+        { "id": "ftc-computer-vision", "label": "Computer Vision", "file": "data/ftc/ftc-computer-vision.json" },
+        { "id": "ftc-vision-autonomous", "label": "Vision-Based Autonomous", "file": "data/ftc/ftc-vision-autonomous.json" }
+      ]
+    },
+    {
+      "id": "ftc-advanced",
+      "label": "Advanced FTC",
+      "items": [
+        { "id": "ftc-advanced-teleop", "label": "Advanced Teleop", "file": "data/ftc/ftc-advanced-teleop.json" },
+        { "id": "ftc-mechanisms", "label": "Mechanism Programming", "file": "data/ftc/ftc-mechanisms.json" },
+        { "id": "ftc-optimization", "label": "Code Optimization", "file": "data/ftc/ftc-optimization.json" },
+        { "id": "ftc-advanced-control", "label": "Advanced Control Systems", "file": "data/ftc/ftc-advanced-control.json" }
+      ]
+    },
+    {
+      "id": "ftc-development",
+      "label": "Development Environment",
+      "items": [
+        { "id": "ftc-android-setup", "label": "Android Studio Setup", "file": "data/ftc/ftc-android-setup.json" },
+        { "id": "ftc-sdk-deep-dive", "label": "FTC SDK Deep Dive", "file": "data/ftc/ftc-sdk-deep-dive.json" }
+      ]
+    }
+  ]
+} 

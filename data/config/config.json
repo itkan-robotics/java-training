@@ -1,0 +1,31 @@
+{
+  "title": "FRCCodeLab - Programming Fundamentals",
+  "sections": {
+    "homepage": {
+      "id": "homepage",
+      "label": "Home",
+      "file": "data/config/homepage.json",
+      "default": true
+    },
+    "java-training": {
+      "id": "java-training",
+      "label": "Java Training",
+      "file": "data/config/java-training-config.json"
+    },
+    "ftc-specific": {
+      "id": "ftc-specific",
+      "label": "FTC-Specific Training",
+      "file": "data/config/ftc-specific-config.json"
+    },
+    "frc-specific": {
+      "id": "frc-specific",
+      "label": "FRC-Specific Training",
+      "file": "data/config/frc-specific-config.json"
+    },
+    "competitive-training": {
+      "id": "competitive-training",
+      "label": "Competitive Training",
+      "file": "data/config/competitive-training-config.json"
+    }
+  }
+} 

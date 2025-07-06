@@ -1,0 +1,31 @@
+{
+  "id": "frc-intro",
+  "title": "Introduction to FRC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Welcome to FRC Programming",
+      "content": "FIRST Robotics Competition (FRC) is the highest level of FIRST robotics, featuring large robots that compete in complex game scenarios. This course will teach you how to program these robots using Java and the WPILib framework."
+    },
+    {
+      "type": "text",
+      "title": "What is FRC?",
+      "content": "<ul><li><strong>Large Scale:</strong> Robots are 120+ pounds and compete on a 27' x 54' field</li><li><strong>Complex Gameplay:</strong> Each season features a new game with multiple objectives</li><li><strong>Professional Tools:</strong> Uses industrial-grade components and software</li><li><strong>Team Competition:</strong> 3v3 alliance format with strategic gameplay</li><li><strong>Career Preparation:</strong> Skills directly transfer to engineering careers</li></ul>"
+    },
+    {
+      "type": "text",
+      "title": "Programming in FRC",
+      "content": "FRC robots are programmed using:<br><br><strong>Java:</strong> Primary programming language<br><strong>WPILib:</strong> FIRST's robotics library for Java<br><strong>Command-Based Programming:</strong> Advanced software architecture<br><strong>PID Control:</strong> Precise motion and positioning<br><strong>Vision Processing:</strong> Camera-based autonomous navigation"
+    },
+    {
+      "type": "text",
+      "title": "Course Structure",
+      "content": "This course covers:<br><br><strong>WPILib Introduction:</strong> Understanding the framework<br><strong>Motor Control:</strong> Driving and mechanism control<br><strong>Commands & Subsystems:</strong> Command-based architecture<br><strong>PID Control:</strong> Precise positioning and motion<br><strong>Advanced Features:</strong> Vision, autonomous, and optimization"
+    },
+    {
+      "type": "code",
+      "title": "Basic FRC Robot Program",
+      "content": "public class Robot extends TimedRobot {\n    private Drivetrain drivetrain;\n    private XboxController controller;\n    \n    @Override\n    public void robotInit() {\n        drivetrain = new Drivetrain();\n        controller = new XboxController(0);\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        double leftSpeed = controller.getLeftY();\n        double rightSpeed = controller.getRightY();\n        drivetrain.tankDrive(leftSpeed, rightSpeed);\n    }\n}"
+    }
+  ]
+} 
