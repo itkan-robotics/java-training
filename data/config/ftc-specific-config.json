@@ -1,295 +1,328 @@
 {
-  "title": "FTC Curriculum",
+  "title": "FTC Training Curriculum",
+  "description": "Comprehensive FIRST Tech Challenge programming training for robotics teams",
   "intro": {
     "id": "ftc-curriculum-intro",
     "label": "FTC Curriculum Overview",
-    "file": "data/ftc/ftc-curriculum-intro.json"
+    "file": "data/ftc/ftc-curriculum-intro.json",
+    "type": "overview"
   },
   "groups": [
     {
-      "id": "onbot-java-environment-setup",
-      "label": "OnBot Java - Environment Setup",
-      "items": [
-        { "id": "ftc-sdk-basics", "label": "FTC SDK Basics", "file": "data/ftc/onbot-java/environment-setup/ftc-sdk-basics.json" },
-        { "id": "sdk-installation", "label": "SDK Installation", "file": "data/ftc/onbot-java/environment-setup/sdk-installation.json" },
-        { "id": "opmode-structure", "label": "OpMode Structure", "file": "data/ftc/onbot-java/environment-setup/opmode-structure.json" },
-        { "id": "linear-vs-iterative-opmodes", "label": "Linear vs Iterative OpModes", "file": "data/ftc/onbot-java/environment-setup/linear-vs-iterative-opmodes.json" },
-        { "id": "telemetry-logging", "label": "Telemetry Logging", "file": "data/ftc/onbot-java/environment-setup/telemetry-logging.json" },
-        { "id": "control-hub-expansion-hub", "label": "Control Hub & Expansion Hub", "file": "data/ftc/onbot-java/environment-setup/control-hub-expansion-hub.json" }
-      ]
-    },
-    {
-      "id": "onbot-java-motors",
-      "label": "OnBot Java - Motors",
-      "items": [
-        { "id": "robot-hardware-overview", "label": "Robot Hardware Overview", "file": "data/ftc/onbot-java/motors/robot-hardware-overview.json" },
-        { "id": "dc-motors", "label": "DC Motors", "file": "data/ftc/onbot-java/motors/dc-motors.json" },
-        { "id": "basic-motor-control", "label": "Basic Motor Control", "file": "data/ftc/onbot-java/motors/basic-motor-control.json" },
-        { "id": "motor-encoders", "label": "Motor Encoders", "file": "data/ftc/onbot-java/motors/motor-encoders.json" },
-        { "id": "motor-types", "label": "Motor Types", "file": "data/ftc/onbot-java/motors/motor-types.json" }
-      ]
-    },
-    {
-      "id": "onbot-java-servos",
-      "label": "OnBot Java - Servos",
-      "items": [
-        { "id": "intro-to-servos", "label": "Introduction to Servos", "file": "data/ftc/onbot-java/servos/intro-to-servos.json" },
-        { "id": "continuous-vs-noncontinuous", "label": "Continuous vs Non-Continuous Servos", "file": "data/ftc/onbot-java/servos/continuous-vs-noncontinuous.json" },
-        { "id": "servo-positions", "label": "Servo Positions", "file": "data/ftc/onbot-java/servos/servo-positions.json" }
-      ]
-    },
-    {
-      "id": "onbot-java-sensors",
-      "label": "OnBot Java - Sensors",
-      "items": [
-        { "id": "sensors-overview", "label": "Sensors Overview", "file": "data/ftc/onbot-java/sensors/sensors.json" },
-        { "id": "touch-sensors", "label": "Touch Sensors", "file": "data/ftc/onbot-java/sensors/touch-sensors.json" },
-        { "id": "distance-sensors", "label": "Distance Sensors", "file": "data/ftc/onbot-java/sensors/distance-sensors.json" },
-        { "id": "color-sensors", "label": "Color Sensors", "file": "data/ftc/onbot-java/sensors/color-sensors.json" },
-        { "id": "imu", "label": "IMU (Inertial Measurement Unit)", "file": "data/ftc/onbot-java/sensors/imu.json" }
-      ]
-    },
-    {
-      "id": "onbot-java-teleop-programming",
-      "label": "OnBot Java - TeleOp Programming",
-      "items": [
-        { "id": "basic-robot-control", "label": "Basic Robot Control", "file": "data/ftc/onbot-java/teleop-programming/basic-robot-control.json" },
-        { "id": "teleop-programming", "label": "TeleOp Programming", "file": "data/ftc/onbot-java/teleop-programming/teleop-programming.json" },
-        { "id": "gamepad-controls", "label": "Gamepad Controls", "file": "data/ftc/onbot-java/teleop-programming/gamepad-controls.json" }
-      ]
-    },
-    {
-      "id": "onbot-java-autonomous-programming",
-      "label": "OnBot Java - Autonomous Programming",
-      "items": [
-        { "id": "basic-autonomous-programming", "label": "Basic Autonomous Programming", "file": "data/ftc/onbot-java/autonomous-programming/basic-autonomous-programming.json" },
-        { "id": "time-based-movement", "label": "Time-Based Movement", "file": "data/ftc/onbot-java/autonomous-programming/time-based-movement.json" },
-        { "id": "encoder-based-movement", "label": "Encoder-Based Movement", "file": "data/ftc/onbot-java/autonomous-programming/encoder-based-movement.json" }
-      ]
-    },
-    {
-      "id": "onbot-java-debugging-best-practices",
-      "label": "OnBot Java - Debugging & Best Practices",
-      "items": [
-        { "id": "basic-debugging-techniques", "label": "Basic Debugging Techniques", "file": "data/ftc/onbot-java/debugging-best-practices/basic-debugging-techniques.json" },
-        { "id": "state-machines", "label": "State Machines", "file": "data/ftc/onbot-java/debugging-best-practices/state-machines.json" },
-        { "id": "code-organization", "label": "Code Organization", "file": "data/ftc/onbot-java/debugging-best-practices/code-organization.json" }
-      ]
-    },
-    {
-      "id": "android-studio-environment-setup",
-      "label": "Android Studio - Environment Setup",
-      "items": [
+      "id": "onbot-java-parent",
+      "label": "OnBot Java Development",
+      "description": "Learn FTC programming using OnBot Java development environment",
+      "icon": "💻",
+      "children": [
         {
-          "id": "android-studio-environment",
-          "label": "Android Studio Environment",
-          "file": "data/ftc/android-studio/environment-setup/android-studio-environment.json"
+          "id": "onbot-java-environment-setup",
+          "label": "Environment Setup",
+          "description": "Setting up your FTC development environment",
+          "items": [
+            { 
+              "id": "ftc-sdk-basics", 
+              "label": "FTC SDK Basics", 
+              "file": "data/ftc/onbot-java/environment-setup/ftc-sdk-basics.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "opmode-structure", 
+              "label": "OpMode Structure", 
+              "file": "data/ftc/onbot-java/environment-setup/opmode-structure.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "linear-vs-iterative-opmodes", 
+              "label": "Linear vs Iterative OpModes", 
+              "file": "data/ftc/onbot-java/environment-setup/linear-vs-iterative-opmodes.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "telemetry-logging", 
+              "label": "Telemetry Logging", 
+              "file": "data/ftc/onbot-java/environment-setup/telemetry-logging.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "control-hub-expansion-hub", 
+              "label": "Control Hub & Expansion Hub", 
+              "file": "data/ftc/onbot-java/environment-setup/control-hub-expansion-hub.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            }
+          ]
         },
         {
-          "id": "sdk-installation",
-          "label": "SDK Installation",
-          "file": "data/ftc/android-studio/environment-setup/sdk-installation.json"
+          "id": "onbot-java-motors",
+          "label": "Motor Control",
+          "description": "Understanding and controlling DC motors",
+          "items": [
+            { 
+              "id": "robot-hardware-overview", 
+              "label": "Robot Hardware Overview", 
+              "file": "data/ftc/onbot-java/motors/robot-hardware-overview.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "dc-motors", 
+              "label": "DC Motors", 
+              "file": "data/ftc/onbot-java/motors/dc-motors.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "basic-motor-control", 
+              "label": "Basic Motor Control", 
+              "file": "data/ftc/onbot-java/motors/basic-motor-control.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "motor-encoders", 
+              "label": "Motor Encoders", 
+              "file": "data/ftc/onbot-java/motors/motor-encoders.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "motor-types", 
+              "label": "Motor Types", 
+              "file": "data/ftc/onbot-java/motors/motor-types.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            }
+          ]
         },
         {
-          "id": "project-structure",
-          "label": "Project Structure",
-          "file": "data/ftc/android-studio/environment-setup/project-structure.json"
+          "id": "onbot-java-servos",
+          "label": "Servo Control",
+          "description": "Working with servo motors for precise positioning",
+          "items": [
+            { 
+              "id": "intro-to-servos", 
+              "label": "Introduction to Servos", 
+              "file": "data/ftc/onbot-java/servos/intro-to-servos.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "continuous-vs-noncontinuous", 
+              "label": "Continuous vs Non-Continuous Servos", 
+              "file": "data/ftc/onbot-java/servos/continuous-vs-noncontinuous.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "servo-positions", 
+              "label": "Servo Positions", 
+              "file": "data/ftc/onbot-java/servos/servo-positions.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            }
+          ]
         },
         {
-          "id": "code-version-control",
-          "label": "Code Version Control",
-          "file": "data/ftc/android-studio/environment-setup/code-version-control.json"
+          "id": "onbot-java-sensors",
+          "label": "Sensors",
+          "description": "Using various sensors for robot feedback",
+          "items": [
+            { 
+              "id": "sensors-overview", 
+              "label": "Sensors Overview", 
+              "file": "data/ftc/onbot-java/sensors/sensors.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "touch-sensors", 
+              "label": "Touch Sensors", 
+              "file": "data/ftc/onbot-java/sensors/touch-sensors.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "distance-sensors", 
+              "label": "Distance Sensors", 
+              "file": "data/ftc/onbot-java/sensors/distance-sensors.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "color-sensors", 
+              "label": "Color Sensors", 
+              "file": "data/ftc/onbot-java/sensors/color-sensors.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "imu", 
+              "label": "IMU (Inertial Measurement Unit)", 
+              "file": "data/ftc/onbot-java/sensors/imu.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            }
+          ]
+        },
+        {
+          "id": "onbot-java-teleop-programming",
+          "label": "TeleOp Programming",
+          "description": "Creating driver-controlled robot programs",
+          "items": [
+            { 
+              "id": "basic-robot-control", 
+              "label": "Basic Robot Control", 
+              "file": "data/ftc/onbot-java/teleop-programming/basic-robot-control.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "teleop-programming", 
+              "label": "TeleOp Programming", 
+              "file": "data/ftc/onbot-java/teleop-programming/teleop-programming.json",
+              "difficulty": "beginner",
+              "duration": "30 min"
+            },
+            { 
+              "id": "gamepad-controls", 
+              "label": "Gamepad Controls", 
+              "file": "data/ftc/onbot-java/teleop-programming/gamepad-controls.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            }
+          ]
+        },
+        {
+          "id": "onbot-java-autonomous-programming",
+          "label": "Autonomous Programming",
+          "description": "Creating autonomous robot programs",
+          "items": [
+            { 
+              "id": "basic-autonomous-programming", 
+              "label": "Basic Autonomous Programming", 
+              "file": "data/ftc/onbot-java/autonomous-programming/basic-autonomous-programming.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            { 
+              "id": "time-based-movement", 
+              "label": "Time-Based Movement", 
+              "file": "data/ftc/onbot-java/autonomous-programming/time-based-movement.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "encoder-based-movement", 
+              "label": "Encoder-Based Movement", 
+              "file": "data/ftc/onbot-java/autonomous-programming/encoder-based-movement.json",
+              "difficulty": "intermediate",
+              "duration": "40 min"
+            }
+          ]
+        },
+        {
+          "id": "onbot-java-debugging-best-practices",
+          "label": "Debugging & Best Practices",
+          "description": "Debugging techniques and programming best practices",
+          "items": [
+            { 
+              "id": "basic-debugging-techniques", 
+              "label": "Basic Debugging Techniques", 
+              "file": "data/ftc/onbot-java/debugging-best-practices/basic-debugging-techniques.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "state-machines", 
+              "label": "State Machines", 
+              "file": "data/ftc/onbot-java/debugging-best-practices/state-machines.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            { 
+              "id": "code-organization", 
+              "label": "Code Organization", 
+              "file": "data/ftc/onbot-java/debugging-best-practices/code-organization.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "android-studio-advanced-movement-control",
-      "label": "Android Studio - Advanced Movement Control",
-      "items": [
+      "id": "android-studio-parent",
+      "label": "Android Studio Development",
+      "description": "Advanced FTC programming using Android Studio IDE",
+      "icon": "📱",
+      "children": [
         {
-          "id": "advanced-movement-control",
-          "label": "Advanced Movement Control",
-          "file": "data/ftc/android-studio/advanced-movement-control/advanced-movement-control.json"
+          "id": "android-studio-environment-setup",
+          "label": "Environment Setup",
+          "description": "Setting up Android Studio for FTC development",
+          "items": [
+            { 
+              "id": "android-studio-environment", 
+              "label": "Android Studio Environment", 
+              "file": "data/ftc/android-studio/environment-setup/android-studio-environment.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "sdk-installation", 
+              "label": "SDK Installation", 
+              "file": "data/ftc/android-studio/environment-setup/sdk-installation.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "project-structure", 
+              "label": "Project Structure", 
+              "file": "data/ftc/android-studio/environment-setup/project-structure.json",
+              "difficulty": "intermediate",
+              "duration": "20 min"
+            },
+            { 
+              "id": "code-version-control", 
+              "label": "Code Version Control", 
+              "file": "data/ftc/android-studio/environment-setup/code-version-control.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            }
+          ]
         },
         {
-          "id": "pid-control",
-          "label": "PID Control",
-          "file": "data/ftc/android-studio/advanced-movement-control/pid-control.json"
-        },
-        {
-          "id": "position-control",
-          "label": "Position Control",
-          "file": "data/ftc/android-studio/advanced-movement-control/position-control.json"
-        },
-        {
-          "id": "velocity-control",
-          "label": "Velocity Control",
-          "file": "data/ftc/android-studio/advanced-movement-control/velocity-control.json"
-        },
-        {
-          "id": "heading-control",
-          "label": "Heading Control",
-          "file": "data/ftc/android-studio/advanced-movement-control/heading-control.json"
-        },
-        {
-          "id": "motion-profiling",
-          "label": "Motion Profiling",
-          "file": "data/ftc/android-studio/advanced-movement-control/motion-profiling.json"
-        },
-        {
-          "id": "odometry",
-          "label": "Odometry",
-          "file": "data/ftc/android-studio/advanced-movement-control/odometry.json"
-        },
-        {
-          "id": "dead-wheel-encoders",
-          "label": "Dead Wheel Encoders",
-          "file": "data/ftc/android-studio/advanced-movement-control/dead-wheel-encoders.json"
-        },
-        {
-          "id": "three-wheel-odometry",
-          "label": "Three Wheel Odometry",
-          "file": "data/ftc/android-studio/advanced-movement-control/three-wheel-odometry.json"
-        },
-        {
-          "id": "path-planning",
-          "label": "Path Planning",
-          "file": "data/ftc/android-studio/advanced-movement-control/path-planning.json"
-        },
-        {
-          "id": "advanced-path-planning",
-          "label": "Advanced Path Planning",
-          "file": "data/ftc/android-studio/advanced-movement-control/advanced-path-planning.json"
-        },
-        {
-          "id": "robot-localization",
-          "label": "Robot Localization",
-          "file": "data/ftc/android-studio/advanced-movement-control/robot-localization.json"
-        },
-        {
-          "id": "advanced-control-theory",
-          "label": "Advanced Control Theory",
-          "file": "data/ftc/android-studio/advanced-movement-control/advanced-control-theory.json"
-        }
-      ]
-    },
-    {
-      "id": "android-studio-autonomous-programming",
-      "label": "Android Studio - Autonomous Programming",
-      "items": [
-        {
-          "id": "command-based-programming",
-          "label": "Command-Based Programming",
-          "file": "data/ftc/android-studio/autonomous-programming/command-based-programming.json"
-        },
-        {
-          "id": "async-programming",
-          "label": "Async Programming",
-          "file": "data/ftc/android-studio/autonomous-programming/async-programming.json"
-        },
-        {
-          "id": "multithreading",
-          "label": "Multithreading",
-          "file": "data/ftc/android-studio/autonomous-programming/multithreading.json"
-        },
-        {
-          "id": "custom-sensors",
-          "label": "Custom Sensors",
-          "file": "data/ftc/android-studio/autonomous-programming/custom-sensors.json"
-        },
-        {
-          "id": "custom-sensor-integration",
-          "label": "Custom Sensor Integration",
-          "file": "data/ftc/android-studio/autonomous-programming/custom-sensor-integration.json"
-        },
-        {
-          "id": "custom-libraries",
-          "label": "Custom Libraries",
-          "file": "data/ftc/android-studio/autonomous-programming/custom-libraries.json"
-        }
-      ]
-    },
-    {
-      "id": "android-studio-vision",
-      "label": "Android Studio - Vision & Computer Vision",
-      "items": [
-        {
-          "id": "vision-introduction",
-          "label": "Vision Introduction",
-          "file": "data/ftc/android-studio/vision/vision-introduction.json"
-        },
-        {
-          "id": "built-in-camera-usage",
-          "label": "Built-in Camera Usage",
-          "file": "data/ftc/android-studio/vision/built-in-camera-usage.json"
-        },
-        {
-          "id": "opencv-basics",
-          "label": "OpenCV Basics",
-          "file": "data/ftc/android-studio/vision/opencv-basics.json"
-        },
-        {
-          "id": "apriltags",
-          "label": "AprilTags",
-          "file": "data/ftc/android-studio/vision/apriltags.json"
-        },
-        {
-          "id": "tensorflow-lite",
-          "label": "TensorFlow Lite",
-          "file": "data/ftc/android-studio/vision/tensorflow-lite.json"
-        },
-        {
-          "id": "custom-vision-processing",
-          "label": "Custom Vision Processing",
-          "file": "data/ftc/android-studio/vision/custom-vision-processing.json"
-        },
-        {
-          "id": "vision-based-navigation",
-          "label": "Vision-Based Navigation",
-          "file": "data/ftc/android-studio/vision/vision-based-navigation.json"
-        },
-        {
-          "id": "machine-learning-integration",
-          "label": "Machine Learning Integration",
-          "file": "data/ftc/android-studio/vision/machine-learning-integration.json"
-        }
-      ]
-    },
-    {
-      "id": "android-studio-debugging-best-practices",
-      "label": "Android Studio - Debugging & Best Practices",
-      "items": [
-        {
-          "id": "advanced-debugging",
-          "label": "Advanced Debugging",
-          "file": "data/ftc/android-studio/debugging-best-practices/advanced-debugging.json"
-        },
-        {
-          "id": "performance-optimization",
-          "label": "Performance Optimization",
-          "file": "data/ftc/android-studio/debugging-best-practices/performance-optimization.json"
-        },
-        {
-          "id": "software-development-best-practices",
-          "label": "Software Development Best Practices",
-          "file": "data/ftc/android-studio/debugging-best-practices/software-development-best-practices.json"
-        },
-        {
-          "id": "code-review",
-          "label": "Code Review",
-          "file": "data/ftc/android-studio/debugging-best-practices/code-review.json"
-        },
-        {
-          "id": "unit-testing",
-          "label": "Unit Testing",
-          "file": "data/ftc/android-studio/debugging-best-practices/unit-testing.json"
-        },
-        {
-          "id": "debugging-strategies",
-          "label": "Debugging Strategies",
-          "file": "data/ftc/android-studio/debugging-best-practices/debugging-strategies.json"
+          "id": "android-studio-vision",
+          "label": "Computer Vision",
+          "description": "Advanced computer vision techniques for FTC",
+          "items": [
+            { 
+              "id": "vision-introduction", 
+              "label": "Vision Introduction", 
+              "file": "data/ftc/android-studio/vision/vision-introduction.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            }
+          ]
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "version": "2.0.0",
+    "lastUpdated": "2025-01-27",
+    "totalLessons": 25,
+    "difficultyLevels": {
+      "beginner": 15,
+      "intermediate": 8,
+      "advanced": 2
+    },
+    "estimatedDuration": "12 hours",
+    "prerequisites": ["java-training"],
+    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop"]
+  }
 } 

@@ -1,175 +1,254 @@
 {
-  "title": "Competitive Training",
+  "title": "Competitive Programming Training",
+  "description": "Advanced competitive programming and algorithm training for robotics teams",
   "intro": {
     "id": "comp-intro",
     "label": "Competitive Training Overview",
-    "file": "data/comp/foundation/comp-intro.json"
+    "file": "data/comp/foundation/comp-intro.json",
+    "type": "overview"
   },
   "groups": [
     {
       "id": "comp-foundation",
-      "label": "Foundation",
+      "label": "Foundation Concepts",
+      "description": "Essential competitive programming fundamentals",
+      "icon": "📚",
       "items": [
         {
           "id": "comp-intro",
           "label": "Introduction to Competitive Programming",
-          "file": "data/comp/foundation/comp-intro.json"
+          "file": "data/comp/foundation/comp-intro.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
         },
         {
           "id": "comp-problem-solving",
           "label": "Problem Solving Framework",
-          "file": "data/comp/foundation/comp-problem-solving.json"
+          "file": "data/comp/foundation/comp-problem-solving.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
         },
         {
           "id": "comp-big-o",
           "label": "Big O Notation and Time Complexity",
-          "file": "data/comp/foundation/comp-big-o.json"
+          "file": "data/comp/foundation/comp-big-o.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
         },
         {
           "id": "comp-interview-prep",
           "label": "Interview Preparation",
-          "file": "data/comp/foundation/comp-interview-prep.json"
+          "file": "data/comp/foundation/comp-interview-prep.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         }
       ]
     },
     {
       "id": "comp-data-structures",
       "label": "Data Structures",
+      "description": "Essential data structures for competitive programming",
+      "icon": "🏗️",
       "items": [
         {
           "id": "comp-arrays-strings",
           "label": "Arrays and Strings",
-          "file": "data/comp/data-structures/comp-arrays-strings.json"
+          "file": "data/comp/data-structures/comp-arrays-strings.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
         },
         {
           "id": "comp-linked-lists",
           "label": "Linked Lists",
-          "file": "data/comp/data-structures/comp-linked-lists.json"
+          "file": "data/comp/data-structures/comp-linked-lists.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
         },
         {
           "id": "comp-trees",
           "label": "Trees and Binary Trees",
-          "file": "data/comp/data-structures/comp-trees.json"
+          "file": "data/comp/data-structures/comp-trees.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         },
         {
           "id": "comp-graphs",
           "label": "Graphs and Graph Algorithms",
-          "file": "data/comp/data-structures/comp-graphs.json"
+          "file": "data/comp/data-structures/comp-graphs.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
         },
         {
           "id": "comp-hash-tables",
           "label": "Hash Tables",
-          "file": "data/comp/data-structures/comp-hash-tables.json"
+          "file": "data/comp/data-structures/comp-hash-tables.json",
+          "difficulty": "intermediate",
+          "duration": "30 min"
         },
         {
           "id": "comp-trie",
           "label": "Tries",
-          "file": "data/comp/data-structures/comp-trie.json"
+          "file": "data/comp/data-structures/comp-trie.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
         },
         {
           "id": "comp-union-find",
           "label": "Union-Find Data Structure",
-          "file": "data/comp/data-structures/comp-union-find.json"
+          "file": "data/comp/data-structures/comp-union-find.json",
+          "difficulty": "intermediate",
+          "duration": "30 min"
         }
       ]
     },
     {
       "id": "comp-algorithms",
       "label": "Algorithms",
+      "description": "Essential algorithms and techniques",
+      "icon": "⚡",
       "items": [
         {
           "id": "comp-sorting",
           "label": "Sorting Algorithms",
-          "file": "data/comp/algorithms/comp-sorting.json"
+          "file": "data/comp/algorithms/comp-sorting.json",
+          "difficulty": "beginner",
+          "duration": "35 min"
         },
         {
           "id": "comp-searching",
           "label": "Searching Algorithms",
-          "file": "data/comp/algorithms/comp-searching.json"
+          "file": "data/comp/algorithms/comp-searching.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
         },
         {
           "id": "comp-binary-search",
           "label": "Binary Search",
-          "file": "data/comp/algorithms/comp-binary-search.json"
+          "file": "data/comp/algorithms/comp-binary-search.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         },
         {
           "id": "comp-two-pointers",
           "label": "Two Pointers Technique",
-          "file": "data/comp/algorithms/comp-two-pointers.json"
+          "file": "data/comp/algorithms/comp-two-pointers.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
         },
         {
           "id": "comp-sliding-window",
           "label": "Sliding Window Technique",
-          "file": "data/comp/algorithms/comp-sliding-window.json"
+          "file": "data/comp/algorithms/comp-sliding-window.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         },
         {
           "id": "comp-dynamic-programming",
           "label": "Dynamic Programming",
-          "file": "data/comp/algorithms/comp-dynamic-programming.json"
+          "file": "data/comp/algorithms/comp-dynamic-programming.json",
+          "difficulty": "advanced",
+          "duration": "60 min"
         },
         {
           "id": "comp-greedy",
           "label": "Greedy Algorithms",
-          "file": "data/comp/algorithms/comp-greedy.json"
+          "file": "data/comp/algorithms/comp-greedy.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
         },
         {
           "id": "comp-backtracking",
           "label": "Backtracking",
-          "file": "data/comp/algorithms/comp-backtracking.json"
+          "file": "data/comp/algorithms/comp-backtracking.json",
+          "difficulty": "advanced",
+          "duration": "50 min"
         },
         {
           "id": "comp-heaps",
           "label": "Heaps and Priority Queues",
-          "file": "data/comp/algorithms/comp-heaps.json"
+          "file": "data/comp/algorithms/comp-heaps.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         }
       ]
     },
     {
       "id": "comp-advanced",
       "label": "Advanced Topics",
+      "description": "Advanced competitive programming concepts",
+      "icon": "🎯",
       "items": [
         {
           "id": "comp-advanced-dp",
           "label": "Advanced Dynamic Programming",
-          "file": "data/comp/advanced/comp-advanced-dp.json"
+          "file": "data/comp/advanced/comp-advanced-dp.json",
+          "difficulty": "advanced",
+          "duration": "70 min"
         },
         {
           "id": "comp-bit-manipulation",
           "label": "Bit Manipulation",
-          "file": "data/comp/advanced/comp-bit-manipulation.json"
+          "file": "data/comp/advanced/comp-bit-manipulation.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
         },
         {
           "id": "comp-segment-trees",
           "label": "Segment Trees",
-          "file": "data/comp/advanced/comp-segment-trees.json"
+          "file": "data/comp/advanced/comp-segment-trees.json",
+          "difficulty": "advanced",
+          "duration": "60 min"
         }
       ]
     },
     {
       "id": "comp-strategies",
       "label": "Competition Strategies",
+      "description": "Strategies and techniques for competitive programming",
+      "icon": "🏆",
       "items": [
         {
           "id": "comp-patterns",
           "label": "Problem Patterns",
-          "file": "data/comp/strategies/comp-patterns.json"
+          "file": "data/comp/strategies/comp-patterns.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
         },
         {
           "id": "comp-optimization",
           "label": "Code Optimization",
-          "file": "data/comp/strategies/comp-optimization.json"
+          "file": "data/comp/strategies/comp-optimization.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
         },
         {
           "id": "comp-contest-strategies",
           "label": "Contest Strategies",
-          "file": "data/comp/strategies/comp-contest-strategies.json"
+          "file": "data/comp/strategies/comp-contest-strategies.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         },
         {
           "id": "comp-advanced-problems",
           "label": "Advanced Problem Solving",
-          "file": "data/comp/strategies/comp-advanced-problems.json"
+          "file": "data/comp/strategies/comp-advanced-problems.json",
+          "difficulty": "advanced",
+          "duration": "55 min"
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "version": "2.0.0",
+    "lastUpdated": "2025-01-27",
+    "totalLessons": 24,
+    "difficultyLevels": {
+      "beginner": 3,
+      "intermediate": 15,
+      "advanced": 6
+    },
+    "estimatedDuration": "15 hours",
+    "prerequisites": ["java-training"],
+    "tags": ["competitive", "algorithms", "data-structures", "dynamic-programming", "optimization"]
+  }
 } 

@@ -1,113 +1,168 @@
 {
-  "title": "FRC Curriculum",
+  "title": "FRC Training Curriculum",
+  "description": "Comprehensive FIRST Robotics Competition programming training",
   "intro": {
     "id": "frc-intro",
     "label": "FRC Curriculum Overview",
-    "file": "data/frc/frc-intro.json"
+    "file": "data/frc/frc-intro.json",
+    "type": "overview"
   },
   "groups": [
     {
       "id": "frc-beginner",
-      "label": "Beginner",
+      "label": "Beginner FRC Programming",
+      "description": "Essential FRC programming concepts and setup",
+      "icon": "🚀",
       "items": [
         {
           "id": "frc-wpilib-setup",
           "label": "WPILib Setup",
-          "file": "data/frc/beginner/frc-wpilib-setup.json"
+          "file": "data/frc/beginner/frc-wpilib-setup.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
         },
         {
           "id": "frc-git-github-basics",
           "label": "Git/GitHub Basics",
-          "file": "data/frc/beginner/frc-git-github-basics.json"
+          "file": "data/frc/beginner/frc-git-github-basics.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
         },
         {
           "id": "frc-basic-robot-structure",
           "label": "Basic Robot Structure",
-          "file": "data/frc/beginner/frc-basic-robot-structure.json"
+          "file": "data/frc/beginner/frc-basic-robot-structure.json",
+          "difficulty": "beginner",
+          "duration": "20 min"
         },
         {
           "id": "frc-drivetrain-control",
           "label": "Drivetrain Control",
-          "file": "data/frc/beginner/frc-drivetrain-control.json"
+          "file": "data/frc/beginner/frc-drivetrain-control.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
         },
         {
           "id": "frc-gamepad-control",
           "label": "Gamepad Control",
-          "file": "data/frc/beginner/frc-gamepad-control.json"
+          "file": "data/frc/beginner/frc-gamepad-control.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
         },
         {
           "id": "frc-basic-sensors",
           "label": "Basic Sensors",
-          "file": "data/frc/beginner/frc-basic-sensors.json"
+          "file": "data/frc/beginner/frc-basic-sensors.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
         },
         {
           "id": "frc-simple-autonomous",
           "label": "Simple Autonomous",
-          "file": "data/frc/beginner/frc-simple-autonomous.json"
+          "file": "data/frc/beginner/frc-simple-autonomous.json",
+          "difficulty": "beginner",
+          "duration": "35 min"
         },
         {
           "id": "frc-basic-mechanisms",
           "label": "Basic Mechanisms",
-          "file": "data/frc/beginner/frc-basic-mechanisms.json"
+          "file": "data/frc/beginner/frc-basic-mechanisms.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
         }
       ]
     },
     {
       "id": "frc-intermediate",
-      "label": "Intermediate",
+      "label": "Intermediate FRC Programming",
+      "description": "Advanced FRC programming techniques and tools",
+      "icon": "⚙️",
       "items": [
         {
           "id": "frc-command-based-intro",
           "label": "Command-Based Programming Introduction",
-          "file": "data/frc/intermediate/frc-command-based-intro.json"
+          "file": "data/frc/intermediate/frc-command-based-intro.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         },
         {
           "id": "frc-pid-control",
           "label": "PID Control",
-          "file": "data/frc/intermediate/frc-pid-control.json"
+          "file": "data/frc/intermediate/frc-pid-control.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
         },
         {
           "id": "frc-motion-profiling",
           "label": "Motion Profiling",
-          "file": "data/frc/intermediate/frc-motion-profiling.json"
+          "file": "data/frc/intermediate/frc-motion-profiling.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
         },
         {
           "id": "frc-pathplanner",
           "label": "PathPlanner",
-          "file": "data/frc/intermediate/frc-pathplanner.json"
+          "file": "data/frc/intermediate/frc-pathplanner.json",
+          "difficulty": "intermediate",
+          "duration": "60 min"
         },
         {
           "id": "frc-advantagekit-swerve",
           "label": "AdvantageKit Swerve",
-          "file": "data/frc/intermediate/frc-advantagekit-swerve.json"
+          "file": "data/frc/intermediate/frc-advantagekit-swerve.json",
+          "difficulty": "intermediate",
+          "duration": "55 min"
         }
       ]
     },
     {
       "id": "frc-advanced",
-      "label": "Advanced",
+      "label": "Advanced FRC Programming",
+      "description": "Expert-level FRC programming and optimization",
+      "icon": "🎯",
       "items": [
         {
           "id": "frc-advantagescope",
           "label": "AdvantageScope",
-          "file": "data/frc/advanced/frc-advantagescope.json"
+          "file": "data/frc/advanced/frc-advantagescope.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
         },
         {
           "id": "frc-advanced-logging",
           "label": "Advanced Logging",
-          "file": "data/frc/advanced/frc-advanced-logging.json"
+          "file": "data/frc/advanced/frc-advanced-logging.json",
+          "difficulty": "advanced",
+          "duration": "40 min"
         },
         {
           "id": "frc-simulation",
           "label": "Simulation",
-          "file": "data/frc/advanced/frc-simulation.json"
+          "file": "data/frc/advanced/frc-simulation.json",
+          "difficulty": "advanced",
+          "duration": "50 min"
         },
         {
           "id": "frc-advanced-topics",
           "label": "Advanced Topics",
-          "file": "data/frc/advanced/frc-advanced-topics.json"
+          "file": "data/frc/advanced/frc-advanced-topics.json",
+          "difficulty": "advanced",
+          "duration": "60 min"
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "version": "2.0.0",
+    "lastUpdated": "2025-01-27",
+    "totalLessons": 17,
+    "difficultyLevels": {
+      "beginner": 8,
+      "intermediate": 5,
+      "advanced": 4
+    },
+    "estimatedDuration": "10 hours",
+    "prerequisites": ["java-training"],
+    "tags": ["frc", "robotics", "wpilib", "command-based", "pid", "motion-profiling"]
+  }
 } 

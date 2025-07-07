@@ -1,0 +1,51 @@
+{
+  "type": "lesson",
+  "title": "FTC Android Studio Project Structure",
+  "sections": [
+    {
+      "type": "section",
+      "title": "What is Project Structure and Why Does It Matter?",
+      "content": "<p>Project structure refers to how your files and folders are organized in your FTC Android Studio project. A clear structure helps you find code quickly, avoid mistakes, and collaborate with teammates. Good organization is essential for scaling your codebase as your robot and team grow.</p>"
+    },
+    {
+      "type": "section",
+      "title": "Key Folders and Files in an FTC Project",
+      "content": "<ul><li><b>TeamCode/</b>: Your team's code goes here (OpModes, hardware, utilities).</li><li><b>FtcRobotController/</b>: The main SDK code (do not modify).</li><li><b>build.gradle</b>: Project build configuration.</li><li><b>AndroidManifest.xml</b>: App and OpMode registration.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Where to Put Your Code (OpModes, Hardware, Utilities)",
+      "content": "<ul><li><b>teleop/</b>: Driver-controlled OpModes</li><li><b>autonomous/</b>: Autonomous OpModes</li><li><b>hardware/</b>: Hardware abstraction classes</li><li><b>utils/</b>: Utility/helper classes</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Example Directory Layout",
+      "content": "<pre><code>// Typical FTC project structure\nTeamCode/\n├── src/main/java/org/firstinspires/ftc/teamcode/\n│   ├── teleop/\n│   │   └── BasicTeleOp.java\n│   ├── autonomous/\n│   │   └── BasicAutonomous.java\n│   ├── hardware/\n│   │   └── RobotHardware.java\n│   └── utils/\n│       └── MathUtils.java\n├── build.gradle\n└── AndroidManifest.xml\n</code></pre>"
+    },
+    {
+      "type": "section",
+      "title": "Best Practices for Organization",
+      "content": "<ul><li>Never modify SDK files outside TeamCode.</li><li>Use clear, descriptive names for files and folders.</li><li>Group related code together (e.g., all drivetrain code in one folder).</li><li>Keep OpModes short—move logic to hardware and subsystem classes.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Troubleshooting Common Structure Issues",
+      "content": "<ul><li><b>OpMode not showing up?</b> Check the package and class annotations.</li><li><b>Build errors?</b> Make sure files are in the correct folders and named properly.</li><li><b>Accidentally edited SDK files?</b> Restore from a clean SDK copy or Git.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Explore More",
+      "content": "<ul><li><a href=\"https://gm0.org/en/latest/docs/software/advanced/android-studio-project-structure.html\" target=\"_blank\">gm0: Project Structure</a></li><li><a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio/structure/index.html\" target=\"_blank\">FTC Docs: Project Structure</a></li></ul>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Project Structure",
+      "tasks": [
+        "Create a new OpMode in the correct folder.",
+        "Refactor an existing file into a better-named package.",
+        "Draw a diagram of your team's project structure.",
+        "Check that all OpModes are in TeamCode and not the SDK folders."
+      ]
+    }
+  ]
+} 

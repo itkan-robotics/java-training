@@ -2,7 +2,6 @@
 ├── onbot-java/
 │   ├── environment-setup/
 │   │   ├── ftc-sdk-basics.json
-│   │   ├── sdk-installation.json
 │   │   ├── opmode-structure.json
 │   │   ├── linear-vs-iterative-opmodes.json
 │   │   ├── telemetry-logging.json

@@ -1,31 +1,47 @@
 {
   "title": "SwyftNav - Programming Fundamentals",
+  "description": "Comprehensive programming training platform for robotics teams",
   "sections": {
     "homepage": {
       "id": "homepage",
       "label": "Home",
       "file": "data/config/homepage.json",
-      "default": true
+      "default": true,
+      "icon": "🏠"
     },
     "java-training": {
       "id": "java-training",
       "label": "Java Training",
-      "file": "data/config/java-training-config.json"
+      "file": "data/config/java-training-config.json",
+      "icon": "☕"
     },
     "ftc-specific": {
       "id": "ftc-specific",
-      "label": "FTC-Specific Training",
-      "file": "data/config/ftc-specific-config.json"
+      "label": "FTC Training",
+      "file": "data/config/ftc-specific-config.json",
+      "icon": "🤖"
     },
     "frc-specific": {
       "id": "frc-specific",
-      "label": "FRC-Specific Training",
-      "file": "data/config/frc-specific-config.json"
+      "label": "FRC Training",
+      "file": "data/config/frc-specific-config.json",
+      "icon": "🏁"
     },
     "competitive-training": {
       "id": "competitive-training",
       "label": "Competitive Training",
-      "file": "data/config/competitive-training-config.json"
+      "file": "data/config/competitive-training-config.json",
+      "icon": "🏆"
+    }
+  },
+  "metadata": {
+    "version": "2.0.0",
+    "lastUpdated": "2025-01-27",
+    "features": {
+      "dynamicNavigation": true,
+      "responsiveLayout": true,
+      "searchFunctionality": true,
+      "themeSupport": true
     }
   }
 } 

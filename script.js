@@ -164,7 +164,7 @@ class ContentManager {
         const contentPromises = [];
 
         // Handle standalone content files (like homepage)
-        if (sectionConfig.file && !sectionConfig.groups && !sectionConfig.intro) {
+        if (sectionConfig.file && !sectionConfig.groups && !sectionConfig.intro && !sectionConfig.children) {
             try {
                 const data = await this.configManager.loadContentFile(sectionConfig.file);
                 const tabInfo = {
@@ -189,8 +189,8 @@ class ContentManager {
             contentPromises.push(this.loadIntroContent(sectionConfig.intro, sectionId, sectionConfig));
         }
 
-        // Load groups content if exists
-        if (sectionConfig.groups) {
+        // Load groups content if exists and is an array
+        if (Array.isArray(sectionConfig.groups)) {
             contentPromises.push(...this.loadGroupsContent(sectionConfig.groups, sectionId, sectionConfig));
         }
 
@@ -217,13 +217,13 @@ class ContentManager {
 
     loadGroupsContent(groups, sectionId, sectionConfig) {
         const promises = [];
-        
         groups.forEach(group => {
+            if (Array.isArray(group.items)) {
                 group.items.forEach(item => {
-                promises.push(this.loadItemContent(item, sectionId, sectionConfig, group));
-            });
+                    promises.push(this.loadItemContent(item, sectionId, sectionConfig, group));
+                });
+            }
         });
-
         return promises;
     }
 
@@ -313,7 +313,8 @@ class ContentManager {
             'data-types-grid': this.renderDataTypesGrid.bind(this),
             'logical-operators': this.renderLogicalOperators.bind(this),
             'emphasis-box': this.renderRulesBox.bind(this),
-            'link-grid': this.renderLinkGrid.bind(this)
+            'link-grid': this.renderLinkGrid.bind(this),
+            'section': this.renderSectionTypeSection.bind(this) // NEW: support for 'section' type
         };
 
         const renderer = renderers[sectionData.type];
@@ -321,8 +322,8 @@ class ContentManager {
             renderer(container, sectionData);
         } else {
             console.warn(`Unknown section type: ${sectionData.type}`);
+        }
     }
-}
 
     renderTextSection(container, data) {
     if (data.title) {
@@ -633,6 +634,22 @@ class ContentManager {
     
     container.appendChild(grid);
     }
+
+    renderSectionTypeSection(container, data) {
+        // Render the title as an <h3> if present
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
+            container.appendChild(h3);
+        }
+        // Render the content as HTML if present
+        if (data.content) {
+            const div = document.createElement('div');
+            div.innerHTML = data.content;
+            container.appendChild(div);
+        }
+        // Optionally, support nested sections in the future
+    }
 }
 
 // ============================================================================
@@ -646,14 +663,21 @@ class NavigationManager {
     }
 
     async generateNavigation() {
-        const navigationUl = document.getElementById('sidebar-navigation');
-        navigationUl.innerHTML = '';
+        const navigationContainer = document.querySelector('.sidebar-tree');
+        if (!navigationContainer) return;
+
+        navigationContainer.innerHTML = '';
 
         if (appState.currentSection === 'homepage') {
-            this.renderHomepageNavigation(navigationUl);
-    } else {
-            await this.renderSectionNavigation(navigationUl);
+            this.renderHomepageNavigation(navigationContainer);
+        } else {
+            await this.renderSectionNavigation(navigationContainer);
         }
+
+        // Adjust layout after navigation is generated
+        setTimeout(() => {
+            this.adjustLayoutForSidebar();
+        }, 100);
     }
 
     renderHomepageNavigation(container) {
@@ -679,26 +703,85 @@ class NavigationManager {
         }
 
         // Load section content if needed
-        if (!section.groups && !section.tiers && !section.intro) {
+        if (!section.groups && !section.tiers && !section.intro && !section.children) {
             await this.contentManager.loadSectionContent(appState.currentSection);
-        } else if (section.groups || section.tiers) {
+        } else if (section.groups || section.tiers || section.children) {
             await this.contentManager.loadSectionContent(appState.currentSection);
         }
 
         const updatedSection = appState.config.sections[appState.currentSection];
-        
-        if (updatedSection.tiers) {
+
+        // Support new nested parent/child structure
+        if (updatedSection.groups) {
+            // Check if groups have children (nested structure)
+            const hasNestedStructure = updatedSection.groups.some(group => group.children);
+            if (hasNestedStructure) {
+                this.renderParentGroupsNavigation(container, updatedSection.groups);
+            } else {
+                this.renderGroupsNavigation(container, updatedSection.groups);
+            }
+        } else if (updatedSection.children) {
+            this.renderParentGroupsNavigation(container, updatedSection.children);
+        } else if (updatedSection.tiers) {
             this.renderTiersNavigation(container, updatedSection.tiers);
-        } else if (updatedSection.groups) {
-            this.renderGroupsNavigation(container, updatedSection.groups);
         } else if (updatedSection.intro) {
             this.renderIntroNavigation(container, updatedSection.intro);
         }
     }
 
+    renderParentGroupsNavigation(container, parents) {
+        parents.forEach(parent => {
+            const parentLi = document.createElement('li');
+            parentLi.className = 'toctree-l0 parent-folder';
 
+            const parentA = document.createElement('a');
+            parentA.className = 'reference parent-folder-reference';
+            parentA.href = '#';
+            parentA.innerHTML = `
+                <span class="expand-icon expand-icon-${parent.id}">▼</span>
+                ${parent.label}
+            `;
+            parentA.onclick = (e) => {
+                e.preventDefault();
+                this.toggleGroup(parent.id);
+            };
+            parentLi.appendChild(parentA);
+
+            const childrenUl = document.createElement('ul');
+            childrenUl.className = 'children-nav expanded';
+            childrenUl.id = `children-${parent.id}`;
+
+            // Render each group (child) under this parent
+            if (parent.children) {
+                // Support for deeper nesting - render children as groups
+                this.renderGroupsNavigation(childrenUl, parent.children);
+            } else if (parent.groups) {
+                this.renderGroupsNavigation(childrenUl, parent.groups);
+            } else if (parent.items) {
+                // Render items directly if present
+                parent.items.forEach(item => {
+                    const itemLi = document.createElement('li');
+                    itemLi.className = 'toctree-l2 child-tab';
+                    const itemA = document.createElement('a');
+                    itemA.className = 'reference child-reference';
+                    itemA.href = `#${item.id}`;
+                    itemA.textContent = item.label;
+                    itemA.onclick = (e) => {
+                        e.preventDefault();
+                        this.navigateToTab(item.id);
+                    };
+                    itemLi.appendChild(itemA);
+                    childrenUl.appendChild(itemLi);
+                });
+            }
+
+            parentLi.appendChild(childrenUl);
+            container.appendChild(parentLi);
+        });
+    }
 
     renderGroupsNavigation(container, groups) {
+        if (!Array.isArray(groups)) return;
         groups.forEach(group => {
             const groupLi = document.createElement('li');
             groupLi.className = 'toctree-l1 parent-tab';
@@ -720,20 +803,22 @@ class NavigationManager {
             itemsUl.className = 'children-nav expanded';
             itemsUl.id = `children-${group.id}`;
 
-            group.items.forEach(item => {
-                const itemLi = document.createElement('li');
-                itemLi.className = 'toctree-l2 child-tab';
-                const itemA = document.createElement('a');
-                itemA.className = 'reference child-reference';
-                itemA.href = `#${item.id}`;
-                itemA.textContent = item.label;
-                itemA.onclick = (e) => {
-                    e.preventDefault();
-                    this.navigateToTab(item.id);
-                };
-                itemLi.appendChild(itemA);
-                itemsUl.appendChild(itemLi);
-            });
+            if (Array.isArray(group.items)) {
+                group.items.forEach(item => {
+                    const itemLi = document.createElement('li');
+                    itemLi.className = 'toctree-l2 child-tab';
+                    const itemA = document.createElement('a');
+                    itemA.className = 'reference child-reference';
+                    itemA.href = `#${item.id}`;
+                    itemA.textContent = item.label;
+                    itemA.onclick = (e) => {
+                        e.preventDefault();
+                        this.navigateToTab(item.id);
+                    };
+                    itemLi.appendChild(itemA);
+                    itemsUl.appendChild(itemLi);
+                });
+            }
 
             groupLi.appendChild(itemsUl);
             container.appendChild(groupLi);
@@ -762,94 +847,309 @@ class NavigationManager {
         if (childrenNav.classList.contains('expanded')) {
             childrenNav.classList.remove('expanded');
             childrenNav.classList.add('collapsed');
-            expandIcon.textContent = '\u25B6\uFE0E';
+            expandIcon.innerHTML = '▶';
         } else {
             childrenNav.classList.add('expanded');
             childrenNav.classList.remove('collapsed');
-            expandIcon.textContent = '▼';
+            expandIcon.innerHTML = '▼';
+        }
+        
+        // Adjust layout after toggling with a small delay to ensure DOM updates are complete
+        setTimeout(() => {
+            this.adjustLayoutForSidebar();
+        }, 50);
+    }
+
+    adjustLayoutForSidebar() {
+        // Only adjust on desktop (screen width > 63em)
+        if (window.innerWidth <= 1008) { // 63em = 1008px
+            return;
+        }
+
+        const sidebarDrawer = document.querySelector('.sidebar-drawer');
+        const mainContent = document.querySelector('.main');
+        
+        if (!sidebarDrawer || !mainContent) {
+            return;
+        }
+
+        // Calculate the optimal width based on visible navigation items
+        const sidebarContent = sidebarDrawer.querySelector('.sidebar-scroll');
+        if (!sidebarContent) {
+            return;
+        }
+
+        // Temporarily make sidebar visible to measure content
+        const originalLeft = sidebarDrawer.style.left;
+        const originalVisibility = sidebarDrawer.style.visibility;
+        
+        sidebarDrawer.style.left = '0';
+        sidebarDrawer.style.visibility = 'visible';
+        sidebarDrawer.style.position = 'absolute'; // Temporarily change to absolute to measure
+
+        // Count visible navigation items and measure their content
+        const visibleItems = this.countVisibleNavigationItems();
+        const contentWidth = this.measureNavigationContentWidth();
+        
+        // Calculate optimal width based on number of items and content width
+        const minSidebarWidth = 240; // 15em minimum
+        const maxSidebarWidth = 600; // Increased maximum for better accommodation of multiple sections
+        const padding = 50; // Increased padding for better spacing
+        
+        // Base width calculation
+        let optimalWidth = Math.max(minSidebarWidth, contentWidth + padding);
+        
+        // Adjust width based on number of visible items with better scaling
+        if (visibleItems.count > 0) {
+            // More aggressive scaling for sections with many items
+            const itemMultiplier = Math.min(visibleItems.count / 8, 1.5); // Increased scale factor
+            const extraWidth = Math.floor(itemMultiplier * 120); // Up to 180px extra for many items
+            optimalWidth += extraWidth;
+            
+            // Additional width for multiple expanded parent sections
+            if (visibleItems.details.parentFolders > 1) {
+                const parentMultiplier = visibleItems.details.parentFolders * 20; // 20px per parent section
+                optimalWidth += parentMultiplier;
+            }
+            
+            // Extra width for sections with many child items
+            if (visibleItems.details.childItems > 10) {
+                const childMultiplier = Math.min(visibleItems.details.childItems / 15, 1) * 80; // Up to 80px extra
+                optimalWidth += childMultiplier;
+            }
+        }
+        
+        // Ensure width doesn't exceed maximum
+        optimalWidth = Math.min(maxSidebarWidth, optimalWidth);
+
+        // Restore original positioning
+        sidebarDrawer.style.left = originalLeft;
+        sidebarDrawer.style.visibility = originalVisibility;
+        sidebarDrawer.style.position = 'fixed';
+
+        // Apply the optimal width
+        sidebarDrawer.style.width = `${optimalWidth}px`;
+        sidebarDrawer.querySelector('.sidebar-container').style.width = `${optimalWidth}px`;
+
+        // Adjust main content area with more generous spacing
+        const sidebarOffset = optimalWidth + 120; // Increased buffer for better spacing
+        mainContent.style.marginLeft = `${sidebarOffset}px`;
+        mainContent.style.maxWidth = `calc(100% - ${sidebarOffset}px)`;
+
+        // Store the current sidebar width for responsive adjustments
+        sidebarDrawer.dataset.currentWidth = optimalWidth;
+        
+        // Ensure sidebar scroll area is properly sized
+        const sidebarScroll = sidebarDrawer.querySelector('.sidebar-scroll');
+        if (sidebarScroll) {
+            sidebarScroll.style.height = `calc(100vh - var(--header-height) - 4rem)`;
+            sidebarScroll.style.overflowY = 'auto';
+            sidebarScroll.style.overflowX = 'hidden';
         }
     }
 
+    countVisibleNavigationItems() {
+        const sidebarTree = document.querySelector('.sidebar-tree');
+        if (!sidebarTree) return { count: 0, details: {} };
+
+        let totalCount = 0;
+        const details = {
+            parentFolders: 0,
+            groups: 0,
+            childItems: 0,
+            expandedParents: 0,
+            expandedGroups: 0
+        };
+
+        // Count parent folders (OnBot Java, Android Studio)
+        const parentFolders = sidebarTree.querySelectorAll('.parent-folder');
+        details.parentFolders = parentFolders.length;
+        totalCount += parentFolders.length;
+
+        // Count groups under each parent and check if they're expanded
+        const groups = sidebarTree.querySelectorAll('.parent-tab');
+        details.groups = groups.length;
+        totalCount += groups.length;
+
+        // Count expanded groups specifically
+        const expandedGroups = sidebarTree.querySelectorAll('.parent-tab .children-nav.expanded');
+        details.expandedGroups = expandedGroups.length;
+
+        // Count child items (actual lessons) in expanded sections
+        const childItems = sidebarTree.querySelectorAll('.child-tab');
+        details.childItems = childItems.length;
+        totalCount += childItems.length;
+
+        // Count expanded parent sections
+        const expandedParents = sidebarTree.querySelectorAll('.parent-folder .children-nav.expanded');
+        details.expandedParents = expandedParents.length;
+
+        // Add extra weight for expanded sections
+        if (details.expandedParents > 0) {
+            totalCount += details.expandedParents * 2; // Extra weight for expanded parents
+        }
+        if (details.expandedGroups > 0) {
+            totalCount += details.expandedGroups * 3; // Extra weight for expanded groups
+        }
+
+        return { count: totalCount, details };
+    }
+
+    measureNavigationContentWidth() {
+        const sidebarTree = document.querySelector('.sidebar-tree');
+        if (!sidebarTree) return 240;
+
+        // Get all text elements in the navigation
+        const textElements = sidebarTree.querySelectorAll('.reference');
+        let maxWidth = 240; // Minimum width
+
+        textElements.forEach(element => {
+            // Temporarily make element visible to measure
+            const originalDisplay = element.style.display;
+            element.style.display = 'block';
+            element.style.visibility = 'visible';
+            element.style.position = 'absolute';
+            element.style.left = '-9999px';
+            
+            // Measure the text width
+            const textWidth = element.scrollWidth;
+            maxWidth = Math.max(maxWidth, textWidth);
+            
+            // Restore original state
+            element.style.display = originalDisplay;
+            element.style.visibility = '';
+            element.style.position = '';
+            element.style.left = '';
+        });
+
+        return maxWidth;
+    }
+
+    // Method to reset layout when sidebar is hidden
+    resetLayoutForHiddenSidebar() {
+        const sidebarDrawer = document.querySelector('.sidebar-drawer');
+        const mainContent = document.querySelector('.main');
+        
+        if (!sidebarDrawer || !mainContent) {
+            return;
+        }
+
+        // Reset sidebar width to default
+        sidebarDrawer.style.width = '15em';
+        sidebarDrawer.querySelector('.sidebar-container').style.width = '15em';
+        
+        // Reset main content
+        mainContent.style.marginLeft = '0';
+        mainContent.style.maxWidth = '100%';
+        
+        // Clear stored width
+        delete sidebarDrawer.dataset.currentWidth;
+    }
 
 
     async navigateToTab(tabId) {
-        // Store the last opened tab ID
-        localStorage.setItem('lastOpenedTab', tabId);
-        // Update the URL hash for direct linking and browser navigation
-        if (window.location.hash !== `#${tabId}`) {
-            window.location.hash = `#${tabId}`;
-        }
-        // Clear current page classes
-        document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
-            li.classList.remove('current-page');
-        });
-        
-        // Clear header navigation active state
-        document.querySelectorAll('.header-nav-link').forEach(link => {
-            link.classList.remove('active');
-        });
+        try {
+            // Store the last opened tab ID
+            localStorage.setItem('lastOpenedTab', tabId);
+            // Update the URL hash for direct linking and browser navigation
+            if (window.location.hash !== `#${tabId}`) {
+                window.location.hash = `#${tabId}`;
+            }
+            // Clear current page classes
+            document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
+                li.classList.remove('current-page');
+            });
+            
+            // Clear header navigation active state
+            document.querySelectorAll('.header-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
 
-        // Find the target tab
-        let targetTab = appState.allTabs.find(tab => tab.id === tabId);
-        
-        // Handle dynamic lesson loading
-        if (!targetTab) {
-            targetTab = appState.getTabData(tabId);
-            if (targetTab && targetTab.file && !targetTab.loaded) {
-                try {
-                    const updatedTabData = await this.contentManager.loadSingleContent(tabId);
-                    targetTab = updatedTabData;
-                    
-                    // Update navigation label
-                    const navLink = document.querySelector(`a[href="#${tabId}"]`);
-                    if (navLink && updatedTabData.title) {
-                        navLink.textContent = updatedTabData.title;
-                    }
-                } catch (error) {
-                    console.error(`Error loading lesson ${tabId}:`, error);
-                    this.showError('Failed to load lesson. Please refresh the page.');
-                    return;
+            // Find the target tab
+            let targetTab = appState.allTabs.find(tab => tab.id === tabId);
+
+            // If not found, try to find the parent section for this tab recursively in config
+            if (!targetTab) {
+                let parentSectionId = this.findParentSectionIdForTab(tabId, appState.config.sections);
+                if (parentSectionId) {
+                    appState.setCurrentSection(parentSectionId);
+                    await this.generateNavigation();
+                    // Try again after navigation is generated
+                    targetTab = appState.allTabs.find(tab => tab.id === tabId);
                 }
             }
-        }
 
-        if (targetTab) {
-            // Determine section
-            let newSection = 'homepage';
-            if (targetTab.sectionId) {
-                newSection = targetTab.sectionId;
-            } else if (appState.currentSection === 'ftc-specific') {
-                newSection = 'ftc-specific';
-            } else if (appState.currentSection === 'frc-specific') {
-                newSection = 'frc-specific';
+            // Handle dynamic lesson loading
+            if (!targetTab) {
+                targetTab = appState.getTabData(tabId);
+                if (targetTab && targetTab.file && !targetTab.loaded) {
+                    try {
+                        const updatedTabData = await this.contentManager.loadSingleContent(tabId);
+                        targetTab = updatedTabData;
+                        // Update navigation label
+                        const navLink = document.querySelector(`a[href="#${tabId}"]`);
+                        if (navLink && updatedTabData.title) {
+                            navLink.textContent = updatedTabData.title;
+                        }
+                    } catch (error) {
+                        console.error(`Error loading lesson ${tabId}:`, error);
+                        this.showError('Failed to load lesson. Please refresh the page.');
+                        return;
+                    }
+                }
             }
 
-            // Update current section if needed
-            if (appState.currentSection !== newSection) {
-                appState.setCurrentSection(newSection);
-                await this.generateNavigation();
+            // If still not found, try to load the section that might contain this tab
+            if (!targetTab) {
+                // Try to find which section this tab belongs to
+                for (const sectionId in appState.config.sections) {
+                    const section = appState.config.sections[sectionId];
+                    if (section.groups) {
+                        for (const group of section.groups) {
+                            if (group.items && group.items.some(item => item.id === tabId)) {
+                                // Load this section and try again
+                                await this.contentManager.loadSectionContent(sectionId);
+                                targetTab = appState.allTabs.find(tab => tab.id === tabId);
+                                if (targetTab) break;
+                            }
+                        }
+                    }
+                    if (targetTab) break;
+                }
             }
 
-            // Highlight navigation
-            this.highlightNavigation(tabId);
-            
-            // Update header navigation
-            this.updateHeaderNavigation(newSection);
-            
-            // Render content
-            this.contentManager.renderContent(tabId);
-            appState.setCurrentTab(tabId);
-        } else {
-            // Handle section navigation
-            await this.handleSectionNavigation(tabId);
-        }
+            if (targetTab) {
+                // Determine section
+                let newSection = appState.currentSection;
+                if (targetTab.sectionId) {
+                    newSection = targetTab.sectionId;
+                }
+                // Update current section if needed
+                if (appState.currentSection !== newSection) {
+                    appState.setCurrentSection(newSection);
+                    await this.generateNavigation();
+                }
+                // Highlight navigation
+                this.highlightNavigation(tabId);
+                // Update header navigation
+                this.updateHeaderNavigation(newSection);
+                // Render content
+                this.contentManager.renderContent(tabId);
+                appState.setCurrentTab(tabId);
+            } else {
+                // Handle section navigation
+                await this.handleSectionNavigation(tabId);
+            }
 
-        // Close mobile navigation
-        document.getElementById('__navigation').checked = false;
-        
-        // Restore search results if there was an active search
-        if (this.searchManager) {
-            this.searchManager.restoreSearchResults();
+            // Close mobile navigation
+            document.getElementById('__navigation').checked = false;
+            // Restore search results if there was an active search
+            if (this.searchManager) {
+                this.searchManager.restoreSearchResults();
+            }
+        } catch (error) {
+            console.error(`Error navigating to tab ${tabId}:`, error);
+            this.showError('Navigation failed. Please try again.');
         }
     }
 
@@ -913,6 +1213,32 @@ class NavigationManager {
     setTimeout(() => {
         document.body.removeChild(errorDiv);
     }, 5000);
+    }
+
+    // Recursively search config for the parent section of a tabId
+    findParentSectionIdForTab(tabId, sections) {
+        for (const sectionKey in sections) {
+            const section = sections[sectionKey];
+            if (section.groups && Array.isArray(section.groups)) {
+                for (const group of section.groups) {
+                    if (group.items && group.items.some(item => item.id === tabId)) {
+                        return sectionKey;
+                    }
+                }
+            }
+            if (section.children && Array.isArray(section.children)) {
+                for (const child of section.children) {
+                    // Check items directly under this child
+                    if (child.items && child.items.some(item => item.id === tabId)) {
+                        return sectionKey;
+                    }
+                    // Recurse into deeper children
+                    const found = this.findParentSectionIdForTab(tabId, { [child.id]: child });
+                    if (found) return sectionKey;
+                }
+            }
+        }
+        return null;
     }
 }
 
@@ -1366,36 +1692,101 @@ class EventManager {
         this.navigationManager = navigationManager;
         this.themeManager = themeManager;
         this.searchManager = searchManager;
+        this.resizeTimeout = null;
         this.setupEvents();
     }
 
     setupEvents() {
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                this.themeManager.toggleTheme();
+            });
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.searchManager.performSearch(e.target.value);
+            });
+        }
+
+        // Header search functionality
+        const headerSearchInput = document.getElementById('search-input-header');
+        if (headerSearchInput) {
+            headerSearchInput.addEventListener('input', (e) => {
+                this.searchManager.performSearch(e.target.value);
+            });
+        }
+
+        // Mobile sidebar toggle
+        const navToggle = document.getElementById('__navigation');
+        if (navToggle) {
+            navToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    // Sidebar is now visible
+                    setTimeout(() => {
+                        this.navigationManager.adjustLayoutForSidebar();
+                    }, 300); // Wait for transition
+                } else {
+                    // Sidebar is now hidden
+                    this.navigationManager.resetLayoutForHiddenSidebar();
+                }
+            });
+        }
+
+        // Window resize handler for responsive layout
+        window.addEventListener('resize', () => {
+            // Debounce the resize event
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => {
+                if (window.innerWidth <= 1008) { // 63em = 1008px
+                    // Reset to default layout on mobile
+                    this.navigationManager.resetLayoutForHiddenSidebar();
+                } else {
+                    // Adjust layout on desktop
+                    this.navigationManager.adjustLayoutForSidebar();
+                }
+            }, 250);
+        });
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        this.navigateWithArrows('left');
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        this.navigateWithArrows('right');
-                        break;
-                    case 'k':
-                        e.preventDefault();
-                        this.focusSearch();
-                        break;
+            this.navigateWithArrows(e.key);
+        });
+
+        // Copy to clipboard functionality
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('copy-btn')) {
+                const codeBlock = e.target.closest('.code-block');
+                if (codeBlock) {
+                    const code = codeBlock.querySelector('code');
+                    if (code) {
+                        this.copyToClipboard(code.textContent);
+                    }
                 }
             }
         });
-        
-        // Copy code blocks on click
+
+        // Answer toggle functionality
         document.addEventListener('click', (e) => {
-            if (e.target.tagName === 'CODE' && e.target.closest('.code-block')) {
-                const codeText = e.target.textContent;
-                this.copyToClipboard(codeText);
-                this.showNotification('Code copied to clipboard!');
+            if (e.target.classList.contains('answer-toggle-btn')) {
+                const answerSection = e.target.nextElementSibling;
+                if (answerSection && answerSection.classList.contains('answer-section')) {
+                    answerSection.classList.toggle('hidden');
+                    answerSection.classList.toggle('visible');
+                    e.target.classList.toggle('active');
+                }
+            }
+        });
+
+        // Focus search on Ctrl+K
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                this.focusSearch();
             }
         });
     }
@@ -1597,8 +1988,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // Global functions for HTML onclick handlers
 function openTab(event, tabId) {
+    event.preventDefault();
     if (app && app.navigationManager) {
         app.navigationManager.navigateToTab(tabId);
+    } else {
+        console.error('Application not initialized or navigation manager not available');
     }
 }
 

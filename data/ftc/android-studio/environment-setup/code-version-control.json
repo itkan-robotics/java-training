@@ -1,0 +1,56 @@
+{
+  "type": "lesson",
+  "title": "Version Control with Git in FTC",
+  "sections": [
+    {
+      "type": "section",
+      "title": "What is Version Control and Why Use It?",
+      "content": "<p>Version control is a system that tracks changes to your code over time. It lets you experiment safely, collaborate with teammates, and recover from mistakes. Git is the most popular version control system for software projects, including FTC robotics.</p>"
+    },
+    {
+      "type": "section",
+      "title": "Setting Up Git in Android Studio",
+      "content": "<ol><li>Install Git from <a href=\"https://git-scm.com/downloads\" target=\"_blank\">git-scm.com</a>.</li><li>Open your FTC project in Android Studio.</li><li>Go to <b>VCS &gt; Enable Version Control Integration</b> and select <b>Git</b>.</li><li>Use the <b>Git</b> panel at the bottom to manage your repository.</li></ol>"
+    },
+    {
+      "type": "section",
+      "title": "Basic Git Workflow (commit, push, pull)",
+      "content": "<ul><li><b>Commit:</b> Save a snapshot of your changes locally.</li><li><b>Push:</b> Upload your commits to a remote repository (e.g., GitHub).</li><li><b>Pull:</b> Download new commits from the remote repository.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Using GitHub for Collaboration",
+      "content": "<ol><li>Create a free account at <a href=\"https://github.com/\" target=\"_blank\">github.com</a>.</li><li>Create a new repository for your team.</li><li>Push your local code to GitHub using Android Studio or the command line.</li><li>Invite teammates to collaborate and review code.</li></ol>"
+    },
+    {
+      "type": "section",
+      "title": "Example: .gitignore for FTC Projects",
+      "content": "<pre><code># Ignore build files and local settings\n/build/\n/.idea/\n*.iml\nlocal.properties\n.DS_Store\n*.apk\n*.keystore\n</code></pre>"
+    },
+    {
+      "type": "section",
+      "title": "Best Practices for Version Control",
+      "content": "<ul><li>Commit early and often with clear messages.</li><li>Never commit build files or secrets.</li><li>Use branches for new features or experiments.</li><li>Pull before you push to avoid conflicts.</li><li>Review teammates' code before merging.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Troubleshooting Common Git Issues",
+      "content": "<ul><li><b>Merge conflicts?</b> Carefully review and resolve differences in the affected files.</li><li><b>Can't push?</b> Make sure you have permission and your branch is up to date.</li><li><b>Accidentally deleted code?</b> Use Git history to restore previous versions.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Explore More",
+      "content": "<ul><li><a href=\"https://www.atlassian.com/git/tutorials\" target=\"_blank\">Atlassian Git Tutorials</a></li><li><a href=\"https://docs.github.com/en/get-started/quickstart\" target=\"_blank\">GitHub Quickstart</a></li><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/git.html\" target=\"_blank\">gm0: Git for FTC</a></li></ul>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Version Control",
+      "tasks": [
+        "Initialize a Git repository in your FTC project.",
+        "Make a commit and push it to GitHub.",
+        "Add a .gitignore file and verify build files are not tracked.",
+        "Resolve a merge conflict with a teammate."
+      ]
+    }
+  ]
+} 

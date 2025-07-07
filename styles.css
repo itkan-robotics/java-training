@@ -531,22 +531,27 @@ body {
   width: 15em;
   height: 100vh;
   background-color: var(--color-sidebar-background);
-  transition: left 0.3s ease;
+  transition: left 0.3s ease, width 0.3s ease;
   z-index: 2;
   overflow: hidden;
   box-shadow: var(--shadow-xl);
   backdrop-filter: blur(8px);
   border-right: 1px solid var(--color-background-border);
+  min-width: 15em; /* Ensure minimum width */
+  max-width: 600px; /* Maximum width for very wide content */
 }
-
-/* Sidebar Content */
+  /* Sidebar Content */
 .sidebar-drawer .sidebar-container {
   padding-top: 0px;
+  transition: width 0.3s ease;
+  width: 100%; /* Take full width of parent */
 }
 
 .sidebar-container {
   box-sizing: border-box;
   width: 15em;
+  transition: width 0.3s ease;
+  min-width: 15em;
 }
 
 .sidebar-sticky {
@@ -557,13 +562,33 @@ body {
   top: 0;
 }
 
+/* Sidebar scroll area fills remaining height and always scrolls if needed */
 .sidebar-scroll {
-  flex-grow: 1;
-  flex-shrink: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  max-height: calc(100vh - 20%); /* Account for brand area */
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - var(--header-height) - 4rem);
+    padding-bottom: 4rem;
+    padding-top: 1rem;
+}
+
+.sidebar-tree {
+  display: flex;
+  flex-direction: column;
+}
+
+.parent-folder {
+  display: block;
+}
+
+.children-nav {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.children-nav.expanded {
+  display: block;
 }
 
 .sidebar-brand {
@@ -632,6 +657,9 @@ body {
   text-transform: uppercase;
 }
 
+
+
+/* Enhanced navigation item spacing for dynamic width */
 .sidebar-tree .reference {
   color: var(--color-sidebar-link-text);
   box-sizing: border-box;
@@ -646,6 +674,9 @@ body {
   margin: 0.125rem 0.5rem;
   transition: all 0.2s ease;
   position: relative;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Show ellipsis for very long text */
 }
 
 .sidebar-tree .reference:hover {
@@ -653,6 +684,60 @@ body {
   color: var(--color-sidebar-link-text);
   transform: translateX(4px);
   box-shadow: var(--shadow-sm);
+}
+
+/* Better spacing for nested navigation */
+.children-nav {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.children-nav.expanded {
+  display: block;
+  animation: expandDown 0.3s ease-out;
+}
+
+.children-nav.collapsed {
+  display: none;
+  animation: collapseUp 0.3s ease-in;
+}
+
+/* Ensure child items have proper spacing */
+.child-tab {
+  margin: 0;
+  padding: 0;
+}
+
+.child-reference {
+  padding-left: 2rem !important; /* Indent child items */
+  font-size: 0.9em;
+  color: var(--color-sidebar-link-text);
+  transition: all 0.2s ease;
+}
+
+/* Parent items with better visual hierarchy */
+.parent-reference {
+  font-weight: 600;
+  color: var(--color-sidebar-link-text--top-level);
+  padding: var(--sidebar-item-spacing-vertical) var(--sidebar-item-spacing-horizontal);
+  transition: all 0.2s ease;
+}
+
+/* Expand icon positioning */
+.expand-icon {
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+  font-size: 0.75em;
+  width: 1.2em;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  line-height: 1;
+  font-weight: bold;
 }
 
 .sidebar-tree .toctree-l1 > .reference {
@@ -671,7 +756,7 @@ body {
 .main {
   flex: 1; /* Take remaining space if using flexbox for layout */
   margin-left: 0; /* Start with full-width content */
-  transition: margin-left 0.3s ease; /* Smooth transition for content */
+  transition: margin-left 0.3s ease, max-width 0.3s ease; /* Smooth transition for content */
   padding-top: calc(var(--header-height)); /* Adjust 1rem as needed for spacing */
 
 }
@@ -1355,9 +1440,14 @@ footer {
 
 .expand-icon {
     margin-right: 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     transition: transform 0.2s ease;
     user-select: none;
+    font-family: Arial, sans-serif;
+    line-height: 1;
+    width: 1.2em;
+    text-align: center;
+    font-weight: bold;
 }
 
 /* Child Navigation Container */
@@ -1370,7 +1460,7 @@ footer {
 }
 
 .children-nav.expanded {
-    max-height: 500px;
+    max-height: none;
     opacity: 1;
 }
 
@@ -1476,7 +1566,7 @@ footer {
         transform: scaleY(0);
     }
     to {
-        max-height: 500px;
+        max-height: none;
         opacity: 1;
         transform: scaleY(1);
     }
@@ -1484,7 +1574,7 @@ footer {
 
 @keyframes collapseUp {
     from {
-        max-height: 500px;
+        max-height: none;
         opacity: 1;
         transform: scaleY(1);
     }
@@ -1687,3 +1777,5 @@ footer {
         opacity: 0;
     }
 } 
+
+ 
