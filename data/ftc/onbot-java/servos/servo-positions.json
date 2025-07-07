@@ -1,0 +1,157 @@
+{
+  "title": "Servo Positions",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Servo Positions",
+      "content": "Servo position control is the foundation of precise mechanism operation in FTC robots. Understanding how to set, read, and manage servo positions enables teams to create sophisticated and reliable robot mechanisms."
+    },
+    {
+      "type": "rules-box",
+      "title": "Servo Position Fundamentals",
+      "subtitle": "Key concepts for servo positioning:",
+      "items": [
+        "Position values range from 0.0 to 1.0",
+        "0.0 represents full counterclockwise rotation",
+        "0.5 represents the center/middle position",
+        "1.0 represents full clockwise rotation",
+        "Positions can be read and set programmatically",
+        "Gradual movement prevents mechanical stress"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Position Range and Mapping",
+      "content": "Servo positions are normalized to a 0.0 to 1.0 range, regardless of the actual mechanical range of the servo. This provides consistent control across different servo models and applications."
+    },
+    {
+      "type": "list",
+      "title": "Position Mapping",
+      "items": [
+        "<strong>0.0:</strong> Full counterclockwise (minimum position)",
+        "<strong>0.25:</strong> Quarter turn counterclockwise from center",
+        "<strong>0.5:</strong> Center position (middle of range)",
+        "<strong>0.75:</strong> Quarter turn clockwise from center",
+        "<strong>1.0:</strong> Full clockwise (maximum position)"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Basic Position Control",
+      "language": "java",
+      "content": "// Basic servo position control\nServo testServo = hardwareMap.get(Servo.class, \"test_servo\");\n\n// Set servo to different positions\ntestServo.setPosition(0.0);   // Full counterclockwise\ntestServo.setPosition(0.25);  // Quarter turn counterclockwise\ntestServo.setPosition(0.5);   // Center position\ntestServo.setPosition(0.75);  // Quarter turn clockwise\ntestServo.setPosition(1.0);   // Full clockwise\n\n// Position constants for readability\nfinal double SERVO_MIN = 0.0;\nfinal double SERVO_MAX = 1.0;\nfinal double SERVO_CENTER = 0.5;\nfinal double SERVO_QUARTER_CCW = 0.25;\nfinal double SERVO_QUARTER_CW = 0.75;\n\n// Use constants for better code readability\ntestServo.setPosition(SERVO_CENTER);\ntestServo.setPosition(SERVO_QUARTER_CW);\n\n// Position validation\npublic void setServoPosition(Servo servo, double position) {\n    // Ensure position is within valid range\n    position = Math.max(0.0, Math.min(1.0, position));\n    servo.setPosition(position);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Reading Servo Positions",
+      "content": "Reading current servo positions is useful for monitoring mechanism state, implementing safety features, and creating complex control logic."
+    },
+    {
+      "type": "code",
+      "title": "Position Reading and Monitoring",
+      "language": "java",
+      "content": "// Reading servo positions\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n\n// Get current position\ndouble currentPosition = armServo.getPosition();\n\n// Monitor position changes\npublic void monitorServoPosition(Servo servo, String servoName) {\n    double position = servo.getPosition();\n    telemetry.addData(servoName + \" Position\", \"%.3f\", position);\n    \n    // Convert position to degrees for easier understanding\n    double degrees = position * 180.0; // Assuming 180-degree servo\n    telemetry.addData(servoName + \" Degrees\", \"%.1f°\", degrees);\n}\n\n// Position comparison\npublic boolean isServoAtPosition(Servo servo, double targetPosition, double tolerance) {\n    double currentPosition = servo.getPosition();\n    return Math.abs(currentPosition - targetPosition) <= tolerance;\n}\n\n// Wait for servo to reach position\npublic void waitForServoPosition(Servo servo, double targetPosition, double tolerance) {\n    while (!isServoAtPosition(servo, targetPosition, tolerance) && opModeIsActive()) {\n        sleep(50); // Small delay\n    }\n}\n\n// Position history tracking\nprivate double lastPosition = 0.5;\npublic boolean hasPositionChanged(Servo servo) {\n    double currentPosition = servo.getPosition();\n    boolean changed = Math.abs(currentPosition - lastPosition) > 0.01;\n    lastPosition = currentPosition;\n    return changed;\n}"
+    },
+    {
+      "type": "text",
+      "title": "Gradual Position Changes",
+      "content": "Gradual position changes prevent mechanical stress, reduce wear, and provide smoother mechanism operation. This is especially important for heavy loads or precise applications."
+    },
+    {
+      "type": "code",
+      "title": "Gradual Movement Implementation",
+      "language": "java",
+      "content": "// Gradual position changes\npublic void moveServoGradually(Servo servo, double targetPosition, double stepSize) {\n    double currentPosition = servo.getPosition();\n    \n    if (currentPosition < targetPosition) {\n        // Move toward target\n        double newPosition = Math.min(currentPosition + stepSize, targetPosition);\n        servo.setPosition(newPosition);\n    } else if (currentPosition > targetPosition) {\n        // Move toward target\n        double newPosition = Math.max(currentPosition - stepSize, targetPosition);\n        servo.setPosition(newPosition);\n    }\n}\n\n// Smooth movement to target position\npublic void moveToPositionSmoothly(Servo servo, double targetPosition, double stepSize, int delayMs) {\n    double currentPosition = servo.getPosition();\n    \n    while (Math.abs(currentPosition - targetPosition) > stepSize && opModeIsActive()) {\n        moveServoGradually(servo, targetPosition, stepSize);\n        currentPosition = servo.getPosition();\n        sleep(delayMs);\n    }\n    \n    // Final position setting\n    servo.setPosition(targetPosition);\n}\n\n// Variable speed movement\npublic void moveToPositionWithSpeed(Servo servo, double targetPosition, double speed) {\n    // speed ranges from 0.0 (very slow) to 1.0 (instant)\n    double stepSize = speed * 0.01; // Convert speed to step size\n    int delayMs = (int) (50 / speed); // Adjust delay based on speed\n    \n    moveToPositionSmoothly(servo, targetPosition, stepSize, delayMs);\n}\n\n// Acceleration and deceleration\npublic void moveToPositionWithAcceleration(Servo servo, double targetPosition) {\n    double currentPosition = servo.getPosition();\n    double distance = Math.abs(targetPosition - currentPosition);\n    \n    // Start slow, accelerate, then decelerate\n    double stepSize = 0.005; // Small initial step\n    double maxStepSize = 0.02; // Maximum step size\n    double acceleration = 0.001; // Step size increase per iteration\n    \n    while (Math.abs(currentPosition - targetPosition) > stepSize && opModeIsActive()) {\n        moveServoGradually(servo, targetPosition, stepSize);\n        currentPosition = servo.getPosition();\n        \n        // Accelerate\n        stepSize = Math.min(maxStepSize, stepSize + acceleration);\n        \n        // Decelerate near target\n        double distanceToTarget = Math.abs(targetPosition - currentPosition);\n        if (distanceToTarget < 0.1) {\n            stepSize = Math.max(0.005, stepSize - acceleration * 2);\n        }\n        \n        sleep(50);\n    }\n    \n    servo.setPosition(targetPosition);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Position Presets and Calibration",
+      "content": "Using position presets and calibration improves code readability and ensures consistent mechanism operation across different robot configurations."
+    },
+    {
+      "type": "code",
+      "title": "Position Presets and Calibration",
+      "language": "java",
+      "content": "// Position presets for common applications\npublic class ServoPresets {\n    // Arm positions\n    public static final double ARM_UP = 0.0;\n    public static final double ARM_DOWN = 1.0;\n    public static final double ARM_MIDDLE = 0.5;\n    public static final double ARM_PICKUP = 0.2;\n    public static final double ARM_DELIVERY = 0.8;\n    \n    // Claw positions\n    public static final double CLAW_OPEN = 1.0;\n    public static final double CLAW_CLOSED = 0.0;\n    public static final double CLAW_PARTIAL = 0.3;\n    \n    // Flap positions\n    public static final double FLAP_OPEN = 0.0;\n    public static final double FLAP_CLOSED = 1.0;\n}\n\n// Servo controller with presets\npublic class ServoController {\n    private Servo servo;\n    private double minPosition = 0.0;\n    private double maxPosition = 1.0;\n    \n    public ServoController(Servo servo) {\n        this.servo = servo;\n    }\n    \n    public ServoController(Servo servo, double minPos, double maxPos) {\n        this.servo = servo;\n        this.minPosition = minPos;\n        this.maxPosition = maxPos;\n    }\n    \n    public void setPosition(double position) {\n        position = Math.max(minPosition, Math.min(maxPosition, position));\n        servo.setPosition(position);\n    }\n    \n    public void moveToPreset(double preset) {\n        setPosition(preset);\n    }\n    \n    public double getPosition() {\n        return servo.getPosition();\n    }\n}\n\n// Calibration methods\npublic class ServoCalibrator {\n    private Servo servo;\n    \n    public ServoCalibrator(Servo servo) {\n        this.servo = servo;\n    }\n    \n    public void calibrateCenter() {\n        // Move to center and wait for manual adjustment\n        servo.setPosition(0.5);\n        telemetry.addData(\"Calibration\", \"Adjust servo to center position\");\n        telemetry.addData(\"Current Position\", servo.getPosition());\n        telemetry.update();\n        \n        // Wait for user input\n        while (!gamepad1.a && opModeIsActive()) {\n            sleep(100);\n        }\n    }\n    \n    public void findLimits() {\n        // Find mechanical limits\n        double minPos = 0.0;\n        double maxPos = 1.0;\n        \n        // Test minimum position\n        servo.setPosition(0.0);\n        sleep(2000);\n        telemetry.addData(\"Min Position Test\", \"Check if servo reaches minimum\");\n        telemetry.update();\n        \n        // Test maximum position\n        servo.setPosition(1.0);\n        sleep(2000);\n        telemetry.addData(\"Max Position Test\", \"Check if servo reaches maximum\");\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Position Safety and Limits",
+      "content": "Implementing position safety features prevents mechanical damage and ensures reliable robot operation."
+    },
+    {
+      "type": "rules-box",
+      "title": "Position Safety Guidelines",
+      "subtitle": "Essential safety practices:",
+      "items": [
+        "Always validate position values before setting them",
+        "Implement position limits for each servo",
+        "Use gradual movement for large position changes",
+        "Monitor servo temperature during extended operation",
+        "Test servo limits before competition use",
+        "Implement emergency stop functionality"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Position Safety Implementation",
+      "language": "java",
+      "content": "// Position safety and limits\npublic class SafeServoController {\n    private Servo servo;\n    private double minPosition = 0.0;\n    private double maxPosition = 1.0;\n    private double currentPosition = 0.5;\n    private double lastPosition = 0.5;\n    private double maxPositionChange = 0.2; // Maximum allowed position change\n    \n    public SafeServoController(Servo servo, double minPos, double maxPos) {\n        this.servo = servo;\n        this.minPosition = minPos;\n        this.maxPosition = maxPos;\n        this.currentPosition = (minPos + maxPos) / 2.0;\n        servo.setPosition(currentPosition);\n    }\n    \n    public void setPosition(double position) {\n        // Validate position range\n        position = Math.max(minPosition, Math.min(maxPosition, position));\n        \n        // Check for excessive position change\n        double positionChange = Math.abs(position - currentPosition);\n        if (positionChange > maxPositionChange) {\n            // Large change detected, move gradually\n            moveToPositionGradually(position);\n        } else {\n            servo.setPosition(position);\n        }\n        \n        lastPosition = currentPosition;\n        currentPosition = position;\n    }\n    \n    private void moveToPositionGradually(double targetPosition) {\n        double stepSize = maxPositionChange / 10.0; // Small steps\n        \n        while (Math.abs(currentPosition - targetPosition) > stepSize && opModeIsActive()) {\n            if (currentPosition < targetPosition) {\n                currentPosition += stepSize;\n            } else {\n                currentPosition -= stepSize;\n            }\n            \n            servo.setPosition(currentPosition);\n            sleep(100);\n        }\n        \n        servo.setPosition(targetPosition);\n        currentPosition = targetPosition;\n    }\n    \n    public void setMaxPositionChange(double maxChange) {\n        this.maxPositionChange = Math.max(0.01, Math.min(0.5, maxChange));\n    }\n    \n    public double getPosition() {\n        return currentPosition;\n    }\n}\n\n// Emergency stop functionality\npublic void emergencyStopServos(Servo[] servos) {\n    for (Servo servo : servos) {\n        // Stop at current position\n        servo.setPosition(servo.getPosition());\n    }\n    \n    telemetry.addData(\"STATUS\", \"SERVO EMERGENCY STOP\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Position Control",
+      "content": "Advanced position control techniques enable sophisticated mechanism operation and autonomous functionality."
+    },
+    {
+      "type": "list",
+      "title": "Advanced Techniques",
+      "items": [
+        "<strong>Position Sequences:</strong> Predefined movement patterns",
+        "<strong>Position Interpolation:</strong> Smooth transitions between positions",
+        "<strong>Position Feedback:</strong> Closed-loop position control",
+        "<strong>Position Memory:</strong> Remember and return to previous positions",
+        "<strong>Position Synchronization:</strong> Coordinate multiple servos"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Advanced Position Control Examples",
+      "language": "java",
+      "content": "// Position sequences\npublic class ServoSequence {\n    private Servo servo;\n    private double[] positions;\n    private int currentIndex = 0;\n    \n    public ServoSequence(Servo servo, double[] positions) {\n        this.servo = servo;\n        this.positions = positions;\n    }\n    \n    public void nextPosition() {\n        if (currentIndex < positions.length) {\n            servo.setPosition(positions[currentIndex]);\n            currentIndex++;\n        }\n    }\n    \n    public void reset() {\n        currentIndex = 0;\n    }\n}\n\n// Position interpolation\npublic void interpolatePosition(Servo servo, double startPos, double endPos, int steps) {\n    for (int i = 0; i <= steps; i++) {\n        double t = (double) i / steps;\n        double position = startPos + (endPos - startPos) * t;\n        servo.setPosition(position);\n        sleep(50);\n    }\n}\n\n// Position memory\npublic class ServoMemory {\n    private Servo servo;\n    private double[] memory = new double[10];\n    private int memoryIndex = 0;\n    \n    public void savePosition() {\n        memory[memoryIndex] = servo.getPosition();\n        memoryIndex = (memoryIndex + 1) % memory.length;\n    }\n    \n    public void recallPosition(int index) {\n        if (index >= 0 && index < memory.length) {\n            servo.setPosition(memory[index]);\n        }\n    }\n}\n\n// Synchronized servo movement\npublic void moveServosSynchronized(Servo[] servos, double[] targetPositions) {\n    if (servos.length != targetPositions.length) return;\n    \n    // Find the servo that needs to move the most\n    double maxDistance = 0;\n    for (int i = 0; i < servos.length; i++) {\n        double distance = Math.abs(targetPositions[i] - servos[i].getPosition());\n        maxDistance = Math.max(maxDistance, distance);\n    }\n    \n    // Move all servos proportionally\n    int steps = (int) (maxDistance / 0.01);\n    for (int step = 0; step <= steps; step++) {\n        double t = (double) step / steps;\n        \n        for (int i = 0; i < servos.length; i++) {\n            double startPos = servos[i].getPosition();\n            double endPos = targetPositions[i];\n            double currentPos = startPos + (endPos - startPos) * t;\n            servos[i].setPosition(currentPos);\n        }\n        \n        sleep(20);\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Servos",
+          "id": "servos"
+        },
+        {
+          "label": "Servo Types",
+          "id": "servo-types"
+        },
+        {
+          "label": "Continuous vs Non-Continuous",
+          "id": "continuous-vs-noncontinuous"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Servo Positions Practice",
+      "description": "Practice these exercises to master servo positioning:",
+      "tasks": [
+        "Create an OpMode that moves a servo through all positions",
+        "Implement gradual movement with different speeds",
+        "Create position presets for common applications",
+        "Practice reading and monitoring servo positions",
+        "Implement position safety and limits",
+        "Create position sequences and patterns",
+        "Test servo calibration and limit finding"
+      ],
+      "content": "// Practice Exercise: Servo Position Control\n// Create an OpMode that demonstrates various position control techniques\n// Include safety features and telemetry display\n// Test different movement patterns and speeds\n\n@TeleOp(name=\"Servo Position Test\", group=\"Testing\")\npublic class ServoPositionTestOpMode extends LinearOpMode {\n    \n    private Servo testServo;\n    private SafeServoController safeController;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize servo and safe controller\n        testServo = hardwareMap.get(Servo.class, \"test_servo\");\n        safeController = new SafeServoController(testServo, 0.1, 0.9);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Position presets\n            if (gamepad1.a) {\n                safeController.setPosition(0.0); // Minimum\n            } else if (gamepad1.b) {\n                safeController.setPosition(0.5); // Center\n            } else if (gamepad1.x) {\n                safeController.setPosition(1.0); // Maximum\n            }\n            \n            // Gradual movement with joystick\n            double joystickInput = gamepad1.right_stick_y;\n            if (Math.abs(joystickInput) > 0.1) {\n                double currentPos = safeController.getPosition();\n                double newPos = currentPos + (joystickInput * 0.01);\n                safeController.setPosition(newPos);\n            }\n            \n            // Display telemetry\n            telemetry.addData(\"Current Position\", \"%.3f\", safeController.getPosition());\n            telemetry.addData(\"Raw Position\", \"%.3f\", testServo.getPosition());\n            telemetry.addData(\"Joystick Input\", \"%.2f\", joystickInput);\n            telemetry.update();\n        }\n    }\n}"
+    }
+  ]
+} 

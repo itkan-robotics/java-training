@@ -1,0 +1,150 @@
+{
+  "title": "State Machines",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to State Machines",
+      "content": "State machines are a powerful programming pattern for managing complex robot behaviors. This lesson covers how to design, implement, and debug state machines effectively in FTC programming."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is a State Machine?",
+      "subtitle": "A state machine is a programming pattern that:",
+      "items": [
+        "Manages robot behavior through distinct states",
+        "Transitions between states based on conditions",
+        "Executes specific actions in each state",
+        "Provides clear, predictable robot behavior",
+        "Makes complex behaviors easier to debug and maintain"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "State Machine Theory",
+      "content": "State machines consist of states, transitions, and actions. Each state represents a specific robot behavior, transitions occur when conditions are met, and actions are performed within each state."
+    },
+    {
+      "type": "code",
+      "title": "Basic State Machine Structure",
+      "language": "java",
+      "content": "// Basic state machine structure\npublic class StateMachineExample extends LinearOpMode {\n    \n    // Define states as constants\n    private enum RobotState {\n        IDLE,\n        MOVING_FORWARD,\n        TURNING,\n        COMPLETED\n    }\n    \n    private RobotState currentState = RobotState.IDLE;\n    private DcMotor leftMotor, rightMotor;\n    private double startTime;\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Update state machine\n            updateStateMachine();\n            \n            // Execute current state\n            executeCurrentState();\n            \n            // Update telemetry\n            updateTelemetry();\n        }\n    }\n    \n    private void updateStateMachine() {\n        switch (currentState) {\n            case IDLE:\n                // Transition from IDLE to MOVING_FORWARD\n                if (gamepad1.a) {\n                    currentState = RobotState.MOVING_FORWARD;\n                    startTime = getRuntime().seconds();\n                }\n                break;\n                \n            case MOVING_FORWARD:\n                // Transition from MOVING_FORWARD to TURNING\n                if (getRuntime().seconds() - startTime > 2.0) {\n                    currentState = RobotState.TURNING;\n                    startTime = getRuntime().seconds();\n                }\n                break;\n                \n            case TURNING:\n                // Transition from TURNING to COMPLETED\n                if (getRuntime().seconds() - startTime > 1.0) {\n                    currentState = RobotState.COMPLETED;\n                }\n                break;\n                \n            case COMPLETED:\n                // Stay in COMPLETED state\n                break;\n        }\n    }\n    \n    private void executeCurrentState() {\n        switch (currentState) {\n            case IDLE:\n                // Stop all motors\n                leftMotor.setPower(0);\n                rightMotor.setPower(0);\n                break;\n                \n            case MOVING_FORWARD:\n                // Move forward\n                leftMotor.setPower(0.5);\n                rightMotor.setPower(0.5);\n                break;\n                \n            case TURNING:\n                // Turn right\n                leftMotor.setPower(0.3);\n                rightMotor.setPower(-0.3);\n                break;\n                \n            case COMPLETED:\n                // Stop all motors\n                leftMotor.setPower(0);\n                rightMotor.setPower(0);\n                break;\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Current State\", currentState);\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", getRuntime().seconds());\n        telemetry.addData(\"State Time\", \"%.1f seconds\", getRuntime().seconds() - startTime);\n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced State Machine Features",
+      "content": "Advanced state machines can include entry/exit actions, state history, and complex transition conditions. These features make state machines more powerful and easier to debug."
+    },
+    {
+      "type": "code",
+      "title": "Advanced State Machine with Entry/Exit Actions",
+      "language": "java",
+      "content": "// Advanced state machine with entry/exit actions\npublic class AdvancedStateMachine extends LinearOpMode {\n    \n    private enum RobotState {\n        IDLE,\n        APPROACHING_TARGET,\n        GRABBING,\n        RETURNING,\n        DROPPING\n    }\n    \n    private RobotState currentState = RobotState.IDLE;\n    private RobotState previousState = RobotState.IDLE;\n    private DcMotor leftMotor, rightMotor;\n    private Servo clawServo;\n    private TouchSensor touchSensor;\n    private double stateStartTime;\n    private boolean stateInitialized = false;\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        waitForStart();\n        \n        while (opModeIsActive()) {\n            updateStateMachine();\n            executeCurrentState();\n            updateTelemetry();\n        }\n    }\n    \n    private void updateStateMachine() {\n        RobotState newState = currentState; // Default to current state\n        \n        switch (currentState) {\n            case IDLE:\n                if (gamepad1.a) {\n                    newState = RobotState.APPROACHING_TARGET;\n                }\n                break;\n                \n            case APPROACHING_TARGET:\n                if (touchSensor.isPressed()) {\n                    newState = RobotState.GRABBING;\n                } else if (gamepad1.b) {\n                    newState = RobotState.IDLE; // Emergency stop\n                }\n                break;\n                \n            case GRABBING:\n                if (getRuntime().seconds() - stateStartTime > 1.0) {\n                    newState = RobotState.RETURNING;\n                }\n                break;\n                \n            case RETURNING:\n                if (getRuntime().seconds() - stateStartTime > 3.0) {\n                    newState = RobotState.DROPPING;\n                }\n                break;\n                \n            case DROPPING:\n                if (getRuntime().seconds() - stateStartTime > 1.0) {\n                    newState = RobotState.IDLE;\n                }\n                break;\n        }\n        \n        // Handle state transition\n        if (newState != currentState) {\n            exitCurrentState();\n            previousState = currentState;\n            currentState = newState;\n            enterNewState();\n        }\n    }\n    \n    private void enterNewState() {\n        stateStartTime = getRuntime().seconds();\n        stateInitialized = false;\n        \n        switch (currentState) {\n            case IDLE:\n                telemetry.addData(\"STATE CHANGE\", \"Entering IDLE state\");\n                break;\n            case APPROACHING_TARGET:\n                telemetry.addData(\"STATE CHANGE\", \"Entering APPROACHING_TARGET state\");\n                break;\n            case GRABBING:\n                telemetry.addData(\"STATE CHANGE\", \"Entering GRABBING state\");\n                break;\n            case RETURNING:\n                telemetry.addData(\"STATE CHANGE\", \"Entering RETURNING state\");\n                break;\n            case DROPPING:\n                telemetry.addData(\"STATE CHANGE\", \"Entering DROPPING state\");\n                break;\n        }\n    }\n    \n    private void exitCurrentState() {\n        switch (currentState) {\n            case APPROACHING_TARGET:\n                // Stop motors when exiting approach state\n                leftMotor.setPower(0);\n                rightMotor.setPower(0);\n                break;\n            case GRABBING:\n                // Ensure claw is closed when exiting grab state\n                clawServo.setPosition(1.0);\n                break;\n            case DROPPING:\n                // Ensure claw is open when exiting drop state\n                clawServo.setPosition(0.0);\n                break;\n        }\n    }\n    \n    private void executeCurrentState() {\n        switch (currentState) {\n            case IDLE:\n                if (!stateInitialized) {\n                    leftMotor.setPower(0);\n                    rightMotor.setPower(0);\n                    clawServo.setPosition(0.0); // Open claw\n                    stateInitialized = true;\n                }\n                break;\n                \n            case APPROACHING_TARGET:\n                if (!stateInitialized) {\n                    // Initialize approach behavior\n                    leftMotor.setPower(0.3);\n                    rightMotor.setPower(0.3);\n                    stateInitialized = true;\n                }\n                break;\n                \n            case GRABBING:\n                if (!stateInitialized) {\n                    // Initialize grabbing behavior\n                    clawServo.setPosition(1.0); // Close claw\n                    stateInitialized = true;\n                }\n                break;\n                \n            case RETURNING:\n                if (!stateInitialized) {\n                    // Initialize return behavior\n                    leftMotor.setPower(-0.3);\n                    rightMotor.setPower(-0.3);\n                    stateInitialized = true;\n                }\n                break;\n                \n            case DROPPING:\n                if (!stateInitialized) {\n                    // Initialize dropping behavior\n                    clawServo.setPosition(0.0); // Open claw\n                    stateInitialized = true;\n                }\n                break;\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"=== STATE MACHINE DEBUG ===\", \"\");\n        telemetry.addData(\"Current State\", currentState);\n        telemetry.addData(\"Previous State\", previousState);\n        telemetry.addData(\"State Time\", \"%.1f seconds\", getRuntime().seconds() - stateStartTime);\n        telemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n        telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n        telemetry.addData(\"Left Motor Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "State Machine Debugging Techniques",
+      "content": "Debugging state machines requires understanding the current state, transition conditions, and timing. Use these techniques to identify and fix state machine problems."
+    },
+    {
+      "type": "code",
+      "title": "State Machine Debugging Example",
+      "language": "java",
+      "content": "// State machine debugging example\nprivate void debugStateMachine() {\n    telemetry.addData(\"=== STATE MACHINE DEBUG ===\", \"\");\n    \n    // Debug current state\n    telemetry.addData(\"Current State\", currentState);\n    telemetry.addData(\"State Time\", \"%.1f seconds\", getRuntime().seconds() - stateStartTime);\n    telemetry.addData(\"State Initialized\", stateInitialized);\n    \n    // Debug transition conditions\n    telemetry.addData(\"=== TRANSITION CONDITIONS ===\", \"\");\n    switch (currentState) {\n        case IDLE:\n            telemetry.addData(\"A Button Pressed\", gamepad1.a);\n            telemetry.addData(\"Can Transition to APPROACHING_TARGET\", gamepad1.a);\n            break;\n            \n        case APPROACHING_TARGET:\n            telemetry.addData(\"Touch Sensor Pressed\", touchSensor.isPressed());\n            telemetry.addData(\"B Button Pressed\", gamepad1.b);\n            telemetry.addData(\"Can Transition to GRABBING\", touchSensor.isPressed());\n            telemetry.addData(\"Can Transition to IDLE\", gamepad1.b);\n            break;\n            \n        case GRABBING:\n            double grabTime = getRuntime().seconds() - stateStartTime;\n            telemetry.addData(\"Grab Time\", \"%.1f seconds\", grabTime);\n            telemetry.addData(\"Time Threshold Met\", grabTime > 1.0);\n            telemetry.addData(\"Can Transition to RETURNING\", grabTime > 1.0);\n            break;\n            \n        case RETURNING:\n            double returnTime = getRuntime().seconds() - stateStartTime;\n            telemetry.addData(\"Return Time\", \"%.1f seconds\", returnTime);\n            telemetry.addData(\"Time Threshold Met\", returnTime > 3.0);\n            telemetry.addData(\"Can Transition to DROPPING\", returnTime > 3.0);\n            break;\n            \n        case DROPPING:\n            double dropTime = getRuntime().seconds() - stateStartTime;\n            telemetry.addData(\"Drop Time\", \"%.1f seconds\", dropTime);\n            telemetry.addData(\"Time Threshold Met\", dropTime > 1.0);\n            telemetry.addData(\"Can Transition to IDLE\", dropTime > 1.0);\n            break;\n    }\n    \n    // Debug state history\n    telemetry.addData(\"=== STATE HISTORY ===\", \"\");\n    telemetry.addData(\"Previous State\", previousState);\n    telemetry.addData(\"State Changes\", getStateChangeCount());\n    \n    // Debug performance\n    telemetry.addData(\"=== PERFORMANCE ===\", \"\");\n    telemetry.addData(\"Loop Time\", \"%.3f seconds\", getLoopTime());\n    telemetry.addData(\"State Machine Overhead\", \"%.3f seconds\", getStateMachineOverhead());\n    \n    telemetry.update();\n}\n\n// Helper methods for debugging\nprivate int stateChangeCount = 0;\nprivate double lastLoopTime = 0;\nprivate double stateMachineStartTime = 0;\n\nprivate int getStateChangeCount() {\n    return stateChangeCount;\n}\n\nprivate double getLoopTime() {\n    double currentTime = getRuntime().seconds();\n    double loopTime = currentTime - lastLoopTime;\n    lastLoopTime = currentTime;\n    return loopTime;\n}\n\nprivate double getStateMachineOverhead() {\n    return getRuntime().seconds() - stateMachineStartTime;\n}"
+    },
+    {
+      "type": "text",
+      "title": "Common State Machine Problems",
+      "content": "State machines can have several common problems that make debugging difficult. Understanding these issues helps you avoid them and fix them quickly when they occur."
+    },
+    {
+      "type": "list",
+      "title": "Common State Machine Issues",
+      "items": [
+        "<strong>Stuck in a State:</strong> Robot gets trapped in one state and never transitions",
+        "<strong>Rapid State Changes:</strong> Robot cycles through states too quickly",
+        "<strong>Missing Transitions:</strong> No way to get from current state to desired state",
+        "<strong>Timing Issues:</strong> State changes happen too early or too late",
+        "<strong>Condition Conflicts:</strong> Multiple transition conditions are true simultaneously",
+        "<strong>State Initialization Problems:</strong> State doesn't initialize properly",
+        "<strong>Memory Issues:</strong> State machine consumes too much memory or processing time"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "State Machine Problem Detection",
+      "language": "java",
+      "content": "// State machine problem detection\nprivate void detectStateMachineProblems() {\n    telemetry.addData(\"=== PROBLEM DETECTION ===\", \"\");\n    \n    // Detect stuck state\n    double stateDuration = getRuntime().seconds() - stateStartTime;\n    if (stateDuration > 10.0) {\n        telemetry.addData(\"PROBLEM\", \"State stuck for \" + String.format(\"%.1f\", stateDuration) + \" seconds\");\n        telemetry.addData(\"Stuck State\", currentState);\n    }\n    \n    // Detect rapid state changes\n    if (getStateChangeCount() > 50) {\n        telemetry.addData(\"PROBLEM\", \"Too many state changes: \" + getStateChangeCount());\n        telemetry.addData(\"Possible Cause\", \"Rapid cycling or infinite loop\");\n    }\n    \n    // Detect missing transitions\n    switch (currentState) {\n        case APPROACHING_TARGET:\n            if (!touchSensor.isPressed() && stateDuration > 5.0) {\n                telemetry.addData(\"PROBLEM\", \"Approaching target for too long without contact\");\n                telemetry.addData(\"Possible Cause\", \"Touch sensor not working or robot not moving\");\n            }\n            break;\n            \n        case GRABBING:\n            if (stateDuration > 3.0) {\n                telemetry.addData(\"PROBLEM\", \"Grabbing for too long\");\n                telemetry.addData(\"Possible Cause\", \"Claw servo not responding or timing issue\");\n            }\n            break;\n    }\n    \n    // Detect condition conflicts\n    if (gamepad1.a && gamepad1.b) {\n        telemetry.addData(\"PROBLEM\", \"Multiple buttons pressed simultaneously\");\n        telemetry.addData(\"Possible Cause\", \"Conflicting input commands\");\n    }\n    \n    // Detect performance issues\n    double loopTime = getLoopTime();\n    if (loopTime > 0.1) {\n        telemetry.addData(\"PROBLEM\", \"Slow loop time: \" + String.format(\"%.3f\", loopTime) + \" seconds\");\n        telemetry.addData(\"Possible Cause\", \"State machine too complex or hardware issues\");\n    }\n    \n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "State Machine Best Practices",
+      "content": "Following best practices helps you create reliable, maintainable state machines that are easy to debug and extend."
+    },
+    {
+      "type": "rules-box",
+      "title": "State Machine Best Practices",
+      "subtitle": "Follow these guidelines for effective state machines:",
+      "items": [
+        "Use clear, descriptive state names that indicate robot behavior",
+        "Keep transition conditions simple and avoid complex logic",
+        "Include entry and exit actions for proper state initialization",
+        "Add comprehensive telemetry for debugging",
+        "Use timeouts to prevent getting stuck in states",
+        "Test each state and transition individually",
+        "Document state machine behavior and requirements",
+        "Keep states focused on single responsibilities",
+        "Use enums for state definitions to prevent errors",
+        "Include emergency stop capabilities in all states"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "State Machine Testing Strategies",
+      "content": "Testing state machines requires systematic approaches to verify all states, transitions, and edge cases work correctly."
+    },
+    {
+      "type": "code",
+      "title": "State Machine Testing Example",
+      "language": "java",
+      "content": "// State machine testing example\nprivate void testStateMachine() {\n    telemetry.addData(\"=== STATE MACHINE TESTING ===\", \"\");\n    \n    // Test state transitions\n    switch (currentState) {\n        case IDLE:\n            testIdleState();\n            break;\n        case APPROACHING_TARGET:\n            testApproachingState();\n            break;\n        case GRABBING:\n            testGrabbingState();\n            break;\n        case RETURNING:\n            testReturningState();\n            break;\n        case DROPPING:\n            testDroppingState();\n            break;\n    }\n    \n    // Test overall state machine health\n    testStateMachineHealth();\n    \n    telemetry.update();\n}\n\nprivate void testIdleState() {\n    telemetry.addData(\"Testing IDLE State\", \"\");\n    telemetry.addData(\"Motors Stopped\", leftMotor.getPower() == 0 && rightMotor.getPower() == 0);\n    telemetry.addData(\"Claw Open\", clawServo.getPosition() == 0.0);\n    telemetry.addData(\"Ready for Input\", true);\n}\n\nprivate void testApproachingState() {\n    telemetry.addData(\"Testing APPROACHING State\", \"\");\n    telemetry.addData(\"Motors Moving Forward\", leftMotor.getPower() > 0 && rightMotor.getPower() > 0);\n    telemetry.addData(\"Touch Sensor Working\", touchSensor.isPressed() || !touchSensor.isPressed());\n    telemetry.addData(\"State Time Valid\", getRuntime().seconds() - stateStartTime >= 0);\n}\n\nprivate void testGrabbingState() {\n    telemetry.addData(\"Testing GRABBING State\", \"\");\n    telemetry.addData(\"Claw Closing\", clawServo.getPosition() > 0.5);\n    telemetry.addData(\"Motors Stopped\", leftMotor.getPower() == 0 && rightMotor.getPower() == 0);\n    telemetry.addData(\"Timing Valid\", getRuntime().seconds() - stateStartTime >= 0);\n}\n\nprivate void testReturningState() {\n    telemetry.addData(\"Testing RETURNING State\", \"\");\n    telemetry.addData(\"Motors Moving Backward\", leftMotor.getPower() < 0 && rightMotor.getPower() < 0);\n    telemetry.addData(\"Claw Closed\", clawServo.getPosition() > 0.5);\n    telemetry.addData(\"Timing Valid\", getRuntime().seconds() - stateStartTime >= 0);\n}\n\nprivate void testDroppingState() {\n    telemetry.addData(\"Testing DROPPING State\", \"\");\n    telemetry.addData(\"Claw Opening\", clawServo.getPosition() < 0.5);\n    telemetry.addData(\"Motors Stopped\", leftMotor.getPower() == 0 && rightMotor.getPower() == 0);\n    telemetry.addData(\"Timing Valid\", getRuntime().seconds() - stateStartTime >= 0);\n}\n\nprivate void testStateMachineHealth() {\n    telemetry.addData(\"=== STATE MACHINE HEALTH ===\", \"\");\n    telemetry.addData(\"Current State Valid\", currentState != null);\n    telemetry.addData(\"State Time Valid\", stateStartTime >= 0);\n    telemetry.addData(\"State Initialized\", stateInitialized);\n    telemetry.addData(\"Hardware Connected\", leftMotor != null && rightMotor != null && clawServo != null);\n    telemetry.addData(\"OpMode Active\", opModeIsActive());\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Basic Debugging Techniques",
+          "id": "basic-debugging-techniques"
+        },
+        {
+          "label": "Code Organization",
+          "id": "code-organization"
+        },
+        {
+          "label": "Linear vs Iterative OpModes",
+          "id": "linear-vs-iterative-opmodes"
+        },
+        {
+          "label": "Advanced Debugging",
+          "id": "advanced-debugging"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "State Machine Practice",
+      "description": "Complete these exercises to master state machine debugging:",
+      "tasks": [
+        "Create a simple state machine with 3-4 states and debug it",
+        "Implement entry/exit actions for each state",
+        "Add comprehensive telemetry for state debugging",
+        "Create a state machine that handles error conditions",
+        "Debug a state machine that gets stuck in one state",
+        "Test state transitions with different input conditions",
+        "Implement a state machine with timeout protection",
+        "Create documentation for your state machine behavior"
+      ],
+      "content": "// Practice Exercise: Complete State Machine System\n// Create a state machine that:\n// - Has at least 4 distinct states\n// - Includes entry and exit actions\n// - Has comprehensive debugging telemetry\n// - Handles error conditions gracefully\n// - Uses timeouts to prevent stuck states\n// - Includes emergency stop functionality\n// - Is well-documented and tested"
+    }
+  ]
+} 

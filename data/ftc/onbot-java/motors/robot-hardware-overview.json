@@ -1,0 +1,148 @@
+{
+  "title": "Robot Hardware Overview",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to FTC Robot Hardware",
+      "content": "FTC robots are complex systems built from various hardware components that work together to create a functional autonomous and driver-controlled robot. Understanding these components and how they interact is essential for successful robot programming and troubleshooting."
+    },
+    {
+      "type": "rules-box",
+      "title": "Core Hardware Categories",
+      "subtitle": "Every FTC robot includes these essential components:",
+      "items": [
+        "Control Hub - The brain of the robot, running your code",
+        "Expansion Hub - Additional I/O ports for more components",
+        "DC Motors - Primary actuators for movement and mechanisms",
+        "Servos - Precise position control for arms, claws, and other mechanisms",
+        "Sensors - Eyes and ears of the robot for environmental awareness",
+        "Battery - Power source for all components",
+        "Gamepad Controllers - Human input for teleop control"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Control System Architecture",
+      "content": "The FTC control system is built around the Control Hub and Expansion Hub, which provide the interface between your code and the robot hardware."
+    },
+    {
+      "type": "list",
+      "title": "Control System Components",
+      "items": [
+        "<strong>Control Hub:</strong> Android-based controller with built-in WiFi, USB ports, and motor/servo controllers",
+        "<strong>Expansion Hub:</strong> Additional I/O module that connects to the Control Hub via RS485",
+        "<strong>Driver Station:</strong> Android app that runs on a phone/tablet for robot control and monitoring",
+        "<strong>Robot Controller:</strong> Android app that runs on the Control Hub and executes your code"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Hardware Configuration",
+      "content": "The robot configuration file defines how your hardware components are connected and named. This is essential for proper communication between your code and the hardware."
+    },
+    {
+      "type": "list",
+      "title": "Configuration Process",
+      "items": [
+        "<strong>Configuration File:</strong> Stored on the Control Hub, defines component names and types",
+        "<strong>Component Names:</strong> Must match the names used in your code",
+        "<strong>Port Assignment:</strong> Each component is assigned to specific ports on the Control Hub",
+        "<strong>Configuration Tool:</strong> Use the Robot Controller app to create and edit configurations"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Hardware Mapping in Code",
+      "language": "java",
+      "content": "// Accessing hardware components through the hardwareMap\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\nServo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");"
+    },
+    {
+      "type": "text",
+      "title": "Power Management",
+      "content": "Proper power management is crucial for reliable robot operation. The battery provides power to all components through the Control Hub."
+    },
+    {
+      "type": "list",
+      "title": "Power Considerations",
+      "items": [
+        "<strong>Battery Voltage:</strong> Monitor battery level to prevent unexpected shutdowns",
+        "<strong>Current Draw:</strong> Be aware of power consumption, especially with multiple motors",
+        "<strong>Voltage Regulation:</strong> Control Hub provides regulated power to all components",
+        "<strong>Safety Features:</strong> Built-in protection against overcurrent and overvoltage"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Battery Monitoring Example",
+      "language": "java",
+      "content": "// Monitor battery voltage during operation\nwhile (opModeIsActive()) {\n    double batteryVoltage = getBatteryVoltage();\n    telemetry.addData(\"Battery\", \"%.1f volts\", batteryVoltage);\n    \n    // Warn if battery is low\n    if (batteryVoltage < 11.0) {\n        telemetry.addData(\"WARNING\", \"Low battery!\");\n    }\n    \n    telemetry.update();\n}\n\n// Get battery voltage method\nprivate double getBatteryVoltage() {\n    return hardwareMap.voltageSensor.iterator().next().getVoltage();\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Hardware Best Practices",
+      "subtitle": "Follow these guidelines for reliable hardware operation:",
+      "items": [
+        "Always check battery voltage before and during operation",
+        "Use appropriate motor directions for your robot configuration",
+        "Test servos at multiple positions to ensure proper operation",
+        "Calibrate sensors and verify readings are reasonable",
+        "Secure all connections and check for loose wires",
+        "Document your hardware configuration for team reference",
+        "Have spare parts available for critical components"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Hardware Testing",
+      "content": "Regular testing of hardware components is essential for reliable robot operation. Create a systematic approach to testing each component."
+    },
+    {
+      "type": "list",
+      "title": "Testing Checklist",
+      "items": [
+        "<strong>Motors:</strong> Test direction, speed control, and encoder functionality",
+        "<strong>Servos:</strong> Verify movement to all required positions",
+        "<strong>Sensors:</strong> Calibrate and test in various conditions",
+        "<strong>Connections:</strong> Check all wiring and connections",
+        "<strong>Configuration:</strong> Verify hardware mapping matches physical setup"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Hardware Topics",
+      "links": [
+        {
+          "label": "DC Motors",
+          "id": "dc-motors"
+        },
+        {
+          "label": "Basic Motor Control",
+          "id": "basic-motor-control"
+        },
+        {
+          "label": "Motor Encoders",
+          "id": "motor-encoders"
+        },
+        {
+          "label": "Motor Types",
+          "id": "motor-types"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Hardware Familiarization",
+      "description": "Practice these activities to become familiar with robot hardware:",
+      "tasks": [
+        "Identify all hardware components on your robot",
+        "Create a hardware configuration file for your robot",
+        "Test each motor and servo individually",
+        "Calibrate and test all sensors",
+        "Monitor battery voltage during operation",
+        "Document your robot's hardware layout",
+        "Practice troubleshooting common hardware issues"
+      ],
+      "content": "// Hardware Test Exercise\n// Create a simple OpMode that tests all your robot's hardware\n// Include telemetry to display sensor values and component status\n// Test each component individually to ensure proper operation\n\n@TeleOp(name=\"Hardware Test\", group=\"Testing\")\npublic class HardwareTestOpMode extends LinearOpMode {\n    \n    // Declare your hardware components here\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        \n        // Wait for start\n        waitForStart();\n        \n        // Test each component and display results\n        while (opModeIsActive()) {\n            // Add your testing logic here\n        }\n    }\n}"
+    }
+  ]
+} 

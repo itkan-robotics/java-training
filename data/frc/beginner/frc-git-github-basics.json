@@ -138,7 +138,7 @@
         "Set up a proper .gitignore file for your project",
         "Invite team members to your GitHub repository"
       ],
-      "code": "// Example workflow for adding a simple feature:\n\n// 1. Create a feature branch\ngit checkout -b feature/smart-dashboard\n\n// 2. Make your changes to Robot.java\n// Add SmartDashboard outputs\n\n// 3. Check status\ngit status\n\n// 4. Add and commit\ngit add .\ngit commit -m \"Add SmartDashboard telemetry for robot status\"\n\n// 5. Push the branch\ngit push -u origin feature/smart-dashboard\n\n// 6. Switch back to main and merge\ngit checkout main\ngit merge feature/smart-dashboard\n\n// 7. Push the merged changes\ngit push\n\n// 8. Clean up\ngit branch -d feature/smart-dashboard"
+      "content": "// Example workflow for adding a simple feature:\n\n// 1. Create a feature branch\ngit checkout -b feature/smart-dashboard\n\n// 2. Make your changes to Robot.java\n// Add SmartDashboard outputs\n\n// 3. Check status\ngit status\n\n// 4. Add and commit\ngit add .\ngit commit -m \"Add SmartDashboard telemetry for robot status\"\n\n// 5. Push the branch\ngit push -u origin feature/smart-dashboard\n\n// 6. Switch back to main and merge\ngit checkout main\ngit merge feature/smart-dashboard\n\n// 7. Push the merged changes\ngit push\n\n// 8. Clean up\ngit branch -d feature/smart-dashboard"
     }
   ]
 }

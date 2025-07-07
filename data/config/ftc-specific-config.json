@@ -43,73 +43,85 @@
       ]
     },
     {
-      "id": "onbot-java-robot-hardware",
-      "label": "OnBot Java - Robot Hardware",
+      "id": "onbot-java-motors",
+      "label": "OnBot Java - Motors",
       "items": [
         {
           "id": "robot-hardware-overview",
           "label": "Robot Hardware Overview",
-          "file": "data/ftc/onbot-java/robot-hardware/robot-hardware-overview.json"
+          "file": "data/ftc/onbot-java/motors/robot-hardware-overview.json"
         },
         {
           "id": "dc-motors",
           "label": "DC Motors",
-          "file": "data/ftc/onbot-java/robot-hardware/dc-motors.json"
+          "file": "data/ftc/onbot-java/motors/dc-motors.json"
         },
         {
           "id": "basic-motor-control",
           "label": "Basic Motor Control",
-          "file": "data/ftc/onbot-java/robot-hardware/basic-motor-control.json"
+          "file": "data/ftc/onbot-java/motors/basic-motor-control.json"
         },
         {
           "id": "motor-encoders",
           "label": "Motor Encoders",
-          "file": "data/ftc/onbot-java/robot-hardware/motor-encoders.json"
+          "file": "data/ftc/onbot-java/motors/motor-encoders.json"
         },
         {
           "id": "motor-types",
           "label": "Motor Types",
-          "file": "data/ftc/onbot-java/robot-hardware/motor-types.json"
-        },
+          "file": "data/ftc/onbot-java/motors/motor-types.json"
+        }
+      ]
+    },
+    {
+      "id": "onbot-java-servos",
+      "label": "OnBot Java - Servos",
+      "items": [
         {
-          "id": "servos",
-          "label": "Servos",
-          "file": "data/ftc/onbot-java/robot-hardware/servos.json"
+          "id": "intro-to-servos",
+          "label": "Introduction to Servos",
+          "file": "data/ftc/onbot-java/servos/intro-to-servos.json"
         },
         {
           "id": "continuous-vs-noncontinuous",
           "label": "Continuous vs Non-Continuous Servos",
-          "file": "data/ftc/onbot-java/robot-hardware/continuous-vs-noncontinuous.json"
+          "file": "data/ftc/onbot-java/servos/continuous-vs-noncontinuous.json"
         },
         {
           "id": "servo-positions",
           "label": "Servo Positions",
-          "file": "data/ftc/onbot-java/robot-hardware/servo-positions.json"
-        },
+          "file": "data/ftc/onbot-java/servos/servo-positions.json"
+        }
+      ]
+    },
+    {
+      "id": "onbot-java-sensors",
+      "label": "OnBot Java - Sensors",
+      "items": [
         {
-          "id": "sensors",
+          "id": "sensors-overview",
           "label": "Sensors Overview",
-          "file": "data/ftc/onbot-java/robot-hardware/sensors.json"
+          "file": "data/ftc/onbot-java/sensors/sensors.json"
         },
         {
           "id": "touch-sensors",
           "label": "Touch Sensors",
-          "file": "data/ftc/onbot-java/robot-hardware/touch-sensors.json"
+          "file": "data/ftc/onbot-java/sensors/touch-sensors.json"
         },
         {
           "id": "distance-sensors",
           "label": "Distance Sensors",
-          "file": "data/ftc/onbot-java/robot-hardware/distance-sensors.json"
+          "file": "data/ftc/onbot-java/sensors/distance-sensors.json"
         },
         {
           "id": "color-sensors",
           "label": "Color Sensors",
-          "file": "data/ftc/onbot-java/robot-hardware/color-sensors.json"
+          "file": "data/ftc/onbot-java/sensors/color-sensors.json"
         },
         {
           "id": "imu",
           "label": "IMU (Inertial Measurement Unit)",
-          "file": "data/ftc/onbot-java/robot-hardware/imu.json"
+          "file": "data/ftc/onbot-java/sensors/imu.json"
         }
       ]
     },

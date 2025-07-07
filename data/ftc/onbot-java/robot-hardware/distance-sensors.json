@@ -20,7 +20,7 @@
       "type": "code",
       "title": "Distance Sensor Example",
       "language": "java",
-      "code": "DistanceSensor dist = hardwareMap.get(DistanceSensor.class, \"dist\");\ndouble distance = dist.getDistance(DistanceUnit.CM);"
+      "content": "DistanceSensor dist = hardwareMap.get(DistanceSensor.class, \"dist\");\ndouble distance = dist.getDistance(DistanceUnit.CM);"
     },
     {
       "type": "text",

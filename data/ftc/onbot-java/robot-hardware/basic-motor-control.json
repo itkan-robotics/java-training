@@ -21,7 +21,7 @@
       "type": "code",
       "title": "Example: Arcade Drive",
       "language": "java",
-      "code": "double drive = -gamepad1.left_stick_y;\ndouble turn = gamepad1.right_stick_x;\nleftDrive.setPower(drive + turn);\nrightDrive.setPower(drive - turn);"
+      "content": "double drive = -gamepad1.left_stick_y;\ndouble turn = gamepad1.right_stick_x;\nleftDrive.setPower(drive + turn);\nrightDrive.setPower(drive - turn);"
     },
     {
       "type": "text",

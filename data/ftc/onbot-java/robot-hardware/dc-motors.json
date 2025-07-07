@@ -22,7 +22,7 @@
       "type": "code",
       "title": "Basic Motor Control Example",
       "language": "java",
-      "code": "DcMotor motor = hardwareMap.get(DcMotor.class, \"left_drive\");\nmotor.setPower(0.5); // Set motor to 50% power\nmotor.setDirection(DcMotor.Direction.FORWARD);"
+      "content": "DcMotor motor = hardwareMap.get(DcMotor.class, \"left_drive\");\nmotor.setPower(0.5); // Set motor to 50% power\nmotor.setDirection(DcMotor.Direction.FORWARD);"
     },
     {
       "type": "text",

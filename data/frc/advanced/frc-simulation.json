@@ -82,7 +82,7 @@
         "Compare simulation behavior with real robot behavior",
         "Use simulation to tune PID controllers and motion profiles"
       ],
-      "code": "// Example: Add simulation to your existing robot code\n// 1. Add simulation objects to your robot class\n// 2. Initialize them in robotInit() when RobotBase.isSimulation() is true\n// 3. Update them in simulationPeriodic()\n// 4. Add field visualization for autonomous testing\n\n// Key simulation classes:\n// - DifferentialDrivetrainSim for tank drive\n// - SwerveDriveSim for swerve drive\n// - EncoderSim for encoders\n// - ADXRS450_GyroSim for gyros\n// - DigitalInputSim for limit switches\n// - AnalogInputSim for analog sensors"
+      "content": "// Example: Add simulation to your existing robot code\n// 1. Add simulation objects to your robot class\n// 2. Initialize them in robotInit() when RobotBase.isSimulation() is true\n// 3. Update them in simulationPeriodic()\n// 4. Add field visualization for autonomous testing\n\n// Key simulation classes:\n// - DifferentialDrivetrainSim for tank drive\n// - SwerveDriveSim for swerve drive\n// - EncoderSim for encoders\n// - ADXRS450_GyroSim for gyros\n// - DigitalInputSim for limit switches\n// - AnalogInputSim for analog sensors"
     }
   ]
 }

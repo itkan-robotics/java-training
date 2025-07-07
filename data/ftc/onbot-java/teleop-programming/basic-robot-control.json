@@ -4,146 +4,111 @@
     {
       "type": "text",
       "title": "Introduction to Basic Robot Control",
-      "content": "Basic robot control is the foundation of FTC programming. This lesson covers the essential concepts and techniques for controlling your robot during the driver-controlled (teleop) period of a match."
+      "content": "Basic robot control is the foundation of teleop programming in FTC. Understanding how to read gamepad inputs and translate them into robot movements is essential for creating responsive and intuitive driver control systems."
     },
     {
       "type": "rules-box",
-      "title": "What is TeleOp?",
-      "subtitle": "TeleOp (Teleoperated) mode is:",
+      "title": "What is Basic Robot Control?",
+      "subtitle": "Key concepts for basic robot control:",
       "items": [
-        "The driver-controlled period of an FTC match",
-        "When human drivers control the robot using gamepads",
-        "Typically 2 minutes long in most FTC games",
-        "The primary opportunity for scoring points",
-        "Where teamwork and driver skill are crucial"
+        "Reading gamepad inputs (joysticks, buttons, triggers)",
+        "Converting inputs to motor and servo commands",
+        "Implementing different control schemes (tank drive, arcade drive)",
+        "Managing multiple mechanisms simultaneously",
+        "Ensuring smooth and responsive control"
       ]
     },
     {
       "type": "text",
-      "title": "Basic Control Concepts",
-      "content": "Understanding these fundamental concepts is essential for effective robot control:"
+      "title": "Gamepad Input Basics",
+      "content": "FTC robots use gamepads for driver control. Understanding how to read and process gamepad inputs is the first step in creating effective robot control systems."
     },
     {
       "type": "list",
+      "title": "Gamepad Components",
       "items": [
-        "<strong>Motor Power:</strong> Controls the speed and direction of motors (-1.0 to 1.0)",
-        "<strong>Servo Position:</strong> Controls the position of servos (0.0 to 1.0)",
-        "<strong>Gamepad Input:</strong> Reads controller inputs for driver control",
-        "<strong>Telemetry:</strong> Displays information to help drivers make decisions",
-        "<strong>Safety:</strong> Prevents robot damage and ensures reliable operation"
+        "<strong>Joysticks:</strong> Analog inputs for continuous control (-1.0 to 1.0)",
+        "<strong>Buttons:</strong> Digital inputs for discrete actions (true/false)",
+        "<strong>Triggers:</strong> Analog inputs for variable control (0.0 to 1.0)",
+        "<strong>D-pad:</strong> Digital directional inputs",
+        "<strong>Bumpers:</strong> Digital inputs for quick actions"
       ]
     },
     {
-      "type": "text",
-      "title": "Basic Drivetrain Control",
-      "content": "The drivetrain is the most fundamental part of robot control. It determines how your robot moves around the field."
-    },
-    {
       "type": "code",
-      "title": "Basic Tank Drive Example",
-      "language": "java",
-      "code": "@TeleOp(name=\"Basic Tank Drive\", group=\"Examples\")\npublic class BasicTankDrive extends LinearOpMode {\n    \n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Set motor directions\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Read gamepad inputs\n            double leftPower = gamepad1.left_stick_y;\n            double rightPower = gamepad1.right_stick_y;\n            \n            // Apply power to motors\n            leftMotor.setPower(leftPower);\n            rightMotor.setPower(rightPower);\n            \n            // Display telemetry\n            telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n            telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n            telemetry.update();\n        }\n    }\n}"
+      "title": "Basic Gamepad Reading",
+      "content": "// Basic gamepad input reading\n@TeleOp(name=\"Basic Robot Control\", group=\"Teleop\")\npublic class BasicRobotControl extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Configure motors\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Read gamepad inputs\n            double leftStickY = -gamepad1.left_stick_y;\n            double rightStickY = -gamepad1.right_stick_y;\n            \n            // Apply to motors (tank drive)\n            leftDrive.setPower(leftStickY);\n            rightDrive.setPower(rightStickY);\n            \n            // Read button inputs\n            if (gamepad1.a) {\n                armServo.setPosition(0.0); // Move arm up\n            } else if (gamepad1.b) {\n                armServo.setPosition(1.0); // Move arm down\n            }\n            \n            // Display telemetry\n            telemetry.addData(\"Left Stick Y\", \"%.2f\", leftStickY);\n            telemetry.addData(\"Right Stick Y\", \"%.2f\", rightStickY);\n            telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n            telemetry.update();\n        }\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Arcade Drive Control",
-      "content": "Arcade drive is an alternative control scheme that many drivers prefer. It uses one joystick for forward/backward and another for turning."
-    },
-    {
-      "type": "code",
-      "title": "Arcade Drive Example",
-      "language": "java",
-      "code": "// Arcade drive control\nwhile (opModeIsActive()) {\n    // Read gamepad inputs\n    double forward = -gamepad1.left_stick_y;  // Forward/backward\n    double turn = gamepad1.right_stick_x;     // Left/right turn\n    \n    // Calculate motor powers\n    double leftPower = forward + turn;\n    double rightPower = forward - turn;\n    \n    // Limit power to valid range\n    leftPower = Range.clip(leftPower, -1.0, 1.0);\n    rightPower = Range.clip(rightPower, -1.0, 1.0);\n    \n    // Apply power to motors\n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n    \n    // Display telemetry\n    telemetry.addData(\"Forward\", \"%.2f\", forward);\n    telemetry.addData(\"Turn\", \"%.2f\", turn);\n    telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n    telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n    telemetry.update();\n}"
-    },
-    {
-      "type": "text",
-      "title": "Servo Control",
-      "content": "Servos provide precise position control for mechanisms like arms, claws, and lifts. Understanding servo control is essential for manipulating game elements."
-    },
-    {
-      "type": "code",
-      "title": "Basic Servo Control Example",
-      "language": "java",
-      "code": "// Servo control example\nprivate Servo armServo;\nprivate Servo clawServo;\n\n// Initialize servos\narmServo = hardwareMap.get(Servo.class, \"arm_servo\");\nclawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n\n// Set initial positions\narmServo.setPosition(0.5);  // Middle position\nclawServo.setPosition(0.0); // Closed position\n\n// Servo control in main loop\nwhile (opModeIsActive()) {\n    // Arm control with D-pad\n    if (gamepad1.dpad_up) {\n        armServo.setPosition(1.0);  // Up position\n    } else if (gamepad1.dpad_down) {\n        armServo.setPosition(0.0);  // Down position\n    }\n    \n    // Claw control with buttons\n    if (gamepad1.a) {\n        clawServo.setPosition(0.0);  // Close claw\n    } else if (gamepad1.b) {\n        clawServo.setPosition(1.0);  // Open claw\n    }\n    \n    // Display servo positions\n    telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n    telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n    telemetry.update();\n}"
-    },
-    {
-      "type": "text",
-      "title": "Safety and Best Practices",
-      "content": "Implementing safety measures and following best practices ensures reliable robot operation and prevents damage."
+      "title": "Control Schemes",
+      "content": "Different control schemes offer various advantages for different robot configurations and driver preferences. Understanding these schemes helps teams choose the best approach for their robot."
     },
     {
       "type": "list",
-      "title": "Safety Guidelines",
+      "title": "Common Control Schemes",
       "items": [
-        "<strong>Power Limits:</strong> Never exceed motor power limits or servo position ranges",
-        "<strong>Battery Monitoring:</strong> Check battery voltage and warn drivers of low battery",
-        "<strong>Emergency Stop:</strong> Implement a way to quickly stop all robot movement",
-        "<strong>Sensor Limits:</strong> Use sensors to prevent mechanisms from damaging themselves",
-        "<strong>Driver Feedback:</strong> Provide clear telemetry so drivers know robot status"
+        "<strong>Tank Drive:</strong> Left stick controls left side, right stick controls right side",
+        "<strong>Arcade Drive:</strong> One stick for forward/backward, one for turning",
+        "<strong>Single Stick Drive:</strong> One stick controls both movement and turning",
+        "<strong>Split Arcade:</strong> Left stick for movement, right stick for turning"
       ]
     },
     {
       "type": "code",
-      "title": "Safety Implementation Example",
-      "language": "java",
-      "code": "// Safety features implementation\nwhile (opModeIsActive()) {\n    // Check battery voltage\n    double batteryVoltage = getBatteryVoltage();\n    if (batteryVoltage < 11.0) {\n        telemetry.addData(\"WARNING\", \"Low battery: %.1f volts\", batteryVoltage);\n        // Reduce motor power when battery is low\n        leftMotor.setPower(leftMotor.getPower() * 0.5);\n        rightMotor.setPower(rightMotor.getPower() * 0.5);\n    }\n    \n    // Emergency stop\n    if (gamepad1.back) {\n        // Stop all motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        armServo.setPosition(armServo.getPosition()); // Hold current position\n        telemetry.addData(\"STATUS\", \"EMERGENCY STOP\");\n    }\n    \n    // Use touch sensor as limit switch\n    if (touchSensor.isPressed()) {\n        // Stop arm movement if it hits something\n        armServo.setPosition(armServo.getPosition());\n        telemetry.addData(\"WARNING\", \"Arm limit reached!\");\n    }\n    \n    telemetry.update();\n}\n\nprivate double getBatteryVoltage() {\n    return hardwareMap.voltageSensor.iterator().next().getVoltage();\n}"
+      "title": "Control Scheme Implementations",
+      "content": "// Tank Drive Implementation\npublic void tankDrive(double leftPower, double rightPower) {\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Arcade Drive Implementation\npublic void arcadeDrive(double drive, double turn) {\n    double leftPower = drive + turn;\n    double rightPower = drive - turn;\n    \n    // Limit power to valid range\n    leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n    rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n    \n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Single Stick Drive Implementation\npublic void singleStickDrive(double x, double y) {\n    // Calculate magnitude and angle\n    double magnitude = Math.sqrt(x * x + y * y);\n    double angle = Math.atan2(y, x);\n    \n    // Convert to tank drive\n    double leftPower = magnitude * Math.cos(angle - Math.PI/4);\n    double rightPower = magnitude * Math.sin(angle - Math.PI/4);\n    \n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Usage in main loop\nwhile (opModeIsActive()) {\n    // Tank Drive\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    tankDrive(leftPower, rightPower);\n    \n    // Or Arcade Drive\n    double drive = -gamepad1.left_stick_y;\n    double turn = gamepad1.right_stick_x;\n    arcadeDrive(drive, turn);\n    \n    // Or Single Stick Drive\n    double x = gamepad1.left_stick_x;\n    double y = -gamepad1.left_stick_y;\n    singleStickDrive(x, y);\n}"
     },
     {
       "type": "text",
-      "title": "Advanced Control Techniques",
-      "content": "Once you master basic control, you can implement more advanced techniques for better robot performance."
-    },
-    {
-      "type": "list",
-      "title": "Advanced Techniques",
-      "items": [
-        "<strong>Power Scaling:</strong> Adjust motor power based on gamepad input for finer control",
-        "<strong>Dead Zone:</strong> Ignore small joystick movements to prevent drift",
-        "<strong>Speed Modes:</strong> Implement different speed modes for precision vs. speed",
-        "<strong>Button Mapping:</strong> Use buttons for quick actions and preset positions",
-        "<strong>Combined Controls:</strong> Coordinate multiple mechanisms for complex actions"
-      ]
+      "title": "Input Processing and Smoothing",
+      "content": "Raw gamepad inputs can be jerky and imprecise. Processing and smoothing inputs creates more responsive and predictable robot control."
     },
     {
       "type": "code",
-      "title": "Advanced Control Example",
-      "language": "java",
-      "code": "// Advanced control with power scaling and dead zone\nwhile (opModeIsActive()) {\n    // Read gamepad inputs with dead zone\n    double leftStickY = gamepad1.left_stick_y;\n    double rightStickY = gamepad1.right_stick_y;\n    \n    // Apply dead zone\n    if (Math.abs(leftStickY) < 0.1) leftStickY = 0;\n    if (Math.abs(rightStickY) < 0.1) rightStickY = 0;\n    \n    // Power scaling based on speed mode\n    double speedMultiplier = gamepad1.left_bumper ? 0.5 : 1.0; // Slow mode\n    \n    // Calculate motor powers\n    double leftPower = leftStickY * speedMultiplier;\n    double rightPower = rightStickY * speedMultiplier;\n    \n    // Apply power to motors\n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n    \n    // Quick actions with buttons\n    if (gamepad1.x) {\n        // Quick turn left\n        leftMotor.setPower(-0.5);\n        rightMotor.setPower(0.5);\n    } else if (gamepad1.y) {\n        // Quick turn right\n        leftMotor.setPower(0.5);\n        rightMotor.setPower(-0.5);\n    }\n    \n    // Display status\n    telemetry.addData(\"Speed Mode\", gamepad1.left_bumper ? \"Slow\" : \"Normal\");\n    telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n    telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n    telemetry.update();\n}"
+      "title": "Input Processing Methods",
+      "content": "// Input smoothing and processing\npublic class InputProcessor {\n    private double lastLeftPower = 0;\n    private double lastRightPower = 0;\n    private double smoothingFactor = 0.3; // Adjust for responsiveness\n    \n    public double[] smoothTankInputs(double leftInput, double rightInput) {\n        // Apply smoothing\n        double smoothedLeft = lastLeftPower + (leftInput - lastLeftPower) * smoothingFactor;\n        double smoothedRight = lastRightPower + (rightInput - lastRightPower) * smoothingFactor;\n        \n        // Apply deadzone\n        smoothedLeft = applyDeadzone(smoothedLeft, 0.05);\n        smoothedRight = applyDeadzone(smoothedRight, 0.05);\n        \n        // Apply power curve for better low-speed control\n        smoothedLeft = applyPowerCurve(smoothedLeft, 2.0);\n        smoothedRight = applyPowerCurve(smoothedRight, 2.0);\n        \n        lastLeftPower = smoothedLeft;\n        lastRightPower = smoothedRight;\n        \n        return new double[]{smoothedLeft, smoothedRight};\n    }\n    \n    private double applyDeadzone(double input, double deadzone) {\n        if (Math.abs(input) < deadzone) {\n            return 0.0;\n        }\n        return input;\n    }\n    \n    private double applyPowerCurve(double input, double power) {\n        double sign = Math.signum(input);\n        return sign * Math.pow(Math.abs(input), power);\n    }\n}\n\n// Usage example\nInputProcessor inputProcessor = new InputProcessor();\n\nwhile (opModeIsActive()) {\n    double leftInput = -gamepad1.left_stick_y;\n    double rightInput = -gamepad1.right_stick_y;\n    \n    double[] smoothedInputs = inputProcessor.smoothTankInputs(leftInput, rightInput);\n    tankDrive(smoothedInputs[0], smoothedInputs[1]);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Multi-Mechanism Control",
+      "content": "Most FTC robots have multiple mechanisms that need to be controlled simultaneously. Organizing control logic for multiple mechanisms requires careful planning and implementation."
+    },
+    {
+      "type": "code",
+      "title": "Multi-Mechanism Control Example",
+      "content": "// Multi-mechanism robot control\npublic class RobotController {\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo, clawServo;\n    private DcMotor intakeMotor;\n    private InputProcessor inputProcessor;\n    \n    public RobotController(DcMotor leftDrive, DcMotor rightDrive, \n                          Servo armServo, Servo clawServo, DcMotor intakeMotor) {\n        this.leftDrive = leftDrive;\n        this.rightDrive = rightDrive;\n        this.armServo = armServo;\n        this.clawServo = clawServo;\n        this.intakeMotor = intakeMotor;\n        this.inputProcessor = new InputProcessor();\n    }\n    \n    public void updateDrivetrain(Gamepad gamepad) {\n        double leftInput = -gamepad.left_stick_y;\n        double rightInput = -gamepad.right_stick_y;\n        \n        double[] smoothedInputs = inputProcessor.smoothTankInputs(leftInput, rightInput);\n        leftDrive.setPower(smoothedInputs[0]);\n        rightDrive.setPower(smoothedInputs[1]);\n    }\n    \n    public void updateArm(Gamepad gamepad) {\n        // Arm control with triggers\n        double armUp = gamepad.right_trigger;\n        double armDown = gamepad.left_trigger;\n        \n        if (armUp > 0.1) {\n            // Move arm up gradually\n            double currentPos = armServo.getPosition();\n            armServo.setPosition(Math.max(0.0, currentPos - 0.01));\n        } else if (armDown > 0.1) {\n            // Move arm down gradually\n            double currentPos = armServo.getPosition();\n            armServo.setPosition(Math.min(1.0, currentPos + 0.01));\n        }\n    }\n    \n    public void updateClaw(Gamepad gamepad) {\n        // Claw control with buttons\n        if (gamepad.a) {\n            clawServo.setPosition(0.0); // Open\n        } else if (gamepad.b) {\n            clawServo.setPosition(1.0); // Close\n        }\n    }\n    \n    public void updateIntake(Gamepad gamepad) {\n        // Intake control with bumpers\n        if (gamepad.right_bumper) {\n            intakeMotor.setPower(1.0); // Intake\n        } else if (gamepad.left_bumper) {\n            intakeMotor.setPower(-1.0); // Outtake\n        } else {\n            intakeMotor.setPower(0.0); // Stop\n        }\n    }\n}\n\n// Usage in OpMode\n@TeleOp(name=\"Multi-Mechanism Control\", group=\"Teleop\")\npublic class MultiMechanismControl extends LinearOpMode {\n    private RobotController robot;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        DcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        DcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        Servo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        Servo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, \"intake_motor\");\n        \n        robot = new RobotController(leftDrive, rightDrive, armServo, clawServo, intakeMotor);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Update all mechanisms\n            robot.updateDrivetrain(gamepad1);\n            robot.updateArm(gamepad1);\n            robot.updateClaw(gamepad1);\n            robot.updateIntake(gamepad1);\n            \n            // Display telemetry\n            telemetry.addData(\"Status\", \"Multi-mechanism control active\");\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Common Issues",
+      "content": "Common issues in basic robot control and their solutions help teams quickly resolve problems during competitions and practice."
     },
     {
       "type": "rules-box",
-      "title": "Control Best Practices",
-      "subtitle": "Follow these guidelines for effective robot control:",
+      "title": "Common Issues and Solutions",
+      "subtitle": "Troubleshooting guide:",
       "items": [
-        "Test your controls thoroughly before competition",
-        "Provide clear feedback to drivers through telemetry",
-        "Implement safety features to prevent damage",
-        "Use consistent control schemes across your team",
-        "Practice with your drivers to improve coordination",
-        "Keep controls simple and intuitive",
-        "Have backup control schemes for emergencies"
+        "Robot moves in wrong direction: Check motor directions and gamepad mapping",
+        "Jerky or unresponsive control: Implement input smoothing and check for interference",
+        "Motors not responding: Verify configuration file and wiring connections",
+        "Uneven motor speeds: Calibrate power levels and check for mechanical binding",
+        "Gamepad not detected: Check USB connection and gamepad mode"
       ]
     },
     {
-      "type": "text",
-      "title": "Driver Training",
-      "content": "Effective robot control requires well-trained drivers who understand the robot's capabilities and limitations."
-    },
-    {
-      "type": "list",
-      "title": "Driver Training Tips",
-      "items": [
-        "<strong>Practice Regularly:</strong> Drivers should practice with the robot frequently",
-        "<strong>Clear Communication:</strong> Establish clear communication protocols between drivers",
-        "<strong>Strategy Planning:</strong> Develop strategies that work with your control scheme",
-        "<strong>Backup Plans:</strong> Have backup strategies for when things go wrong",
-        "<strong>Team Coordination:</strong> Practice coordination between driver and operator"
-      ]
+      "type": "code",
+      "title": "Diagnostic Tools",
+      "content": "// Diagnostic tools for troubleshooting\npublic class ControlDiagnostics {\n    private DcMotor leftDrive, rightDrive;\n    private Gamepad gamepad;\n    \n    public ControlDiagnostics(DcMotor leftDrive, DcMotor rightDrive, Gamepad gamepad) {\n        this.leftDrive = leftDrive;\n        this.rightDrive = rightDrive;\n        this.gamepad = gamepad;\n    }\n    \n    public void runDiagnostics() {\n        // Test gamepad inputs\n        telemetry.addData(\"Left Stick Y\", \"%.3f\", gamepad.left_stick_y);\n        telemetry.addData(\"Right Stick Y\", \"%.3f\", gamepad.right_stick_y);\n        telemetry.addData(\"A Button\", gamepad.a);\n        telemetry.addData(\"B Button\", gamepad.b);\n        \n        // Test motor responses\n        telemetry.addData(\"Left Motor Power\", \"%.3f\", leftDrive.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.3f\", rightDrive.getPower());\n        telemetry.addData(\"Left Motor Direction\", leftDrive.getDirection());\n        telemetry.addData(\"Right Motor Direction\", rightDrive.getDirection());\n        \n        // Test battery voltage\n        double batteryVoltage = getBatteryVoltage();\n        telemetry.addData(\"Battery Voltage\", \"%.1f volts\", batteryVoltage);\n        \n        if (batteryVoltage < 11.0) {\n            telemetry.addData(\"WARNING\", \"Low battery!\");\n        }\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.iterator().next().getVoltage();\n    }\n}\n\n// Usage in OpMode\nControlDiagnostics diagnostics = new ControlDiagnostics(leftDrive, rightDrive, gamepad1);\n\nwhile (opModeIsActive()) {\n    // Run diagnostics\n    diagnostics.runDiagnostics();\n    \n    // Test individual components\n    if (gamepad1.a) {\n        leftDrive.setPower(0.3); // Test left motor\n    } else if (gamepad1.b) {\n        rightDrive.setPower(0.3); // Test right motor\n    } else {\n        leftDrive.setPower(0);\n        rightDrive.setPower(0);\n    }\n    \n    telemetry.update();\n}"
     },
     {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
+        {
+          "label": "Teleop Programming",
+          "id": "teleop-programming"
+        },
         {
           "label": "Gamepad Controls",
           "id": "gamepad-controls"
@@ -155,27 +120,23 @@
         {
           "label": "Servo Control",
           "id": "servo-control"
-        },
-        {
-          "label": "Basic Autonomous Programming",
-          "id": "basic-autonomous-programming"
         }
       ]
     },
     {
       "type": "exercise-box",
-      "title": "Basic Control Practice",
-      "description": "Complete these exercises to master basic robot control:",
+      "title": "Basic Robot Control Practice",
+      "description": "Practice these exercises to master basic robot control:",
       "tasks": [
-        "Create a basic tank drive OpMode",
+        "Create a simple tank drive OpMode",
         "Implement arcade drive control",
-        "Add servo control for a simple mechanism",
-        "Implement safety features and battery monitoring",
-        "Create different speed modes for your robot",
-        "Practice with drivers to improve coordination",
-        "Test your controls in various scenarios"
+        "Add input smoothing and deadzone",
+        "Create a multi-mechanism control system",
+        "Implement safety features and emergency stop",
+        "Practice troubleshooting control issues",
+        "Test different control schemes and compare responsiveness"
       ],
-      "code": "// Practice Exercise: Complete Robot Control\n// Create a teleop OpMode that includes:\n// - Tank drive or arcade drive control\n// - Servo control for at least one mechanism\n// - Safety features (battery monitoring, emergency stop)\n// - Clear telemetry for driver feedback\n// - Multiple speed modes or control options"
+      "content": "// Practice Exercise: Basic Robot Control\n// Create an OpMode that demonstrates different control schemes\n// Include safety features and diagnostic tools\n// Test responsiveness and smoothness of control\n\n@TeleOp(name=\"Control Practice\", group=\"Practice\")\npublic class ControlPracticeOpMode extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    private Servo testServo;\n    private InputProcessor inputProcessor;\n    private SafetyController safety;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        testServo = hardwareMap.get(Servo.class, \"test_servo\");\n        \n        // Initialize controllers\n        inputProcessor = new InputProcessor();\n        safety = new SafetyController();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Test different control schemes\n            if (gamepad1.x) {\n                // Tank drive\n                double leftPower = -gamepad1.left_stick_y;\n                double rightPower = -gamepad1.right_stick_y;\n                tankDrive(leftPower, rightPower);\n            } else if (gamepad1.y) {\n                // Arcade drive\n                double drive = -gamepad1.left_stick_y;\n                double turn = gamepad1.right_stick_x;\n                arcadeDrive(drive, turn);\n            } else {\n                // Smoothed tank drive\n                double leftPower = -gamepad1.left_stick_y;\n                double rightPower = -gamepad1.right_stick_y;\n                double[] smoothed = inputProcessor.smoothTankInputs(leftPower, rightPower);\n                tankDrive(smoothed[0], smoothed[1]);\n            }\n            \n            // Test servo control\n            if (gamepad1.a) {\n                testServo.setPosition(0.0);\n            } else if (gamepad1.b) {\n                testServo.setPosition(1.0);\n            }\n            \n            // Emergency stop\n            if (gamepad1.back) {\n                safety.setEmergencyStop(true);\n            }\n            \n            // Display telemetry\n            telemetry.addData(\"Control Mode\", gamepad1.x ? \"Tank\" : gamepad1.y ? \"Arcade\" : \"Smoothed\");\n            telemetry.addData(\"Emergency Stop\", safety.isEmergencyStop());\n            telemetry.update();\n        }\n    }\n    \n    private void tankDrive(double leftPower, double rightPower) {\n        leftDrive.setPower(safety.limitPower(leftPower));\n        rightDrive.setPower(safety.limitPower(rightPower));\n    }\n    \n    private void arcadeDrive(double drive, double turn) {\n        double leftPower = drive + turn;\n        double rightPower = drive - turn;\n        tankDrive(leftPower, rightPower);\n    }\n}"
     }
   ]
 } 

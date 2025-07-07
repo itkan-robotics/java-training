@@ -1,0 +1,71 @@
+{
+  "title": "IMU (Inertial Measurement Unit)",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to IMU",
+      "content": "The IMU provides orientation and movement information, enabling precise navigation, turning, and autonomous behaviors. It measures the robot's orientation (angle) and acceleration, making it essential for advanced autonomous navigation and maintaining heading."
+    },
+    {
+      "type": "rules-box",
+      "title": "IMU Applications",
+      "subtitle": "What does the IMU do?",
+      "items": [
+        "Measures yaw, pitch, and roll (angles)",
+        "Detects acceleration and rotation",
+        "Used for gyro-based turning and field-oriented control",
+        "Orientation Control: Maintain robot heading and orientation",
+        "Precise Turning: Turn to specific angles accurately",
+        "Autonomous Navigation: Navigate using heading information",
+        "Balance Control: Maintain robot balance and stability"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "IMU Configuration and Initialization",
+      "content": "// IMU control and monitoring\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n\n// IMU configuration\npublic void initializeIMU() {\n    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n    parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n    parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n    parameters.calibrationDataFile = \"BNO055IMUCalibration.json\";\n    parameters.loggingEnabled = true;\n    parameters.loggingTag = \"IMU\";\n    \n    imu.initialize(parameters);\n}\n\n// Basic IMU initialization example\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\nBNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\nparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nimu.initialize(parameters);"
+    },
+    {
+      "type": "code",
+      "title": "IMU Data Reading and Control",
+      "content": "// IMU data reading\npublic class IMUController {\n    private BNO055IMU imu;\n    private double initialHeading = 0;\n    \n    public IMUController(BNO055IMU imu) {\n        this.imu = imu;\n        initializeIMU();\n    }\n    \n    public double getHeading() {\n        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;\n    }\n    \n    public double getRelativeHeading() {\n        return getHeading() - initialHeading;\n    }\n    \n    public void resetHeading() {\n        initialHeading = getHeading();\n    }\n    \n    public double getPitch() {\n        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;\n    }\n    \n    public double getRoll() {\n        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Precise Turning Functionality",
+      "content": "// Precise turning functionality\npublic class TurnController {\n    private IMUController imu;\n    private double turnTolerance = 2.0; // degrees\n    \n    public TurnController(IMUController imu) {\n        this.imu = imu;\n    }\n    \n    public void turnToAngle(double targetAngle) {\n        double currentAngle = imu.getRelativeHeading();\n        double error = targetAngle - currentAngle;\n        \n        // Normalize error to -180 to 180 degrees\n        while (error > 180) error -= 360;\n        while (error < -180) error += 360;\n        \n        // Apply proportional control\n        double turnPower = error * 0.02; // P gain\n        turnPower = Math.max(-0.5, Math.min(0.5, turnPower));\n        \n        // Apply to motors (implementation depends on your robot)\n        // leftMotor.setPower(-turnPower);\n        // rightMotor.setPower(turnPower);\n    }\n    \n    public boolean isAtTargetAngle(double targetAngle) {\n        double currentAngle = imu.getRelativeHeading();\n        double error = Math.abs(targetAngle - currentAngle);\n        return error < turnTolerance;\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Autonomous Navigation",
+      "content": "// Autonomous navigation\npublic class NavigationController {\n    private IMUController imu;\n    private TurnController turnController;\n    \n    public NavigationController(IMUController imu) {\n        this.imu = imu;\n        this.turnController = new TurnController(imu);\n    }\n    \n    public void navigateToHeading(double targetHeading) {\n        turnController.turnToAngle(targetHeading);\n        \n        while (!turnController.isAtTargetAngle(targetHeading) && opModeIsActive()) {\n            telemetry.addData(\"Current Heading\", \"%.1f°\", imu.getRelativeHeading());\n            telemetry.addData(\"Target Heading\", \"%.1f°\", targetHeading);\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Applications",
+      "content": "Use the IMU for precise turns, maintaining heading, and advanced autonomous routines. The IMU is essential for field-oriented control and accurate navigation in autonomous programs."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Touch Sensors",
+          "id": "touch-sensors"
+        },
+        {
+          "label": "Distance Sensors",
+          "id": "distance-sensors"
+        },
+        {
+          "label": "Color Sensors",
+          "id": "color-sensors"
+        }
+      ]
+    }
+  ]
+} 

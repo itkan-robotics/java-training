@@ -1,0 +1,53 @@
+{
+  "title": "Color Sensors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Color Sensors",
+      "content": "Color sensors detect colors and light intensity, enabling robots to identify game elements, follow lines, and respond to environmental conditions. They provide RGB color data and can be used for sophisticated autonomous behaviors."
+    },
+    {
+      "type": "rules-box",
+      "title": "Color Sensor Applications",
+      "subtitle": "Key applications for color sensors:",
+      "items": [
+        "Line Following: Follow colored lines on the field",
+        "Object Identification: Identify game elements by color",
+        "Light Detection: Respond to ambient light conditions",
+        "Color Sorting: Sort objects by color"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Color Sensor Implementation",
+      "content": "// Color sensor control and monitoring\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n\n// Basic color reading\npublic int getRed() {\n    return colorSensor.red();\n}\n\npublic int getGreen() {\n    return colorSensor.green();\n}\n\npublic int getBlue() {\n    return colorSensor.blue();\n}\n\npublic int getAlpha() {\n    return colorSensor.alpha();\n}\n\n// Color detection with thresholds\npublic class ColorDetector {\n    private ColorSensor sensor;\n    \n    public ColorDetector(ColorSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public boolean isRed() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return red > green && red > blue && red > 100;\n    }\n    \n    public boolean isBlue() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return blue > red && blue > green && blue > 100;\n    }\n    \n    public boolean isGreen() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return green > red && green > blue && green > 100;\n    }\n    \n    public String getDominantColor() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        if (red > green && red > blue) return \"Red\";\n        if (green > red && green > blue) return \"Green\";\n        if (blue > red && blue > green) return \"Blue\";\n        return \"Unknown\";\n    }\n}\n\n// Line following functionality\npublic class LineFollower {\n    private ColorSensor sensor;\n    private double targetBrightness = 0.5;\n    private double lineThreshold = 0.3;\n    \n    public LineFollower(ColorSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public double getBrightness() {\n        // Calculate brightness from RGB values\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return (red + green + blue) / 765.0; // Normalize to 0-1\n    }\n    \n    public boolean isOnLine() {\n        return getBrightness() < lineThreshold;\n    }\n    \n    public double getLineError() {\n        double brightness = getBrightness();\n        return brightness - targetBrightness;\n    }\n    \n    public double getCorrection() {\n        return getLineError() * 0.5; // Proportional correction\n    }\n}\n\n// Color sensor calibration\npublic class ColorCalibrator {\n    private ColorSensor sensor;\n    private int[] redValues = new int[10];\n    private int[] greenValues = new int[10];\n    private int[] blueValues = new int[10];\n    private int calibrationIndex = 0;\n    \n    public ColorCalibrator(ColorSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public void addCalibrationReading() {\n        if (calibrationIndex < 10) {\n            redValues[calibrationIndex] = sensor.red();\n            greenValues[calibrationIndex] = sensor.green();\n            blueValues[calibrationIndex] = sensor.blue();\n            calibrationIndex++;\n        }\n    }\n    \n    public int getAverageRed() {\n        int sum = 0;\n        for (int value : redValues) {\n            sum += value;\n        }\n        return sum / redValues.length;\n    }\n    \n    public int getAverageGreen() {\n        int sum = 0;\n        for (int value : greenValues) {\n            sum += value;\n        }\n        return sum / greenValues.length;\n    }\n    \n    public int getAverageBlue() {\n        int sum = 0;\n        for (int value : blueValues) {\n            sum += value;\n        }\n        return sum / blueValues.length;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Practical Applications",
+      "content": "Color sensors enable robots to interact with their environment based on visual information. They are essential for line following, object identification, and creating responsive autonomous behaviors."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Touch Sensors",
+          "id": "touch-sensors"
+        },
+        {
+          "label": "Distance Sensors",
+          "id": "distance-sensors"
+        },
+        {
+          "label": "IMU",
+          "id": "imu"
+        }
+      ]
+    }
+  ]
+} 

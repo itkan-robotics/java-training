@@ -1,0 +1,53 @@
+{
+  "title": "Distance Sensors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Distance Sensors",
+      "content": "Distance sensors measure the distance to objects and are useful for navigation, obstacle avoidance, and precise positioning. They provide continuous feedback about the robot's proximity to obstacles and can be used for autonomous navigation."
+    },
+    {
+      "type": "rules-box",
+      "title": "Distance Sensor Applications",
+      "subtitle": "Key applications for distance sensors:",
+      "items": [
+        "Obstacle Avoidance: Detect and avoid obstacles during movement",
+        "Precise Positioning: Position robot relative to walls or objects",
+        "Object Detection: Detect game elements at specific distances",
+        "Navigation: Follow walls or maintain distance from obstacles"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Distance Sensor Implementation",
+      "content": "// Distance sensor control and monitoring\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n\n// Basic distance reading\npublic double getDistance() {\n    return distanceSensor.getDistance(DistanceUnit.CM);\n}\n\n// Distance sensor with filtering\npublic class DistanceSensorController {\n    private DistanceSensor sensor;\n    private double[] readings = new double[5];\n    private int readingIndex = 0;\n    private DistanceUnit unit = DistanceUnit.CM;\n    \n    public DistanceSensorController(DistanceSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public double getFilteredDistance() {\n        // Add new reading\n        readings[readingIndex] = sensor.getDistance(unit);\n        readingIndex = (readingIndex + 1) % readings.length;\n        \n        // Calculate average\n        double sum = 0;\n        for (double reading : readings) {\n            sum += reading;\n        }\n        return sum / readings.length;\n    }\n    \n    public boolean isObjectDetected(double threshold) {\n        return getFilteredDistance() < threshold;\n    }\n    \n    public void setUnit(DistanceUnit unit) {\n        this.unit = unit;\n    }\n}\n\n// Wall following functionality\npublic class WallFollower {\n    private DistanceSensor leftSensor, rightSensor;\n    private double targetDistance = 20.0; // cm\n    private double tolerance = 2.0; // cm\n    \n    public WallFollower(DistanceSensor left, DistanceSensor right) {\n        this.leftSensor = left;\n        this.rightSensor = right;\n    }\n    \n    public double getCorrection() {\n        double leftDistance = leftSensor.getDistance(DistanceUnit.CM);\n        double rightDistance = rightSensor.getDistance(DistanceUnit.CM);\n        \n        double error = leftDistance - rightDistance;\n        return error * 0.1; // Proportional correction\n    }\n    \n    public boolean isAligned() {\n        double leftDistance = leftSensor.getDistance(DistanceUnit.CM);\n        double rightDistance = rightSensor.getDistance(DistanceUnit.CM);\n        \n        return Math.abs(leftDistance - rightDistance) < tolerance;\n    }\n}\n\n// Obstacle avoidance\npublic class ObstacleAvoidance {\n    private DistanceSensor frontSensor;\n    private double safeDistance = 15.0; // cm\n    \n    public ObstacleAvoidance(DistanceSensor sensor) {\n        this.frontSensor = sensor;\n    }\n    \n    public boolean isPathClear() {\n        return frontSensor.getDistance(DistanceUnit.CM) > safeDistance;\n    }\n    \n    public double getObstacleDistance() {\n        return frontSensor.getDistance(DistanceUnit.CM);\n    }\n    \n    public void adjustSpeed(double baseSpeed) {\n        double distance = getObstacleDistance();\n        if (distance < safeDistance) {\n            // Reduce speed based on proximity\n            double speedFactor = distance / safeDistance;\n            double adjustedSpeed = baseSpeed * speedFactor;\n            // Apply adjusted speed to motors\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Practical Applications",
+      "content": "Distance sensors enable sophisticated autonomous behaviors by providing real-time information about the robot's environment. They are essential for safe navigation and precise positioning in complex environments."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Touch Sensors",
+          "id": "touch-sensors"
+        },
+        {
+          "label": "Color Sensors",
+          "id": "color-sensors"
+        },
+        {
+          "label": "IMU",
+          "id": "imu"
+        }
+      ]
+    }
+  ]
+} 

@@ -1,0 +1,53 @@
+{
+  "title": "Touch Sensors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Touch Sensors",
+      "content": "Touch sensors detect physical contact and are commonly used for limit detection, object detection, and safety mechanisms. They provide reliable digital feedback when the robot makes contact with objects or reaches mechanical limits."
+    },
+    {
+      "type": "rules-box",
+      "title": "Touch Sensor Applications",
+      "subtitle": "Key applications for touch sensors:",
+      "items": [
+        "Limit Detection: Prevent mechanisms from moving beyond safe limits",
+        "Object Detection: Detect when robot contacts game elements",
+        "Safety Switches: Emergency stop functionality",
+        "Position Verification: Confirm mechanism has reached a position"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Touch Sensor Implementation",
+      "content": "// Touch sensor control and monitoring\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n\n// Basic touch detection\npublic boolean isTouched() {\n    return touchSensor.isPressed();\n}\n\n// Touch sensor with debouncing\npublic class TouchSensorController {\n    private TouchSensor sensor;\n    private boolean lastState = false;\n    private long lastDebounceTime = 0;\n    private long debounceDelay = 50; // milliseconds\n    \n    public TouchSensorController(TouchSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public boolean isPressed() {\n        boolean currentState = sensor.isPressed();\n        \n        if (currentState != lastState) {\n            lastDebounceTime = System.currentTimeMillis();\n        }\n        \n        if ((System.currentTimeMillis() - lastDebounceTime) > debounceDelay) {\n            lastState = currentState;\n        }\n        \n        return lastState;\n    }\n    \n    public boolean wasJustPressed() {\n        boolean currentState = isPressed();\n        boolean wasPressed = lastState;\n        lastState = currentState;\n        return currentState && !wasPressed;\n    }\n}\n\n// Limit switch functionality\npublic class LimitSwitch {\n    private TouchSensor sensor;\n    private String name;\n    \n    public LimitSwitch(TouchSensor sensor, String name) {\n        this.sensor = sensor;\n        this.name = name;\n    }\n    \n    public boolean isAtLimit() {\n        return sensor.isPressed();\n    }\n    \n    public void displayStatus() {\n        telemetry.addData(name + \" Limit\", isAtLimit() ? \"TRIGGERED\" : \"Clear\");\n    }\n}\n\n// Safety mechanism using touch sensor\npublic class SafetyMechanism {\n    private TouchSensor safetySensor;\n    private boolean isEnabled = true;\n    \n    public SafetyMechanism(TouchSensor sensor) {\n        this.safetySensor = sensor;\n    }\n    \n    public boolean isSafe() {\n        return !isEnabled || !safetySensor.isPressed();\n    }\n    \n    public void enable() {\n        isEnabled = true;\n    }\n    \n    public void disable() {\n        isEnabled = false;\n    }\n    \n    public void checkSafety() {\n        if (!isSafe()) {\n            // Emergency stop\n            emergencyStop();\n            telemetry.addData(\"SAFETY\", \"Touch sensor triggered - Emergency stop!\");\n        }\n    }\n    \n    private void emergencyStop() {\n        // Stop all motors and mechanisms\n        // Implementation depends on your robot\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Practical Applications",
+      "content": "Touch sensors are essential for creating safe and reliable robot mechanisms. They provide immediate feedback when physical contact occurs, making them ideal for limit detection and safety systems."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Distance Sensors",
+          "id": "distance-sensors"
+        },
+        {
+          "label": "Color Sensors",
+          "id": "color-sensors"
+        },
+        {
+          "label": "IMU",
+          "id": "imu"
+        }
+      ]
+    }
+  ]
+} 

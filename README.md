@@ -234,7 +234,7 @@ All content files follow a standardized JSON format:
         "Task 1",
         "Task 2"
       ],
-      "code": "// Example code"
+      "content": "// Example code"
     }
   ]
 }

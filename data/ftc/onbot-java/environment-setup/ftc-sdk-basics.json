@@ -42,7 +42,7 @@
       "type": "code",
       "title": "Basic OpMode Structure",
       "language": "java",
-      "code": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name=\"Basic OpMode\", group=\"Examples\")\npublic class BasicOpMode extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Wait for start\n        waitForStart();\n        \n        // Main robot loop\n        while (opModeIsActive()) {\n            // Your robot logic here\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}"
+      "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name=\"Basic OpMode\", group=\"Examples\")\npublic class BasicOpMode extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Wait for start\n        waitForStart();\n        \n        // Main robot loop\n        while (opModeIsActive()) {\n            // Your robot logic here\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}"
     },
     {
       "type": "text",
@@ -53,7 +53,7 @@
       "type": "code",
       "title": "Hardware Mapping Examples",
       "language": "java",
-      "code": "// Motor mapping\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n\n// Servo mapping\nServo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n\n// Sensor mapping\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n\n// IMU mapping\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");"
+      "content": "// Motor mapping\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n\n// Servo mapping\nServo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n\n// Sensor mapping\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n\n// IMU mapping\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");"
     },
     {
       "type": "text",
@@ -64,7 +64,7 @@
       "type": "code",
       "title": "Telemetry Examples",
       "language": "java",
-      "code": "// Basic telemetry\ntelemetry.addData(\"Motor Power\", leftMotor.getPower());\ntelemetry.addData(\"Servo Position\", armServo.getPosition());\ntelemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n\n// Formatted telemetry\ntelemetry.addData(\"Status\", \"Running\");\ntelemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\ntelemetry.addData(\"Time\", \"%.1f seconds\", getRuntime().seconds());\n\n// Update telemetry display\ntelemetry.update();\n\n// Clear telemetry\ntelemetry.clear();\n\n// Log data to file\ntelemetry.log().add(\"Robot started autonomous mode\");"
+      "content": "// Basic telemetry\ntelemetry.addData(\"Motor Power\", leftMotor.getPower());\ntelemetry.addData(\"Servo Position\", armServo.getPosition());\ntelemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n\n// Formatted telemetry\ntelemetry.addData(\"Status\", \"Running\");\ntelemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\ntelemetry.addData(\"Time\", \"%.1f seconds\", getRuntime().seconds());\n\n// Update telemetry display\ntelemetry.update();\n\n// Clear telemetry\ntelemetry.clear();\n\n// Log data to file\ntelemetry.log().add(\"Robot started autonomous mode\");"
     },
     {
       "type": "text",
@@ -75,7 +75,7 @@
       "type": "code",
       "title": "Gamepad Input Examples",
       "language": "java",
-      "code": "// Joystick input\ndouble leftStickY = gamepad1.left_stick_y;\ndouble rightStickX = gamepad1.right_stick_x;\n\n// Button input\nboolean aButton = gamepad1.a;\nboolean bButton = gamepad1.b;\nboolean xButton = gamepad1.x;\nboolean yButton = gamepad1.y;\n\n// Trigger input\ndouble leftTrigger = gamepad1.left_trigger;\ndouble rightTrigger = gamepad1.right_trigger;\n\n// Bumper input\nboolean leftBumper = gamepad1.left_bumper;\nboolean rightBumper = gamepad1.right_bumper;\n\n// D-pad input\nboolean dpadUp = gamepad1.dpad_up;\nboolean dpadDown = gamepad1.dpad_down;\nboolean dpadLeft = gamepad1.dpad_left;\nboolean dpadRight = gamepad1.dpad_right;"
+      "content": "// Joystick input\ndouble leftStickY = gamepad1.left_stick_y;\ndouble rightStickX = gamepad1.right_stick_x;\n\n// Button input\nboolean aButton = gamepad1.a;\nboolean bButton = gamepad1.b;\nboolean xButton = gamepad1.x;\nboolean yButton = gamepad1.y;\n\n// Trigger input\ndouble leftTrigger = gamepad1.left_trigger;\ndouble rightTrigger = gamepad1.right_trigger;\n\n// Bumper input\nboolean leftBumper = gamepad1.left_bumper;\nboolean rightBumper = gamepad1.right_bumper;\n\n// D-pad input\nboolean dpadUp = gamepad1.dpad_up;\nboolean dpadDown = gamepad1.dpad_down;\nboolean dpadLeft = gamepad1.dpad_left;\nboolean dpadRight = gamepad1.dpad_right;"
     },
     {
       "type": "rules-box",
@@ -139,7 +139,7 @@
         "Practice using the hardwareMap to access components",
         "Test your code on a robot or in simulation"
       ],
-      "code": "// Practice Exercise: Basic Motor Control\n// Create an OpMode that uses the left joystick to control two motors\n// Display the joystick values and motor powers using telemetry\n// Test different motor configurations and behaviors"
+      "content": "// Practice Exercise: Basic Motor Control\n// Create an OpMode that uses the left joystick to control two motors\n// Display the joystick values and motor powers using telemetry\n// Test different motor configurations and behaviors"
     }
   ]
 } 

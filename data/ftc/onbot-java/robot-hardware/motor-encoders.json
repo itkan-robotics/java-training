@@ -21,7 +21,7 @@
       "type": "code",
       "title": "Using Encoders in FTC",
       "language": "java",
-      "code": "motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nmotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nint position = motor.getCurrentPosition();"
+      "content": "motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nmotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nint position = motor.getCurrentPosition();"
     },
     {
       "type": "text",

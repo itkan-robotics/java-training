@@ -1,0 +1,169 @@
+{
+  "title": "Basic Motor Control",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Motor Control",
+      "content": "Basic motor control is the foundation of FTC robot programming. Understanding how to control motor power, direction, and behavior is essential for creating functional robot mechanisms and drivetrains."
+    },
+    {
+      "type": "rules-box",
+      "title": "Motor Control Fundamentals",
+      "subtitle": "Key concepts for motor control:",
+      "items": [
+        "Power ranges from -1.0 (full reverse) to 1.0 (full forward)",
+        "Direction can be set globally or controlled with negative power",
+        "Zero power behavior determines how motors stop",
+        "Run modes control how the motor responds to commands",
+        "Safety features prevent damage to motors and mechanisms"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Power Control",
+      "content": "The most basic form of motor control is setting power levels. Power determines both speed and direction of the motor."
+    },
+    {
+      "type": "code",
+      "title": "Basic Power Control Examples",
+      "language": "java",
+      "content": "// Basic power control\nmotor.setPower(1.0);   // Full speed forward\nmotor.setPower(0.5);   // Half speed forward\nmotor.setPower(0.0);   // Stop\nmotor.setPower(-0.5);  // Half speed reverse\nmotor.setPower(-1.0);  // Full speed reverse\n\n// Power control with variables\ndouble power = 0.75;\nmotor.setPower(power);\n\n// Conditional power control\nif (gamepad1.a) {\n    motor.setPower(1.0);\n} else if (gamepad1.b) {\n    motor.setPower(-1.0);\n} else {\n    motor.setPower(0.0);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Direction Control",
+      "content": "Motor direction can be controlled in two ways: setting the motor direction globally or using negative power values."
+    },
+    {
+      "type": "code",
+      "title": "Direction Control Methods",
+      "language": "java",
+      "content": "// Method 1: Set motor direction globally\nmotor.setDirection(DcMotor.Direction.FORWARD);\nmotor.setPower(0.5); // Always moves forward\n\nmotor.setDirection(DcMotor.Direction.REVERSE);\nmotor.setPower(0.5); // Always moves in reverse direction\n\n// Method 2: Use negative power for direction control\nmotor.setDirection(DcMotor.Direction.FORWARD);\nmotor.setPower(0.5);  // Forward\nmotor.setPower(-0.5); // Reverse\n\n// Common pattern for drivetrains\nleftMotor.setDirection(DcMotor.Direction.FORWARD);\nrightMotor.setDirection(DcMotor.Direction.REVERSE);\n// Now positive power on both motors makes the robot go forward"
+    },
+    {
+      "type": "text",
+      "title": "Zero Power Behavior",
+      "content": "Zero power behavior determines what happens when you set motor power to zero. This is important for robot control and safety."
+    },
+    {
+      "type": "list",
+      "title": "Zero Power Behaviors",
+      "items": [
+        "<strong>BRAKE:</strong> Motor actively resists movement (stops quickly)",
+        "<strong>FLOAT:</strong> Motor coasts to stop (no resistance)",
+        "<strong>Default:</strong> Usually BRAKE for most applications"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Zero Power Behavior Examples",
+      "language": "java",
+      "content": "// Set zero power behavior\nmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n// Good for: Drivetrains, mechanisms that need to hold position\n\nmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);\n// Good for: Mechanisms that should coast, reducing wear\n\n// Example: Different behaviors for different motors\nleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\nrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\nintakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);"
+    },
+    {
+      "type": "text",
+      "title": "Run Modes",
+      "content": "Run modes control how the motor responds to power commands and whether it uses encoder feedback."
+    },
+    {
+      "type": "list",
+      "title": "Common Run Modes",
+      "items": [
+        "<strong>RUN_WITHOUT_ENCODER:</strong> Direct power control, no encoder feedback",
+        "<strong>RUN_USING_ENCODER:</strong> Power control with encoder-based speed regulation",
+        "<strong>RUN_TO_POSITION:</strong> Move to a specific encoder position",
+        "<strong>STOP_AND_RESET_ENCODER:</strong> Reset encoder to zero position"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Run Mode Examples",
+      "language": "java",
+      "content": "// Simple power control (no encoder)\nmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\nmotor.setPower(0.5);\n\n// Encoder-based speed control\nmotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nmotor.setPower(0.5); // Speed will be regulated\n\n// Position control\nmotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nmotor.setTargetPosition(1000);\nmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\nmotor.setPower(0.5); // Move to position\n\n// Check if motor is busy (for position control)\nwhile (motor.isBusy()) {\n    telemetry.addData(\"Position\", motor.getCurrentPosition());\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Drivetrain Control",
+      "content": "Drivetrain control is one of the most common applications of motor control in FTC. Different control schemes offer various advantages."
+    },
+    {
+      "type": "code",
+      "title": "Drivetrain Control Schemes",
+      "language": "java",
+      "content": "// Tank Drive (Differential Drive)\npublic void tankDrive(double leftPower, double rightPower) {\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Arcade Drive\npublic void arcadeDrive(double drive, double turn) {\n    double leftPower = drive + turn;\n    double rightPower = drive - turn;\n    \n    // Limit power to valid range\n    leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n    rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n    \n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Gamepad control example\nwhile (opModeIsActive()) {\n    // Tank drive\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    tankDrive(leftPower, rightPower);\n    \n    // Or arcade drive\n    double drive = -gamepad1.left_stick_y;\n    double turn = gamepad1.right_stick_x;\n    arcadeDrive(drive, turn);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Safety and Best Practices",
+      "content": "Implementing safety features and following best practices ensures reliable robot operation and prevents damage."
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Guidelines",
+      "subtitle": "Essential safety practices:",
+      "items": [
+        "Always limit power to valid range (-1.0 to 1.0)",
+        "Implement emergency stop functionality",
+        "Monitor battery voltage and reduce power when low",
+        "Test motors at low power before full power",
+        "Use appropriate zero power behavior for each application",
+        "Check for mechanical binding before running motors"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Safety Implementation",
+      "language": "java",
+      "content": "// Power limiting utility\npublic double limitPower(double power) {\n    return Math.max(-1.0, Math.min(1.0, power));\n}\n\n// Safe motor control method\npublic void setMotorPowerSafely(DcMotor motor, double power) {\n    power = limitPower(power);\n    \n    // Check battery voltage\n    if (getBatteryVoltage() < 11.0) {\n        power *= 0.5; // Reduce power if battery is low\n    }\n    \n    motor.setPower(power);\n}\n\n// Emergency stop\npublic void emergencyStop() {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n    // Stop all other motors...\n    \n    telemetry.addData(\"STATUS\", \"EMERGENCY STOP\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting",
+      "content": "Common motor control issues and their solutions help teams quickly resolve problems."
+    },
+    {
+      "type": "list",
+      "title": "Common Issues",
+      "items": [
+        "<strong>Motor runs in wrong direction:</strong> Change setDirection() or use negative power",
+        "<strong>Uneven motor speeds:</strong> Calibrate power levels or check mechanical issues",
+        "<strong>Motor doesn't respond:</strong> Check configuration file and wiring",
+        "<strong>Jerky movement:</strong> Add smoothing to gamepad inputs",
+        "<strong>Battery drain:</strong> Reduce power levels and check for binding"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "DC Motors",
+          "id": "dc-motors"
+        },
+        {
+          "label": "Motor Encoders",
+          "id": "motor-encoders"
+        },
+        {
+          "label": "Motor Types",
+          "id": "motor-types"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Motor Control Practice",
+      "description": "Practice these exercises to master motor control:",
+      "tasks": [
+        "Create a simple tank drive OpMode",
+        "Implement arcade drive control",
+        "Add power limiting and safety features",
+        "Test different zero power behaviors",
+        "Create a mechanism control OpMode",
+        "Practice troubleshooting motor issues",
+        "Implement emergency stop functionality"
+      ],
+      "content": "// Practice Exercise: Tank Drive\n// Create an OpMode that implements tank drive control\n// Include safety features and telemetry\n// Test different control schemes\n\n@TeleOp(name=\"Tank Drive Test\", group=\"Testing\")\npublic class TankDriveTestOpMode extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize motors\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        \n        // Configure motors\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Tank drive control\n            double leftPower = limitPower(-gamepad1.left_stick_y);\n            double rightPower = limitPower(-gamepad1.right_stick_y);\n            \n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            \n            // Telemetry\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n    \n    private double limitPower(double power) {\n        return Math.max(-1.0, Math.min(1.0, power));\n    }\n}"
+    }
+  ]
+} 

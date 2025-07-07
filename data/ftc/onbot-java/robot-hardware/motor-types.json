@@ -21,7 +21,7 @@
       "type": "code",
       "title": "Comparing Motor Specs",
       "language": "java",
-      "code": "// Neverest 20: ~3000 RPM, low torque\n// Neverest 40: ~1600 RPM, medium torque\n// Neverest 60: ~1050 RPM, high torque\n// REV HD Hex: Variable RPM, high torque\n// GoBilda: Many options, check datasheet"
+      "content": "// Neverest 20: ~3000 RPM, low torque\n// Neverest 40: ~1600 RPM, medium torque\n// Neverest 60: ~1050 RPM, high torque\n// REV HD Hex: Variable RPM, high torque\n// GoBilda: Many options, check datasheet"
     },
     {
       "type": "text",

@@ -7,16 +7,17 @@
 │   │   ├── linear-vs-iterative-opmodes.json
 │   │   ├── telemetry-logging.json
 │   │   └── control-hub-expansion-hub.json
-│   ├── robot-hardware/
+│   ├── motors/
 │   │   ├── robot-hardware-overview.json
 │   │   ├── dc-motors.json
 │   │   ├── basic-motor-control.json
 │   │   ├── motor-encoders.json
 │   │   ├── motor-types.json
-│   │   ├── servos.json
+│   ├── servos/
+|   |   ├── intro-to-servos.json
 │   │   ├── continuous-vs-noncontinuous.json
 │   │   ├── servo-positions.json
-│   │   ├── sensors.json
+│   |── sensors.json
 │   │   ├── touch-sensors.json
 │   │   ├── distance-sensors.json
 │   │   ├── color-sensors.json

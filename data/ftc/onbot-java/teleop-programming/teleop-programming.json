@@ -1,0 +1,123 @@
+{
+  "title": "Teleop Programming",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Teleop Programming",
+      "content": "Teleop programming is the art of creating driver-controlled robot operations in FTC. It involves designing intuitive control systems that allow human operators to effectively control robot mechanisms during competition matches."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is Teleop Programming?",
+      "subtitle": "Key concepts for teleop programming:",
+      "items": [
+        "Creating driver-controlled robot operations",
+        "Designing intuitive control schemes",
+        "Managing multiple mechanisms simultaneously",
+        "Implementing safety features and failsafes",
+        "Optimizing for competition performance"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Teleop vs Autonomous",
+      "content": "Understanding the difference between teleop and autonomous programming helps teams design appropriate control systems for each phase of the game."
+    },
+    {
+      "type": "list",
+      "title": "Teleop vs Autonomous Comparison",
+      "items": [
+        "<strong>Teleop:</strong> Human-controlled, real-time decision making, responsive to game situations",
+        "<strong>Autonomous:</strong> Pre-programmed, runs without human input, executes predetermined sequences",
+        "<strong>Teleop Duration:</strong> Typically 2 minutes in FTC matches",
+        "<strong>Autonomous Duration:</strong> Typically 30 seconds in FTC matches",
+        "<strong>Teleop Focus:</strong> Driver skill and control system design",
+        "<strong>Autonomous Focus:</strong> Programming precision and reliability"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Basic Teleop OpMode Structure",
+      "content": "// Basic teleop OpMode structure\n@TeleOp(name=\"Basic Teleop\", group=\"Teleop\")\npublic class BasicTeleop extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo, clawServo;\n    private DcMotor intakeMotor;\n    \n    // Control variables\n    private double driveSpeed = 1.0;\n    private boolean slowMode = false;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initializeHardware();\n        \n        // Wait for start\n        telemetry.addData(\"Status\", \"Ready for start\");\n        telemetry.update();\n        waitForStart();\n        \n        // Main teleop loop\n        while (opModeIsActive()) {\n            // Update all mechanisms\n            updateDrivetrain();\n            updateArm();\n            updateClaw();\n            updateIntake();\n            \n            // Update telemetry\n            updateTelemetry();\n        }\n    }\n    \n    private void initializeHardware() {\n        // Initialize motors\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        intakeMotor = hardwareMap.get(DcMotor.class, \"intake_motor\");\n        \n        // Initialize servos\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        \n        // Configure motors\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        // Set initial servo positions\n        armServo.setPosition(0.5);\n        clawServo.setPosition(0.0);\n    }\n    \n    private void updateDrivetrain() {\n        // Read gamepad inputs\n        double leftPower = -gamepad1.left_stick_y;\n        double rightPower = -gamepad1.right_stick_y;\n        \n        // Apply speed modifier\n        if (slowMode) {\n            leftPower *= 0.3;\n            rightPower *= 0.3;\n        }\n        \n        // Apply to motors\n        leftDrive.setPower(leftPower * driveSpeed);\n        rightDrive.setPower(rightPower * driveSpeed);\n    }\n    \n    private void updateArm() {\n        // Arm control with triggers\n        if (gamepad1.right_trigger > 0.1) {\n            // Move arm up\n            double currentPos = armServo.getPosition();\n            armServo.setPosition(Math.max(0.0, currentPos - 0.01));\n        } else if (gamepad1.left_trigger > 0.1) {\n            // Move arm down\n            double currentPos = armServo.getPosition();\n            armServo.setPosition(Math.min(1.0, currentPos + 0.01));\n        }\n    }\n    \n    private void updateClaw() {\n        // Claw control with buttons\n        if (gamepad1.a) {\n            clawServo.setPosition(0.0); // Open\n        } else if (gamepad1.b) {\n            clawServo.setPosition(1.0); // Close\n        }\n    }\n    \n    private void updateIntake() {\n        // Intake control with bumpers\n        if (gamepad1.right_bumper) {\n            intakeMotor.setPower(1.0); // Intake\n        } else if (gamepad1.left_bumper) {\n            intakeMotor.setPower(-1.0); // Outtake\n        } else {\n            intakeMotor.setPower(0.0); // Stop\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Drive Speed\", driveSpeed);\n        telemetry.addData(\"Slow Mode\", slowMode);\n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n        telemetry.addData(\"Intake Power\", \"%.2f\", intakeMotor.getPower());\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Control System Design",
+      "content": "Effective teleop control systems are designed with the driver in mind. Understanding human factors and ergonomics helps create intuitive and efficient control schemes."
+    },
+    {
+      "type": "list",
+      "title": "Control Design Principles",
+      "items": [
+        "<strong>Intuitive Mapping:</strong> Controls should feel natural and predictable",
+        "<strong>Ergonomic Layout:</strong> Frequently used controls should be easily accessible",
+        "<strong>Consistent Behavior:</strong> Similar actions should have similar controls",
+        "<strong>Feedback Systems:</strong> Drivers need clear feedback about robot state",
+        "<strong>Safety Features:</strong> Emergency stops and failsafes are essential"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Advanced Control System",
+      "content": "// Advanced teleop control system with multiple features\npublic class AdvancedTeleopController {\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo, clawServo;\n    private DcMotor intakeMotor;\n    \n    // Control modes\n    private enum ControlMode {\n        TANK_DRIVE,\n        ARCADE_DRIVE,\n        SINGLE_STICK\n    }\n    \n    private ControlMode currentMode = ControlMode.TANK_DRIVE;\n    private double driveSpeed = 1.0;\n    private boolean slowMode = false;\n    private boolean precisionMode = false;\n    \n    // Input processing\n    private double lastLeftPower = 0;\n    private double lastRightPower = 0;\n    private double smoothingFactor = 0.3;\n    \n    public AdvancedTeleopController(DcMotor leftDrive, DcMotor rightDrive, \n                                   Servo armServo, Servo clawServo, DcMotor intakeMotor) {\n        this.leftDrive = leftDrive;\n        this.rightDrive = rightDrive;\n        this.armServo = armServo;\n        this.clawServo = clawServo;\n        this.intakeMotor = intakeMotor;\n    }\n    \n    public void update(Gamepad gamepad) {\n        // Handle control mode switching\n        handleModeSwitching(gamepad);\n        \n        // Update drivetrain based on current mode\n        updateDrivetrain(gamepad);\n        \n        // Update mechanisms\n        updateArm(gamepad);\n        updateClaw(gamepad);\n        updateIntake(gamepad);\n        \n        // Handle special features\n        handleSpecialFeatures(gamepad);\n    }\n    \n    private void handleModeSwitching(Gamepad gamepad) {\n        if (gamepad.dpad_up) {\n            currentMode = ControlMode.TANK_DRIVE;\n        } else if (gamepad.dpad_right) {\n            currentMode = ControlMode.ARCADE_DRIVE;\n        } else if (gamepad.dpad_down) {\n            currentMode = ControlMode.SINGLE_STICK;\n        }\n        \n        // Toggle slow mode\n        if (gamepad.dpad_left) {\n            slowMode = !slowMode;\n        }\n        \n        // Toggle precision mode\n        if (gamepad.start) {\n            precisionMode = !precisionMode;\n        }\n    }\n    \n    private void updateDrivetrain(Gamepad gamepad) {\n        double leftPower = 0, rightPower = 0;\n        \n        switch (currentMode) {\n            case TANK_DRIVE:\n                leftPower = -gamepad.left_stick_y;\n                rightPower = -gamepad.right_stick_y;\n                break;\n            case ARCADE_DRIVE:\n                double drive = -gamepad.left_stick_y;\n                double turn = gamepad.right_stick_x;\n                leftPower = drive + turn;\n                rightPower = drive - turn;\n                break;\n            case SINGLE_STICK:\n                double x = gamepad.left_stick_x;\n                double y = -gamepad.left_stick_y;\n                double magnitude = Math.sqrt(x * x + y * y);\n                double angle = Math.atan2(y, x);\n                leftPower = magnitude * Math.cos(angle - Math.PI/4);\n                rightPower = magnitude * Math.sin(angle - Math.PI/4);\n                break;\n        }\n        \n        // Apply smoothing\n        leftPower = smoothInput(leftPower, lastLeftPower);\n        rightPower = smoothInput(rightPower, lastRightPower);\n        \n        // Apply speed modifiers\n        if (slowMode) {\n            leftPower *= 0.3;\n            rightPower *= 0.3;\n        }\n        \n        if (precisionMode) {\n            leftPower *= 0.5;\n            rightPower *= 0.5;\n        }\n        \n        // Apply to motors\n        leftDrive.setPower(leftPower * driveSpeed);\n        rightDrive.setPower(rightPower * driveSpeed);\n        \n        lastLeftPower = leftPower;\n        lastRightPower = rightPower;\n    }\n    \n    private double smoothInput(double target, double current) {\n        return current + (target - current) * smoothingFactor;\n    }\n    \n    private void updateArm(Gamepad gamepad) {\n        // Arm control with variable speed based on trigger pressure\n        double armUp = gamepad.right_trigger;\n        double armDown = gamepad.left_trigger;\n        \n        if (armUp > 0.1) {\n            double currentPos = armServo.getPosition();\n            double speed = armUp * 0.02; // Variable speed\n            armServo.setPosition(Math.max(0.0, currentPos - speed));\n        } else if (armDown > 0.1) {\n            double currentPos = armServo.getPosition();\n            double speed = armDown * 0.02; // Variable speed\n            armServo.setPosition(Math.min(1.0, currentPos + speed));\n        }\n    }\n    \n    private void updateClaw(Gamepad gamepad) {\n        // Claw control with toggle functionality\n        if (gamepad.a) {\n            clawServo.setPosition(0.0); // Open\n        } else if (gamepad.b) {\n            clawServo.setPosition(1.0); // Close\n        }\n    }\n    \n    private void updateIntake(Gamepad gamepad) {\n        // Intake control with variable speed\n        if (gamepad.right_bumper) {\n            intakeMotor.setPower(1.0); // Full intake\n        } else if (gamepad.left_bumper) {\n            intakeMotor.setPower(-1.0); // Full outtake\n        } else if (gamepad.y) {\n            intakeMotor.setPower(0.5); // Half speed intake\n        } else if (gamepad.x) {\n            intakeMotor.setPower(-0.5); // Half speed outtake\n        } else {\n            intakeMotor.setPower(0.0); // Stop\n        }\n    }\n    \n    private void handleSpecialFeatures(Gamepad gamepad) {\n        // Emergency stop\n        if (gamepad.back) {\n            emergencyStop();\n        }\n        \n        // Speed adjustment\n        if (gamepad.right_stick_button) {\n            driveSpeed = Math.min(1.0, driveSpeed + 0.1);\n        } else if (gamepad.left_stick_button) {\n            driveSpeed = Math.max(0.1, driveSpeed - 0.1);\n        }\n    }\n    \n    private void emergencyStop() {\n        leftDrive.setPower(0);\n        rightDrive.setPower(0);\n        intakeMotor.setPower(0);\n    }\n    \n    public void displayTelemetry() {\n        telemetry.addData(\"Control Mode\", currentMode.toString());\n        telemetry.addData(\"Drive Speed\", \"%.1f\", driveSpeed);\n        telemetry.addData(\"Slow Mode\", slowMode);\n        telemetry.addData(\"Precision Mode\", precisionMode);\n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n        telemetry.addData(\"Intake Power\", \"%.2f\", intakeMotor.getPower());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Driver Training and Optimization",
+      "content": "Effective teleop programming includes considerations for driver training and optimization. The best control system is only as good as the driver's ability to use it effectively."
+    },
+    {
+      "type": "list",
+      "title": "Driver Training Considerations",
+      "items": [
+        "<strong>Practice Time:</strong> Drivers need significant practice to master controls",
+        "<strong>Control Familiarity:</strong> Consistent control schemes improve performance",
+        "<strong>Feedback Systems:</strong> Clear telemetry helps drivers understand robot state",
+        "<strong>Ergonomic Design:</strong> Comfortable control schemes reduce driver fatigue",
+        "<strong>Competition Practice:</strong> Simulate competition conditions during practice"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Driver Training Features",
+      "content": "// Driver training and optimization features\npublic class DriverTrainingSystem {\n    private double practiceTime = 0;\n    private int buttonPresses = 0;\n    private double totalDistance = 0;\n    private double lastLeftPower = 0, lastRightPower = 0;\n    private double lastTime = 0;\n    \n    // Performance metrics\n    private double averageSpeed = 0;\n    private double maxSpeed = 0;\n    private int emergencyStops = 0;\n    \n    public void updateMetrics(double leftPower, double rightPower, boolean emergencyStop) {\n        double currentTime = getRuntime().seconds();\n        double deltaTime = currentTime - lastTime;\n        \n        if (deltaTime > 0) {\n            // Calculate distance traveled (simplified)\n            double avgPower = (Math.abs(leftPower) + Math.abs(rightPower)) / 2.0;\n            totalDistance += avgPower * deltaTime;\n            \n            // Update average speed\n            averageSpeed = totalDistance / currentTime;\n            \n            // Update max speed\n            if (avgPower > maxSpeed) {\n                maxSpeed = avgPower;\n            }\n        }\n        \n        if (emergencyStop) {\n            emergencyStops++;\n        }\n        \n        lastTime = currentTime;\n        lastLeftPower = leftPower;\n        lastRightPower = rightPower;\n    }\n    \n    public void displayTrainingMetrics() {\n        telemetry.addData(\"=== DRIVER TRAINING METRICS ===\", \"\");\n        telemetry.addData(\"Practice Time\", \"%.1f seconds\", getRuntime().seconds());\n        telemetry.addData(\"Total Distance\", \"%.1f units\", totalDistance);\n        telemetry.addData(\"Average Speed\", \"%.2f\", averageSpeed);\n        telemetry.addData(\"Max Speed\", \"%.2f\", maxSpeed);\n        telemetry.addData(\"Emergency Stops\", emergencyStops);\n        telemetry.addData(\"Efficiency Score\", \"%.1f%%\", calculateEfficiency());\n    }\n    \n    private double calculateEfficiency() {\n        // Simple efficiency calculation\n        double timeEfficiency = Math.min(100, (getRuntime().seconds() / 120.0) * 100);\n        double safetyEfficiency = Math.max(0, 100 - (emergencyStops * 10));\n        return (timeEfficiency + safetyEfficiency) / 2.0;\n    }\n    \n    public void resetMetrics() {\n        practiceTime = 0;\n        buttonPresses = 0;\n        totalDistance = 0;\n        averageSpeed = 0;\n        maxSpeed = 0;\n        emergencyStops = 0;\n        lastTime = getRuntime().seconds();\n    }\n}\n\n// Usage in teleop OpMode\nDriverTrainingSystem training = new DriverTrainingSystem();\n\nwhile (opModeIsActive()) {\n    // Update robot control\n    controller.update(gamepad1);\n    \n    // Update training metrics\n    training.updateMetrics(leftDrive.getPower(), rightDrive.getPower(), \n                          gamepad1.back);\n    \n    // Display metrics\n    controller.displayTelemetry();\n    training.displayTrainingMetrics();\n    telemetry.update();\n    \n    // Reset metrics with select button\n    if (gamepad1.select) {\n        training.resetMetrics();\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Basic Robot Control",
+          "id": "basic-robot-control"
+        },
+        {
+          "label": "Gamepad Controls",
+          "id": "gamepad-controls"
+        },
+        {
+          "label": "Motor Power Control",
+          "id": "motor-power-control"
+        },
+        {
+          "label": "Servo Control",
+          "id": "servo-control"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Teleop Programming Practice",
+      "description": "Practice these exercises to master teleop programming:",
+      "tasks": [
+        "Create a basic teleop OpMode with multiple mechanisms",
+        "Implement different control schemes and test responsiveness",
+        "Add safety features and emergency stop functionality",
+        "Create driver training metrics and feedback systems",
+        "Design competition-ready features and scoring systems",
+        "Practice troubleshooting common teleop issues",
+        "Test control systems under various conditions"
+      ],
+      "content": "// Practice Exercise: Complete Teleop System\n// Create a comprehensive teleop system with all features\n// Include safety, training, and competition features\n// Test with different drivers and conditions\n\n@TeleOp(name=\"Complete Teleop Practice\", group=\"Practice\")\npublic class CompleteTeleopPractice extends LinearOpMode {\n    \n    private SafeTeleopController safeController;\n    private CompetitionTeleopController competitionController;\n    private DriverTrainingSystem training;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize all systems\n        AdvancedTeleopController controller = new AdvancedTeleopController(\n            leftDrive, rightDrive, armServo, clawServo, intakeMotor);\n        safeController = new SafeTeleopController(controller);\n        competitionController = new CompetitionTeleopController(controller);\n        training = new DriverTrainingSystem();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Update all systems\n            safeController.update(gamepad1);\n            competitionController.update(gamepad1);\n            \n            // Display comprehensive telemetry\n            safeController.displayTelemetry();\n            competitionController.displayCompetitionTelemetry();\n            training.displayTrainingMetrics();\n            \n            telemetry.update();\n        }\n    }\n}"
+    }
+  ]
+} 

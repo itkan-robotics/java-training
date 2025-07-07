@@ -1,0 +1,130 @@
+{
+  "title": "Servo Control",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Servo Control",
+      "content": "Servo control is essential for precise positioning of robot mechanisms. Understanding how to control servos effectively, handle different servo types, and implement safe servo operations is crucial for creating reliable robot systems."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is Servo Control?",
+      "subtitle": "Key concepts for servo control:",
+      "items": [
+        "Position control with setPosition() method",
+        "Continuous vs. standard servo types",
+        "Servo range and position limits",
+        "Incremental movement and toggling",
+        "Safety limits and mechanical stops",
+        "Servo calibration and initialization"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Basic Servo Control",
+      "content": "Servos provide precise position control for robot mechanisms. Understanding the basic servo control methods and position ranges is fundamental to effective servo programming."
+    },
+    {
+      "type": "code",
+      "title": "Basic Servo Implementation",
+      "content": "// Basic servo control\n@TeleOp(name=\"Basic Servo Control\", group=\"Teleop\")\npublic class BasicServoControl extends LinearOpMode {\n    \n    private Servo armServo, clawServo;\n    private double armPosition = 0.5;\n    private double clawPosition = 0.0;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize servos\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        \n        // Set initial positions\n        armServo.setPosition(armPosition);\n        clawServo.setPosition(clawPosition);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Arm control with triggers\n            if (gamepad1.right_trigger > 0.1) {\n                // Move arm up\n                armPosition = Math.max(0.0, armPosition - 0.01);\n                armServo.setPosition(armPosition);\n            } else if (gamepad1.left_trigger > 0.1) {\n                // Move arm down\n                armPosition = Math.min(1.0, armPosition + 0.01);\n                armServo.setPosition(armPosition);\n            }\n            \n            // Claw control with buttons\n            if (gamepad1.a) {\n                clawServo.setPosition(0.0); // Open\n            } else if (gamepad1.b) {\n                clawServo.setPosition(1.0); // Close\n            }\n            \n            // Display positions\n            telemetry.addData(\"Arm Position\", \"%.2f\", armPosition);\n            telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Servo Control",
+      "content": "Advanced servo control includes features like position toggling, incremental movement, and servo management classes for complex mechanisms."
+    },
+    {
+      "type": "code",
+      "title": "Advanced Servo Features",
+      "content": "// Advanced servo control system\npublic class ServoController {\n    private Servo servo;\n    private String name;\n    private double minPosition = 0.0;\n    private double maxPosition = 1.0;\n    private double currentPosition = 0.5;\n    private double increment = 0.01;\n    \n    public ServoController(Servo servo, String name) {\n        this.servo = servo;\n        this.name = name;\n        this.currentPosition = servo.getPosition();\n    }\n    \n    public void setPosition(double position) {\n        // Clamp position to valid range\n        position = Math.max(minPosition, Math.min(maxPosition, position));\n        currentPosition = position;\n        servo.setPosition(position);\n    }\n    \n    public void incrementPosition(double delta) {\n        setPosition(currentPosition + delta);\n    }\n    \n    public void togglePosition(double pos1, double pos2) {\n        if (Math.abs(currentPosition - pos1) < 0.05) {\n            setPosition(pos2);\n        } else {\n            setPosition(pos1);\n        }\n    }\n    \n    public double getPosition() {\n        return currentPosition;\n    }\n    \n    public void setLimits(double min, double max) {\n        this.minPosition = min;\n        this.maxPosition = max;\n    }\n    \n    public void setIncrement(double increment) {\n        this.increment = increment;\n    }\n}\n\n// Multi-servo mechanism control\npublic class ArmMechanism {\n    private ServoController shoulderServo;\n    private ServoController elbowServo;\n    private ServoController wristServo;\n    private ServoController clawServo;\n    \n    // Preset positions\n    private double[] homePosition = {0.5, 0.5, 0.5, 0.0};\n    private double[] pickupPosition = {0.3, 0.7, 0.3, 0.0};\n    private double[] depositPosition = {0.7, 0.3, 0.7, 1.0};\n    \n    public ArmMechanism(Servo shoulder, Servo elbow, Servo wrist, Servo claw) {\n        this.shoulderServo = new ServoController(shoulder, \"Shoulder\");\n        this.elbowServo = new ServoController(elbow, \"Elbow\");\n        this.wristServo = new ServoController(wrist, \"Wrist\");\n        this.clawServo = new ServoController(claw, \"Claw\");\n    }\n    \n    public void moveToPosition(double[] position) {\n        shoulderServo.setPosition(position[0]);\n        elbowServo.setPosition(position[1]);\n        wristServo.setPosition(position[2]);\n        clawServo.setPosition(position[3]);\n    }\n    \n    public void goHome() {\n        moveToPosition(homePosition);\n    }\n    \n    public void goToPickup() {\n        moveToPosition(pickupPosition);\n    }\n    \n    public void goToDeposit() {\n        moveToPosition(depositPosition);\n    }\n    \n    public void toggleClaw() {\n        clawServo.togglePosition(0.0, 1.0);\n    }\n}\n\n// Usage in OpMode\n@TeleOp(name=\"Advanced Servo Control\", group=\"Teleop\")\npublic class AdvancedServoControl extends LinearOpMode {\n    \n    private ArmMechanism arm;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize servos\n        Servo shoulder = hardwareMap.get(Servo.class, \"shoulder_servo\");\n        Servo elbow = hardwareMap.get(Servo.class, \"elbow_servo\");\n        Servo wrist = hardwareMap.get(Servo.class, \"wrist_servo\");\n        Servo claw = hardwareMap.get(Servo.class, \"claw_servo\");\n        \n        arm = new ArmMechanism(shoulder, elbow, wrist, claw);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Preset position controls\n            if (gamepad1.a) {\n                arm.goHome();\n            } else if (gamepad1.b) {\n                arm.goToPickup();\n            } else if (gamepad1.x) {\n                arm.goToDeposit();\n            } else if (gamepad1.y) {\n                arm.toggleClaw();\n            }\n            \n            // Manual control with joysticks\n            if (gamepad1.left_stick_y != 0) {\n                // Manual shoulder control\n                arm.shoulderServo.incrementPosition(-gamepad1.left_stick_y * 0.01);\n            }\n            \n            if (gamepad1.right_stick_y != 0) {\n                // Manual elbow control\n                arm.elbowServo.incrementPosition(-gamepad1.right_stick_y * 0.01);\n            }\n            \n            // Display servo positions\n            telemetry.addData(\"Shoulder\", \"%.2f\", arm.shoulderServo.getPosition());\n            telemetry.addData(\"Elbow\", \"%.2f\", arm.elbowServo.getPosition());\n            telemetry.addData(\"Wrist\", \"%.2f\", arm.wristServo.getPosition());\n            telemetry.addData(\"Claw\", \"%.2f\", arm.clawServo.getPosition());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Continuous Servo Control",
+      "content": "Continuous servos behave differently from standard servos, providing continuous rotation rather than position control. Understanding how to control continuous servos is important for certain robot mechanisms."
+    },
+    {
+      "type": "code",
+      "title": "Continuous Servo Implementation",
+      "content": "// Continuous servo control\npublic class ContinuousServoController {\n    private CRServo servo;\n    private String name;\n    private double speed = 0.0;\n    \n    public ContinuousServoController(CRServo servo, String name) {\n        this.servo = servo;\n        this.name = name;\n    }\n    \n    public void setSpeed(double speed) {\n        // Clamp speed to valid range\n        this.speed = Math.max(-1.0, Math.min(1.0, speed));\n        servo.setPower(this.speed);\n    }\n    \n    public void stop() {\n        setSpeed(0.0);\n    }\n    \n    public void setDirection(CRServo.Direction direction) {\n        servo.setDirection(direction);\n    }\n    \n    public double getSpeed() {\n        return speed;\n    }\n}\n\n// Usage example\n@TeleOp(name=\"Continuous Servo Control\", group=\"Teleop\")\npublic class ContinuousServoControl extends LinearOpMode {\n    \n    private ContinuousServoController intakeServo;\n    \n    @Override\n    public void runOpMode() {\n        CRServo intake = hardwareMap.get(CRServo.class, \"intake_servo\");\n        intakeServo = new ContinuousServoController(intake, \"Intake\");\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Intake control with triggers\n            if (gamepad1.right_trigger > 0.1) {\n                // Intake forward\n                intakeServo.setSpeed(gamepad1.right_trigger);\n            } else if (gamepad1.left_trigger > 0.1) {\n                // Intake reverse\n                intakeServo.setSpeed(-gamepad1.left_trigger);\n            } else {\n                // Stop intake\n                intakeServo.stop();\n            }\n            \n            // Display speed\n            telemetry.addData(\"Intake Speed\", \"%.2f\", intakeServo.getSpeed());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Safety and Best Practices",
+      "content": "Implementing safety features and following best practices ensures reliable servo operation and prevents damage to hardware."
+    },
+    {
+      "type": "rules-box",
+      "title": "Servo Safety Guidelines",
+      "subtitle": "Essential safety practices for servo control:",
+      "items": [
+        "Always implement position limits and bounds checking",
+        "Use incremental movement for smooth operation",
+        "Monitor servo current and temperature",
+        "Implement emergency stop functionality",
+        "Test servo movements at slow speeds first",
+        "Use appropriate servo ranges and calibration"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Safety Implementation",
+      "content": "// Safety features for servo control\npublic class ServoSafety {\n    private double minPosition = 0.0;\n    private double maxPosition = 1.0;\n    private boolean emergencyStop = false;\n    private double maxSpeed = 0.1; // Maximum position change per loop\n    \n    public double limitPosition(double position) {\n        if (emergencyStop) {\n            return 0.5; // Return to safe position\n        }\n        \n        return Math.max(minPosition, Math.min(maxPosition, position));\n    }\n    \n    public double limitSpeed(double currentPos, double targetPos) {\n        double delta = targetPos - currentPos;\n        \n        if (Math.abs(delta) > maxSpeed) {\n            delta = Math.signum(delta) * maxSpeed;\n        }\n        \n        return currentPos + delta;\n    }\n    \n    public void setEmergencyStop(boolean stop) {\n        emergencyStop = stop;\n    }\n    \n    public void setLimits(double min, double max) {\n        this.minPosition = min;\n        this.maxPosition = max;\n    }\n}\n\n// Safe servo control\npublic class SafeServoControl {\n    private Servo servo;\n    private ServoSafety safety;\n    private double currentPosition = 0.5;\n    \n    public SafeServoControl(Servo servo) {\n        this.servo = servo;\n        this.safety = new ServoSafety();\n        this.currentPosition = servo.getPosition();\n    }\n    \n    public void setPosition(double position) {\n        // Apply safety limits\n        position = safety.limitPosition(position);\n        \n        // Apply speed limiting\n        position = safety.limitSpeed(currentPosition, position);\n        \n        // Update position\n        currentPosition = position;\n        servo.setPosition(position);\n    }\n    \n    public void emergencyStop() {\n        safety.setEmergencyStop(true);\n        setPosition(0.5); // Move to safe position\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Common Issues",
+      "content": "Common issues with servo control and their solutions help teams quickly resolve problems."
+    },
+    {
+      "type": "rules-box",
+      "title": "Common Servo Issues",
+      "subtitle": "Troubleshooting guide:",
+      "items": [
+        "Servo not moving: Check wiring, power, and configuration",
+        "Jittery movement: Implement smoothing and reduce speed",
+        "Wrong position: Calibrate servo range and check limits",
+        "Servo stalling: Check for mechanical binding and reduce load",
+        "Inconsistent behavior: Verify servo type and configuration"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Basic Robot Control",
+          "id": "basic-robot-control"
+        },
+        {
+          "label": "Teleop Programming",
+          "id": "teleop-programming"
+        },
+        {
+          "label": "Gamepad Controls",
+          "id": "gamepad-controls"
+        },
+        {
+          "label": "Motor Power Control",
+          "id": "motor-power-control"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Servo Control Practice",
+      "description": "Practice these exercises to master servo control:",
+      "tasks": [
+        "Create a basic servo control OpMode",
+        "Implement position toggling and incremental movement",
+        "Create multi-servo mechanism control",
+        "Add safety features and position limits",
+        "Practice troubleshooting servo issues",
+        "Test continuous servo control",
+        "Implement servo calibration and preset positions"
+      ],
+      "content": "// Practice Exercise: Complete Servo System\n// Create a comprehensive servo control system\n// Include safety, preset positions, and manual control\n// Test with different servo types and configurations\n\n@TeleOp(name=\"Servo Control Practice\", group=\"Practice\")\npublic class ServoControlPractice extends LinearOpMode {\n    \n    private SafeServoControl armServo, clawServo;\n    \n    @Override\n    public void runOpMode() {\n        Servo arm = hardwareMap.get(Servo.class, \"arm_servo\");\n        Servo claw = hardwareMap.get(Servo.class, \"claw_servo\");\n        \n        armServo = new SafeServoControl(arm);\n        clawServo = new SafeServoControl(claw);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Manual arm control\n            if (gamepad1.right_trigger > 0.1) {\n                armServo.setPosition(armServo.currentPosition - 0.01);\n            } else if (gamepad1.left_trigger > 0.1) {\n                armServo.setPosition(armServo.currentPosition + 0.01);\n            }\n            \n            // Claw toggle\n            if (gamepad1.a) {\n                clawServo.setPosition(0.0);\n            } else if (gamepad1.b) {\n                clawServo.setPosition(1.0);\n            }\n            \n            // Emergency stop\n            if (gamepad1.back) {\n                armServo.emergencyStop();\n                clawServo.emergencyStop();\n            }\n            \n            // Display status\n            telemetry.addData(\"Arm Position\", \"%.2f\", armServo.currentPosition);\n            telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.currentPosition);\n            telemetry.update();\n        }\n    }\n}"
+    }
+  ]
+} 

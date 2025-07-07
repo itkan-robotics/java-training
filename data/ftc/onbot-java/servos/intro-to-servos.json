@@ -21,7 +21,7 @@
       "type": "code",
       "title": "Basic Servo Control",
       "language": "java",
-      "code": "Servo claw = hardwareMap.get(Servo.class, \"claw_servo\");\nclaw.setPosition(0.5); // Move to middle position"
+      "content": "Servo claw = hardwareMap.get(Servo.class, \"claw_servo\");\nclaw.setPosition(0.5); // Move to middle position"
     },
     {
       "type": "text",

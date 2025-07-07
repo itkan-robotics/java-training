@@ -1,0 +1,143 @@
+{
+  "title": "Time-Based Movement",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Time-Based Movement",
+      "content": "Time-based movement is the foundation of autonomous programming in FTC. It involves controlling robot actions for specific durations, making it the simplest and most reliable method for basic autonomous routines."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is Time-Based Movement?",
+      "subtitle": "Key concepts for time-based movement:",
+      "items": [
+        "Controlling robot actions for specific time durations",
+        "Using sleep() method to pause execution",
+        "Sequential execution of commands",
+        "Simple and reliable for basic autonomous routines",
+        "Foundation for more advanced autonomous techniques"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Time-Based Movement Theory",
+      "content": "Time-based movement relies on the principle that robot actions can be controlled by specifying how long each action should last. This method is predictable and easy to implement, making it ideal for beginners and simple autonomous routines."
+    },
+    {
+      "type": "list",
+      "title": "Advantages of Time-Based Movement",
+      "items": [
+        "<strong>Simplicity:</strong> Easy to understand and implement",
+        "<strong>Predictability:</strong> Consistent behavior under similar conditions",
+        "<strong>Reliability:</strong> No dependency on external sensors",
+        "<strong>Debugging:</strong> Easy to test and troubleshoot",
+        "<strong>Foundation:</strong> Essential skill for all autonomous programming"
+      ]
+    },
+    {
+      "type": "list",
+      "title": "Limitations of Time-Based Movement",
+      "items": [
+        "<strong>Inflexibility:</strong> Cannot adapt to changing conditions",
+        "<strong>Battery Dependency:</strong> Performance varies with battery voltage",
+        "<strong>Field Variations:</strong> Different surfaces affect movement timing",
+        "<strong>No Feedback:</strong> Cannot respond to obstacles or errors",
+        "<strong>Limited Precision:</strong> Difficult to achieve exact positioning"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Basic Time-Based Movement",
+      "content": "// Basic time-based movement example\n@Autonomous(name=\"Time-Based Movement\", group=\"Examples\")\npublic class TimeBasedMovement extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Configure motors\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        waitForStart();\n        \n        // Execute time-based autonomous routine\n        runTimeBasedRoutine();\n    }\n    \n    private void runTimeBasedRoutine() {\n        // Move forward for 2 seconds\n        telemetry.addData(\"Action\", \"Moving forward\");\n        telemetry.update();\n        \n        leftMotor.setPower(0.5);\n        rightMotor.setPower(0.5);\n        sleep(2000); // Wait for 2 seconds\n        \n        // Stop motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        // Turn right for 1 second\n        telemetry.addData(\"Action\", \"Turning right\");\n        telemetry.update();\n        \n        leftMotor.setPower(0.5);\n        rightMotor.setPower(-0.5);\n        sleep(1000); // Wait for 1 second\n        \n        // Stop motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        // Move arm to position\n        telemetry.addData(\"Action\", \"Moving arm\");\n        telemetry.update();\n        \n        armServo.setPosition(1.0);\n        sleep(1000); // Wait for servo to reach position\n        \n        telemetry.addData(\"Status\", \"Autonomous complete\");\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Time-Based Techniques",
+      "content": "Advanced time-based movement techniques include variable timing, power ramping, and complex movement sequences that can create more sophisticated autonomous behaviors."
+    },
+    {
+      "type": "code",
+      "title": "Advanced Time-Based Movement",
+      "content": "// Advanced time-based movement with variable timing and power ramping\npublic class AdvancedTimeBasedMovement extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private double basePower = 0.5;\n    private double turnPower = 0.3;\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        waitForStart();\n        runAdvancedRoutine();\n    }\n    \n    private void runAdvancedRoutine() {\n        // Variable speed movement\n        moveForward(0.3, 1000); // Slow speed for 1 second\n        moveForward(0.7, 1500); // Fast speed for 1.5 seconds\n        \n        // Precise turning\n        turnRight(90); // Turn 90 degrees\n        \n        // Complex movement pattern\n        moveForward(0.5, 2000);\n        turnLeft(45);\n        moveForward(0.4, 1000);\n        turnRight(45);\n        moveForward(0.6, 1500);\n    }\n    \n    private void moveForward(double power, long duration) {\n        telemetry.addData(\"Action\", \"Moving forward at %.1f power for %d ms\", power, duration);\n        telemetry.update();\n        \n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n        sleep(duration);\n        \n        stopMotors();\n    }\n    \n    private void turnRight(double degrees) {\n        // Calculate time based on degrees (approximate)\n        long duration = (long)(degrees * 20); // 20ms per degree (adjust as needed)\n        \n        telemetry.addData(\"Action\", \"Turning right %.0f degrees\", degrees);\n        telemetry.update();\n        \n        leftMotor.setPower(turnPower);\n        rightMotor.setPower(-turnPower);\n        sleep(duration);\n        \n        stopMotors();\n    }\n    \n    private void turnLeft(double degrees) {\n        long duration = (long)(degrees * 20);\n        \n        telemetry.addData(\"Action\", \"Turning left %.0f degrees\", degrees);\n        telemetry.update();\n        \n        leftMotor.setPower(-turnPower);\n        rightMotor.setPower(turnPower);\n        sleep(duration);\n        \n        stopMotors();\n    }\n    \n    private void stopMotors() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Power Ramping and Smooth Movement",
+      "content": "Power ramping creates smooth robot movement by gradually increasing and decreasing motor power, reducing jerky motion and improving autonomous performance."
+    },
+    {
+      "type": "code",
+      "title": "Power Ramping Implementation",
+      "content": "// Power ramping for smooth time-based movement\npublic class PowerRampingMovement extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private double currentLeftPower = 0;\n    private double currentRightPower = 0;\n    private double rampRate = 0.05; // Power change per loop\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        waitForStart();\n        runRampedMovement();\n    }\n    \n    private void runRampedMovement() {\n        // Smooth forward movement\n        rampToPower(0.5, 0.5, 2000);\n        rampToPower(0, 0, 500);\n        \n        // Smooth turn\n        rampToPower(0.3, -0.3, 1000);\n        rampToPower(0, 0, 500);\n        \n        // Smooth backward movement\n        rampToPower(-0.4, -0.4, 1500);\n        rampToPower(0, 0, 500);\n    }\n    \n    private void rampToPower(double targetLeft, double targetRight, long duration) {\n        double startTime = getRuntime().milliseconds();\n        \n        while ((getRuntime().milliseconds() - startTime) < duration && opModeIsActive()) {\n            // Ramp left motor\n            if (targetLeft > currentLeftPower) {\n                currentLeftPower = Math.min(targetLeft, currentLeftPower + rampRate);\n            } else if (targetLeft < currentLeftPower) {\n                currentLeftPower = Math.max(targetLeft, currentLeftPower - rampRate);\n            }\n            \n            // Ramp right motor\n            if (targetRight > currentRightPower) {\n                currentRightPower = Math.min(targetRight, currentRightPower + rampRate);\n            } else if (targetRight < currentRightPower) {\n                currentRightPower = Math.max(targetRight, currentRightPower - rampRate);\n            }\n            \n            // Apply to motors\n            leftMotor.setPower(currentLeftPower);\n            rightMotor.setPower(currentRightPower);\n            \n            // Display current power levels\n            telemetry.addData(\"Left Power\", \"%.2f\", currentLeftPower);\n            telemetry.addData(\"Right Power\", \"%.2f\", currentRightPower);\n            telemetry.update();\n            \n            sleep(20); // 50Hz update rate\n        }\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Common Issues",
+      "content": "Common issues with time-based movement and their solutions help teams quickly resolve problems and improve autonomous performance."
+    },
+    {
+      "type": "rules-box",
+      "title": "Common Time-Based Movement Issues",
+      "subtitle": "Troubleshooting guide:",
+      "items": [
+        "Inconsistent timing: Check battery voltage and adjust timing accordingly",
+        "Robot moves too far/not far enough: Calibrate power levels and timing",
+        "Jerky movement: Implement power ramping for smooth transitions",
+        "Battery voltage changes: Monitor voltage and adjust power levels",
+        "Field surface variations: Test on different surfaces and adjust timing"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Battery-Aware Time-Based Movement",
+      "content": "// Battery-aware time-based movement that adjusts for voltage changes\npublic class BatteryAwareMovement extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private double basePower = 0.5;\n    private double lowBatteryThreshold = 11.0;\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        waitForStart();\n        runBatteryAwareRoutine();\n    }\n    \n    private void runBatteryAwareRoutine() {\n        // Check battery voltage before starting\n        double batteryVoltage = getBatteryVoltage();\n        telemetry.addData(\"Battery Voltage\", \"%.1f volts\", batteryVoltage);\n        \n        if (batteryVoltage < lowBatteryThreshold) {\n            telemetry.addData(\"WARNING\", \"Low battery - reducing power\");\n            basePower *= 0.7; // Reduce power by 30%\n        }\n        \n        telemetry.update();\n        \n        // Execute movement with adjusted power\n        moveForward(basePower, 2000);\n        turnRight(basePower * 0.6, 1000);\n        moveForward(basePower, 1500);\n    }\n    \n    private void moveForward(double power, long duration) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n        sleep(duration);\n        stopMotors();\n    }\n    \n    private void turnRight(double power, long duration) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(-power);\n        sleep(duration);\n        stopMotors();\n    }\n    \n    private void stopMotors() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.iterator().next().getVoltage();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Calibration and Testing",
+      "content": "Proper calibration and testing are essential for reliable time-based movement. Systematic testing helps identify and correct timing issues."
+    },
+    {
+      "type": "code",
+      "title": "Calibration and Testing Methods",
+      "content": "// Calibration and testing methods for time-based movement\npublic class TimeBasedCalibration extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private double[] testPowers = {0.3, 0.5, 0.7}; // Test different power levels\n    private long[] testDurations = {1000, 2000, 3000}; // Test different durations\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        waitForStart();\n        runCalibrationTests();\n    }\n    \n    private void runCalibrationTests() {\n        telemetry.addData(\"Status\", \"Starting calibration tests\");\n        telemetry.update();\n        \n        // Test forward movement at different powers\n        for (double power : testPowers) {\n            telemetry.addData(\"Testing\", \"Forward movement at %.1f power\", power);\n            telemetry.update();\n            \n            moveForward(power, 2000);\n            sleep(1000); // Wait between tests\n        }\n        \n        // Test turning at different powers\n        for (double power : testPowers) {\n            telemetry.addData(\"Testing\", \"Right turn at %.1f power\", power);\n            telemetry.update();\n            \n            turnRight(power, 1000);\n            sleep(1000); // Wait between tests\n        }\n        \n        telemetry.addData(\"Status\", \"Calibration tests complete\");\n        telemetry.update();\n    }\n    \n    private void moveForward(double power, long duration) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n        sleep(duration);\n        stopMotors();\n    }\n    \n    private void turnRight(double power, long duration) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(-power);\n        sleep(duration);\n        stopMotors();\n    }\n    \n    private void stopMotors() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Basic Autonomous Programming",
+          "id": "basic-autonomous-programming"
+        },
+        {
+          "label": "Encoder-Based Movement",
+          "id": "encoder-based-movement"
+        },
+        {
+          "label": "State Machines",
+          "id": "state-machines"
+        },
+        {
+          "label": "Basic Debugging Techniques",
+          "id": "basic-debugging-techniques"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Time-Based Movement Practice",
+      "description": "Complete these exercises to master time-based movement:",
+      "tasks": [
+        "Create a simple forward-backward movement routine",
+        "Implement a square driving pattern using only time-based movement",
+        "Add power ramping to smooth out robot movement",
+        "Create a battery-aware movement system",
+        "Calibrate your robot's movement timing for different power levels",
+        "Test your time-based routine on different field surfaces",
+        "Modify the basic autonomous routine to include complex movement patterns"
+      ],
+      "content": "// Exercise: Modify the Basic Autonomous Routine\n// Take the basic autonomous routine from the previous lesson and:\n// 1. Add power ramping for smooth movement\n// 2. Implement battery voltage monitoring\n// 3. Create a calibration method for timing\n// 4. Add variable speed movement based on gamepad input during init\n// 5. Test the routine and document timing adjustments needed\n\n// Your modified code should include:\n// - Power ramping functions\n// - Battery voltage checking\n// - Calibration methods\n// - Variable timing based on conditions\n// - Comprehensive telemetry for testing"
+    }
+  ]
+} 
