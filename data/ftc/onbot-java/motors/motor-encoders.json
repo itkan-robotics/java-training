@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Introduction to Motor Encoders",
-      "content": "Motor encoders are sensors that measure the rotation of motors, providing precise feedback for position control, speed regulation, and autonomous movement. Understanding encoders is essential for advanced FTC robot programming."
+      "content": "<p>Motor encoders are sensors that measure the rotation of motors, providing precise feedback for position control, speed regulation, and autonomous movement. Understanding encoders is essential for advanced FTC robot programming.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/motors/encoders.html' target='_blank'>gm0: Encoders</a> and <a href='https://docs.revrobotics.com/duo-control/programming/encoder' target='_blank'>REV Robotics: Encoder Programming</a>.</p>"
     },
     {
       "type": "rules-box",
@@ -21,81 +21,81 @@
     {
       "type": "text",
       "title": "Encoder Basics",
-      "content": "Encoders work by counting the number of rotations or partial rotations of the motor shaft. This count can be converted to distance, position, or speed measurements."
+      "content": "<p>Encoders work by counting the number of rotations or partial rotations of the motor shaft. This count can be converted to distance, position, or speed measurements. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/encoder.html' target='_blank'>FTC Docs: Encoder Reset</a>.</p>"
     },
     {
       "type": "list",
       "title": "Encoder Types in FTC",
       "items": [
-        "<strong>Built-in Encoders:</strong> Integrated into REV HD Hex and Core Hex motors",
-        "<strong>External Encoders:</strong> Separate encoders attached to other motors",
-        "<strong>Quadrature Encoders:</strong> Most common type, provides direction and position",
-        "<strong>Resolution:</strong> Typically 1440 counts per revolution for REV motors"
+        "<b>Built-in Encoders:</b> Integrated into REV HD Hex and Core Hex motors",
+        "<b>External Encoders:</b> Separate encoders attached to other motors",
+        "<b>Quadrature Encoders:</b> Most common type, provides direction and position",
+        "<b>Resolution:</b> Typically 1440 counts per revolution for REV motors"
       ]
     },
     {
       "type": "code",
       "title": "Encoder Resolution and Conversion",
       "language": "java",
-      "content": "// REV HD Hex Motor encoder specifications\nfinal int COUNTS_PER_MOTOR_REV = 1440; // Encoder counts per motor revolution\nfinal double DRIVE_GEAR_REDUCTION = 1.0; // Gear ratio (1:1 for direct drive)\nfinal double WHEEL_DIAMETER_INCHES = 4.0; // Wheel diameter\nfinal double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / \n                                 (WHEEL_DIAMETER_INCHES * Math.PI);\n\n// Convert distance to encoder counts\nint targetCounts = (int) (distanceInches * COUNTS_PER_INCH);\n\n// Convert encoder counts to distance\ndouble distanceInches = motor.getCurrentPosition() / COUNTS_PER_INCH;"
+      "content": "// REV HD Hex Motor encoder specifications\nfinal int COUNTS_PER_MOTOR_REV = 1440; // Encoder counts per motor revolution\nfinal double DRIVE_GEAR_REDUCTION = 1.0; // Gear ratio (1:1 for direct drive)\nfinal double WHEEL_DIAMETER_INCHES = 4.0; // Wheel diameter\nfinal double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);\n// Convert distance to encoder counts\nint targetCounts = (int) (distanceInches * COUNTS_PER_INCH);\n// Convert encoder counts to distance\ndouble distanceInches = motor.getCurrentPosition() / COUNTS_PER_INCH;"
     },
     {
       "type": "text",
       "title": "Encoder Initialization",
-      "content": "Proper encoder initialization is crucial for reliable operation. This includes resetting encoders and setting appropriate run modes."
+      "content": "<p>Proper encoder initialization is crucial for reliable operation. This includes resetting encoders and setting appropriate run modes. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/encoder.html' target='_blank'>FTC Docs: Encoder Reset</a>.</p>"
     },
     {
       "type": "code",
       "title": "Encoder Setup and Initialization",
       "language": "java",
-      "content": "// Initialize motors with encoders\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n\n// Set motor directions\nleftDrive.setDirection(DcMotor.Direction.FORWARD);\nrightDrive.setDirection(DcMotor.Direction.REVERSE);\n\n// Reset encoders to zero\nleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n\n// Set to encoder mode for position control\nleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n\n// Or set to position control mode\nleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\nrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);"
+      "content": "// Initialize motors with encoders\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n// Set motor directions\nleftDrive.setDirection(DcMotor.Direction.FORWARD);\nrightDrive.setDirection(DcMotor.Direction.REVERSE);\n// Reset encoders to zero\nleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n// Set to encoder mode for position control\nleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n// Or set to position control mode\nleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\nrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);"
     },
     {
       "type": "text",
       "title": "Position Control",
-      "content": "Position control allows motors to move to specific encoder positions, enabling precise mechanism control and autonomous movement."
+      "content": "<p>Position control allows motors to move to specific encoder positions, enabling precise mechanism control and autonomous movement. See <a href='https://docs.revrobotics.com/duo-control/programming/encoder' target='_blank'>REV Robotics: Encoder Programming</a>.</p>"
     },
     {
       "type": "code",
       "title": "Position Control Examples",
       "language": "java",
-      "content": "// Move motor to specific position\npublic void moveToPosition(DcMotor motor, int targetPosition, double power) {\n    motor.setTargetPosition(targetPosition);\n    motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    motor.setPower(power);\n    \n    // Wait for motor to reach position\n    while (motor.isBusy()) {\n        telemetry.addData(\"Current Position\", motor.getCurrentPosition());\n        telemetry.addData(\"Target Position\", targetPosition);\n        telemetry.update();\n    }\n    \n    // Stop motor\n    motor.setPower(0);\n}\n\n// Move arm to specific angle\npublic void moveArmToAngle(double angleDegrees) {\n    // Convert angle to encoder counts\n    int targetCounts = (int) (angleDegrees * COUNTS_PER_DEGREE);\n    moveToPosition(armMotor, targetCounts, 0.5);\n}\n\n// Drive specific distance\npublic void driveDistance(double distanceInches, double power) {\n    int targetCounts = (int) (distanceInches * COUNTS_PER_INCH);\n    \n    leftDrive.setTargetPosition(targetCounts);\n    rightDrive.setTargetPosition(targetCounts);\n    \n    leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    leftDrive.setPower(power);\n    rightDrive.setPower(power);\n    \n    while (leftDrive.isBusy() && rightDrive.isBusy()) {\n        // Wait for completion\n    }\n}"
+      "content": "// Move motor to specific position\npublic void moveToPosition(DcMotor motor, int targetPosition, double power) {\n    motor.setTargetPosition(targetPosition);\n    motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    motor.setPower(power);\n    while (motor.isBusy()) {\n        telemetry.addData(\"Current Position\", motor.getCurrentPosition());\n        telemetry.addData(\"Target Position\", targetPosition);\n        telemetry.update();\n    }\n    motor.setPower(0);\n}\n// Move arm to specific angle\npublic void moveArmToAngle(double angleDegrees) {\n    int targetCounts = (int) (angleDegrees * COUNTS_PER_DEGREE);\n    moveToPosition(armMotor, targetCounts, 0.5);\n}\n// Drive specific distance\npublic void driveDistance(double distanceInches, double power) {\n    int targetCounts = (int) (distanceInches * COUNTS_PER_INCH);\n    leftDrive.setTargetPosition(targetCounts);\n    rightDrive.setTargetPosition(targetCounts);\n    leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    leftDrive.setPower(power);\n    rightDrive.setPower(power);\n    while (leftDrive.isBusy() && rightDrive.isBusy()) {\n        // Wait for completion\n    }\n}"
     },
     {
       "type": "text",
       "title": "Speed Control",
-      "content": "Encoders enable precise speed control by providing feedback for closed-loop control systems."
+      "content": "<p>Encoders enable precise speed control by providing feedback for closed-loop control systems. See <a href='https://gm0.org/en/latest/docs/software/motors/encoders.html' target='_blank'>gm0: Encoders</a>.</p>"
     },
     {
       "type": "code",
       "title": "Speed Control Implementation",
       "language": "java",
-      "content": "// Speed control using encoders\npublic void setMotorSpeed(DcMotor motor, double targetSpeed) {\n    motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n    \n    // Simple proportional control\n    double currentSpeed = getMotorSpeed(motor);\n    double error = targetSpeed - currentSpeed;\n    double power = motor.getPower() + (error * 0.1); // P gain\n    \n    power = Math.max(-1.0, Math.min(1.0, power));\n    motor.setPower(power);\n}\n\n// Calculate motor speed (counts per second)\nprivate double getMotorSpeed(DcMotor motor) {\n    int currentPosition = motor.getCurrentPosition();\n    double currentTime = getRuntime().seconds();\n    \n    // Calculate speed over time\n    double speed = (currentPosition - lastPosition) / (currentTime - lastTime);\n    \n    lastPosition = currentPosition;\n    lastTime = currentTime;\n    \n    return speed;\n}\n\n// Maintain constant speed\npublic void maintainSpeed(double targetSpeed) {\n    while (opModeIsActive()) {\n        setMotorSpeed(leftDrive, targetSpeed);\n        setMotorSpeed(rightDrive, targetSpeed);\n        \n        telemetry.addData(\"Target Speed\", targetSpeed);\n        telemetry.addData(\"Left Speed\", getMotorSpeed(leftDrive));\n        telemetry.addData(\"Right Speed\", getMotorSpeed(rightDrive));\n        telemetry.update();\n    }\n}"
+      "content": "// Speed control using encoders\npublic void setMotorSpeed(DcMotor motor, double targetSpeed) {\n    motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n    double currentSpeed = getMotorSpeed(motor);\n    double error = targetSpeed - currentSpeed;\n    double power = motor.getPower() + (error * 0.1); // P gain\n    power = Math.max(-1.0, Math.min(1.0, power));\n    motor.setPower(power);\n}\n// Calculate motor speed (counts per second)\nprivate double getMotorSpeed(DcMotor motor) {\n    int currentPosition = motor.getCurrentPosition();\n    double currentTime = getRuntime().seconds();\n    double speed = (currentPosition - lastPosition) / (currentTime - lastTime);\n    lastPosition = currentPosition;\n    lastTime = currentTime;\n    return speed;\n}\n// Maintain constant speed\npublic void maintainSpeed(double targetSpeed) {\n    while (opModeIsActive()) {\n        setMotorSpeed(leftDrive, targetSpeed);\n        setMotorSpeed(rightDrive, targetSpeed);\n        telemetry.addData(\"Target Speed\", targetSpeed);\n        telemetry.addData(\"Left Speed\", getMotorSpeed(leftDrive));\n        telemetry.addData(\"Right Speed\", getMotorSpeed(rightDrive));\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "text",
       "title": "PID Control",
-      "content": "PID (Proportional-Integral-Derivative) control uses encoder feedback to achieve precise position and speed control."
+      "content": "<p>PID (Proportional-Integral-Derivative) control uses encoder feedback to achieve precise position and speed control. See <a href='https://gm0.org/en/latest/docs/software/motors/encoders.html#pid-control' target='_blank'>gm0: PID Control</a>.</p>"
     },
     {
       "type": "list",
       "title": "PID Components",
       "items": [
-        "<strong>Proportional (P):</strong> Response proportional to current error",
-        "<strong>Integral (I):</strong> Response to accumulated error over time",
-        "<strong>Derivative (D):</strong> Response to rate of change of error"
+        "<b>Proportional (P):</b> Response proportional to current error",
+        "<b>Integral (I):</b> Response to accumulated error over time",
+        "<b>Derivative (D):</b> Response to rate of change of error"
       ]
     },
     {
       "type": "code",
       "title": "PID Control Implementation",
       "language": "java",
-      "content": "// PID Controller class\npublic class PIDController {\n    private double kP, kI, kD;\n    private double setpoint;\n    private double integral = 0;\n    private double lastError = 0;\n    private double lastTime = 0;\n    \n    public PIDController(double kP, double kI, double kD) {\n        this.kP = kP;\n        this.kI = kI;\n        this.kD = kD;\n    }\n    \n    public void setSetpoint(double setpoint) {\n        this.setpoint = setpoint;\n        this.integral = 0;\n    }\n    \n    public double calculate(double currentValue) {\n        double currentTime = getRuntime().seconds();\n        double dt = currentTime - lastTime;\n        \n        double error = setpoint - currentValue;\n        integral += error * dt;\n        double derivative = (error - lastError) / dt;\n        \n        double output = kP * error + kI * integral + kD * derivative;\n        \n        lastError = error;\n        lastTime = currentTime;\n        \n        return output;\n    }\n}\n\n// Using PID for position control\nPIDController pidController = new PIDController(0.01, 0.0, 0.001);\n\npublic void driveToPositionPID(int targetPosition) {\n    pidController.setSetpoint(targetPosition);\n    \n    while (opModeIsActive()) {\n        int currentPosition = leftDrive.getCurrentPosition();\n        double power = pidController.calculate(currentPosition);\n        \n        power = Math.max(-1.0, Math.min(1.0, power));\n        leftDrive.setPower(power);\n        \n        telemetry.addData(\"Target\", targetPosition);\n        telemetry.addData(\"Current\", currentPosition);\n        telemetry.addData(\"Power\", power);\n        telemetry.update();\n        \n        if (Math.abs(targetPosition - currentPosition) < 10) {\n            break; // Close enough to target\n        }\n    }\n}"
+      "content": "// PID Controller class\npublic class PIDController {\n    private double kP, kI, kD;\n    private double setpoint;\n    private double integral = 0;\n    private double lastError = 0;\n    private double lastTime = 0;\n    public PIDController(double kP, double kI, double kD) {\n        this.kP = kP;\n        this.kI = kI;\n        this.kD = kD;\n    }\n    public void setSetpoint(double setpoint) {\n        this.setpoint = setpoint;\n        this.integral = 0;\n    }\n    public double calculate(double currentValue) {\n        double currentTime = getRuntime().seconds();\n        double dt = currentTime - lastTime;\n        double error = setpoint - currentValue;\n        integral += error * dt;\n        double derivative = (error - lastError) / dt;\n        double output = kP * error + kI * integral + kD * derivative;\n        lastError = error;\n        lastTime = currentTime;\n        return output;\n    }\n}\n// Using PID for position control\nPIDController pidController = new PIDController(0.01, 0.0, 0.001);\npublic void driveToPositionPID(int targetPosition) {\n    pidController.setSetpoint(targetPosition);\n    while (opModeIsActive()) {\n        int currentPosition = leftDrive.getCurrentPosition();\n        double power = pidController.calculate(currentPosition);\n        power = Math.max(-1.0, Math.min(1.0, power));\n        leftDrive.setPower(power);\n        telemetry.addData(\"Target\", targetPosition);\n        telemetry.addData(\"Current\", currentPosition);\n        telemetry.addData(\"Power\", power);\n        telemetry.update();\n        if (Math.abs(targetPosition - currentPosition) < 10) {\n            break; // Close enough to target\n        }\n    }\n}"
     },
     {
       "type": "text",
       "title": "Encoder Troubleshooting",
-      "content": "Common encoder issues and their solutions help teams maintain reliable robot operation."
+      "content": "<p>Common encoder issues and their solutions help teams maintain reliable robot operation. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/encoder.html#troubleshooting' target='_blank'>FTC Docs: Encoder Troubleshooting</a>.</p>"
     },
     {
       "type": "rules-box",
@@ -113,40 +113,31 @@
       "type": "code",
       "title": "Encoder Diagnostics",
       "language": "java",
-      "content": "// Encoder diagnostic method\npublic void diagnoseEncoder(DcMotor motor, String motorName) {\n    telemetry.addData(motorName + \" Encoder Position\", motor.getCurrentPosition());\n    telemetry.addData(motorName + \" Target Position\", motor.getTargetPosition());\n    telemetry.addData(motorName + \" Is Busy\", motor.isBusy());\n    telemetry.addData(motorName + \" Power\", motor.getPower());\n    telemetry.addData(motorName + \" Mode\", motor.getMode());\n    telemetry.addData(motorName + \" Direction\", motor.getDirection());\n    \n    // Test encoder functionality\n    if (gamepad1.a) {\n        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        telemetry.addData(\"Action\", \"Reset encoder\");\n    }\n    \n    if (gamepad1.b) {\n        motor.setTargetPosition(1000);\n        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        motor.setPower(0.5);\n        telemetry.addData(\"Action\", \"Move to position 1000\");\n    }\n}\n\n// Use in main loop\nwhile (opModeIsActive()) {\n    diagnoseEncoder(leftDrive, \"Left Drive\");\n    diagnoseEncoder(rightDrive, \"Right Drive\");\n    telemetry.update();\n}"
+      "content": "// Encoder diagnostic method\npublic void diagnoseEncoder(DcMotor motor, String motorName) {\n    telemetry.addData(motorName + \" Encoder Position\", motor.getCurrentPosition());\n    telemetry.addData(motorName + \" Target Position\", motor.getTargetPosition());\n    telemetry.addData(motorName + \" Is Busy\", motor.isBusy());\n    telemetry.addData(motorName + \" Power\", motor.getPower());\n    telemetry.addData(motorName + \" Mode\", motor.getMode());\n    telemetry.addData(motorName + \" Direction\", motor.getDirection());\n    if (gamepad1.a) {\n        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        telemetry.addData(\"Action\", \"Reset encoder\");\n    }\n    if (gamepad1.b) {\n        motor.setTargetPosition(1000);\n        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        motor.setPower(0.5);\n        telemetry.addData(\"Action\", \"Move to position 1000\");\n    }\n}\nwhile (opModeIsActive()) {\n    diagnoseEncoder(leftDrive, \"Left Drive\");\n    diagnoseEncoder(rightDrive, \"Right Drive\");\n    telemetry.update();\n}"
     },
     {
       "type": "text",
       "title": "Best Practices",
-      "content": "Following best practices ensures reliable encoder operation and accurate robot control."
+      "content": "<p>Following best practices ensures reliable encoder operation and accurate robot control. See <a href='https://gm0.org/en/latest/docs/software/motors/encoders.html#best-practices' target='_blank'>gm0: Encoder Best Practices</a>.</p>"
     },
     {
       "type": "list",
       "title": "Encoder Best Practices",
       "items": [
-        "<strong>Always reset encoders:</strong> Before starting position control operations",
-        "<strong>Use appropriate run modes:</strong> Choose the right mode for your application",
-        "<strong>Monitor encoder values:</strong> Use telemetry to verify encoder operation",
-        "<strong>Handle encoder limits:</strong> Prevent motors from trying to move beyond limits",
-        "<strong>Test thoroughly:</strong> Verify encoder behavior in various conditions"
+        "<b>Always reset encoders:</b> Before starting position control operations",
+        "<b>Use appropriate run modes:</b> Choose the right mode for your application",
+        "<b>Monitor encoder values:</b> Use telemetry to verify encoder operation",
+        "<b>Handle encoder limits:</b> Prevent motors from trying to move beyond limits",
+        "<b>Test thoroughly:</b> Verify encoder behavior in various conditions"
       ]
     },
     {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        {
-          "label": "DC Motors",
-          "id": "dc-motors"
-        },
-        {
-          "label": "Basic Motor Control",
-          "id": "basic-motor-control"
-        },
-        {
-          "label": "Motor Types",
-          "id": "motor-types"
-        }
+        { "label": "DC Motors", "id": "dc-motors" },
+        { "label": "Basic Motor Control", "id": "basic-motor-control" },
+        { "label": "Motor Types", "id": "motor-types" }
       ]
     },
     {
@@ -162,7 +153,7 @@
         "Create autonomous movement sequences",
         "Test encoder behavior with different run modes"
       ],
-      "content": "// Practice Exercise: Position Control\n// Create an OpMode that demonstrates encoder position control\n// Include diagnostics and safety features\n// Test different positioning scenarios\n\n@TeleOp(name=\"Encoder Test\", group=\"Testing\")\npublic class EncoderTestOpMode extends LinearOpMode {\n    \n    private DcMotor testMotor;\n    private PIDController pidController;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize motor and PID controller\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testMotor.setDirection(DcMotor.Direction.FORWARD);\n        testMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        pidController = new PIDController(0.01, 0.0, 0.001);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Reset encoder\n            if (gamepad1.a) {\n                testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n            }\n            \n            // Move to position 1000\n            if (gamepad1.b) {\n                driveToPosition(1000);\n            }\n            \n            // Move to position -1000\n            if (gamepad1.x) {\n                driveToPosition(-1000);\n            }\n            \n            // Display encoder information\n            telemetry.addData(\"Position\", testMotor.getCurrentPosition());\n            telemetry.addData(\"Target\", testMotor.getTargetPosition());\n            telemetry.addData(\"Is Busy\", testMotor.isBusy());\n            telemetry.update();\n        }\n    }\n    \n    private void driveToPosition(int targetPosition) {\n        testMotor.setTargetPosition(targetPosition);\n        testMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        testMotor.setPower(0.5);\n    }\n}"
+      "code": "// Practice Exercise: Position Control\n// Create an OpMode that demonstrates encoder position control\n// Include diagnostics and safety features\n// Test different positioning scenarios\n\n@TeleOp(name=\"Encoder Test\", group=\"Testing\")\npublic class EncoderTestOpMode extends LinearOpMode {\n    private DcMotor testMotor;\n    private PIDController pidController;\n    @Override\n    public void runOpMode() {\n        // Initialize motor and PID controller\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testMotor.setDirection(DcMotor.Direction.FORWARD);\n        testMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        pidController = new PIDController(0.01, 0.0, 0.001);\n        waitForStart();\n        while (opModeIsActive()) {\n            // Reset encoder\n            if (gamepad1.a) {\n                testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n            }\n            // Move to position 1000\n            if (gamepad1.b) {\n                driveToPosition(1000);\n            }\n            // Move to position -1000\n            if (gamepad1.x) {\n                driveToPosition(-1000);\n            }\n            // Display encoder information\n            telemetry.addData(\"Position\", testMotor.getCurrentPosition());\n            telemetry.addData(\"Target\", testMotor.getTargetPosition());\n            telemetry.addData(\"Is Busy\", testMotor.isBusy());\n            telemetry.update();\n        }\n    }\n    private void driveToPosition(int targetPosition) {\n        testMotor.setTargetPosition(targetPosition);\n        testMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        testMotor.setPower(0.5);\n    }"
     }
   ]
-} 
+}

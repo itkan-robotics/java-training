@@ -17,7 +17,8 @@
 |   |   ├── intro-to-servos.json
 │   │   ├── continuous-vs-noncontinuous.json
 │   │   ├── servo-positions.json
-│   |── sensors.json
+│   |── sensors/
+│   │   ├── intro-to-sensors.json
 │   │   ├── touch-sensors.json
 │   │   ├── distance-sensors.json
 │   │   ├── color-sensors.json
@@ -25,9 +26,7 @@
 │   ├── teleop-programming/
 │   │   ├── basic-robot-control.json
 │   │   ├── teleop-programming.json
-│   │   ├── gamepad-controls.json
-│   │   ├── motor-power-control.json
-│   │   └── servo-control.json
+│   │   └── gamepad-controls.json
 │   ├── autonomous-programming/
 │   │   ├── basic-autonomous-programming.json
 │   │   ├── time-based-movement.json

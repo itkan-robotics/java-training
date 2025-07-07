@@ -3,51 +3,99 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Touch Sensors",
-      "content": "Touch sensors detect physical contact and are commonly used for limit detection, object detection, and safety mechanisms. They provide reliable digital feedback when the robot makes contact with objects or reaches mechanical limits."
+      "title": "What is a Touch Sensor?",
+      "content": "<p>Touch sensors are simple digital sensors that detect physical contact or pressure. They are often used as limit switches or for detecting when a mechanism has reached a certain position.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/touch.html' target='_blank'>gm0: Touch Sensors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors#touch-sensor' target='_blank'>REV Robotics: Touch Sensor</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "Touch Sensor Applications",
-      "subtitle": "Key applications for touch sensors:",
+      "title": "Touch Sensor Basics",
+      "subtitle": "Key characteristics:",
       "items": [
-        "Limit Detection: Prevent mechanisms from moving beyond safe limits",
-        "Object Detection: Detect when robot contacts game elements",
-        "Safety Switches: Emergency stop functionality",
-        "Position Verification: Confirm mechanism has reached a position"
+        "Detects physical contact or pressure",
+        "Digital (on/off) output",
+        "Used as limit switches or for safety",
+        "Simple to wire and program",
+        "Reliable for detecting end of travel"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "How Touch Sensors Work",
+      "content": "<p>Touch sensors act as switches that close (on) or open (off) when pressed. They are read as boolean values in code. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html#touch-sensor' target='_blank'>FTC Docs: Touch Sensor</a>.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Touch Sensor Example",
+      "language": "java",
+      "content": "// Initialize and read a touch sensor\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nboolean isPressed = touchSensor.isPressed();\ntelemetry.addData(\"Touch Pressed\", isPressed);\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Applications of Touch Sensors",
+      "content": "<p>Touch sensors are used for a variety of applications in FTC robots, including safety, mechanism control, and autonomous routines. See <a href='https://gm0.org/en/latest/docs/software/sensors/touch.html' target='_blank'>gm0: Touch Sensors</a>.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Common Use Cases",
+      "items": [
+        "Limit switches for arms and lifts",
+        "Detecting end of travel for mechanisms",
+        "Safety interlocks to prevent overtravel",
+        "Triggering autonomous actions",
+        "Detecting game element contact"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Touch Sensor Safety and Best Practices",
+      "content": "<p>Proper use of touch sensors ensures reliable operation and prevents damage to mechanisms. Always test and secure sensors before use. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Guidelines",
+      "subtitle": "Follow these practices for safe touch sensor use:",
+      "items": [
+        "Secure sensors to prevent movement during operation",
+        "Avoid excessive force on the sensor",
+        "Test sensor response before competition",
+        "Monitor sensor data for unexpected values",
+        "Document sensor configuration and mounting"
       ]
     },
     {
       "type": "code",
-      "title": "Touch Sensor Implementation",
-      "content": "// Touch sensor control and monitoring\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n\n// Basic touch detection\npublic boolean isTouched() {\n    return touchSensor.isPressed();\n}\n\n// Touch sensor with debouncing\npublic class TouchSensorController {\n    private TouchSensor sensor;\n    private boolean lastState = false;\n    private long lastDebounceTime = 0;\n    private long debounceDelay = 50; // milliseconds\n    \n    public TouchSensorController(TouchSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public boolean isPressed() {\n        boolean currentState = sensor.isPressed();\n        \n        if (currentState != lastState) {\n            lastDebounceTime = System.currentTimeMillis();\n        }\n        \n        if ((System.currentTimeMillis() - lastDebounceTime) > debounceDelay) {\n            lastState = currentState;\n        }\n        \n        return lastState;\n    }\n    \n    public boolean wasJustPressed() {\n        boolean currentState = isPressed();\n        boolean wasPressed = lastState;\n        lastState = currentState;\n        return currentState && !wasPressed;\n    }\n}\n\n// Limit switch functionality\npublic class LimitSwitch {\n    private TouchSensor sensor;\n    private String name;\n    \n    public LimitSwitch(TouchSensor sensor, String name) {\n        this.sensor = sensor;\n        this.name = name;\n    }\n    \n    public boolean isAtLimit() {\n        return sensor.isPressed();\n    }\n    \n    public void displayStatus() {\n        telemetry.addData(name + \" Limit\", isAtLimit() ? \"TRIGGERED\" : \"Clear\");\n    }\n}\n\n// Safety mechanism using touch sensor\npublic class SafetyMechanism {\n    private TouchSensor safetySensor;\n    private boolean isEnabled = true;\n    \n    public SafetyMechanism(TouchSensor sensor) {\n        this.safetySensor = sensor;\n    }\n    \n    public boolean isSafe() {\n        return !isEnabled || !safetySensor.isPressed();\n    }\n    \n    public void enable() {\n        isEnabled = true;\n    }\n    \n    public void disable() {\n        isEnabled = false;\n    }\n    \n    public void checkSafety() {\n        if (!isSafe()) {\n            // Emergency stop\n            emergencyStop();\n            telemetry.addData(\"SAFETY\", \"Touch sensor triggered - Emergency stop!\");\n        }\n    }\n    \n    private void emergencyStop() {\n        // Stop all motors and mechanisms\n        // Implementation depends on your robot\n    }\n}"
+      "title": "Touch Sensor Safety Example",
+      "language": "java",
+      "content": "// Safety check using a touch sensor\nif (touchSensor.isPressed()) {\n    // Stop motor or mechanism\n    motor.setPower(0);\n    telemetry.addData(\"Safety\", \"Touch sensor activated!\");\n    telemetry.update();\n}"
     },
     {
       "type": "text",
-      "title": "Practical Applications",
-      "content": "Touch sensors are essential for creating safe and reliable robot mechanisms. They provide immediate feedback when physical contact occurs, making them ideal for limit detection and safety systems."
+      "title": "Troubleshooting Touch Sensors",
+      "content": "<p>Common touch sensor issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/touch.html#troubleshooting' target='_blank'>gm0: Touch Sensor Troubleshooting</a>.</p>"
     },
     {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        {
-          "label": "Sensors Overview",
-          "id": "sensors"
-        },
-        {
-          "label": "Distance Sensors",
-          "id": "distance-sensors"
-        },
-        {
-          "label": "Color Sensors",
-          "id": "color-sensors"
-        },
-        {
-          "label": "IMU",
-          "id": "imu"
-        }
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<b>Sensor not detected:</b> Check wiring and configuration",
+        "<b>False triggers:</b> Secure sensor and avoid mechanical vibration",
+        "<b>No response:</b> Test with manual press and check code",
+        "<b>Intermittent data:</b> Check for loose connections",
+        "<b>Unexpected values:</b> Monitor for stuck or damaged sensor"
       ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Touch Sensor Practice",
+      "description": "Practice these exercises to master touch sensor use:",
+      "tasks": [
+        "Create an OpMode that displays touch sensor state",
+        "Test sensor response to different conditions",
+        "Implement safety checks using touch sensors",
+        "Practice troubleshooting common touch sensor issues",
+        "Document sensor configuration and mounting"
+      ],
+      "content": "// Practice Exercise: Touch Sensor\n// Create an OpMode that displays touch sensor state\n// Include safety features and troubleshooting\n\n@TeleOp(name=\"Touch Sensor Test\", group=\"Testing\")\npublic class TouchSensorTestOpMode extends LinearOpMode {\n    private TouchSensor touchSensor;\n    @Override\n    public void runOpMode() {\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Touch Pressed\", touchSensor.isPressed());\n            telemetry.update();\n        }\n    }"
     }
   ]
 } 

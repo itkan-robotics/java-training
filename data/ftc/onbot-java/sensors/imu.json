@@ -3,69 +3,101 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to IMU",
-      "content": "The IMU provides orientation and movement information, enabling precise navigation, turning, and autonomous behaviors. It measures the robot's orientation (angle) and acceleration, making it essential for advanced autonomous navigation and maintaining heading."
+      "title": "What is an IMU?",
+      "content": "<p>An IMU (Inertial Measurement Unit) is a sensor that measures orientation, acceleration, and rotation. In FTC robots, IMUs are used for navigation, maintaining heading, and advanced autonomous routines.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/imu.html' target='_blank'>gm0: IMU</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors#imu' target='_blank'>REV Robotics: IMU</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "IMU Applications",
-      "subtitle": "What does the IMU do?",
+      "title": "IMU Basics",
+      "subtitle": "Key characteristics:",
       "items": [
-        "Measures yaw, pitch, and roll (angles)",
+        "Measures orientation (heading, pitch, roll)",
         "Detects acceleration and rotation",
-        "Used for gyro-based turning and field-oriented control",
-        "Orientation Control: Maintain robot heading and orientation",
-        "Precise Turning: Turn to specific angles accurately",
-        "Autonomous Navigation: Navigate using heading information",
-        "Balance Control: Maintain robot balance and stability"
+        "Used for navigation and drive control",
+        "Requires calibration for accurate readings",
+        "Data accessed through hardwareMap in code"
       ]
-    },
-    {
-      "type": "code",
-      "title": "IMU Configuration and Initialization",
-      "content": "// IMU control and monitoring\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n\n// IMU configuration\npublic void initializeIMU() {\n    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n    parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n    parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n    parameters.calibrationDataFile = \"BNO055IMUCalibration.json\";\n    parameters.loggingEnabled = true;\n    parameters.loggingTag = \"IMU\";\n    \n    imu.initialize(parameters);\n}\n\n// Basic IMU initialization example\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\nBNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\nparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nimu.initialize(parameters);"
-    },
-    {
-      "type": "code",
-      "title": "IMU Data Reading and Control",
-      "content": "// IMU data reading\npublic class IMUController {\n    private BNO055IMU imu;\n    private double initialHeading = 0;\n    \n    public IMUController(BNO055IMU imu) {\n        this.imu = imu;\n        initializeIMU();\n    }\n    \n    public double getHeading() {\n        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;\n    }\n    \n    public double getRelativeHeading() {\n        return getHeading() - initialHeading;\n    }\n    \n    public void resetHeading() {\n        initialHeading = getHeading();\n    }\n    \n    public double getPitch() {\n        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;\n    }\n    \n    public double getRoll() {\n        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;\n    }\n}"
-    },
-    {
-      "type": "code",
-      "title": "Precise Turning Functionality",
-      "content": "// Precise turning functionality\npublic class TurnController {\n    private IMUController imu;\n    private double turnTolerance = 2.0; // degrees\n    \n    public TurnController(IMUController imu) {\n        this.imu = imu;\n    }\n    \n    public void turnToAngle(double targetAngle) {\n        double currentAngle = imu.getRelativeHeading();\n        double error = targetAngle - currentAngle;\n        \n        // Normalize error to -180 to 180 degrees\n        while (error > 180) error -= 360;\n        while (error < -180) error += 360;\n        \n        // Apply proportional control\n        double turnPower = error * 0.02; // P gain\n        turnPower = Math.max(-0.5, Math.min(0.5, turnPower));\n        \n        // Apply to motors (implementation depends on your robot)\n        // leftMotor.setPower(-turnPower);\n        // rightMotor.setPower(turnPower);\n    }\n    \n    public boolean isAtTargetAngle(double targetAngle) {\n        double currentAngle = imu.getRelativeHeading();\n        double error = Math.abs(targetAngle - currentAngle);\n        return error < turnTolerance;\n    }\n}"
-    },
-    {
-      "type": "code",
-      "title": "Autonomous Navigation",
-      "content": "// Autonomous navigation\npublic class NavigationController {\n    private IMUController imu;\n    private TurnController turnController;\n    \n    public NavigationController(IMUController imu) {\n        this.imu = imu;\n        this.turnController = new TurnController(imu);\n    }\n    \n    public void navigateToHeading(double targetHeading) {\n        turnController.turnToAngle(targetHeading);\n        \n        while (!turnController.isAtTargetAngle(targetHeading) && opModeIsActive()) {\n            telemetry.addData(\"Current Heading\", \"%.1f°\", imu.getRelativeHeading());\n            telemetry.addData(\"Target Heading\", \"%.1f°\", targetHeading);\n            telemetry.update();\n        }\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Applications",
-      "content": "Use the IMU for precise turns, maintaining heading, and advanced autonomous routines. The IMU is essential for field-oriented control and accurate navigation in autonomous programs."
+      "title": "How IMUs Work",
+      "content": "<p>IMUs use gyroscopes and accelerometers to measure changes in orientation and movement. The sensor reports angles and acceleration values. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html#imu' target='_blank'>FTC Docs: IMU</a>.</p>"
     },
     {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        {
-          "label": "Sensors Overview",
-          "id": "sensors"
-        },
-        {
-          "label": "Touch Sensors",
-          "id": "touch-sensors"
-        },
-        {
-          "label": "Distance Sensors",
-          "id": "distance-sensors"
-        },
-        {
-          "label": "Color Sensors",
-          "id": "color-sensors"
-        }
+      "type": "code",
+      "title": "IMU Initialization Example",
+      "language": "java",
+      "content": "// Initialize and configure the IMU\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\nBNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\nparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\nimu.initialize(parameters);\n// Read orientation\nOrientation angles = imu.getAngularOrientation();\ntelemetry.addData(\"Heading\", angles.firstAngle);\ntelemetry.addData(\"Pitch\", angles.secondAngle);\ntelemetry.addData(\"Roll\", angles.thirdAngle);\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Applications of IMUs",
+      "content": "<p>IMUs are used for a variety of applications in FTC robots, including navigation, maintaining heading, and advanced autonomous routines. See <a href='https://gm0.org/en/latest/docs/software/sensors/imu.html' target='_blank'>gm0: IMU</a>.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Common Use Cases",
+      "items": [
+        "Maintaining straight driving",
+        "Turning to specific angles",
+        "Detecting robot orientation",
+        "Stabilizing mechanisms",
+        "Advanced autonomous navigation"
       ]
+    },
+    {
+      "type": "text",
+      "title": "IMU Safety and Best Practices",
+      "content": "<p>Proper use of IMUs ensures reliable operation and accurate data. Always calibrate the IMU before use and avoid sudden impacts. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Guidelines",
+      "subtitle": "Follow these practices for safe IMU use:",
+      "items": [
+        "Calibrate IMU before each match",
+        "Secure IMU to prevent movement during operation",
+        "Avoid exposing IMU to excessive vibration or impact",
+        "Monitor IMU data for unexpected values",
+        "Document IMU configuration and calibration"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "IMU Safety Example",
+      "language": "java",
+      "content": "// Safety check using IMU\nOrientation angles = imu.getAngularOrientation();\nif (Math.abs(angles.firstAngle) > 45) {\n    // Robot is tilted too far\n    telemetry.addData(\"Safety\", \"Robot tilt detected!\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting IMUs",
+      "content": "<p>Common IMU issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/imu.html#troubleshooting' target='_blank'>gm0: IMU Troubleshooting</a>.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<b>IMU not detected:</b> Check wiring and configuration",
+        "<b>Incorrect readings:</b> Calibrate or check for interference",
+        "<b>No response:</b> Test with known movements and check code",
+        "<b>Intermittent data:</b> Secure connections and avoid loose wires",
+        "<b>Unexpected values:</b> Monitor for out-of-range or error codes"
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "IMU Practice",
+      "description": "Practice these exercises to master IMU use:",
+      "tasks": [
+        "Create an OpMode that displays IMU data",
+        "Test IMU response to different movements",
+        "Calibrate IMU and document the process",
+        "Implement safety checks using IMU data",
+        "Practice troubleshooting common IMU issues",
+        "Test IMU integration with autonomous code",
+        "Document IMU configuration and calibration"
+      ],
+      "content": "// Practice Exercise: IMU\n// Create an OpMode that displays IMU data\n// Include calibration and troubleshooting steps\n// Test IMU response to different conditions\n\n@TeleOp(name=\"IMU Test\", group=\"Testing\")\npublic class IMUTestOpMode extends LinearOpMode {\n    private BNO055IMU imu;\n    @Override\n    public void runOpMode() {\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n        imu.initialize(parameters);\n        waitForStart();\n        while (opModeIsActive()) {\n            Orientation angles = imu.getAngularOrientation();\n            telemetry.addData(\"Heading\", angles.firstAngle);\n            telemetry.addData(\"Pitch\", angles.secondAngle);\n            telemetry.addData(\"Roll\", angles.thirdAngle);\n            telemetry.update();\n        }\n    }"
     }
   ]
 } 

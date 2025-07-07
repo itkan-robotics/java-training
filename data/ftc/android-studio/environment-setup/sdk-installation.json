@@ -1,0 +1,36 @@
+{
+  "type": "lesson",
+  "title": "SDK Installation in Android Studio",
+  "content": [
+    {
+      "type": "section",
+      "title": "Introduction",
+      "content": "<p>This lesson guides you through installing the FTC SDK in Android Studio, the official development environment for advanced FTC programming. Following these steps ensures your team can build, test, and deploy code efficiently.</p>"
+    },
+    {
+      "type": "section",
+      "title": "Prerequisites",
+      "content": "<ul><li>Android Studio installed (<a href=\"https://developer.android.com/studio\" target=\"_blank\">Download here</a>)</li><li>Basic understanding of Java and Git</li><li>Internet connection</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Step-by-Step Installation",
+      "content": "<ol><li><b>Download the FTC SDK:</b> <br>Visit the <a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController\" target=\"_blank\">FTC SDK GitHub repository</a> and click <b>Code &gt; Download ZIP</b> or clone with Git:<br><pre><code>git clone https://github.com/FIRST-Tech-Challenge/FtcRobotController.git</code></pre></li><li><b>Open in Android Studio:</b> <br>Launch Android Studio. Select <b>Open an existing project</b> and choose the <code>FtcRobotController</code> folder.</li><li><b>Let Gradle Sync:</b> <br>Android Studio will automatically sync Gradle. Wait for the process to finish. If prompted, install any missing SDK components.</li><li><b>Configure Device:</b> <br>Connect your Control Hub or Android phone via USB. Enable <b>Developer Options</b> and <b>USB Debugging</b> on the device.</li><li><b>Build and Deploy:</b> <br>Click the <b>Run</b> button (green triangle) to build and deploy the app to your device.</li></ol>"
+    },
+    {
+      "type": "section",
+      "title": "Troubleshooting",
+      "content": "<ul><li><b>Gradle Sync Fails:</b> Check your internet connection and ensure all required SDK components are installed.</li><li><b>Device Not Detected:</b> Make sure USB Debugging is enabled and the correct drivers are installed.</li><li><b>Build Errors:</b> Clean the project (<b>Build &gt; Clean Project</b>) and try again.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "Best Practices & Safety",
+      "content": "<ul><li>Always use the latest stable FTC SDK release.</li><li>Do not modify SDK core files; write your code in the <code>TeamCode</code> module.</li><li>Back up your code regularly using Git or another version control system.</li></ul>"
+    },
+    {
+      "type": "section",
+      "title": "References",
+      "content": "<ul><li><a href=\"https://ftc-docs.firstinspires.org/\" target=\"_blank\">FTC Docs: Software Setup</a></li><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/android-studio.html\" target=\"_blank\">gm0: Android Studio Setup</a></li><li><a href=\"https://docs.revrobotics.com/duo-control/programming/ftc-sdk\" target=\"_blank\">REV Robotics: Programming with the FTC SDK</a></li></ul>"
+    }
+  ]
+} 

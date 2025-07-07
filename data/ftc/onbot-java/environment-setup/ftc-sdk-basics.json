@@ -3,143 +3,113 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to FTC SDK",
-      "content": "The FTC (FIRST Tech Challenge) Software Development Kit (SDK) is the foundation of FTC programming. It provides all the tools, libraries, and frameworks needed to program FTC robots using Java."
-    },
-    {
-      "type": "rules-box",
       "title": "What is the FTC SDK?",
-      "subtitle": "The FTC SDK includes:",
-      "items": [
-        "Core robot control libraries and APIs",
-        "Hardware abstraction layer for motors, servos, and sensors",
-        "OpMode framework for autonomous and teleop programming",
-        "Telemetry system for debugging and data logging",
-        "Gamepad input handling for driver controls",
-        "Built-in support for common FTC hardware components"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "SDK Architecture",
-      "content": "The FTC SDK is built on a layered architecture that separates hardware control from programming logic:"
-    },
-    {
-      "type": "list",
-      "items": [
-        "<strong>Hardware Layer:</strong> Direct communication with robot hardware (motors, servos, sensors)",
-        "<strong>Device Layer:</strong> Hardware abstraction that provides consistent interfaces",
-        "<strong>OpMode Layer:</strong> Programming framework for autonomous and teleop modes",
-        "<strong>Application Layer:</strong> Your custom robot code and logic"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Key SDK Components",
-      "content": "Understanding these core components is essential for FTC programming:"
-    },
-    {
-      "type": "code",
-      "title": "Basic OpMode Structure",
-      "language": "java",
-      "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name=\"Basic OpMode\", group=\"Examples\")\npublic class BasicOpMode extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Wait for start\n        waitForStart();\n        \n        // Main robot loop\n        while (opModeIsActive()) {\n            // Your robot logic here\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Hardware Mapping",
-      "content": "The hardwareMap is how you access robot hardware components in your code. Each component must be configured with a unique name in the robot configuration."
-    },
-    {
-      "type": "code",
-      "title": "Hardware Mapping Examples",
-      "language": "java",
-      "content": "// Motor mapping\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n\n// Servo mapping\nServo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n\n// Sensor mapping\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n\n// IMU mapping\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");"
-    },
-    {
-      "type": "text",
-      "title": "Telemetry System",
-      "content": "Telemetry is the primary debugging tool in FTC. It allows you to display information on the Driver Station screen and log data for analysis."
-    },
-    {
-      "type": "code",
-      "title": "Telemetry Examples",
-      "language": "java",
-      "content": "// Basic telemetry\ntelemetry.addData(\"Motor Power\", leftMotor.getPower());\ntelemetry.addData(\"Servo Position\", armServo.getPosition());\ntelemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n\n// Formatted telemetry\ntelemetry.addData(\"Status\", \"Running\");\ntelemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\ntelemetry.addData(\"Time\", \"%.1f seconds\", getRuntime().seconds());\n\n// Update telemetry display\ntelemetry.update();\n\n// Clear telemetry\ntelemetry.clear();\n\n// Log data to file\ntelemetry.log().add(\"Robot started autonomous mode\");"
-    },
-    {
-      "type": "text",
-      "title": "Gamepad Input",
-      "content": "The FTC SDK provides easy access to gamepad inputs for driver control. You can read button states, joystick values, and trigger positions."
-    },
-    {
-      "type": "code",
-      "title": "Gamepad Input Examples",
-      "language": "java",
-      "content": "// Joystick input\ndouble leftStickY = gamepad1.left_stick_y;\ndouble rightStickX = gamepad1.right_stick_x;\n\n// Button input\nboolean aButton = gamepad1.a;\nboolean bButton = gamepad1.b;\nboolean xButton = gamepad1.x;\nboolean yButton = gamepad1.y;\n\n// Trigger input\ndouble leftTrigger = gamepad1.left_trigger;\ndouble rightTrigger = gamepad1.right_trigger;\n\n// Bumper input\nboolean leftBumper = gamepad1.left_bumper;\nboolean rightBumper = gamepad1.right_bumper;\n\n// D-pad input\nboolean dpadUp = gamepad1.dpad_up;\nboolean dpadDown = gamepad1.dpad_down;\nboolean dpadLeft = gamepad1.dpad_left;\nboolean dpadRight = gamepad1.dpad_right;"
+      "content": "The FTC (FIRST Tech Challenge) Software Development Kit (SDK) is the foundation for programming FTC robots in Java. It provides all the libraries, APIs, and tools needed to control robot hardware, manage OpModes, and interact with sensors and gamepads.<br><br>The SDK is designed to abstract away the low-level details of hardware control, so you can focus on writing logic for your robot.<br><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/overview/index.html' target='_blank'>FTC Docs: SDK Overview</a><br>- <a href='https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html' target='_blank'>gm0: SDK Introduction</a>"
     },
     {
       "type": "rules-box",
-      "title": "SDK Best Practices",
-      "subtitle": "Follow these guidelines for better code:",
+      "title": "SDK Key Features",
+      "subtitle": "The FTC SDK provides:",
       "items": [
-        "Always initialize hardware in the runOpMode() method",
-        "Use descriptive names for hardware components",
-        "Include telemetry for debugging and monitoring",
-        "Handle exceptions gracefully",
-        "Use constants for magic numbers",
-        "Comment your code thoroughly",
-        "Test your code frequently"
+        "Robot hardware control (motors, servos, sensors)",
+        "OpMode framework for autonomous and teleop code",
+        "Gamepad input handling",
+        "Telemetry for debugging and monitoring",
+        "Support for Control Hub and Expansion Hub"
       ]
     },
     {
       "type": "text",
-      "title": "Resources and Documentation",
-      "content": "The FTC SDK is well-documented with extensive resources available:"
+      "title": "SDK Structure",
+      "content": "The SDK is organized into layers that separate hardware access from your robot logic. This makes it easier to write, debug, and maintain your code.<br><br>- <b>Hardware Layer</b>: Direct communication with motors, servos, and sensors<br>- <b>Device Layer</b>: Abstraction for consistent hardware access<br>- <b>OpMode Layer</b>: Programming framework for robot modes<br>- <b>Application Layer</b>: Your custom code<br><br>See <a href='https://gm0.org/en/latest/docs/software/getting-started/project-structure.html' target='_blank'>gm0: Project Structure</a> for more details."
     },
     {
-      "type": "list",
+      "type": "text",
+      "title": "Key SDK Classes",
+      "content": "The most important classes in the SDK are:<br><br>- <b>OpMode</b>: The base class for all robot programs. You extend this to create your own autonomous or teleop code. (<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/eventloop/opmode/package-summary.html' target='_blank'>FTC OpMode API</a>)<br>- <b>HardwareMap</b>: Lets you access configured hardware devices by name. (<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/hardware/HardwareMap.html' target='_blank'>HardwareMap API</a>)<br>- <b>DcMotor, Servo, Sensor classes</b>: Used to control motors, servos, and sensors. (<a href='https://ftc-docs.firstinspires.org/en/latest/java/com/qualcomm/robotcore/hardware/DcMotor.html' target='_blank'>DcMotor API</a>)<br><br>You will use these classes in almost every FTC program."
+    },
+    {
+      "type": "text",
+      "title": "How an OpMode Works",
+      "content": "An OpMode is a class that controls your robot during a match. You write your robot's logic inside an OpMode, and the Driver Station app lets you select and run it.<br><br>There are two main types: <b>LinearOpMode</b> (runs code sequentially) and <b>OpMode</b> (runs code in a loop). Most beginners start with LinearOpMode."
+    },
+    {
+      "type": "code",
+      "title": "Basic TeleOp OpMode",
+      "language": "java",
+      "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name = \"BasicTeleOp\")\npublic class BasicTeleOp extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    private Servo clawServo;\n\n    @Override\n    public void runOpMode() {\n        // Map hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n\n        // Wait for the game to start\n        waitForStart();\n\n        // Run until the end of the match\n        while (opModeIsActive()) {\n            // Drive robot using joysticks\n            double leftPower = -gamepad1.left_stick_y;\n            double rightPower = -gamepad1.right_stick_y;\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n\n            // Open/close claw with buttons\n            if (gamepad1.a) {\n                clawServo.setPosition(1.0); // Open\n            } else if (gamepad1.b) {\n                clawServo.setPosition(0.0); // Close\n            }\n\n            // Show telemetry\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.addData(\"Claw Position\", clawServo.getPosition());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Hardware Mapping Explained",
+      "content": "The <code>hardwareMap</code> object lets you access motors, servos, and sensors by the names you set in the Robot Controller app.<br><br>For example, if you named a motor 'left_drive' in your configuration, you can access it in code as shown below.<br><br>See <a href='https://gm0.org/en/latest/docs/software/tutorials/hardwaremap.html' target='_blank'>gm0: Hardware Mapping</a> for more."
+    },
+    {
+      "type": "code",
+      "title": "Hardware Mapping Example",
+      "language": "java",
+      "content": "DcMotor left = hardwareMap.get(DcMotor.class, \"left_drive\");\nServo claw = hardwareMap.get(Servo.class, \"claw_servo\");"
+    },
+    {
+      "type": "text",
+      "title": "Using Telemetry",
+      "content": "Telemetry lets you send data to the Driver Station for debugging and monitoring. You can display motor power, sensor values, or any other information you want to see during a match.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a> and <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/telemetry.html' target='_blank'>gm0: Telemetry</a> for more."
+    },
+    {
+      "type": "code",
+      "title": "Telemetry Example",
+      "language": "java",
+      "content": "telemetry.addData(\"Motor Power\", left.getPower());\ntelemetry.addData(\"Servo Position\", claw.getPosition());\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Gamepad Input Explained",
+      "content": "The SDK provides two gamepad objects, <code>gamepad1</code> and <code>gamepad2</code>, for reading driver and operator controls. You can read joystick, button, and trigger values to control your robot.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/gamepad.html' target='_blank'>FTC Docs: Gamepad</a> for a full list of controls."
+    },
+    {
+      "type": "code",
+      "title": "Gamepad Input Example",
+      "language": "java",
+      "content": "double drive = gamepad1.left_stick_y;\nboolean openClaw = gamepad1.a;\nboolean closeClaw = gamepad1.b;"
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "subtitle": "For robust FTC code:",
       "items": [
-        "<a href='https://gm0.org/en/latest/docs/software/index.html' target='_blank'>Game Manual 0 (gm0.org)</a> - Comprehensive FTC documentation and tutorials",
-        "<a href='https://github.com/FIRST-Tech-Challenge/FTC_App' target='_blank'>FTC SDK GitHub Repository</a> - Official SDK source code and examples",
-        "<a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Resources</a> - Official FIRST documentation",
-        "<a href='https://ftc-docs.firstinspires.org/' target='_blank'>FTC Documentation</a> - Official SDK documentation"
+        "Initialize hardware in runOpMode() or init()",
+        "Use clear, descriptive names for hardware",
+        "Add telemetry for debugging",
+        "Handle exceptions gracefully",
+        "Comment your code",
+        "Test code on the robot frequently"
       ]
+    },
+    {
+      "type": "text",
+      "title": "Further Reading & Resources",
+      "content": "- <a href='https://gm0.org/en/latest/docs/software/index.html' target='_blank'>gm0.org Software Docs</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a><br>- <a href='https://ftc-docs.firstinspires.org/' target='_blank'>FTC Docs</a><br>- <a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Resources</a>"
     },
     {
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        {
-          "label": "SDK Installation",
-          "id": "sdk-installation"
-        },
-        {
-          "label": "OpMode Structure",
-          "id": "opmode-structure"
-        },
-        {
-          "label": "Robot Hardware Overview",
-          "id": "robot-hardware-overview"
-        },
-        {
-          "label": "Basic Robot Control",
-          "id": "basic-robot-control"
-        }
+        { "label": "SDK Installation", "id": "sdk-installation" },
+        { "label": "OpMode Structure", "id": "opmode-structure" },
+        { "label": "Basic Robot Control", "id": "basic-robot-control" }
       ]
     },
     {
       "type": "exercise-box",
-      "title": "SDK Basics Practice",
-      "description": "Practice these concepts to reinforce your understanding:",
+      "title": "Practice: SDK Basics",
+      "description": "Try these to reinforce your understanding:",
       "tasks": [
-        "Create a simple OpMode that initializes two motors",
-        "Add telemetry to display motor power values",
-        "Read gamepad input and control motor power",
-        "Experiment with different hardware components",
-        "Practice using the hardwareMap to access components",
-        "Test your code on a robot or in simulation"
+        "Write an OpMode that initializes and drives one motor",
+        "Add telemetry to show motor power",
+        "Read gamepad input to control a servo",
+        "Practice using hardwareMap for different components"
       ],
-      "content": "// Practice Exercise: Basic Motor Control\n// Create an OpMode that uses the left joystick to control two motors\n// Display the joystick values and motor powers using telemetry\n// Test different motor configurations and behaviors"
+      "content": "// Practice: Control a motor with the left stick and display its power with telemetry."
     }
   ]
 } 

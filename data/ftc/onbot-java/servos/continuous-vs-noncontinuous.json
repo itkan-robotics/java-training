@@ -1,181 +1,99 @@
 {
-  "title": "Continuous vs Non-Continuous Servos",
-  "sections": [
+  "type": "lesson",
+  "title": "Continuous vs Noncontinuous Servos",
+  "content": [
     {
       "type": "text",
-      "title": "Introduction to Servo Types",
-      "content": "Understanding the difference between continuous and non-continuous (standard) servos is crucial for choosing the right actuator for your robot mechanism. Each type has distinct characteristics and applications that make them suitable for different tasks."
+      "title": "Servo Types in FTC",
+      "content": "<p>FTC robots use two main types of servos: standard (noncontinuous) and continuous rotation. Each type has unique characteristics and is suited for different applications.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a> and <a href='https://docs.revrobotics.com/duo-control/programming/servo-control' target='_blank'>REV Robotics: Servo Control</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "Key Differences",
-      "subtitle": "Fundamental differences between servo types:",
+      "title": "Standard (Noncontinuous) Servos",
+      "subtitle": "Key features:",
       "items": [
-        "Standard servos: Position control with limited rotation range",
-        "Continuous servos: Speed and direction control with full rotation",
-        "Standard servos: 0.0-1.0 represents absolute positions",
-        "Continuous servos: 0.0-1.0 represents speed and direction",
-        "Standard servos: Hold position without continuous power",
-        "Continuous servos: Require continuous power to maintain movement"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Standard (Non-Continuous) Servos",
-      "content": "Standard servos are the most common type used in FTC. They provide precise position control over a limited range, typically 180 degrees, and are ideal for mechanisms that need to move to specific positions and hold them."
-    },
-    {
-      "type": "list",
-      "title": "Standard Servo Characteristics",
-      "items": [
-        "<strong>Position Control:</strong> Move to specific angles within a limited range",
-        "<strong>Rotation Range:</strong> Typically 180 degrees (0.0 to 1.0 position range)",
-        "<strong>Holding Torque:</strong> Maintain position without continuous power",
-        "<strong>Precision:</strong> High accuracy for position control",
-        "<strong>Applications:</strong> Arms, claws, flaps, mechanisms requiring precise positioning"
+        "Move to a specific position within a limited range (usually 0° to 180°)",
+        "Hold position with feedback control",
+        "Ideal for arms, claws, and gates",
+        "Position set by value between 0.0 and 1.0"
       ]
     },
     {
       "type": "code",
-      "title": "Standard Servo Implementation",
+      "title": "Standard Servo Example",
       "language": "java",
-      "content": "// Standard servo configuration and control\nServo standardServo = hardwareMap.get(Servo.class, \"standard_servo\");\n\n// Standard servo position constants\nfinal double POSITION_MIN = 0.0;      // Full counterclockwise\nfinal double POSITION_CENTER = 0.5;   // Center position\nfinal double POSITION_MAX = 1.0;      // Full clockwise\n\n// Configure standard servo\nstandardServo.setDirection(Servo.Direction.FORWARD);\nstandardServo.setPosition(POSITION_CENTER); // Start at center\n\n// Position control methods\npublic void setStandardServoPosition(Servo servo, double position) {\n    // Ensure position is within valid range\n    position = Math.max(0.0, Math.min(1.0, position));\n    servo.setPosition(position);\n}\n\n// Predefined positions for common applications\npublic void moveToUpPosition(Servo servo) {\n    setStandardServoPosition(servo, 0.0);\n}\n\npublic void moveToDownPosition(Servo servo) {\n    setStandardServoPosition(servo, 1.0);\n}\n\npublic void moveToCenterPosition(Servo servo) {\n    setStandardServoPosition(servo, 0.5);\n}\n\n// Gradual movement for smooth operation\npublic void moveStandardServoGradually(Servo servo, double targetPosition, double stepSize) {\n    double currentPosition = servo.getPosition();\n    \n    if (currentPosition < targetPosition) {\n        double newPosition = Math.min(currentPosition + stepSize, targetPosition);\n        servo.setPosition(newPosition);\n    } else if (currentPosition > targetPosition) {\n        double newPosition = Math.max(currentPosition - stepSize, targetPosition);\n        servo.setPosition(newPosition);\n    }\n}\n\n// Position monitoring\npublic void monitorStandardServo(Servo servo, String servoName) {\n    double position = servo.getPosition();\n    double degrees = position * 180.0; // Convert to degrees\n    \n    telemetry.addData(servoName + \" Position\", \"%.3f\", position);\n    telemetry.addData(servoName + \" Degrees\", \"%.1f°\", degrees);\n}"
+      "content": "// Standard servo control\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\narmServo.setPosition(0.0); // Minimum position\narmServo.setPosition(0.5); // Middle position\narmServo.setPosition(1.0); // Maximum position"
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Continuous Rotation Servos",
-      "content": "Continuous rotation servos are modified standard servos that can rotate continuously in both directions. They use position commands to control speed and direction rather than absolute position."
+      "subtitle": "Key features:",
+      "items": [
+        "Rotate continuously in either direction",
+        "Speed and direction controlled by position value (0.0 to 1.0)",
+        "No feedback for absolute position",
+        "Ideal for intakes, conveyors, and mechanisms needing full rotation"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Continuous Servo Example",
+      "language": "java",
+      "content": "// Continuous rotation servo control\nServo intakeServo = hardwareMap.get(Servo.class, \"intake_servo\");\nintakeServo.setPosition(0.0); // Full speed reverse\nintakeServo.setPosition(0.5); // Stop\nintakeServo.setPosition(1.0); // Full speed forward\n// Use gamepad to control speed\ndouble speed = gamepad1.left_stick_y;\nintakeServo.setPosition(0.5 + 0.5 * speed); // Map stick to speed"
+    },
+    {
+      "type": "text",
+      "title": "Choosing the Right Servo",
+      "content": "<p>Choose standard servos for precise position control and continuous servos for mechanisms needing full rotation. See <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a>.</p>"
     },
     {
       "type": "list",
-      "title": "Continuous Servo Characteristics",
+      "title": "Servo Selection Guide",
       "items": [
-        "<strong>Speed Control:</strong> Position commands control rotation speed and direction",
-        "<strong>Rotation Range:</strong> Full 360-degree continuous rotation",
-        "<strong>Continuous Movement:</strong> Require continuous power to maintain rotation",
-        "<strong>Direction Control:</strong> Position 0.0-1.0 controls direction and speed",
-        "<strong>Applications:</strong> Conveyors, continuous mechanisms, material transport"
+        "<b>Standard Servo:</b> Arms, claws, gates, latches",
+        "<b>Continuous Servo:</b> Intakes, conveyors, rotating mechanisms"
       ]
     },
     {
-      "type": "code",
-      "title": "Continuous Servo Implementation",
-      "language": "java",
-      "content": "// Continuous rotation servo control\nServo continuousServo = hardwareMap.get(Servo.class, \"continuous_servo\");\n\n// Continuous servo control constants\nfinal double CONTINUOUS_STOP = 0.5;           // Stop position\nfinal double CONTINUOUS_FULL_FORWARD = 1.0;   // Full speed clockwise\nfinal double CONTINUOUS_FULL_REVERSE = 0.0;   // Full speed counterclockwise\nfinal double CONTINUOUS_HALF_FORWARD = 0.75;  // Half speed clockwise\nfinal double CONTINUOUS_HALF_REVERSE = 0.25;  // Half speed counterclockwise\n\n// Configure continuous servo\ncontinuousServo.setDirection(Servo.Direction.FORWARD);\ncontinuousServo.setPosition(CONTINUOUS_STOP); // Start stopped\n\n// Speed control methods\npublic void setContinuousServoSpeed(Servo servo, double speed) {\n    // speed ranges from -1.0 (full reverse) to 1.0 (full forward)\n    double position = CONTINUOUS_STOP + (speed * 0.5);\n    position = Math.max(0.0, Math.min(1.0, position));\n    servo.setPosition(position);\n}\n\npublic void stopContinuousServo(Servo servo) {\n    servo.setPosition(CONTINUOUS_STOP);\n}\n\npublic void setContinuousServoForward(Servo servo, double speed) {\n    // speed ranges from 0.0 to 1.0\n    double position = CONTINUOUS_STOP + (speed * 0.5);\n    servo.setPosition(position);\n}\n\npublic void setContinuousServoReverse(Servo servo, double speed) {\n    // speed ranges from 0.0 to 1.0\n    double position = CONTINUOUS_STOP - (speed * 0.5);\n    servo.setPosition(position);\n}\n\n// Speed monitoring\npublic void monitorContinuousServo(Servo servo, String servoName) {\n    double position = servo.getPosition();\n    double speed = (position - CONTINUOUS_STOP) * 2.0; // Convert to -1.0 to 1.0 range\n    \n    telemetry.addData(servoName + \" Position\", \"%.3f\", position);\n    telemetry.addData(servoName + \" Speed\", \"%.2f\", speed);\n    \n    if (Math.abs(speed) < 0.1) {\n        telemetry.addData(servoName + \" Status\", \"Stopped\");\n    } else if (speed > 0) {\n        telemetry.addData(servoName + \" Status\", \"Forward\");\n    } else {\n        telemetry.addData(servoName + \" Status\", \"Reverse\");\n    }\n}"
-    },
-    {
       "type": "text",
-      "title": "Comparison and Selection",
-      "content": "Understanding when to use each type of servo helps teams design effective robot mechanisms and choose the right components for their applications."
+      "title": "Servo Safety and Best Practices",
+      "content": "<p>Proper use of both types of servos ensures reliable operation and prevents damage. Always test servos before attaching to mechanisms and avoid forcing them beyond their range. See <a href='https://docs.revrobotics.com/duo-control/programming/servo-control#servo-safety' target='_blank'>REV Robotics: Servo Safety</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "When to Use Each Type",
-      "subtitle": "Selection guidelines:",
+      "title": "Servo Safety Guidelines",
+      "subtitle": "Follow these practices for safe servo use:",
       "items": [
-        "Use Standard Servos for: Arms, claws, flaps, precise positioning",
-        "Use Continuous Servos for: Conveyors, continuous movement, material transport",
-        "Standard servos are better for: Holding positions, precise control",
-        "Continuous servos are better for: Continuous operation, speed control",
-        "Consider power consumption: Continuous servos use more power",
-        "Consider precision needs: Standard servos offer better position accuracy"
+        "Never force a servo beyond its range (standard: 0.0 to 1.0)",
+        "Test servo movement before attaching to mechanisms",
+        "Use appropriate mounting hardware",
+        "Monitor servo temperature during extended use",
+        "Implement limits in code to prevent overdriving"
       ]
-    },
-    {
-      "type": "code",
-      "title": "Servo Selection Helper",
-      "language": "java",
-      "content": "// Servo selection helper\npublic class ServoSelector {\n    public enum ServoType {\n        STANDARD,\n        CONTINUOUS\n    }\n    \n    public static ServoType recommendServoType(String application) {\n        switch (application.toLowerCase()) {\n            case \"arm\":\n            case \"claw\":\n            case \"flap\":\n            case \"lift\":\n            case \"positioning\":\n                return ServoType.STANDARD;\n            \n            case \"conveyor\":\n            case \"intake\":\n            case \"continuous\":\n            case \"transport\":\n                return ServoType.CONTINUOUS;\n            \n            default:\n                return ServoType.STANDARD; // Default to standard\n        }\n    }\n    \n    public static String getServoDescription(ServoType type) {\n        switch (type) {\n            case STANDARD:\n                return \"Position control, limited rotation, holds position\";\n            case CONTINUOUS:\n                return \"Speed control, full rotation, continuous movement\";\n            default:\n                return \"Unknown type\";\n        }\n    }\n}\n\n// Usage examples\nServoSelector.ServoType armType = ServoSelector.recommendServoType(\"arm\");\nServoSelector.ServoType conveyorType = ServoSelector.recommendServoType(\"conveyor\");\n\n// Display recommendations\ntelemetry.addData(\"Arm Servo Type\", armType.toString());\ntelemetry.addData(\"Arm Description\", ServoSelector.getServoDescription(armType));\ntelemetry.addData(\"Conveyor Servo Type\", conveyorType.toString());\ntelemetry.addData(\"Conveyor Description\", ServoSelector.getServoDescription(conveyorType));"
-    },
-    {
-      "type": "text",
-      "title": "Control Differences",
-      "content": "The control methods for standard and continuous servos are fundamentally different, requiring different programming approaches and considerations."
-    },
-    {
-      "type": "list",
-      "title": "Control Method Differences",
-      "items": [
-        "<strong>Standard Servos:</strong> Set absolute positions (0.0-1.0)",
-        "<strong>Continuous Servos:</strong> Set speed and direction (0.0-1.0)",
-        "<strong>Standard Servos:</strong> Position commands are immediate",
-        "<strong>Continuous Servos:</strong> Speed commands are continuous",
-        "<strong>Standard Servos:</strong> Can read current position",
-        "<strong>Continuous Servos:</strong> Position reading is not meaningful"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Control Method Examples",
-      "language": "java",
-      "content": "// Control method comparison\npublic class ServoController {\n    private Servo servo;\n    private ServoSelector.ServoType type;\n    \n    public ServoController(Servo servo, ServoSelector.ServoType type) {\n        this.servo = servo;\n        this.type = type;\n        \n        // Initialize based on type\n        if (type == ServoSelector.ServoType.STANDARD) {\n            servo.setPosition(0.5); // Center position\n        } else {\n            servo.setPosition(0.5); // Stop position\n        }\n    }\n    \n    public void setValue(double value) {\n        switch (type) {\n            case STANDARD:\n                // For standard servos, value is position (0.0-1.0)\n                value = Math.max(0.0, Math.min(1.0, value));\n                servo.setPosition(value);\n                break;\n                \n            case CONTINUOUS:\n                // For continuous servos, value is speed (-1.0 to 1.0)\n                double position = 0.5 + (value * 0.5);\n                position = Math.max(0.0, Math.min(1.0, position));\n                servo.setPosition(position);\n                break;\n        }\n    }\n    \n    public double getValue() {\n        switch (type) {\n            case STANDARD:\n                // Return current position\n                return servo.getPosition();\n                \n            case CONTINUOUS:\n                // Return current speed\n                return (servo.getPosition() - 0.5) * 2.0;\n                \n            default:\n                return 0.0;\n        }\n    }\n    \n    public String getStatus() {\n        switch (type) {\n            case STANDARD:\n                double position = servo.getPosition();\n                return String.format(\"Position: %.3f (%.1f°)\", position, position * 180.0);\n                \n            case CONTINUOUS:\n                double speed = getValue();\n                if (Math.abs(speed) < 0.1) {\n                    return \"Stopped\";\n                } else if (speed > 0) {\n                    return String.format(\"Forward: %.2f\", speed);\n                } else {\n                    return String.format(\"Reverse: %.2f\", Math.abs(speed));\n                }\n                \n            default:\n                return \"Unknown\";\n        }\n    }\n}\n\n// Usage example\nServoController armController = new ServoController(armServo, ServoSelector.ServoType.STANDARD);\nServoController conveyorController = new ServoController(conveyorServo, ServoSelector.ServoType.CONTINUOUS);\n\n// Control arm position\narmController.setValue(0.8); // Move to 80% position\n\n// Control conveyor speed\nconveyorController.setValue(0.5); // Half speed forward\n\n// Display status\ntelemetry.addData(\"Arm Status\", armController.getStatus());\ntelemetry.addData(\"Conveyor Status\", conveyorController.getStatus());"
-    },
-    {
-      "type": "text",
-      "title": "Application Examples",
-      "content": "Real-world examples demonstrate how each servo type is used in typical FTC robot applications."
-    },
-    {
-      "type": "code",
-      "title": "Application Examples",
-      "language": "java",
-      "content": "// Arm mechanism with standard servo\npublic class ArmMechanism {\n    private ServoController armServo;\n    private final double ARM_UP = 0.0;\n    private final double ARM_DOWN = 1.0;\n    private final double ARM_PICKUP = 0.2;\n    private final double ARM_DELIVERY = 0.8;\n    \n    public ArmMechanism(Servo armServo) {\n        this.armServo = new ServoController(armServo, ServoSelector.ServoType.STANDARD);\n    }\n    \n    public void moveUp() {\n        armServo.setValue(ARM_UP);\n    }\n    \n    public void moveDown() {\n        armServo.setValue(ARM_DOWN);\n    }\n    \n    public void moveToPickup() {\n        armServo.setValue(ARM_PICKUP);\n    }\n    \n    public void moveToDelivery() {\n        armServo.setValue(ARM_DELIVERY);\n    }\n    \n    public boolean isAtPosition(double targetPosition, double tolerance) {\n        return Math.abs(armServo.getValue() - targetPosition) <= tolerance;\n    }\n}\n\n// Conveyor mechanism with continuous servo\npublic class ConveyorMechanism {\n    private ServoController conveyorServo;\n    private boolean isRunning = false;\n    \n    public ConveyorMechanism(Servo conveyorServo) {\n        this.conveyorServo = new ServoController(conveyorServo, ServoSelector.ServoType.CONTINUOUS);\n    }\n    \n    public void start(double speed) {\n        conveyorServo.setValue(speed);\n        isRunning = true;\n    }\n    \n    public void stop() {\n        conveyorServo.setValue(0.0);\n        isRunning = false;\n    }\n    \n    public void reverse(double speed) {\n        conveyorServo.setValue(-speed);\n        isRunning = true;\n    }\n    \n    public boolean isRunning() {\n        return isRunning;\n    }\n}\n\n// Complete mechanism example\npublic class RobotMechanisms {\n    private ArmMechanism arm;\n    private ConveyorMechanism conveyor;\n    \n    public RobotMechanisms(Servo armServo, Servo conveyorServo) {\n        this.arm = new ArmMechanism(armServo);\n        this.conveyor = new ConveyorMechanism(conveyorServo);\n    }\n    \n    public void pickupSequence() {\n        // Move arm to pickup position\n        arm.moveToPickup();\n        \n        // Start conveyor to move items\n        conveyor.start(0.5);\n        \n        // Wait for items to be picked up\n        sleep(2000);\n        \n        // Stop conveyor\n        conveyor.stop();\n        \n        // Move arm to delivery position\n        arm.moveToDelivery();\n    }\n    \n    public void displayStatus() {\n        telemetry.addData(\"Arm Status\", arm.getStatus());\n        telemetry.addData(\"Conveyor Status\", conveyor.getStatus());\n        telemetry.addData(\"Conveyor Running\", conveyor.isRunning());\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Troubleshooting and Best Practices",
-      "content": "Understanding common issues and best practices for each servo type helps teams maintain reliable robot operation."
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Guide",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "Standard servo not moving: Check position values and mechanical binding",
-        "Continuous servo not stopping: Verify stop position (0.5) is correct",
-        "Standard servo jittering: Check for mechanical resistance or power issues",
-        "Continuous servo wrong direction: Adjust direction or invert speed values",
-        "Both types: Verify wiring and configuration file settings"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Troubleshooting Methods",
-      "language": "java",
-      "content": "// Servo troubleshooting and diagnostics\npublic class ServoTroubleshooter {\n    private Servo servo;\n    private ServoSelector.ServoType type;\n    \n    public ServoTroubleshooter(Servo servo, ServoSelector.ServoType type) {\n        this.servo = servo;\n        this.type = type;\n    }\n    \n    public void runDiagnostics() {\n        telemetry.addData(\"Servo Type\", type.toString());\n        telemetry.addData(\"Current Position\", \"%.3f\", servo.getPosition());\n        telemetry.addData(\"Direction\", servo.getDirection().toString());\n        telemetry.addData(\"Port Number\", servo.getPortNumber());\n        \n        switch (type) {\n            case STANDARD:\n                runStandardServoTest();\n                break;\n            case CONTINUOUS:\n                runContinuousServoTest();\n                break;\n        }\n    }\n    \n    private void runStandardServoTest() {\n        telemetry.addData(\"Test\", \"Standard Servo Position Test\");\n        \n        if (gamepad1.a) {\n            servo.setPosition(0.0);\n            telemetry.addData(\"Action\", \"Move to position 0.0\");\n        } else if (gamepad1.b) {\n            servo.setPosition(0.5);\n            telemetry.addData(\"Action\", \"Move to position 0.5\");\n        } else if (gamepad1.x) {\n            servo.setPosition(1.0);\n            telemetry.addData(\"Action\", \"Move to position 1.0\");\n        }\n    }\n    \n    private void runContinuousServoTest() {\n        telemetry.addData(\"Test\", \"Continuous Servo Speed Test\");\n        \n        if (gamepad1.a) {\n            servo.setPosition(0.0); // Full reverse\n            telemetry.addData(\"Action\", \"Full reverse\");\n        } else if (gamepad1.b) {\n            servo.setPosition(0.5); // Stop\n            telemetry.addData(\"Action\", \"Stop\");\n        } else if (gamepad1.x) {\n            servo.setPosition(1.0); // Full forward\n            telemetry.addData(\"Action\", \"Full forward\");\n        }\n        \n        // Speed control with joystick\n        double speed = -gamepad1.right_stick_y;\n        if (Math.abs(speed) > 0.1) {\n            double position = 0.5 + (speed * 0.5);\n            servo.setPosition(position);\n            telemetry.addData(\"Speed Control\", \"%.2f\", speed);\n        }\n    }\n}\n\n// Usage in OpMode\nServoTroubleshooter armTroubleshooter = new ServoTroubleshooter(armServo, ServoSelector.ServoType.STANDARD);\nServoTroubleshooter conveyorTroubleshooter = new ServoTroubleshooter(conveyorServo, ServoSelector.ServoType.CONTINUOUS);\n\nwhile (opModeIsActive()) {\n    armTroubleshooter.runDiagnostics();\n    conveyorTroubleshooter.runDiagnostics();\n    telemetry.update();\n}"
     },
     {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        {
-          "label": "Servos",
-          "id": "servos"
-        },
-        {
-          "label": "Servo Types",
-          "id": "servo-types"
-        },
-        {
-          "label": "Servo Positions",
-          "id": "servo-positions"
-        }
+        { "label": "Intro to Servos", "id": "intro-to-servos" },
+        { "label": "Servo Positions", "id": "servo-positions" },
+        { "label": "Servo Types", "id": "servo-types" }
       ]
     },
     {
       "type": "exercise-box",
-      "title": "Servo Types Practice",
-      "description": "Practice these exercises to understand servo differences:",
+      "title": "Servo Type Practice",
+      "description": "Practice these exercises to master servo selection and control:",
       "tasks": [
-        "Create an OpMode that tests both servo types",
-        "Compare control methods for each servo type",
-        "Practice position control with standard servos",
-        "Practice speed control with continuous servos",
-        "Create mechanisms using each servo type",
-        "Test servo selection for different applications",
-        "Practice troubleshooting both servo types"
+        "Create an OpMode that tests both standard and continuous servos",
+        "Test servo range and limits for each type",
+        "Implement safe position and speed limiting in code",
+        "Attach servos to different mechanisms and test",
+        "Practice troubleshooting common servo issues",
+        "Test servo operation with different loads",
+        "Document servo performance and range"
       ],
-      "content": "// Practice Exercise: Servo Type Comparison\n// Create an OpMode that demonstrates both servo types\n// Compare control methods and behavior\n// Test different applications for each type\n\n@TeleOp(name=\"Servo Type Comparison\", group=\"Testing\")\npublic class ServoTypeComparisonOpMode extends LinearOpMode {\n    \n    private ServoController standardController;\n    private ServoController continuousController;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize both servo types\n        Servo standardServo = hardwareMap.get(Servo.class, \"standard_servo\");\n        Servo continuousServo = hardwareMap.get(Servo.class, \"continuous_servo\");\n        \n        standardController = new ServoController(standardServo, ServoSelector.ServoType.STANDARD);\n        continuousController = new ServoController(continuousServo, ServoSelector.ServoType.CONTINUOUS);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Control standard servo with left joystick\n            double standardInput = -gamepad1.left_stick_y;\n            if (Math.abs(standardInput) > 0.1) {\n                // Convert joystick input to position (0.0-1.0)\n                double position = (standardInput + 1.0) / 2.0;\n                standardController.setValue(position);\n            }\n            \n            // Control continuous servo with right joystick\n            double continuousInput = -gamepad1.right_stick_y;\n            if (Math.abs(continuousInput) > 0.1) {\n                // Use joystick input directly as speed (-1.0 to 1.0)\n                continuousController.setValue(continuousInput);\n            } else {\n                continuousController.setValue(0.0); // Stop\n            }\n            \n            // Display status\n            telemetry.addData(\"Standard Servo\", standardController.getStatus());\n            telemetry.addData(\"Continuous Servo\", continuousController.getStatus());\n            telemetry.addData(\"Standard Input\", \"%.2f\", standardInput);\n            telemetry.addData(\"Continuous Input\", \"%.2f\", continuousInput);\n            telemetry.update();\n        }\n    }\n}"
+      "content": "// Practice Exercise: Servo Types\n// Create an OpMode that tests both standard and continuous servos\n// Include safety features and telemetry\n// Test different positions and speeds\n\n@TeleOp(name=\"Servo Type Test\", group=\"Testing\")\npublic class ServoTypeTestOpMode extends LinearOpMode {\n    private Servo standardServo, continuousServo;\n    @Override\n    public void runOpMode() {\n        standardServo = hardwareMap.get(Servo.class, \"standard_servo\");\n        continuousServo = hardwareMap.get(Servo.class, \"continuous_servo\");\n        waitForStart();\n        while (opModeIsActive()) {\n            // Standard servo control\n            if (gamepad1.a) {\n                standardServo.setPosition(1.0);\n            } else if (gamepad1.b) {\n                standardServo.setPosition(0.0);\n            } else if (gamepad1.x) {\n                standardServo.setPosition(0.5);\n            }\n            // Continuous servo control\n            double speed = gamepad1.left_stick_y;\n            continuousServo.setPosition(0.5 + 0.5 * speed);\n            telemetry.addData(\"Standard Servo Position\", standardServo.getPosition());\n            telemetry.addData(\"Continuous Servo Speed\", speed);\n            telemetry.update();\n        }\n    }"
     }
   ]
 } 

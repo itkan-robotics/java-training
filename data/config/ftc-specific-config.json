@@ -10,192 +10,70 @@
       "id": "onbot-java-environment-setup",
       "label": "OnBot Java - Environment Setup",
       "items": [
-        {
-          "id": "ftc-sdk-basics",
-          "label": "FTC SDK Basics",
-          "file": "data/ftc/onbot-java/environment-setup/ftc-sdk-basics.json"
-        },
-        {
-          "id": "sdk-installation",
-          "label": "SDK Installation",
-          "file": "data/ftc/onbot-java/environment-setup/sdk-installation.json"
-        },
-        {
-          "id": "opmode-structure",
-          "label": "OpMode Structure",
-          "file": "data/ftc/onbot-java/environment-setup/opmode-structure.json"
-        },
-        {
-          "id": "linear-vs-iterative-opmodes",
-          "label": "Linear vs Iterative OpModes",
-          "file": "data/ftc/onbot-java/environment-setup/linear-vs-iterative-opmodes.json"
-        },
-        {
-          "id": "telemetry-logging",
-          "label": "Telemetry Logging",
-          "file": "data/ftc/onbot-java/environment-setup/telemetry-logging.json"
-        },
-        {
-          "id": "control-hub-expansion-hub",
-          "label": "Control Hub & Expansion Hub",
-          "file": "data/ftc/onbot-java/environment-setup/control-hub-expansion-hub.json"
-        }
+        { "id": "ftc-sdk-basics", "label": "FTC SDK Basics", "file": "data/ftc/onbot-java/environment-setup/ftc-sdk-basics.json" },
+        { "id": "sdk-installation", "label": "SDK Installation", "file": "data/ftc/onbot-java/environment-setup/sdk-installation.json" },
+        { "id": "opmode-structure", "label": "OpMode Structure", "file": "data/ftc/onbot-java/environment-setup/opmode-structure.json" },
+        { "id": "linear-vs-iterative-opmodes", "label": "Linear vs Iterative OpModes", "file": "data/ftc/onbot-java/environment-setup/linear-vs-iterative-opmodes.json" },
+        { "id": "telemetry-logging", "label": "Telemetry Logging", "file": "data/ftc/onbot-java/environment-setup/telemetry-logging.json" },
+        { "id": "control-hub-expansion-hub", "label": "Control Hub & Expansion Hub", "file": "data/ftc/onbot-java/environment-setup/control-hub-expansion-hub.json" }
       ]
     },
     {
       "id": "onbot-java-motors",
       "label": "OnBot Java - Motors",
       "items": [
-        {
-          "id": "robot-hardware-overview",
-          "label": "Robot Hardware Overview",
-          "file": "data/ftc/onbot-java/motors/robot-hardware-overview.json"
-        },
-        {
-          "id": "dc-motors",
-          "label": "DC Motors",
-          "file": "data/ftc/onbot-java/motors/dc-motors.json"
-        },
-        {
-          "id": "basic-motor-control",
-          "label": "Basic Motor Control",
-          "file": "data/ftc/onbot-java/motors/basic-motor-control.json"
-        },
-        {
-          "id": "motor-encoders",
-          "label": "Motor Encoders",
-          "file": "data/ftc/onbot-java/motors/motor-encoders.json"
-        },
-        {
-          "id": "motor-types",
-          "label": "Motor Types",
-          "file": "data/ftc/onbot-java/motors/motor-types.json"
-        }
+        { "id": "robot-hardware-overview", "label": "Robot Hardware Overview", "file": "data/ftc/onbot-java/motors/robot-hardware-overview.json" },
+        { "id": "dc-motors", "label": "DC Motors", "file": "data/ftc/onbot-java/motors/dc-motors.json" },
+        { "id": "basic-motor-control", "label": "Basic Motor Control", "file": "data/ftc/onbot-java/motors/basic-motor-control.json" },
+        { "id": "motor-encoders", "label": "Motor Encoders", "file": "data/ftc/onbot-java/motors/motor-encoders.json" },
+        { "id": "motor-types", "label": "Motor Types", "file": "data/ftc/onbot-java/motors/motor-types.json" }
       ]
     },
     {
       "id": "onbot-java-servos",
       "label": "OnBot Java - Servos",
       "items": [
-        {
-          "id": "intro-to-servos",
-          "label": "Introduction to Servos",
-          "file": "data/ftc/onbot-java/servos/intro-to-servos.json"
-        },
-        {
-          "id": "continuous-vs-noncontinuous",
-          "label": "Continuous vs Non-Continuous Servos",
-          "file": "data/ftc/onbot-java/servos/continuous-vs-noncontinuous.json"
-        },
-        {
-          "id": "servo-positions",
-          "label": "Servo Positions",
-          "file": "data/ftc/onbot-java/servos/servo-positions.json"
-        }
+        { "id": "intro-to-servos", "label": "Introduction to Servos", "file": "data/ftc/onbot-java/servos/intro-to-servos.json" },
+        { "id": "continuous-vs-noncontinuous", "label": "Continuous vs Non-Continuous Servos", "file": "data/ftc/onbot-java/servos/continuous-vs-noncontinuous.json" },
+        { "id": "servo-positions", "label": "Servo Positions", "file": "data/ftc/onbot-java/servos/servo-positions.json" }
       ]
     },
     {
       "id": "onbot-java-sensors",
       "label": "OnBot Java - Sensors",
       "items": [
-        {
-          "id": "sensors-overview",
-          "label": "Sensors Overview",
-          "file": "data/ftc/onbot-java/sensors/sensors.json"
-        },
-        {
-          "id": "touch-sensors",
-          "label": "Touch Sensors",
-          "file": "data/ftc/onbot-java/sensors/touch-sensors.json"
-        },
-        {
-          "id": "distance-sensors",
-          "label": "Distance Sensors",
-          "file": "data/ftc/onbot-java/sensors/distance-sensors.json"
-        },
-        {
-          "id": "color-sensors",
-          "label": "Color Sensors",
-          "file": "data/ftc/onbot-java/sensors/color-sensors.json"
-        },
-        {
-          "id": "imu",
-          "label": "IMU (Inertial Measurement Unit)",
-          "file": "data/ftc/onbot-java/sensors/imu.json"
-        }
+        { "id": "sensors-overview", "label": "Sensors Overview", "file": "data/ftc/onbot-java/sensors/sensors.json" },
+        { "id": "touch-sensors", "label": "Touch Sensors", "file": "data/ftc/onbot-java/sensors/touch-sensors.json" },
+        { "id": "distance-sensors", "label": "Distance Sensors", "file": "data/ftc/onbot-java/sensors/distance-sensors.json" },
+        { "id": "color-sensors", "label": "Color Sensors", "file": "data/ftc/onbot-java/sensors/color-sensors.json" },
+        { "id": "imu", "label": "IMU (Inertial Measurement Unit)", "file": "data/ftc/onbot-java/sensors/imu.json" }
       ]
     },
     {
       "id": "onbot-java-teleop-programming",
       "label": "OnBot Java - TeleOp Programming",
       "items": [
-        {
-          "id": "basic-robot-control",
-          "label": "Basic Robot Control",
-          "file": "data/ftc/onbot-java/teleop-programming/basic-robot-control.json"
-        },
-        {
-          "id": "teleop-programming",
-          "label": "TeleOp Programming",
-          "file": "data/ftc/onbot-java/teleop-programming/teleop-programming.json"
-        },
-        {
-          "id": "gamepad-controls",
-          "label": "Gamepad Controls",
-          "file": "data/ftc/onbot-java/teleop-programming/gamepad-controls.json"
-        },
-        {
-          "id": "motor-power-control",
-          "label": "Motor Power Control",
-          "file": "data/ftc/onbot-java/teleop-programming/motor-power-control.json"
-        },
-        {
-          "id": "servo-control",
-          "label": "Servo Control",
-          "file": "data/ftc/onbot-java/teleop-programming/servo-control.json"
-        }
+        { "id": "basic-robot-control", "label": "Basic Robot Control", "file": "data/ftc/onbot-java/teleop-programming/basic-robot-control.json" },
+        { "id": "teleop-programming", "label": "TeleOp Programming", "file": "data/ftc/onbot-java/teleop-programming/teleop-programming.json" },
+        { "id": "gamepad-controls", "label": "Gamepad Controls", "file": "data/ftc/onbot-java/teleop-programming/gamepad-controls.json" }
       ]
     },
     {
       "id": "onbot-java-autonomous-programming",
       "label": "OnBot Java - Autonomous Programming",
       "items": [
-        {
-          "id": "basic-autonomous-programming",
-          "label": "Basic Autonomous Programming",
-          "file": "data/ftc/onbot-java/autonomous-programming/basic-autonomous-programming.json"
-        },
-        {
-          "id": "time-based-movement",
-          "label": "Time-Based Movement",
-          "file": "data/ftc/onbot-java/autonomous-programming/time-based-movement.json"
-        },
-        {
-          "id": "encoder-based-movement",
-          "label": "Encoder-Based Movement",
-          "file": "data/ftc/onbot-java/autonomous-programming/encoder-based-movement.json"
-        }
+        { "id": "basic-autonomous-programming", "label": "Basic Autonomous Programming", "file": "data/ftc/onbot-java/autonomous-programming/basic-autonomous-programming.json" },
+        { "id": "time-based-movement", "label": "Time-Based Movement", "file": "data/ftc/onbot-java/autonomous-programming/time-based-movement.json" },
+        { "id": "encoder-based-movement", "label": "Encoder-Based Movement", "file": "data/ftc/onbot-java/autonomous-programming/encoder-based-movement.json" }
       ]
     },
     {
       "id": "onbot-java-debugging-best-practices",
       "label": "OnBot Java - Debugging & Best Practices",
       "items": [
-        {
-          "id": "basic-debugging-techniques",
-          "label": "Basic Debugging Techniques",
-          "file": "data/ftc/onbot-java/debugging-best-practices/basic-debugging-techniques.json"
-        },
-        {
-          "id": "state-machines",
-          "label": "State Machines",
-          "file": "data/ftc/onbot-java/debugging-best-practices/state-machines.json"
-        },
-        {
-          "id": "code-organization",
-          "label": "Code Organization",
-          "file": "data/ftc/onbot-java/debugging-best-practices/code-organization.json"
-        }
+        { "id": "basic-debugging-techniques", "label": "Basic Debugging Techniques", "file": "data/ftc/onbot-java/debugging-best-practices/basic-debugging-techniques.json" },
+        { "id": "state-machines", "label": "State Machines", "file": "data/ftc/onbot-java/debugging-best-practices/state-machines.json" },
+        { "id": "code-organization", "label": "Code Organization", "file": "data/ftc/onbot-java/debugging-best-practices/code-organization.json" }
       ]
     },
     {

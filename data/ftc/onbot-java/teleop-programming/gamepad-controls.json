@@ -3,93 +3,72 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Gamepad Controls",
-      "content": "Gamepad controls are the primary interface between drivers and robots in FTC. Understanding how to read and process gamepad inputs is essential for creating responsive and intuitive control systems."
+      "title": "Gamepad Layout and Button Mapping",
+      "content": "Gamepads are the main interface for FTC drivers. Mapping each button, stick, and trigger to robot actions is key to effective teleop. For hardware response, see the relevant hardware pages. <br><br>See <a href=\"https://gm0.org/en/latest/docs/software/teleop/gamepad.html\" target=\"_blank\">gm0: Gamepad Reference</a> and <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/gamepad.html\" target=\"_blank\">FTC Docs: Gamepad</a>."
     },
     {
-      "type": "rules-box",
-      "title": "Gamepad Components",
-      "subtitle": "Key gamepad components and their uses:",
+      "type": "list",
+      "title": "Gamepad Input Types",
       "items": [
-        "Joysticks: Analog inputs for continuous control (-1.0 to 1.0)",
-        "Buttons: Digital inputs for discrete actions (true/false)",
-        "Triggers: Analog inputs for variable control (0.0 to 1.0)",
-        "D-pad: Digital directional inputs",
-        "Bumpers: Digital inputs for quick actions"
+        "<strong>Joysticks:</strong> Analog, for continuous control (-1.0 to 1.0).",
+        "<strong>Buttons:</strong> Digital, for discrete actions (true/false).",
+        "<strong>Triggers:</strong> Analog, for variable control (0.0 to 1.0).",
+        "<strong>D-pad:</strong> Digital, for directional input.",
+        "<strong>Bumpers:</strong> Digital, for quick actions."
       ]
     },
     {
       "type": "code",
-      "title": "Basic Gamepad Reading",
-      "content": "// Basic gamepad input reading\n@TeleOp(name=\"Gamepad Basics\", group=\"Teleop\")\npublic class GamepadBasics extends LinearOpMode {\n    \n    @Override\n    public void runOpMode() {\n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Read joystick inputs\n            double leftStickX = gamepad1.left_stick_x;\n            double leftStickY = gamepad1.left_stick_y;\n            double rightStickX = gamepad1.right_stick_x;\n            double rightStickY = gamepad1.right_stick_y;\n            \n            // Read button inputs\n            boolean aButton = gamepad1.a;\n            boolean bButton = gamepad1.b;\n            boolean xButton = gamepad1.x;\n            boolean yButton = gamepad1.y;\n            \n            // Read trigger inputs\n            double leftTrigger = gamepad1.left_trigger;\n            double rightTrigger = gamepad1.right_trigger;\n            \n            // Read bumper inputs\n            boolean leftBumper = gamepad1.left_bumper;\n            boolean rightBumper = gamepad1.right_bumper;\n            \n            // Read D-pad inputs\n            boolean dpadUp = gamepad1.dpad_up;\n            boolean dpadDown = gamepad1.dpad_down;\n            boolean dpadLeft = gamepad1.dpad_left;\n            boolean dpadRight = gamepad1.dpad_right;\n            \n            // Display all inputs\n            telemetry.addData(\"Left Stick\", \"X: %.2f, Y: %.2f\", leftStickX, leftStickY);\n            telemetry.addData(\"Right Stick\", \"X: %.2f, Y: %.2f\", rightStickX, rightStickY);\n            telemetry.addData(\"Buttons\", \"A:%s B:%s X:%s Y:%s\", aButton, bButton, xButton, yButton);\n            telemetry.addData(\"Triggers\", \"Left: %.2f, Right: %.2f\", leftTrigger, rightTrigger);\n            telemetry.addData(\"Bumpers\", \"Left:%s Right:%s\", leftBumper, rightBumper);\n            telemetry.addData(\"D-pad\", \"Up:%s Down:%s Left:%s Right:%s\", \n                             dpadUp, dpadDown, dpadLeft, dpadRight);\n            telemetry.update();\n        }\n    }\n}"
+      "title": "Reading Gamepad Inputs in OpMode",
+      "content": "@TeleOp(name=\"GamepadInputExample\", group=\"Teleop\")\npublic class GamepadInputExample extends LinearOpMode {\n    @Override\n    public void runOpMode() {\n        waitForStart();\n        while (opModeIsActive()) {\n            double leftX = gamepad1.left_stick_x;\n            double leftY = gamepad1.left_stick_y;\n            boolean a = gamepad1.a;\n            double rightTrigger = gamepad1.right_trigger;\n            // Use these values to control your robot\n            telemetry.addData(\"Left Stick\", String.format(\"X: %.2f, Y: %.2f\", leftX, leftY));\n            telemetry.addData(\"A Button\", a);\n            telemetry.addData(\"Right Trigger\", rightTrigger);\n            telemetry.update();\n        }\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Input Processing Techniques",
-      "content": "Raw gamepad inputs often need processing to create smooth and responsive robot control. Various techniques can improve the user experience."
+      "title": "Debouncing and Toggle Logic",
+      "content": "To prevent repeated actions from a single button press, use debouncing or toggle logic. This is especially important for toggling mechanisms or modes in teleop."
     },
     {
       "type": "code",
-      "title": "Input Processing Methods",
-      "content": "// Input processing techniques\npublic class InputProcessor {\n    \n    // Deadzone to prevent drift\n    public static double applyDeadzone(double input, double deadzone) {\n        if (Math.abs(input) < deadzone) {\n            return 0.0;\n        }\n        return input;\n    }\n    \n    // Power curve for better low-speed control\n    public static double applyPowerCurve(double input, double power) {\n        double sign = Math.signum(input);\n        return sign * Math.pow(Math.abs(input), power);\n    }\n    \n    // Smoothing to reduce jerky movement\n    public static double smoothInput(double target, double current, double smoothingFactor) {\n        return current + (target - current) * smoothingFactor;\n    }\n    \n    // Button debouncing\n    private boolean lastButtonState = false;\n    public boolean debounceButton(boolean currentState) {\n        boolean debounced = currentState && !lastButtonState;\n        lastButtonState = currentState;\n        return debounced;\n    }\n}\n\n// Usage example\n@TeleOp(name=\"Processed Inputs\", group=\"Teleop\")\npublic class ProcessedInputs extends LinearOpMode {\n    \n    private double lastLeftPower = 0;\n    private double lastRightPower = 0;\n    private InputProcessor inputProcessor = new InputProcessor();\n    \n    @Override\n    public void runOpMode() {\n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Read raw inputs\n            double leftStickY = gamepad1.left_stick_y;\n            double rightStickY = gamepad1.right_stick_y;\n            \n            // Apply processing\n            leftStickY = InputProcessor.applyDeadzone(leftStickY, 0.05);\n            rightStickY = InputProcessor.applyDeadzone(rightStickY, 0.05);\n            \n            leftStickY = InputProcessor.applyPowerCurve(leftStickY, 2.0);\n            rightStickY = InputProcessor.applyPowerCurve(rightStickY, 2.0);\n            \n            // Apply smoothing\n            double leftPower = InputProcessor.smoothInput(leftStickY, lastLeftPower, 0.3);\n            double rightPower = InputProcessor.smoothInput(rightStickY, lastRightPower, 0.3);\n            \n            // Apply to motors\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            \n            lastLeftPower = leftPower;\n            lastRightPower = rightPower;\n            \n            // Display processed values\n            telemetry.addData(\"Raw Left\", \"%.2f\", gamepad1.left_stick_y);\n            telemetry.addData(\"Processed Left\", \"%.2f\", leftPower);\n            telemetry.addData(\"Raw Right\", \"%.2f\", gamepad1.right_stick_y);\n            telemetry.addData(\"Processed Right\", \"%.2f\", rightPower);\n            telemetry.update();\n        }\n    }\n}"
+      "title": "Toggle Example (Debouncing)",
+      "content": "boolean lastA = false;\nboolean toggled = false;\nwhile (opModeIsActive()) {\n    if (gamepad1.a && !lastA) {\n        toggled = !toggled; // Toggle state\n    }\n    lastA = gamepad1.a;\n    // Use 'toggled' to control a mechanism\n}"
     },
     {
       "type": "text",
-      "title": "Control Scheme Design",
-      "content": "Different control schemes offer various advantages for different robot configurations and driver preferences."
+      "title": "Multi-Gamepad Strategies",
+      "content": "FTC supports two gamepads. Split controls between drivers for complex robots. For example, gamepad1 for drivetrain, gamepad2 for mechanisms."
     },
     {
       "type": "code",
-      "title": "Control Scheme Implementations",
-      "content": "// Different control schemes\npublic class ControlSchemes {\n    \n    // Tank drive: Left stick controls left side, right stick controls right side\n    public static void tankDrive(DcMotor leftMotor, DcMotor rightMotor, \n                                double leftPower, double rightPower) {\n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    // Arcade drive: One stick for forward/backward, one for turning\n    public static void arcadeDrive(DcMotor leftMotor, DcMotor rightMotor, \n                                  double drive, double turn) {\n        double leftPower = drive + turn;\n        double rightPower = drive - turn;\n        \n        // Limit power to valid range\n        leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n        rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    // Single stick drive: One stick controls both movement and turning\n    public static void singleStickDrive(DcMotor leftMotor, DcMotor rightMotor, \n                                       double x, double y) {\n        double magnitude = Math.sqrt(x * x + y * y);\n        double angle = Math.atan2(y, x);\n        \n        double leftPower = magnitude * Math.cos(angle - Math.PI/4);\n        double rightPower = magnitude * Math.sin(angle - Math.PI/4);\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n}\n\n// Usage in OpMode\n@TeleOp(name=\"Control Schemes\", group=\"Teleop\")\npublic class ControlSchemesOpMode extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    private int currentScheme = 0; // 0=tank, 1=arcade, 2=single stick\n    \n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Switch control schemes with Y button\n            if (gamepad1.y) {\n                currentScheme = (currentScheme + 1) % 3;\n                sleep(200); // Prevent rapid switching\n            }\n            \n            // Apply selected control scheme\n            switch (currentScheme) {\n                case 0: // Tank drive\n                    double leftPower = -gamepad1.left_stick_y;\n                    double rightPower = -gamepad1.right_stick_y;\n                    ControlSchemes.tankDrive(leftDrive, rightDrive, leftPower, rightPower);\n                    break;\n                case 1: // Arcade drive\n                    double drive = -gamepad1.left_stick_y;\n                    double turn = gamepad1.right_stick_x;\n                    ControlSchemes.arcadeDrive(leftDrive, rightDrive, drive, turn);\n                    break;\n                case 2: // Single stick drive\n                    double x = gamepad1.left_stick_x;\n                    double y = -gamepad1.left_stick_y;\n                    ControlSchemes.singleStickDrive(leftDrive, rightDrive, x, y);\n                    break;\n            }\n            \n            // Display current scheme\n            String[] schemeNames = {\"Tank Drive\", \"Arcade Drive\", \"Single Stick\"};\n            telemetry.addData(\"Control Scheme\", schemeNames[currentScheme]);\n            telemetry.addData(\"Press Y to switch\", \"\");\n            telemetry.update();\n        }\n    }\n}"
+      "title": "Multi-Gamepad Example",
+      "content": "@TeleOp(name=\"MultiGamepadExample\", group=\"Teleop\")\npublic class MultiGamepadExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo;\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        waitForStart();\n        while (opModeIsActive()) {\n            // Drivetrain: gamepad1\n            leftDrive.setPower(-gamepad1.left_stick_y);\n            rightDrive.setPower(-gamepad1.right_stick_y);\n            // Arm: gamepad2\n            if (gamepad2.a) armServo.setPosition(0.0);\n            if (gamepad2.b) armServo.setPosition(1.0);\n        }\n    }\n}"
     },
     {
-      "type": "text",
-      "title": "Multi-Gamepad Support",
-      "content": "FTC supports multiple gamepads for driver and operator control. Understanding how to coordinate multiple gamepads is important for complex robots."
-    },
-    {
-      "type": "code",
-      "title": "Multi-Gamepad Implementation",
-      "content": "// Multi-gamepad control system\n@TeleOp(name=\"Multi-Gamepad Control\", group=\"Teleop\")\npublic class MultiGamepadControl extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo, clawServo;\n    private DcMotor intakeMotor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        intakeMotor = hardwareMap.get(DcMotor.class, \"intake_motor\");\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Driver controls (gamepad1) - Drivetrain\n            updateDrivetrain(gamepad1);\n            \n            // Operator controls (gamepad2) - Mechanisms\n            updateMechanisms(gamepad2);\n            \n            // Display control assignments\n            displayControlInfo();\n        }\n    }\n    \n    private void updateDrivetrain(Gamepad gamepad) {\n        // Tank drive for drivetrain\n        double leftPower = -gamepad.left_stick_y;\n        double rightPower = -gamepad.right_stick_y;\n        \n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n    }\n    \n    private void updateMechanisms(Gamepad gamepad) {\n        // Arm control with triggers\n        if (gamepad.right_trigger > 0.1) {\n            double currentPos = armServo.getPosition();\n            armServo.setPosition(Math.max(0.0, currentPos - 0.01));\n        } else if (gamepad.left_trigger > 0.1) {\n            double currentPos = armServo.getPosition();\n            armServo.setPosition(Math.min(1.0, currentPos + 0.01));\n        }\n        \n        // Claw control with buttons\n        if (gamepad.a) {\n            clawServo.setPosition(0.0); // Open\n        } else if (gamepad.b) {\n            clawServo.setPosition(1.0); // Close\n        }\n        \n        // Intake control with bumpers\n        if (gamepad.right_bumper) {\n            intakeMotor.setPower(1.0); // Intake\n        } else if (gamepad.left_bumper) {\n            intakeMotor.setPower(-1.0); // Outtake\n        } else {\n            intakeMotor.setPower(0.0); // Stop\n        }\n    }\n    \n    private void displayControlInfo() {\n        telemetry.addData(\"=== CONTROL ASSIGNMENTS ===\", \"\");\n        telemetry.addData(\"Driver (Gamepad1)\", \"Drivetrain - Tank Drive\");\n        telemetry.addData(\"Operator (Gamepad2)\", \"Arm, Claw, Intake\");\n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n        telemetry.addData(\"Intake Power\", \"%.2f\", intakeMotor.getPower());\n        telemetry.update();\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Troubleshooting Common Issues",
-      "content": "Common issues with gamepad controls and their solutions help teams quickly resolve problems."
-    },
-    {
-      "type": "rules-box",
-      "title": "Common Gamepad Issues",
-      "subtitle": "Troubleshooting guide:",
+      "type": "list",
+      "title": "Best Practices for Gamepad Use",
       "items": [
-        "Gamepad not detected: Check USB connection and gamepad mode",
-        "Unresponsive controls: Verify configuration and check for interference",
-        "Inconsistent behavior: Test with different gamepads and cables",
-        "Input lag: Reduce processing overhead and check for loops",
-        "Wrong button mapping: Verify gamepad configuration in code"
+        "Map controls ergonomically for comfort and speed.",
+        "Provide feedback (telemetry, LEDs) for important actions.",
+        "Test with both drivers to ensure clarity and comfort.",
+        "Document control mappings for your team."
+      ]
+    },
+    {
+      "type": "list",
+      "title": "Troubleshooting Gamepad Issues",
+      "items": [
+        "Gamepad not detected: Check USB and gamepad mode.",
+        "Unresponsive controls: Check code and configuration.",
+        "Wrong mapping: Double-check button assignments in code."
       ]
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "References & Further Reading",
       "links": [
-        {
-          "label": "Basic Robot Control",
-          "id": "basic-robot-control"
-        },
-        {
-          "label": "Teleop Programming",
-          "id": "teleop-programming"
-        },
-        {
-          "label": "Motor Power Control",
-          "id": "motor-power-control"
-        },
-        {
-          "label": "Servo Control",
-          "id": "servo-control"
-        }
+        { "label": "gm0: Gamepad Reference", "url": "https://gm0.org/en/latest/docs/software/teleop/gamepad.html" },
+        { "label": "FTC Docs: Gamepad", "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/gamepad.html" },
+        { "label": "Basic Robot Control", "id": "basic-robot-control" },
+        { "label": "Teleop Programming", "id": "teleop-programming" }
       ]
     },
     {
@@ -97,15 +76,12 @@
       "title": "Gamepad Controls Practice",
       "description": "Practice these exercises to master gamepad controls:",
       "tasks": [
-        "Create a basic gamepad input reader",
-        "Implement input processing techniques",
-        "Test different control schemes",
-        "Create multi-gamepad control system",
-        "Add safety features and emergency stop",
-        "Practice troubleshooting gamepad issues",
-        "Test control responsiveness and smoothness"
+        "Write code to read all gamepad inputs and display them with telemetry.",
+        "Implement a toggle using debouncing logic.",
+        "Split controls between two gamepads.",
+        "Troubleshoot a gamepad issue and document your fix."
       ],
-      "content": "// Practice Exercise: Complete Gamepad System\n// Create a comprehensive gamepad control system\n// Include all processing techniques and safety features\n// Test with different gamepads and conditions\n\n@TeleOp(name=\"Gamepad Practice\", group=\"Practice\")\npublic class GamepadPractice extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    private InputProcessor inputProcessor;\n    private GamepadSafety safety;\n    \n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        \n        inputProcessor = new InputProcessor();\n        safety = new GamepadSafety();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Check safety and connection\n            if (!safety.checkGamepadConnection(gamepad1)) {\n                telemetry.addData(\"ERROR\", \"Gamepad disconnected!\");\n                continue;\n            }\n            \n            // Process inputs with safety\n            double leftPower = safety.limitPower(-gamepad1.left_stick_y);\n            double rightPower = safety.limitPower(-gamepad1.right_stick_y);\n            \n            // Apply to motors\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            \n            // Display status\n            telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n            telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n            telemetry.addData(\"Emergency Stop\", safety.isEmergencyStop());\n            telemetry.update();\n        }\n    }\n}"
+      "content": "// Practice: Write code to read and display all gamepad inputs\n// Add a toggle and multi-gamepad control."
     }
   ]
 } 

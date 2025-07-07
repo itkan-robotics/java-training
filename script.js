@@ -1,5 +1,5 @@
 /**
- * FRCCodeLab - Interactive Learning Platform
+ * SwyftNav - Interactive Learning Platform
  * Core Application Logic
  * 
  * Architecture Overview:
@@ -268,39 +268,40 @@ class ContentManager {
 
     renderContent(tabId) {
         const data = appState.getTabData(tabId);
-    if (!data) {
-        console.error(`No data found for tab: ${tabId}`);
-        return;
-    }
-    
-    const container = document.getElementById('tab-container');
-        container.innerHTML = '';
-    
-    const tabContent = document.createElement('div');
-    tabContent.id = tabId;
-    tabContent.className = 'tab-content active';
-    
-    const section = document.createElement('section');
-        section.id = `content-${tabId}`;
-    
-    const title = document.createElement('h1');
-        title.innerHTML = `${data.title}<a class="headerlink" href="#content-${tabId}" title="Link to this heading">¶</a>`;
-    section.appendChild(title);
-    
-    const contentSection = document.createElement('div');
-    contentSection.className = 'content-section';
-    
-    // Render each section
-        if (data.sections) {
-    data.sections.forEach(sectionData => {
-                this.renderSection(contentSection, sectionData);
-    });
+        if (!data) {
+            console.error(`No data found for tab: ${tabId}`);
+            return;
         }
-    
-    section.appendChild(contentSection);
-    tabContent.appendChild(section);
-    container.appendChild(tabContent);
-}
+        
+        const container = document.getElementById('tab-container');
+        container.innerHTML = '';
+        
+        const tabContent = document.createElement('div');
+        tabContent.id = tabId;
+        tabContent.className = 'tab-content active';
+        
+        const section = document.createElement('section');
+        section.id = `content-${tabId}`;
+        
+        const title = document.createElement('h1');
+        title.innerHTML = `${data.title}<a class="headerlink" href="#content-${tabId}" title="Link to this heading">¶</a>`;
+        section.appendChild(title);
+        
+        const contentSection = document.createElement('div');
+        contentSection.className = 'content-section';
+        
+        // Render each section (support both 'sections' and 'content')
+        const sectionsArray = data.sections || data.content;
+        if (sectionsArray && Array.isArray(sectionsArray)) {
+            sectionsArray.forEach(sectionData => {
+                this.renderSection(contentSection, sectionData);
+            });
+        }
+        
+        section.appendChild(contentSection);
+        tabContent.appendChild(section);
+        container.appendChild(tabContent);
+    }
 
     renderSection(container, sectionData) {
         const renderers = {
@@ -414,42 +415,109 @@ class ContentManager {
     }
 
     renderExerciseBox(container, data) {
-    const exerciseBox = document.createElement('div');
-    exerciseBox.className = 'exercise-box';
+        const exerciseBox = document.createElement('div');
+        exerciseBox.className = 'exercise-box';
 
-    if (data.title) {
-        const h3 = document.createElement('h3');
-        h3.textContent = data.title;
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
             exerciseBox.appendChild(h3);
         }
         
-    if (data.description) {
+        if (data.subtitle) {
+            const subtitle = document.createElement('h4');
+            subtitle.textContent = data.subtitle;
+            exerciseBox.appendChild(subtitle);
+        }
+        
+        if (data.description) {
             const desc = document.createElement('p');
             desc.textContent = data.description;
             exerciseBox.appendChild(desc);
-    }
+        }
 
-    if (data.tasks) {
+        if (data.content && typeof data.content === 'string') {
+            const contentP = document.createElement('p');
+            contentP.textContent = data.content;
+            exerciseBox.appendChild(contentP);
+        }
+
+        if (data.tasks) {
             const tasksList = document.createElement('ul');
-    data.tasks.forEach(task => {
-        const li = document.createElement('li');
+            data.tasks.forEach(task => {
+                const li = document.createElement('li');
                 li.textContent = task;
                 tasksList.appendChild(li);
-        });
+            });
             exerciseBox.appendChild(tasksList);
-    }
-    
-    if (data.code) {
+        }
+
+        if (data.code) {
             const codeSection = document.createElement('div');
             codeSection.className = 'exercise-code';
-        const pre = document.createElement('pre');
-        const code = document.createElement('code');
-        code.textContent = data.code;
-        pre.appendChild(code);
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            code.innerText = data.code;
+            pre.appendChild(code);
             codeSection.appendChild(pre);
             exerciseBox.appendChild(codeSection);
         }
-        
+
+        // Show/hide answers button and section
+        if (data.answers && Array.isArray(data.answers) && data.answers.length > 0) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'answer-toggle-btn';
+            toggleBtn.textContent = 'Show Answers';
+            let answersVisible = false;
+
+            const answerSection = document.createElement('div');
+            answerSection.className = 'answer-section hidden';
+
+            // Add answers
+            data.answers.forEach(answer => {
+                const answerItem = document.createElement('div');
+                answerItem.className = 'answer-item';
+
+                if (answer.task) {
+                    const taskLabel = document.createElement('div');
+                    taskLabel.className = 'answer-task-label';
+                    taskLabel.textContent = answer.task;
+                    answerItem.appendChild(taskLabel);
+                }
+
+                if (answer.content) {
+                    const codeDiv = document.createElement('div');
+                    codeDiv.className = 'answer-code';
+                    const pre = document.createElement('pre');
+                    const code = document.createElement('code');
+                    code.innerText = answer.content;
+                    pre.appendChild(code);
+                    codeDiv.appendChild(pre);
+                    answerItem.appendChild(codeDiv);
+                }
+
+                answerSection.appendChild(answerItem);
+            });
+
+            toggleBtn.addEventListener('click', () => {
+                answersVisible = !answersVisible;
+                if (answersVisible) {
+                    answerSection.classList.remove('hidden');
+                    answerSection.classList.add('visible');
+                    toggleBtn.textContent = 'Hide Answers';
+                    toggleBtn.classList.add('active');
+                } else {
+                    answerSection.classList.remove('visible');
+                    answerSection.classList.add('hidden');
+                    toggleBtn.textContent = 'Show Answers';
+                    toggleBtn.classList.remove('active');
+                }
+            });
+
+            exerciseBox.appendChild(toggleBtn);
+            exerciseBox.appendChild(answerSection);
+        }
+
         container.appendChild(exerciseBox);
     }
 
@@ -707,7 +775,10 @@ class NavigationManager {
     async navigateToTab(tabId) {
         // Store the last opened tab ID
         localStorage.setItem('lastOpenedTab', tabId);
-        
+        // Update the URL hash for direct linking and browser navigation
+        if (window.location.hash !== `#${tabId}`) {
+            window.location.hash = `#${tabId}`;
+        }
         // Clear current page classes
         document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
             li.classList.remove('current-page');
@@ -1487,6 +1558,41 @@ let app;
 document.addEventListener('DOMContentLoaded', async function() {
     app = new Application();
     await app.initialize();
+    // Add hashchange handler for browser navigation and direct links
+    window.onhashchange = function() {
+        const tabId = window.location.hash ? window.location.hash.substring(1) : null;
+        if (tabId && app && app.navigationManager) {
+            // Only navigate if not already on this tab
+            if (appState.currentTab !== tabId) {
+                app.navigationManager.navigateToTab(tabId);
+            }
+        }
+    };
+    // Delegated click handler for internal <a> links in content
+    document.getElementById('tab-container').addEventListener('click', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.getAttribute('href')) {
+            const href = anchor.getAttribute('href');
+            // Match ../motors/basic-motor-control.json or similar
+            const match = href.match(/\.\.\/([\w-]+)\/([\w-]+)\.json$/);
+            let tabId = null;
+            if (match) {
+                tabId = match[2];
+            } else if (href.startsWith('#')) {
+                tabId = href.substring(1);
+            } else if (/^[\w-]+$/.test(href)) {
+                // Support <a href="basic-motor-control">...</a> style
+                tabId = href;
+            }
+            // Check if tabId is a valid internal tab
+            if (tabId && (appState.allTabs.some(tab => tab.id === tabId) || appState.getTabData(tabId))) {
+                if (app && app.navigationManager) {
+                    e.preventDefault();
+                    app.navigationManager.navigateToTab(tabId);
+                }
+            }
+        }
+    });
 });
 
 // Global functions for HTML onclick handlers

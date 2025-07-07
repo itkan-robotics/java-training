@@ -1,6 +1,6 @@
 {
   "id": "homepage",
-  "title": "Welcome to FRCCodeLab",
+  "title": "Welcome to SwyftNav",
   "sections": [
     {
       "type": "text",
@@ -10,7 +10,7 @@
     {
       "type": "text",
       "title": "Choose Your Learning Path",
-      "content": "Welcome to FRCCodeLab! This comprehensive training platform is designed to help you master programming concepts for robotics competitions. Select the training path that best fits your needs and experience level."
+      "content": "Welcome to SwyftNav! This comprehensive training platform is designed to help you master programming concepts for robotics competitions. Select the training path that best fits your needs and experience level."
     },
     {
       "type": "link-grid",

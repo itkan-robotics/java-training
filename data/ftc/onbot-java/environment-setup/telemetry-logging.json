@@ -3,227 +3,68 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Telemetry Logging",
-      "content": "Telemetry is a crucial tool in FTC programming that allows you to monitor your robot's performance, debug issues, and provide real-time feedback to drivers. Understanding how to use telemetry effectively is essential for successful robot programming."
-    },
-    {
-      "type": "rules-box",
       "title": "What is Telemetry?",
-      "subtitle": "Telemetry provides:",
-      "items": [
-        "Real-time data display on the Driver Station",
-        "Debugging information during robot operation",
-        "Performance monitoring and optimization",
-        "Status updates and error reporting",
-        "Sensor data visualization",
-        "Robot state information for drivers"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Basic Telemetry Usage",
-      "content": "Telemetry in FTC is accessed through the `telemetry` object available in all OpModes. It provides methods to add data, update the display, and manage the information shown to drivers."
-    },
-    {
-      "type": "list",
-      "title": "Core Telemetry Methods",
-      "items": [
-        "<strong>addData():</strong> Add key-value pairs to the telemetry display",
-        "<strong>addLine():</strong> Add a simple text line to the display",
-        "<strong>update():</strong> Send the current telemetry data to the Driver Station",
-        "<strong>clear():</strong> Clear all telemetry data",
-        "<strong>clearAll():</strong> Clear telemetry and reset the display"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Basic Telemetry Example",
-      "language": "java",
-      "content": "package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\n@TeleOp(name=\"Basic Telemetry\", group=\"Examples\")\npublic class BasicTelemetry extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private ElapsedTime runtime;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        runtime = new ElapsedTime();\n        \n        // Initial telemetry\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.addData(\"Instructions\", \"Use left/right sticks to drive\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Process input\n            double leftPower = gamepad1.left_stick_y;\n            double rightPower = gamepad1.right_stick_y;\n            \n            leftMotor.setPower(leftPower);\n            rightMotor.setPower(rightPower);\n            \n            // Update telemetry\n            updateTelemetry();\n        }\n    }\n    \n    private void updateTelemetry() {\n        // Add various types of data\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n        telemetry.addData(\"Left Motor Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Left Stick Y\", \"%.2f\", gamepad1.left_stick_y);\n        telemetry.addData(\"Right Stick Y\", \"%.2f\", gamepad1.right_stick_y);\n        \n        // Add a separator line\n        telemetry.addLine(\"---\");\n        \n        // Add status information\n        telemetry.addData(\"Status\", \"Running\");\n        \n        // Send to Driver Station\n        telemetry.update();\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Telemetry Data Types",
-      "content": "Telemetry supports various data types and formatting options to display information clearly and effectively."
-    },
-    {
-      "type": "list",
-      "title": "Supported Data Types",
-      "items": [
-        "<strong>Strings:</strong> Text information and labels",
-        "<strong>Numbers:</strong> Integers, doubles, and other numeric values",
-        "<strong>Booleans:</strong> True/false status indicators",
-        "<strong>Formatted Strings:</strong> Custom formatting with placeholders",
-        "<strong>Arrays and Collections:</strong> Multiple values in organized formats"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Telemetry Data Type Examples",
-      "language": "java",
-      "content": "// Different ways to add telemetry data\nprivate void demonstrateTelemetryTypes() {\n    // String data\n    telemetry.addData(\"Robot Name\", \"MyRobot\");\n    telemetry.addData(\"OpMode Type\", \"TeleOp\");\n    \n    // Numeric data\n    telemetry.addData(\"Battery Voltage\", 12.5);\n    telemetry.addData(\"Motor Count\", 4);\n    telemetry.addData(\"Runtime (seconds)\", runtime.seconds());\n    \n    // Boolean data\n    telemetry.addData(\"Motors Enabled\", true);\n    telemetry.addData(\"Sensors Active\", false);\n    telemetry.addData(\"Auto Mode\", autoDriveEnabled);\n    \n    // Formatted strings with placeholders\n    telemetry.addData(\"Position\", \"X: %.2f, Y: %.2f, Z: %.2f\", x, y, z);\n    telemetry.addData(\"Power Levels\", \"Left: %.1f%%, Right: %.1f%%\", \n                      leftPower * 100, rightPower * 100);\n    telemetry.addData(\"Temperature\", \"%.1f°C\", temperature);\n    \n    // Simple text lines\n    telemetry.addLine(\"--- Sensor Data ---\");\n    telemetry.addLine(\"All systems operational\");\n    \n    // Conditional data\n    if (errorDetected) {\n        telemetry.addData(\"ERROR\", \"Motor connection lost!\");\n    }\n    \n    // Array-like data\n    telemetry.addData(\"Motor Powers\", \"[%.2f, %.2f, %.2f, %.2f]\", \n                      frontLeft.getPower(), frontRight.getPower(), \n                      backLeft.getPower(), backRight.getPower());\n}"
-    },
-    {
-      "type": "text",
-      "title": "Advanced Telemetry Features",
-      "content": "Beyond basic data display, telemetry offers advanced features for better debugging and monitoring."
-    },
-    {
-      "type": "list",
-      "title": "Advanced Telemetry Capabilities",
-      "items": [
-        "<strong>Conditional Display:</strong> Show data only when certain conditions are met",
-        "<strong>Formatting Control:</strong> Customize how data is displayed",
-        "<strong>Performance Monitoring:</strong> Track timing and efficiency",
-        "<strong>Error Reporting:</strong> Display error messages and warnings",
-        "<strong>State Visualization:</strong> Show robot state and mode information",
-        "<strong>Sensor Data Logging:</strong> Monitor sensor values over time"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Advanced Telemetry Example",
-      "language": "java",
-      "content": "@TeleOp(name=\"Advanced Telemetry\", group=\"Examples\")\npublic class AdvancedTelemetry extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private ColorSensor colorSensor;\n    private BNO055IMU imu;\n    \n    private ElapsedTime runtime;\n    private ElapsedTime telemetryTimer;\n    \n    // State variables\n    private boolean autoDriveEnabled = false;\n    private int driveMode = 0; // 0 = tank, 1 = arcade\n    private double batteryVoltage = 12.0;\n    private boolean errorDetected = false;\n    \n    // Performance tracking\n    private long lastTelemetryUpdate = 0;\n    private static final long TELEMETRY_INTERVAL = 100; // 100ms\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        \n        // Initial telemetry with status\n        displayInitializationStatus();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            processInput();\n            updateSystems();\n            \n            // Update telemetry at regular intervals\n            if (System.currentTimeMillis() - lastTelemetryUpdate >= TELEMETRY_INTERVAL) {\n                updateAdvancedTelemetry();\n                lastTelemetryUpdate = System.currentTimeMillis();\n            }\n        }\n    }\n    \n    private void displayInitializationStatus() {\n        telemetry.addData(\"=== ROBOT STATUS ===\", \"\");\n        telemetry.addData(\"Hardware\", \"Initializing...\");\n        telemetry.update();\n        sleep(500);\n        \n        telemetry.addData(\"Hardware\", \"✓ Motors mapped\");\n        telemetry.update();\n        sleep(200);\n        \n        telemetry.addData(\"Hardware\", \"✓ Servos mapped\");\n        telemetry.update();\n        sleep(200);\n        \n        telemetry.addData(\"Hardware\", \"✓ Sensors mapped\");\n        telemetry.update();\n        sleep(200);\n        \n        telemetry.addData(\"Status\", \"Ready for start\");\n        telemetry.addData(\"Instructions\", \"Use sticks to drive, A/B to change modes\");\n        telemetry.update();\n    }\n    \n    private void updateAdvancedTelemetry() {\n        // Clear previous telemetry\n        telemetry.clear();\n        \n        // Header section\n        telemetry.addData(\"=== ROBOT TELEMETRY ===\", \"\");\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n        telemetry.addData(\"Battery\", \"%.1fV\", batteryVoltage);\n        \n        // Drive system section\n        telemetry.addLine(\"\\n--- DRIVE SYSTEM ---\");\n        telemetry.addData(\"Mode\", getDriveModeName());\n        telemetry.addData(\"Left Power\", \"%.2f (%.1f%%)\", \n                          leftMotor.getPower(), leftMotor.getPower() * 100);\n        telemetry.addData(\"Right Power\", \"%.2f (%.1f%%)\", \n                          rightMotor.getPower(), rightMotor.getPower() * 100);\n        \n        // Arm system section\n        telemetry.addLine(\"\\n--- ARM SYSTEM ---\");\n        telemetry.addData(\"Position\", \"%.2f\", armServo.getPosition());\n        telemetry.addData(\"Status\", armServo.getPosition() > 0.5 ? \"Raised\" : \"Lowered\");\n        \n        // Sensor section\n        telemetry.addLine(\"\\n--- SENSORS ---\");\n        if (colorSensor != null) {\n            int red = colorSensor.red();\n            int green = colorSensor.green();\n            int blue = colorSensor.blue();\n            telemetry.addData(\"Color\", \"R:%d G:%d B:%d\", red, green, blue);\n            \n            // Color detection logic\n            String detectedColor = detectColor(red, green, blue);\n            telemetry.addData(\"Detected\", detectedColor != null ? detectedColor : \"None\");\n        }\n        \n        if (imu != null) {\n            double heading = imu.getAngularOrientation().firstAngle;\n            telemetry.addData(\"Heading\", \"%.1f°\", heading);\n        }\n        \n        // Control section\n        telemetry.addLine(\"\\n--- CONTROLS ---\");\n        telemetry.addData(\"Auto Drive\", autoDriveEnabled ? \"ON\" : \"OFF\");\n        telemetry.addData(\"Left Stick Y\", \"%.2f\", gamepad1.left_stick_y);\n        telemetry.addData(\"Right Stick Y\", \"%.2f\", gamepad1.right_stick_y);\n        \n        // Error section (only show if errors exist)\n        if (errorDetected) {\n            telemetry.addLine(\"\\n--- ERRORS ---\");\n            telemetry.addData(\"⚠ WARNING\", \"Hardware issue detected\");\n        }\n        \n        // Performance section\n        telemetry.addLine(\"\\n--- PERFORMANCE ---\");\n        telemetry.addData(\"Telemetry Rate\", \"%.1f Hz\", 1000.0 / TELEMETRY_INTERVAL);\n        telemetry.addData(\"Loop Time\", \"%.1f ms\", System.currentTimeMillis() - lastTelemetryUpdate);\n        \n        // Footer\n        telemetry.addLine(\"\\n--- END ---\");\n        \n        telemetry.update();\n    }\n    \n    private String getDriveModeName() {\n        switch (driveMode) {\n            case 0: return \"Tank Drive\";\n            case 1: return \"Arcade Drive\";\n            default: return \"Unknown\";\n        }\n    }\n    \n    private String detectColor(int red, int green, int blue) {\n        if (red > 100 && red > green * 1.5 && red > blue * 1.5) {\n            return \"RED\";\n        } else if (green > 100 && green > red * 1.5 && green > blue * 1.5) {\n            return \"GREEN\";\n        } else if (blue > 100 && blue > red * 1.5 && blue > green * 1.5) {\n            return \"BLUE\";\n        }\n        return null;\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        \n        runtime = new ElapsedTime();\n        telemetryTimer = new ElapsedTime();\n        \n        // Configure hardware\n        configureMotors();\n        configureServo();\n        configureSensors();\n    }\n    \n    private void configureMotors() {\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n    }\n    \n    private void configureServo() {\n        armServo.setDirection(Servo.Direction.FORWARD);\n        armServo.setPosition(0.0);\n    }\n    \n    private void configureSensors() {\n        if (colorSensor != null) {\n            colorSensor.enableLed(true);\n        }\n        \n        if (imu != null) {\n            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n            imu.initialize(parameters);\n        }\n    }\n    \n    private void processInput() {\n        // Process gamepad input\n        double leftPower = gamepad1.left_stick_y;\n        double rightPower = gamepad1.right_stick_y;\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n        \n        // Mode switching\n        if (gamepad1.a) {\n            driveMode = 0; // Tank drive\n        } else if (gamepad1.b) {\n            driveMode = 1; // Arcade drive\n        }\n        \n        // Auto drive toggle\n        if (gamepad1.y) {\n            autoDriveEnabled = !autoDriveEnabled;\n        }\n    }\n    \n    private void updateSystems() {\n        // Update any systems that need regular updates\n        // This could include PID controllers, state machines, etc.\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Telemetry Best Practices",
-      "content": "Following best practices for telemetry helps ensure your debugging information is clear, useful, and doesn't impact robot performance."
-    },
-    {
-      "type": "list",
-      "title": "Telemetry Best Practices",
-      "items": [
-        "<strong>Update Regularly:</strong> Update telemetry at consistent intervals",
-        "<strong>Organize Information:</strong> Group related data together",
-        "<strong>Use Clear Labels:</strong> Make data easy to understand",
-        "<strong>Limit Data Volume:</strong> Don't overwhelm the display",
-        "<strong>Include Status Information:</strong> Show robot state and mode",
-        "<strong>Handle Errors Gracefully:</strong> Display error messages clearly",
-        "<strong>Performance Aware:</strong> Don't update too frequently",
-        "<strong>Use Conditional Display:</strong> Show relevant data based on context"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Telemetry Best Practices Example",
-      "language": "java",
-      "content": "// Example of well-organized telemetry\nprivate void updateWellOrganizedTelemetry() {\n    // Clear previous data\n    telemetry.clear();\n    \n    // 1. STATUS SECTION - Always show current status\n    telemetry.addData(\"Status\", getRobotStatus());\n    telemetry.addData(\"Mode\", getCurrentMode());\n    telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n    \n    // 2. DRIVE SYSTEM - Show motor and drive information\n    telemetry.addLine(\"\\n--- DRIVE SYSTEM ---\");\n    telemetry.addData(\"Left Motor\", \"%.2f\", leftMotor.getPower());\n    telemetry.addData(\"Right Motor\", \"%.2f\", rightMotor.getPower());\n    telemetry.addData(\"Drive Mode\", getDriveModeName());\n    \n    // 3. SENSOR DATA - Show relevant sensor information\n    if (sensorsActive) {\n        telemetry.addLine(\"\\n--- SENSORS ---\");\n        \n        if (colorSensor != null) {\n            telemetry.addData(\"Color\", getColorString());\n        }\n        \n        if (distanceSensor != null) {\n            double distance = distanceSensor.getDistance(DistanceUnit.CM);\n            telemetry.addData(\"Distance\", \"%.1f cm\", distance);\n            \n            // Conditional warning\n            if (distance < 10) {\n                telemetry.addData(\"⚠ WARNING\", \"Obstacle detected!\");\n            }\n        }\n        \n        if (imu != null) {\n            double heading = imu.getAngularOrientation().firstAngle;\n            telemetry.addData(\"Heading\", \"%.1f°\", heading);\n        }\n    }\n    \n    // 4. ERROR SECTION - Only show if errors exist\n    if (hasErrors()) {\n        telemetry.addLine(\"\\n--- ERRORS ---\");\n        displayErrors();\n    }\n    \n    // 5. PERFORMANCE - Show performance metrics\n    if (showPerformance) {\n        telemetry.addLine(\"\\n--- PERFORMANCE ---\");\n        telemetry.addData(\"Loop Time\", \"%.1f ms\", getLoopTime());\n        telemetry.addData(\"Battery\", \"%.1fV\", getBatteryVoltage());\n    }\n    \n    // Update display\n    telemetry.update();\n}\n\n// Helper methods for organized telemetry\nprivate String getRobotStatus() {\n    if (!opModeIsActive()) {\n        return \"STOPPED\";\n    } else if (errorDetected) {\n        return \"ERROR\";\n    } else if (autoDriveEnabled) {\n        return \"AUTO DRIVE\";\n    } else {\n        return \"MANUAL\";\n    }\n}\n\nprivate String getCurrentMode() {\n    switch (driveMode) {\n        case 0: return \"Tank Drive\";\n        case 1: return \"Arcade Drive\";\n        case 2: return \"Mecanum Drive\";\n        default: return \"Unknown\";\n    }\n}\n\nprivate String getColorString() {\n    if (colorSensor == null) return \"N/A\";\n    \n    int red = colorSensor.red();\n    int green = colorSensor.green();\n    int blue = colorSensor.blue();\n    \n    return String.format(\"R:%d G:%d B:%d\", red, green, blue);\n}\n\nprivate boolean hasErrors() {\n    return errorDetected || leftMotor == null || rightMotor == null;\n}\n\nprivate void displayErrors() {\n    if (errorDetected) {\n        telemetry.addData(\"⚠\", \"Hardware error detected\");\n    }\n    if (leftMotor == null) {\n        telemetry.addData(\"⚠\", \"Left motor not found\");\n    }\n    if (rightMotor == null) {\n        telemetry.addData(\"⚠\", \"Right motor not found\");\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Debugging with Telemetry",
-      "content": "Telemetry is an essential tool for debugging robot issues. Learning how to use telemetry effectively for debugging can save significant time during development and competition."
-    },
-    {
-      "type": "list",
-      "title": "Debugging Strategies",
-      "items": [
-        "<strong>Step-by-Step Debugging:</strong> Add telemetry at each step of complex operations",
-        "<strong>Variable Monitoring:</strong> Track important variables throughout execution",
-        "<strong>State Tracking:</strong> Monitor robot state changes",
-        "<strong>Performance Profiling:</strong> Measure timing of critical operations",
-        "<strong>Error Isolation:</strong> Identify which component is causing issues",
-        "<strong>Conditional Debugging:</strong> Show debug info only when needed"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Debugging Telemetry Example",
-      "language": "java",
-      "content": "@TeleOp(name=\"Debug Telemetry\", group=\"Debug\")\npublic class DebugTelemetry extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private ColorSensor colorSensor;\n    \n    private ElapsedTime debugTimer;\n    private boolean debugMode = false;\n    \n    // Debug variables\n    private int debugStep = 0;\n    private String lastError = \"\";\n    private long lastOperationTime = 0;\n    \n    @Override\n    public void runOpMode() {\n        debugTimer = new ElapsedTime();\n        \n        // Initialize with debug information\n        debugInit();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Toggle debug mode with back button\n            if (gamepad1.back) {\n                debugMode = !debugMode;\n                sleep(200); // Prevent rapid toggling\n            }\n            \n            // Process input with debugging\n            debugProcessInput();\n            \n            // Update telemetry\n            if (debugMode) {\n                updateDebugTelemetry();\n            } else {\n                updateNormalTelemetry();\n            }\n        }\n    }\n    \n    private void debugInit() {\n        telemetry.addData(\"DEBUG\", \"Initializing hardware...\");\n        telemetry.update();\n        \n        try {\n            // Step 1: Map motors\n            telemetry.addData(\"DEBUG\", \"Step 1: Mapping motors...\");\n            telemetry.update();\n            \n            leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n            rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n            \n            telemetry.addData(\"DEBUG\", \"✓ Motors mapped successfully\");\n            telemetry.update();\n            sleep(500);\n            \n            // Step 2: Configure motors\n            telemetry.addData(\"DEBUG\", \"Step 2: Configuring motors...\");\n            telemetry.update();\n            \n            leftMotor.setDirection(DcMotor.Direction.FORWARD);\n            rightMotor.setDirection(DcMotor.Direction.REVERSE);\n            leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n            rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n            \n            telemetry.addData(\"DEBUG\", \"✓ Motors configured\");\n            telemetry.update();\n            sleep(500);\n            \n            // Step 3: Map servo\n            telemetry.addData(\"DEBUG\", \"Step 3: Mapping servo...\");\n            telemetry.update();\n            \n            armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n            armServo.setDirection(Servo.Direction.FORWARD);\n            \n            telemetry.addData(\"DEBUG\", \"✓ Servo mapped and configured\");\n            telemetry.update();\n            sleep(500);\n            \n            // Step 4: Map sensor\n            telemetry.addData(\"DEBUG\", \"Step 4: Mapping color sensor...\");\n            telemetry.update();\n            \n            colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n            if (colorSensor != null) {\n                colorSensor.enableLed(true);\n                telemetry.addData(\"DEBUG\", \"✓ Color sensor mapped and LED enabled\");\n            } else {\n                telemetry.addData(\"DEBUG\", \"⚠ Color sensor not found\");\n            }\n            telemetry.update();\n            sleep(500);\n            \n            // Final status\n            telemetry.addData(\"DEBUG\", \"Initialization complete!\");\n            telemetry.addData(\"Status\", \"Ready for start\");\n            telemetry.addData(\"Debug Mode\", \"Press BACK to toggle\");\n            telemetry.update();\n            \n        } catch (Exception e) {\n            lastError = e.getMessage();\n            telemetry.addData(\"DEBUG ERROR\", \"Initialization failed: \" + lastError);\n            telemetry.update();\n        }\n    }\n    \n    private void debugProcessInput() {\n        long startTime = System.currentTimeMillis();\n        \n        try {\n            // Get input values\n            double leftPower = gamepad1.left_stick_y;\n            double rightPower = gamepad1.right_stick_y;\n            \n            // Apply dead zone\n            leftPower = applyDeadZone(leftPower, 0.1);\n            rightPower = applyDeadZone(rightPower, 0.1);\n            \n            // Set motor powers\n            leftMotor.setPower(leftPower);\n            rightMotor.setPower(rightPower);\n            \n            // Process arm input\n            if (gamepad1.a) {\n                armServo.setPosition(1.0);\n            } else if (gamepad1.b) {\n                armServo.setPosition(0.0);\n            }\n            \n            lastOperationTime = System.currentTimeMillis() - startTime;\n            debugStep++;\n            \n        } catch (Exception e) {\n            lastError = e.getMessage();\n            telemetry.addData(\"DEBUG ERROR\", \"Input processing failed: \" + lastError);\n        }\n    }\n    \n    private void updateDebugTelemetry() {\n        telemetry.clear();\n        \n        // Debug header\n        telemetry.addData(\"=== DEBUG MODE ===\", \"\");\n        telemetry.addData(\"Debug Timer\", \"%.1f seconds\", debugTimer.seconds());\n        telemetry.addData(\"Debug Step\", debugStep);\n        \n        // Hardware status\n        telemetry.addLine(\"\\n--- HARDWARE STATUS ---\");\n        telemetry.addData(\"Left Motor\", leftMotor != null ? \"✓\" : \"✗\");\n        telemetry.addData(\"Right Motor\", rightMotor != null ? \"✓\" : \"✗\");\n        telemetry.addData(\"Arm Servo\", armServo != null ? \"✓\" : \"✗\");\n        telemetry.addData(\"Color Sensor\", colorSensor != null ? \"✓\" : \"✗\");\n        \n        // Current values\n        telemetry.addLine(\"\\n--- CURRENT VALUES ---\");\n        if (leftMotor != null) {\n            telemetry.addData(\"Left Power\", \"%.3f\", leftMotor.getPower());\n            telemetry.addData(\"Left Direction\", leftMotor.getDirection().toString());\n        }\n        if (rightMotor != null) {\n            telemetry.addData(\"Right Power\", \"%.3f\", rightMotor.getPower());\n            telemetry.addData(\"Right Direction\", rightMotor.getDirection().toString());\n        }\n        if (armServo != null) {\n            telemetry.addData(\"Arm Position\", \"%.3f\", armServo.getPosition());\n        }\n        \n        // Input values\n        telemetry.addLine(\"\\n--- INPUT VALUES ---\");\n        telemetry.addData(\"Left Stick Y\", \"%.3f\", gamepad1.left_stick_y);\n        telemetry.addData(\"Right Stick Y\", \"%.3f\", gamepad1.right_stick_y);\n        telemetry.addData(\"A Button\", gamepad1.a);\n        telemetry.addData(\"B Button\", gamepad1.b);\n        \n        // Performance metrics\n        telemetry.addLine(\"\\n--- PERFORMANCE ---\");\n        telemetry.addData(\"Last Operation Time\", \"%d ms\", lastOperationTime);\n        telemetry.addData(\"Loop Count\", debugStep);\n        \n        // Error information\n        if (!lastError.isEmpty()) {\n            telemetry.addLine(\"\\n--- ERRORS ---\");\n            telemetry.addData(\"Last Error\", lastError);\n        }\n        \n        telemetry.update();\n    }\n    \n    private void updateNormalTelemetry() {\n        telemetry.clear();\n        \n        telemetry.addData(\"Status\", \"Running\");\n        telemetry.addData(\"Left Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        telemetry.addData(\"Debug Mode\", debugMode ? \"ON\" : \"OFF\");\n        \n        telemetry.update();\n    }\n    \n    private double applyDeadZone(double value, double deadZone) {\n        if (Math.abs(value) < deadZone) {\n            return 0.0;\n        }\n        return value;\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Performance Considerations",
-      "content": "While telemetry is essential for debugging, it can impact robot performance if not used efficiently. Understanding performance considerations helps maintain optimal robot operation."
-    },
-    {
-      "type": "list",
-      "title": "Performance Guidelines",
-      "items": [
-        "<strong>Update Frequency:</strong> Don't update telemetry too frequently (50-100ms intervals)",
-        "<strong>Data Volume:</strong> Limit the amount of data displayed",
-        "<strong>Conditional Updates:</strong> Only update when necessary",
-        "<strong>Efficient Formatting:</strong> Use simple formatting for better performance",
-        "<strong>Background Processing:</strong> Don't block the main loop with telemetry",
-        "<strong>Memory Management:</strong> Avoid creating unnecessary objects in telemetry updates"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Performance-Optimized Telemetry",
-      "language": "java",
-      "content": "// Performance-optimized telemetry example\nprivate void updateOptimizedTelemetry() {\n    // Only update every 100ms to avoid performance impact\n    long currentTime = System.currentTimeMillis();\n    if (currentTime - lastTelemetryUpdate < 100) {\n        return;\n    }\n    \n    // Use StringBuilder for efficient string concatenation\n    StringBuilder telemetryBuilder = new StringBuilder();\n    \n    // Add essential information only\n    telemetry.clear();\n    \n    // Status (always show)\n    telemetry.addData(\"Status\", robotStatus);\n    telemetry.addData(\"Runtime\", \"%.1f\", runtime.seconds());\n    \n    // Motor powers (essential for driving)\n    telemetry.addData(\"L:%.2f R:%.2f\", leftMotor.getPower(), rightMotor.getPower());\n    \n    // Conditional sensor data (only if sensors are active)\n    if (sensorsActive && colorSensor != null) {\n        int red = colorSensor.red();\n        int green = colorSensor.green();\n        int blue = colorSensor.blue();\n        \n        // Only show if color values are significant\n        if (red > 50 || green > 50 || blue > 50) {\n            telemetry.addData(\"Color\", \"R:%d G:%d B:%d\", red, green, blue);\n        }\n    }\n    \n    // Error display (only if errors exist)\n    if (hasErrors()) {\n        telemetry.addData(\"ERROR\", errorMessage);\n    }\n    \n    // Update display\n    telemetry.update();\n    lastTelemetryUpdate = currentTime;\n}\n\n// Efficient error checking\nprivate boolean hasErrors() {\n    return errorDetected || leftMotor == null || rightMotor == null;\n}\n\n// Pre-computed status strings to avoid repeated calculations\nprivate static final String STATUS_RUNNING = \"Running\";\nprivate static final String STATUS_STOPPED = \"Stopped\";\nprivate static final String STATUS_ERROR = \"Error\";\n\nprivate String getOptimizedStatus() {\n    if (!opModeIsActive()) {\n        return STATUS_STOPPED;\n    } else if (errorDetected) {\n        return STATUS_ERROR;\n    } else {\n        return STATUS_RUNNING;\n    }\n}"
+      "content": "Telemetry lets you send data from your robot to the Driver Station for real-time monitoring and debugging. It is essential for understanding what your robot is doing during a match and for troubleshooting issues.<br><br>Telemetry can display sensor values, motor power, program state, and more.<br><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/telemetry.html' target='_blank'>gm0: Telemetry</a>"
     },
     {
       "type": "rules-box",
-      "title": "Telemetry Best Practices Summary",
-      "subtitle": "Key guidelines for effective telemetry usage:",
+      "title": "Why Use Telemetry?",
+      "subtitle": "Telemetry helps you:",
       "items": [
-        "Update telemetry at regular intervals (50-100ms)",
-        "Organize data into logical sections",
-        "Use clear, descriptive labels",
-        "Include status and error information",
-        "Limit data volume to essential information",
-        "Use conditional display for debug information",
-        "Handle errors gracefully with clear messages",
-        "Consider performance impact of frequent updates",
-        "Use consistent formatting and organization",
-        "Provide useful information for drivers and debugging"
+        "Debug your code by displaying variable values.",
+        "Monitor robot status in real time.",
+        "Communicate important information to drivers.",
+        "Track sensor and motor data during matches."
       ]
     },
     {
       "type": "text",
-      "title": "Resources and Documentation",
-      "content": "Additional resources for learning about telemetry:"
+      "title": "Basic Telemetry Example",
+      "content": "Here is an example showing how to use telemetry in a LinearOpMode. This example displays motor power and a custom message on the Driver Station."
     },
     {
-      "type": "list",
+      "type": "code",
+      "title": "Telemetry in LinearOpMode",
+      "language": "java",
+      "content": "@TeleOp(name = \"TelemetryExample\")\npublic class TelemetryExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        waitForStart();\n        while (opModeIsActive()) {\n            double leftPower = -gamepad1.left_stick_y;\n            double rightPower = -gamepad1.right_stick_y;\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Telemetry Techniques",
+      "content": "You can group telemetry data, use <code>telemetry.log()</code> for persistent messages, and display sensor values.<br><br>Telemetry can also be used in Iterative OpModes and for debugging autonomous routines.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a> for more advanced usage."
+    },
+    {
+      "type": "code",
+      "title": "Telemetry with Sensors",
+      "language": "java",
+      "content": "@TeleOp(name = \"SensorTelemetry\")\npublic class SensorTelemetry extends LinearOpMode {\n    private DistanceSensor distanceSensor;\n\n    @Override\n    public void runOpMode() {\n        distanceSensor = hardwareMap.get(DistanceSensor.class, \"sensor_distance\");\n        waitForStart();\n        while (opModeIsActive()) {\n            double distance = distanceSensor.getDistance(DistanceUnit.CM);\n            telemetry.addData(\"Distance (cm)\", distance);\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices for Telemetry",
+      "subtitle": "Tips for effective telemetry:",
       "items": [
-        "<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/hardware/HardwareMap.html' target='_blank'>FTC HardwareMap Documentation</a> - Official documentation for hardware mapping",
-        "<a href='https://gm0.org/en/latest/docs/software/tutorials/gradle.html' target='_blank'>Game Manual 0 - Telemetry Tutorials</a> - Comprehensive tutorials and examples",
-        "<a href='https://github.com/FIRST-Tech-Challenge/FTC_App/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode' target='_blank'>FTC SDK Examples</a> - Official example OpModes with telemetry"
+        "Call <code>telemetry.update()</code> once per loop.",
+        "Use clear, descriptive labels for data.",
+        "Limit the amount of data to avoid clutter.",
+        "Use telemetry for debugging and driver feedback."
       ]
     },
     {
-      "type": "link-grid",
-      "title": "Next Steps",
-      "links": [
-        {
-          "label": "Control Hub Expansion Hub",
-          "id": "control-hub-expansion-hub"
-        },
-        {
-          "label": "Robot Hardware Overview",
-          "id": "robot-hardware-overview"
-        },
-        {
-          "label": "Basic Robot Control",
-          "id": "basic-robot-control"
-        },
-        {
-          "label": "DC Motors",
-          "id": "dc-motors"
-        }
-      ]
+      "type": "text",
+      "title": "Further Reading & Resources",
+      "content": "- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/telemetry.html' target='_blank'>gm0: Telemetry</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode' target='_blank'>FTC SDK Example OpModes</a>"
     },
     {
       "type": "exercise-box",
-      "title": "Telemetry Logging Practice",
-      "description": "Complete these exercises to master telemetry logging:",
+      "title": "Practice: Telemetry Logging",
+      "description": "Try these to reinforce your understanding:",
       "tasks": [
-        "Create a basic telemetry display for motor powers and sensor values",
-        "Implement organized telemetry with sections and clear labels",
-        "Add error handling and status reporting to telemetry",
-        "Create a debug mode with detailed information",
-        "Optimize telemetry for performance and readability",
-        "Add conditional telemetry based on robot state",
-        "Implement performance monitoring in telemetry",
-        "Create comprehensive debugging telemetry for troubleshooting"
+        "Add telemetry to your existing OpModes.",
+        "Display sensor values and custom messages.",
+        "Experiment with <code>telemetry.log()</code> for persistent messages."
       ],
-      "content": "// Practice Exercise: Comprehensive Telemetry System\n// Build a telemetry system that includes:\n// - Real-time motor and sensor data display\n// - Error reporting and status monitoring\n// - Performance metrics and timing information\n// - Debug mode with detailed information\n// - Organized sections for different data types\n// - Conditional display based on robot state\n// - Efficient updates that don't impact performance"
+      "content": "// Practice: Add telemetry to your robot code and observe the output on the Driver Station."
     }
   ]
 } 

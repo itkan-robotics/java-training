@@ -1,199 +1,77 @@
 {
-  "title": "Basic Debugging Techniques",
+  "title": "Basic Debugging Techniques (OnBot Java)",
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Debugging",
-      "content": "Debugging is an essential skill for FTC programming. This lesson covers fundamental techniques for identifying, diagnosing, and fixing problems in your robot code."
-    },
-    {
-      "type": "rules-box",
-      "title": "What is Debugging?",
-      "subtitle": "Debugging is the process of:",
-      "items": [
-        "Identifying problems in your code or robot behavior",
-        "Understanding why problems occur",
-        "Developing solutions to fix the problems",
-        "Testing solutions to ensure they work",
-        "Preventing similar problems in the future"
-      ]
+      "title": "Understanding Common FTC Errors in OnBot Java",
+      "content": "OnBot Java users encounter unique errors, such as hardware mapping issues and OpMode registration problems. Learn to read error messages and stack traces in the OnBot Java console. <a href=\"https://gm0.org/en/latest/docs/software/tutorials/common-errors.html\" target=\"_blank\">gm0: Common Errors</a> | <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/onbot_java/onbot_java.html\" target=\"_blank\">FTC Docs: OnBot Java</a>"
     },
     {
       "type": "text",
-      "title": "Common FTC Programming Problems",
-      "content": "Understanding common problems helps you debug more effectively. Here are typical issues you'll encounter:"
+      "title": "Using Telemetry for Debugging",
+      "content": "Telemetry is the main way to get feedback in OnBot Java. Add telemetry to your OpModes to see real-time data. <a href=\"https://gm0.org/en/latest/docs/software/tutorials/telemetry.html\" target=\"_blank\">gm0: Telemetry</a> | <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/telemetry.html\" target=\"_blank\">FTC Docs: Telemetry</a>"
+    },
+    {
+      "type": "code",
+      "title": "Adding Telemetry in OnBot Java",
+      "language": "java",
+      "content": "@TeleOp(name=\"TelemetryDebug\")\npublic class TelemetryDebug extends LinearOpMode {\n    DcMotor leftMotor;\n    @Override\n    public void runOpMode() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Left Motor Power\", leftMotor.getPower());\n            telemetry.addData(\"Runtime\", getRuntime().seconds());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Debugging with the OnBot Java Console",
+      "content": "The OnBot Java console is your built-in log viewer. Use it to view errors, print debug messages, and interpret output. <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/onbot_java/onbot_java.html\" target=\"_blank\">FTC Docs: OnBot Java</a>"
+    },
+    {
+      "type": "text",
+      "title": "Incremental Testing and Isolating Problems",
+      "content": "Create and run small, focused OpModes to test one subsystem or function at a time. Keep each test in a separate file. <a href=\"https://gm0.org/en/latest/docs/software/tutorials/testing.html\" target=\"_blank\">gm0: Testing Code</a>"
+    },
+    {
+      "type": "code",
+      "title": "Minimal Test OpMode Example",
+      "language": "java",
+      "content": "@TeleOp(name=\"TestDrivetrain\")\npublic class TestDrivetrain extends LinearOpMode {\n    DcMotor leftMotor, rightMotor;\n    @Override\n    public void runOpMode() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            leftMotor.setPower(gamepad1.left_stick_y);\n            rightMotor.setPower(gamepad1.right_stick_y);\n            telemetry.addData(\"Left\", leftMotor.getPower());\n            telemetry.addData(\"Right\", rightMotor.getPower());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices: Avoiding Monolithic Code",
+      "content": "OnBot Java supports multiple files and classes. Keep code manageable by creating a separate file for each subsystem or utility."
     },
     {
       "type": "list",
-      "title": "Common Issues",
-      "items": [
-        "<strong>Hardware Problems:</strong> Motors not responding, servos stuck, sensors not working",
-        "<strong>Logic Errors:</strong> Code not executing as expected, wrong conditions, incorrect calculations",
-        "<strong>Timing Issues:</strong> Actions happening too fast or slow, race conditions",
-        "<strong>Configuration Problems:</strong> Wrong hardware names, incorrect motor directions",
-        "<strong>Communication Issues:</strong> Driver Station not connecting, telemetry not updating"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "The Debugging Process",
-      "content": "Effective debugging follows a systematic approach that helps you identify and fix problems efficiently."
-    },
-    {
-      "type": "list",
-      "title": "Debugging Steps",
-      "items": [
-        "<strong>1. Reproduce the Problem:</strong> Make sure you can consistently recreate the issue",
-        "<strong>2. Gather Information:</strong> Use telemetry, logs, and observations to understand what's happening",
-        "<strong>3. Form a Hypothesis:</strong> Develop a theory about what's causing the problem",
-        "<strong>4. Test Your Hypothesis:</strong> Make changes and test to see if your theory is correct",
-        "<strong>5. Implement the Fix:</strong> Apply the solution and verify it works",
-        "<strong>6. Document the Solution:</strong> Record what you learned for future reference"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Telemetry for Debugging",
-      "content": "Telemetry is your primary debugging tool in FTC. It allows you to see what's happening inside your code in real-time."
-    },
-    {
-      "type": "code",
-      "title": "Basic Telemetry Debugging",
-      "language": "java",
-      "content": "// Basic telemetry debugging example\n@TeleOp(name=\"Debug Example\", group=\"Examples\")\npublic class DebugExample extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private TouchSensor touchSensor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initHardware();\n        \n        // Debug initialization\n        telemetry.addData(\"=== INITIALIZATION DEBUG ===\", \"\");\n        telemetry.addData(\"Left Motor\", leftMotor != null ? \"OK\" : \"NULL\");\n        telemetry.addData(\"Right Motor\", rightMotor != null ? \"OK\" : \"NULL\");\n        telemetry.addData(\"Arm Servo\", armServo != null ? \"OK\" : \"NULL\");\n        telemetry.addData(\"Touch Sensor\", touchSensor != null ? \"OK\" : \"NULL\");\n        telemetry.addData(\"Battery Voltage\", \"%.1f volts\", getBatteryVoltage());\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Debug main loop\n            debugMainLoop();\n        }\n    }\n    \n    private void debugMainLoop() {\n        // Read gamepad inputs\n        double leftStickY = gamepad1.left_stick_y;\n        double rightStickY = gamepad1.right_stick_y;\n        \n        // Debug gamepad inputs\n        telemetry.addData(\"=== GAMEPAD DEBUG ===\", \"\");\n        telemetry.addData(\"Left Stick Y\", \"%.2f\", leftStickY);\n        telemetry.addData(\"Right Stick Y\", \"%.2f\", rightStickY);\n        telemetry.addData(\"A Button\", gamepad1.a);\n        telemetry.addData(\"B Button\", gamepad1.b);\n        \n        // Apply motor power\n        leftMotor.setPower(leftStickY);\n        rightMotor.setPower(rightStickY);\n        \n        // Debug motor outputs\n        telemetry.addData(\"=== MOTOR DEBUG ===\", \"\");\n        telemetry.addData(\"Left Motor Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Left Motor Direction\", leftMotor.getDirection());\n        telemetry.addData(\"Right Motor Direction\", rightMotor.getDirection());\n        \n        // Debug sensors\n        telemetry.addData(\"=== SENSOR DEBUG ===\", \"\");\n        telemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        \n        // Debug system status\n        telemetry.addData(\"=== SYSTEM DEBUG ===\", \"\");\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", getRuntime().seconds());\n        telemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\n        telemetry.addData(\"OpMode Active\", opModeIsActive());\n        \n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        \n        // Set motor directions\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.iterator().next().getVoltage();\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Conditional Debugging",
-      "content": "Conditional debugging allows you to show debug information only when certain conditions are met, making your telemetry more focused and readable."
-    },
-    {
-      "type": "code",
-      "title": "Conditional Debugging Example",
-      "language": "java",
-      "content": "// Conditional debugging example\nprivate void conditionalDebug() {\n    // Only show motor debug when motors are moving\n    if (Math.abs(leftMotor.getPower()) > 0.1 || Math.abs(rightMotor.getPower()) > 0.1) {\n        telemetry.addData(\"=== MOTOR MOVEMENT DEBUG ===\", \"\");\n        telemetry.addData(\"Left Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Power\", \"%.2f\", rightMotor.getPower());\n    }\n    \n    // Only show sensor debug when sensors change state\n    if (touchSensor.isPressed()) {\n        telemetry.addData(\"WARNING\", \"Touch sensor pressed!\");\n    }\n    \n    // Only show battery warning when voltage is low\n    double batteryVoltage = getBatteryVoltage();\n    if (batteryVoltage < 11.5) {\n        telemetry.addData(\"BATTERY WARNING\", \"%.1f volts\", batteryVoltage);\n    }\n    \n    // Debug specific gamepad actions\n    if (gamepad1.a) {\n        telemetry.addData(\"ACTION\", \"A button pressed - closing claw\");\n    }\n    \n    if (gamepad1.b) {\n        telemetry.addData(\"ACTION\", \"B button pressed - opening claw\");\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Step-by-Step Debugging",
-      "content": "Step-by-step debugging involves testing each part of your code individually to isolate problems."
-    },
-    {
-      "type": "code",
-      "title": "Step-by-Step Debugging Example",
-      "language": "java",
-      "content": "// Step-by-step debugging example\nprivate void stepByStepDebug() {\n    // Step 1: Test gamepad input\n    telemetry.addData(\"Step 1\", \"Testing gamepad input\");\n    double leftStickY = gamepad1.left_stick_y;\n    telemetry.addData(\"Left Stick Y Value\", \"%.2f\", leftStickY);\n    telemetry.update();\n    sleep(2000); // Wait 2 seconds to observe\n    \n    // Step 2: Test motor power setting\n    telemetry.addData(\"Step 2\", \"Testing motor power setting\");\n    leftMotor.setPower(leftStickY);\n    telemetry.addData(\"Motor Power Set To\", \"%.2f\", leftStickY);\n    telemetry.update();\n    sleep(2000);\n    \n    // Step 3: Test motor response\n    telemetry.addData(\"Step 3\", \"Testing motor response\");\n    double actualPower = leftMotor.getPower();\n    telemetry.addData(\"Actual Motor Power\", \"%.2f\", actualPower);\n    telemetry.addData(\"Power Match\", leftStickY == actualPower ? \"YES\" : \"NO\");\n    telemetry.update();\n    sleep(2000);\n    \n    // Step 4: Test motor movement\n    telemetry.addData(\"Step 4\", \"Testing motor movement\");\n    if (Math.abs(leftStickY) > 0.1) {\n        telemetry.addData(\"Motor Should Be Moving\", \"YES\");\n        telemetry.addData(\"Direction\", leftStickY > 0 ? \"Forward\" : \"Reverse\");\n    } else {\n        telemetry.addData(\"Motor Should Be Stopped\", \"YES\");\n    }\n    telemetry.update();\n    sleep(2000);\n}"
-    },
-    {
-      "type": "text",
-      "title": "Hardware Debugging",
-      "content": "Hardware problems are common in FTC. Learning to debug hardware issues is essential for reliable robot operation."
-    },
-    {
-      "type": "list",
-      "title": "Hardware Debugging Checklist",
-      "items": [
-        "<strong>Power Issues:</strong> Check battery voltage, connections, and power distribution",
-        "<strong>Communication Issues:</strong> Verify USB connections, WiFi connectivity, and app pairing",
-        "<strong>Component Issues:</strong> Test individual motors, servos, and sensors",
-        "<strong>Configuration Issues:</strong> Verify hardware names match configuration file",
-        "<strong>Physical Issues:</strong> Check for loose wires, damaged components, or mechanical problems"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Hardware Debugging Example",
-      "language": "java",
-      "content": "// Hardware debugging example\nprivate void hardwareDebug() {\n    telemetry.addData(\"=== HARDWARE DEBUG ===\", \"\");\n    \n    // Check battery voltage\n    double batteryVoltage = getBatteryVoltage();\n    telemetry.addData(\"Battery Voltage\", \"%.1f volts\", batteryVoltage);\n    if (batteryVoltage < 11.0) {\n        telemetry.addData(\"BATTERY STATUS\", \"LOW - CHARGE BATTERY\");\n    } else if (batteryVoltage < 12.0) {\n        telemetry.addData(\"BATTERY STATUS\", \"MEDIUM\");\n    } else {\n        telemetry.addData(\"BATTERY STATUS\", \"GOOD\");\n    }\n    \n    // Test motor connections\n    telemetry.addData(\"=== MOTOR TEST ===\", \"\");\n    try {\n        leftMotor.setPower(0.1);\n        telemetry.addData(\"Left Motor Test\", \"POWER SET SUCCESSFULLY\");\n        sleep(500);\n        leftMotor.setPower(0);\n    } catch (Exception e) {\n        telemetry.addData(\"Left Motor Test\", \"FAILED - \" + e.getMessage());\n    }\n    \n    try {\n        rightMotor.setPower(0.1);\n        telemetry.addData(\"Right Motor Test\", \"POWER SET SUCCESSFULLY\");\n        sleep(500);\n        rightMotor.setPower(0);\n    } catch (Exception e) {\n        telemetry.addData(\"Right Motor Test\", \"FAILED - \" + e.getMessage());\n    }\n    \n    // Test servo connections\n    telemetry.addData(\"=== SERVO TEST ===\", \"\");\n    try {\n        armServo.setPosition(0.5);\n        telemetry.addData(\"Arm Servo Test\", \"POSITION SET SUCCESSFULLY\");\n    } catch (Exception e) {\n        telemetry.addData(\"Arm Servo Test\", \"FAILED - \" + e.getMessage());\n    }\n    \n    // Test sensor connections\n    telemetry.addData(\"=== SENSOR TEST ===\", \"\");\n    try {\n        boolean touchValue = touchSensor.isPressed();\n        telemetry.addData(\"Touch Sensor Test\", \"READING: \" + touchValue);\n    } catch (Exception e) {\n        telemetry.addData(\"Touch Sensor Test\", \"FAILED - \" + e.getMessage());\n    }\n    \n    telemetry.update();\n}"
-    },
-    {
-      "type": "text",
-      "title": "Logic Debugging",
-      "content": "Logic errors occur when your code doesn't behave as expected. These can be tricky to find but are essential to fix."
-    },
-    {
-      "type": "code",
-      "title": "Logic Debugging Example",
-      "language": "java",
-      "content": "// Logic debugging example\nprivate void logicDebug() {\n    // Debug conditional logic\n    double leftStickY = gamepad1.left_stick_y;\n    double rightStickY = gamepad1.right_stick_y;\n    \n    telemetry.addData(\"=== LOGIC DEBUG ===\", \"\");\n    telemetry.addData(\"Left Stick Y\", \"%.2f\", leftStickY);\n    telemetry.addData(\"Right Stick Y\", \"%.2f\", rightStickY);\n    \n    // Debug arcade drive logic\n    double forward = -leftStickY;\n    double turn = rightStickY;\n    \n    telemetry.addData(\"Calculated Forward\", \"%.2f\", forward);\n    telemetry.addData(\"Calculated Turn\", \"%.2f\", turn);\n    \n    double leftPower = forward + turn;\n    double rightPower = forward - turn;\n    \n    telemetry.addData(\"Calculated Left Power\", \"%.2f\", leftPower);\n    telemetry.addData(\"Calculated Right Power\", \"%.2f\", rightPower);\n    \n    // Check for power clipping\n    if (Math.abs(leftPower) > 1.0 || Math.abs(rightPower) > 1.0) {\n        telemetry.addData(\"POWER CLIPPING\", \"NEEDED\");\n        leftPower = Range.clip(leftPower, -1.0, 1.0);\n        rightPower = Range.clip(rightPower, -1.0, 1.0);\n        telemetry.addData(\"Clipped Left Power\", \"%.2f\", leftPower);\n        telemetry.addData(\"Clipped Right Power\", \"%.2f\", rightPower);\n    } else {\n        telemetry.addData(\"POWER CLIPPING\", \"NOT NEEDED\");\n    }\n    \n    // Debug button logic\n    telemetry.addData(\"A Button\", gamepad1.a);\n    telemetry.addData(\"B Button\", gamepad1.b);\n    \n    if (gamepad1.a && gamepad1.b) {\n        telemetry.addData(\"BUTTON CONFLICT\", \"A and B pressed simultaneously\");\n    }\n    \n    telemetry.update();\n}"
-    },
-    {
-      "type": "text",
-      "title": "Performance Debugging",
-      "content": "Performance issues can affect robot responsiveness and reliability. Monitor performance to ensure smooth operation."
-    },
-    {
-      "type": "code",
-      "title": "Performance Debugging Example",
-      "language": "java",
-      "content": "// Performance debugging example\nprivate double lastLoopTime = 0;\nprivate int loopCount = 0;\n\nprivate void performanceDebug() {\n    double currentTime = getRuntime().seconds();\n    double loopTime = currentTime - lastLoopTime;\n    lastLoopTime = currentTime;\n    loopCount++;\n    \n    telemetry.addData(\"=== PERFORMANCE DEBUG ===\", \"\");\n    telemetry.addData(\"Loop Count\", loopCount);\n    telemetry.addData(\"Loop Time\", \"%.3f seconds\", loopTime);\n    telemetry.addData(\"Loop Frequency\", \"%.1f Hz\", 1.0 / loopTime);\n    \n    // Check for performance issues\n    if (loopTime > 0.1) { // More than 100ms per loop\n        telemetry.addData(\"PERFORMANCE WARNING\", \"Slow loop detected\");\n    }\n    \n    // Monitor memory usage (if available)\n    Runtime runtime = Runtime.getRuntime();\n    long usedMemory = runtime.totalMemory() - runtime.freeMemory();\n    long maxMemory = runtime.maxMemory();\n    double memoryUsage = (double) usedMemory / maxMemory * 100.0;\n    \n    telemetry.addData(\"Memory Usage\", \"%.1f%%\", memoryUsage);\n    \n    if (memoryUsage > 80.0) {\n        telemetry.addData(\"MEMORY WARNING\", \"High memory usage\");\n    }\n    \n    telemetry.update();\n}"
-    },
-    {
-      "type": "rules-box",
       "title": "Debugging Best Practices",
-      "subtitle": "Follow these guidelines for effective debugging:",
       "items": [
-        "Start with simple tests and gradually increase complexity",
-        "Use descriptive telemetry messages that clearly identify the problem",
-        "Test one component at a time to isolate issues",
-        "Document your debugging process and solutions",
-        "Use consistent debugging patterns across your team",
-        "Don't assume anything - verify everything with telemetry",
-        "Keep debugging code organized and easy to understand"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Common Debugging Mistakes",
-      "content": "Avoid these common debugging mistakes that can waste time and make problems worse."
-    },
-    {
-      "type": "list",
-      "title": "Mistakes to Avoid",
-      "items": [
-        "<strong>Changing Multiple Things:</strong> Make one change at a time to isolate the problem",
-        "<strong>Ignoring Error Messages:</strong> Read and understand error messages carefully",
-        "<strong>Not Testing Incrementally:</strong> Test each change before moving to the next",
-        "<strong>Assuming Hardware is Perfect:</strong> Always verify hardware connections and configuration",
-        "<strong>Not Documenting Changes:</strong> Keep track of what you changed and why"
+        "Start with simple tests and increase complexity gradually.",
+        "Use descriptive telemetry messages.",
+        "Test one component at a time.",
+        "Document your debugging process.",
+        "Use consistent debugging patterns.",
+        "Verify everything with telemetry.",
+        "Keep debugging code organized."
       ]
     },
     {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        {
-          "label": "State Machines",
-          "id": "state-machines"
-        },
-        {
-          "label": "Code Organization",
-          "id": "code-organization"
-        },
-        {
-          "label": "Telemetry Logging",
-          "id": "telemetry-logging"
-        },
-        {
-          "label": "Advanced Debugging",
-          "id": "advanced-debugging"
-        }
+        { "label": "State Machines", "id": "state-machines" },
+        { "label": "Code Organization", "id": "code-organization" },
+        { "label": "Telemetry Logging", "id": "telemetry-logging" }
       ]
     },
     {
       "type": "exercise-box",
       "title": "Debugging Practice",
-      "description": "Complete these exercises to master debugging techniques:",
+      "description": "Try these exercises to master debugging in OnBot Java:",
       "tasks": [
-        "Create a comprehensive debugging OpMode with telemetry",
-        "Practice debugging hardware issues systematically",
-        "Debug a complex logic problem step by step",
-        "Implement conditional debugging for specific scenarios",
-        "Monitor and debug performance issues",
-        "Practice debugging with a partner to develop teamwork",
-        "Document your debugging process and solutions"
+        "Create a debugging OpMode with telemetry for all hardware.",
+        "Practice debugging hardware issues.",
+        "Debug a logic problem step by step.",
+        "Implement conditional telemetry for specific scenarios.",
+        "Document your debugging process."
       ],
-      "content": "// Practice Exercise: Complete Debugging System\n// Create a debugging OpMode that includes:\n// - Comprehensive telemetry for all hardware components\n// - Conditional debugging for different scenarios\n// - Performance monitoring and analysis\n// - Step-by-step debugging capabilities\n// - Error handling and recovery mechanisms\n// - Clear documentation of debugging procedures"
+      "content": "// Practice: Create a debugging OpMode\n// - Add telemetry for each hardware component\n// - Test one subsystem at a time\n// - Use clear, descriptive messages\n// - Document your findings"
     }
   ]
 } 

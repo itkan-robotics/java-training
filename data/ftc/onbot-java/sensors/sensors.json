@@ -1,107 +1,122 @@
 {
-  "title": "Sensors",
+  "title": "Introduction to Sensors",
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Sensors",
-      "content": "Sensors are the eyes and ears of FTC robots, providing crucial information about the robot's environment, position, and state. Understanding how to use sensors effectively enables teams to create sophisticated autonomous behaviors and improve driver control."
+      "title": "What are Sensors?",
+      "content": "<p>Sensors are essential components in FTC robots, providing feedback about the robot's environment and internal state. They enable autonomous behavior, precise control, and advanced features. Understanding how to use sensors is key to building competitive robots.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/index.html' target='_blank'>gm0: Sensors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors' target='_blank'>REV Robotics: Sensors</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "What are Sensors?",
-      "subtitle": "Key sensor concepts:",
+      "title": "Sensor Basics",
+      "subtitle": "Key concepts:",
       "items": [
-        "Convert physical phenomena into electrical signals",
-        "Provide feedback about robot environment and state",
-        "Enable autonomous decision-making and navigation",
-        "Improve driver control with environmental awareness",
-        "Essential for precise positioning and movement control"
+        "Provide feedback for autonomous and teleop control",
+        "Enable precise movement and decision-making",
+        "Types include touch, distance, color, and IMU sensors",
+        "Require proper initialization and calibration",
+        "Data is accessed through the hardwareMap in code"
       ]
     },
     {
       "type": "text",
-      "title": "Sensor Categories in FTC",
-      "content": "FTC robots use various types of sensors, each designed to detect specific physical properties and provide different types of feedback."
+      "title": "Types of Sensors in FTC",
+      "content": "<p>FTC robots commonly use several types of sensors, each with unique capabilities. See <a href='https://gm0.org/en/latest/docs/software/sensors/index.html' target='_blank'>gm0: Sensors Overview</a>.</p>"
     },
     {
       "type": "list",
-      "title": "Common FTC Sensor Types",
+      "title": "Common FTC Sensors",
       "items": [
-        "<strong>Touch Sensors:</strong> Detect physical contact and pressure",
-        "<strong>Distance Sensors:</strong> Measure distance to objects",
-        "<strong>Color Sensors:</strong> Detect colors and light intensity",
-        "<strong>IMU (Inertial Measurement Unit):</strong> Measure orientation and movement",
-        "<strong>Encoders:</strong> Measure motor rotation and position",
-        "<strong>Limit Switches:</strong> Detect mechanism limits and positions"
+        "<b>Touch Sensors:</b> Detect physical contact or limit switches",
+        "<b>Distance Sensors:</b> Measure distance to objects using infrared or ultrasonic technology",
+        "<b>Color Sensors:</b> Detect color and light intensity",
+        "<b>IMU (Inertial Measurement Unit):</b> Measure orientation, acceleration, and rotation"
       ]
     },
     {
       "type": "code",
-      "title": "Sensor Configuration and Setup",
+      "title": "Sensor Initialization Example",
       "language": "java",
-      "content": "// Sensor configuration and initialization\nimport com.qualcomm.robotcore.hardware.TouchSensor;\nimport com.qualcomm.robotcore.hardware.DistanceSensor;\nimport com.qualcomm.robotcore.hardware.ColorSensor;\nimport com.qualcomm.robotcore.hardware.BNO055IMU;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n// Initialize different sensor types\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\nDcMotor motorWithEncoder = hardwareMap.get(DcMotor.class, \"motor_with_encoder\");\n\n// Configure IMU\nBNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();\nimuParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nimuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\nimuParameters.calibrationDataFile = \"BNO055IMUCalibration.json\";\nimuParameters.loggingEnabled = true;\nimuParameters.loggingTag = \"IMU\";\n\nimu.initialize(imuParameters);\n\n// Configure motor encoder\nmotorWithEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nmotorWithEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);"
+      "content": "// Initialize sensors in your OpMode\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");"
     },
-
     {
       "type": "text",
-      "title": "Sensor Integration and Best Practices",
-      "content": "Effectively integrating multiple sensors and following best practices ensures reliable robot operation and accurate data collection."
+      "title": "Sensor Applications",
+      "content": "<p>Sensors are used for a wide range of applications in FTC, from basic safety to advanced autonomous navigation. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html' target='_blank'>FTC Docs: Sensors</a>.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Sensor Use Cases",
+      "items": [
+        "<b>Touch Sensors:</b> Detect end of travel for arms or mechanisms",
+        "<b>Distance Sensors:</b> Avoid obstacles, align with field elements",
+        "<b>Color Sensors:</b> Identify game elements or line following",
+        "<b>IMU:</b> Maintain heading, drive straight, or perform turns"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Sensor Safety and Best Practices",
+      "content": "<p>Proper sensor use ensures reliable operation and accurate data. Always test and calibrate sensors before use. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "Sensor Best Practices",
-      "subtitle": "Follow these guidelines for reliable sensor operation:",
+      "title": "Sensor Safety Guidelines",
+      "subtitle": "Follow these practices for safe sensor use:",
       "items": [
-        "Calibrate sensors before use and after significant changes",
-        "Use filtering and averaging to reduce noise",
-        "Implement proper error handling for sensor failures",
-        "Test sensors in various conditions and environments",
-        "Document sensor behavior and calibration procedures",
-        "Use multiple sensors for redundancy when possible"
+        "Secure sensors to prevent movement during operation",
+        "Avoid exposing sensors to excessive force or debris",
+        "Calibrate sensors as needed for accuracy",
+        "Monitor sensor data for unexpected values",
+        "Document sensor configuration and calibration steps"
       ]
     },
     {
       "type": "code",
-      "title": "Sensor Integration Example",
+      "title": "Sensor Data Example",
       "language": "java",
-      "content": "// Integrated sensor system\npublic class SensorSystem {\n    private TouchSensor touchSensor;\n    private DistanceSensor distanceSensor;\n    private ColorSensor colorSensor;\n    private IMUController imu;\n    \n    private TouchSensorController touchController;\n    private DistanceSensorController distanceController;\n    private ColorDetector colorDetector;\n    private TurnController turnController;\n    \n    public SensorSystem(TouchSensor touch, DistanceSensor distance, \n                       ColorSensor color, BNO055IMU imuSensor) {\n        this.touchSensor = touch;\n        this.distanceSensor = distance;\n        this.colorSensor = color;\n        this.imu = new IMUController(imuSensor);\n        \n        this.touchController = new TouchSensorController(touch);\n        this.distanceController = new DistanceSensorController(distance);\n        this.colorDetector = new ColorDetector(color);\n        this.turnController = new TurnController(imu);\n    }\n    \n    public void updateAllSensors() {\n        // Update all sensor readings\n        boolean isTouched = touchController.isPressed();\n        double distance = distanceController.getFilteredDistance();\n        String color = colorDetector.getDominantColor();\n        double heading = imu.getRelativeHeading();\n        \n        // Display sensor data\n        telemetry.addData(\"Touch Sensor\", isTouched ? \"Pressed\" : \"Not Pressed\");\n        telemetry.addData(\"Distance\", \"%.1f cm\", distance);\n        telemetry.addData(\"Color\", color);\n        telemetry.addData(\"Heading\", \"%.1f°\", heading);\n    }\n    \n    public boolean isSafeToMove() {\n        return !touchController.isPressed() && \n               distanceController.getFilteredDistance() > 10.0;\n    }\n    \n    public void autonomousBehavior() {\n        // Example autonomous behavior using multiple sensors\n        while (opModeIsActive()) {\n            if (!isSafeToMove()) {\n                // Stop if unsafe\n                // stopMotors();\n                telemetry.addData(\"Status\", \"Stopped - Unsafe conditions\");\n            } else {\n                // Continue autonomous behavior\n                String detectedColor = colorDetector.getDominantColor();\n                if (detectedColor.equals(\"Red\")) {\n                    turnController.turnToAngle(90);\n                } else if (detectedColor.equals(\"Blue\")) {\n                    turnController.turnToAngle(-90);\n                }\n                \n                telemetry.addData(\"Status\", \"Autonomous running\");\n            }\n            \n            updateAllSensors();\n            telemetry.update();\n        }\n    }\n}\n\n// Sensor calibration system\npublic class SensorCalibrator {\n    private SensorSystem sensors;\n    \n    public SensorCalibrator(SensorSystem sensors) {\n        this.sensors = sensors;\n    }\n    \n    public void calibrateAllSensors() {\n        telemetry.addData(\"Calibration\", \"Starting sensor calibration...\");\n        telemetry.update();\n        \n        // Calibrate IMU\n        sensors.imu.resetHeading();\n        telemetry.addData(\"IMU\", \"Heading reset to 0°\");\n        \n        // Calibrate distance sensor\n        telemetry.addData(\"Distance\", \"Place object at known distance\");\n        telemetry.update();\n        sleep(3000);\n        \n        // Calibrate color sensor\n        telemetry.addData(\"Color\", \"Point at different colored objects\");\n        telemetry.update();\n        sleep(3000);\n        \n        telemetry.addData(\"Calibration\", \"Complete!\");\n        telemetry.update();\n    }\n}"
+      "content": "// Display sensor data with telemetry\ntelemetry.addData(\"Touch\", touchSensor.isPressed());\ntelemetry.addData(\"Distance (cm)\", distanceSensor.getDistance(DistanceUnit.CM));\ntelemetry.addData(\"Color\", colorSensor.red() + \" \" + colorSensor.green() + \" \" + colorSensor.blue());\ntelemetry.addData(\"IMU Heading\", imu.getAngularOrientation().firstAngle);\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Sensors",
+      "content": "<p>Common sensor issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/index.html#troubleshooting' target='_blank'>gm0: Sensor Troubleshooting</a>.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<b>Sensor not detected:</b> Check wiring and configuration",
+        "<b>Incorrect readings:</b> Calibrate or check for interference",
+        "<b>Intermittent data:</b> Secure connections and avoid loose wires",
+        "<b>Slow response:</b> Minimize sensor polling in loops",
+        "<b>Unexpected values:</b> Monitor for out-of-range or error codes"
+      ]
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Sensor Topics",
       "links": [
-        {
-          "label": "Touch Sensors",
-          "id": "touch-sensors"
-        },
-        {
-          "label": "Distance Sensors",
-          "id": "distance-sensors"
-        },
-        {
-          "label": "Color Sensors",
-          "id": "color-sensors"
-        },
-        {
-          "label": "IMU",
-          "id": "imu"
-        }
+        { "label": "Touch Sensors", "id": "touch-sensors" },
+        { "label": "Distance Sensors", "id": "distance-sensors" },
+        { "label": "Color Sensors", "id": "color-sensors" },
+        { "label": "IMU", "id": "imu" }
       ]
     },
     {
       "type": "exercise-box",
-      "title": "Sensors Practice",
-      "description": "Practice these exercises to master sensor usage:",
+      "title": "Sensor Practice",
+      "description": "Practice these exercises to master sensor use:",
       "tasks": [
-        "Create an OpMode that reads and displays all sensor values",
-        "Implement touch sensor limit detection for a mechanism",
-        "Create a line following robot using color sensors",
-        "Practice precise turning using IMU feedback",
-        "Implement obstacle avoidance using distance sensors",
-        "Create a sensor calibration procedure",
-        "Build an autonomous behavior using multiple sensors"
+        "Create an OpMode that displays all sensor data",
+        "Test sensor response to different conditions",
+        "Calibrate sensors and document the process",
+        "Implement safety checks using sensors",
+        "Practice troubleshooting common sensor issues",
+        "Test sensor integration with autonomous code",
+        "Document sensor configuration and calibration"
       ],
-      "content": "// Practice Exercise: Sensor Integration\n// Create an OpMode that demonstrates sensor functionality\n// Include calibration and safety features\n// Test different sensor combinations\n\n@TeleOp(name=\"Sensor Test\", group=\"Testing\")\npublic class SensorTestOpMode extends LinearOpMode {\n    \n    private SensorSystem sensors;\n    private SensorCalibrator calibrator;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize sensors\n        TouchSensor touch = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        DistanceSensor distance = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n        ColorSensor color = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        \n        sensors = new SensorSystem(touch, distance, color, imu);\n        calibrator = new SensorCalibrator(sensors);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Calibrate sensors\n            if (gamepad1.a) {\n                calibrator.calibrateAllSensors();\n            }\n            \n            // Update and display sensor data\n            sensors.updateAllSensors();\n            \n            // Safety check\n            if (!sensors.isSafeToMove()) {\n                telemetry.addData(\"WARNING\", \"Unsafe conditions detected!\");\n            }\n            \n            telemetry.update();\n        }\n    }\n}"
+      "content": "// Practice Exercise: Sensor Integration\n// Create an OpMode that displays all sensor data\n// Include calibration and troubleshooting steps\n// Test sensor response to different conditions\n\n@TeleOp(name=\"Sensor Test\", group=\"Testing\")\npublic class SensorTestOpMode extends LinearOpMode {\n    private TouchSensor touchSensor;\n    private DistanceSensor distanceSensor;\n    private ColorSensor colorSensor;\n    private BNO055IMU imu;\n    @Override\n    public void runOpMode() {\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Touch\", touchSensor.isPressed());\n            telemetry.addData(\"Distance (cm)\", distanceSensor.getDistance(DistanceUnit.CM));\n            telemetry.addData(\"Color\", colorSensor.red() + \" \" + colorSensor.green() + \" \" + colorSensor.blue());\n            telemetry.addData(\"IMU Heading\", imu.getAngularOrientation().firstAngle);\n            telemetry.update();\n        }\n    }"
     }
   ]
 } 

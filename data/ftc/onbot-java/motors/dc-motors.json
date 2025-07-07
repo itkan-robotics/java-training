@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Introduction to DC Motors",
-      "content": "DC motors are the primary actuators in FTC robots, providing the mechanical force needed for movement, lifting, and other mechanical functions. Understanding how to properly control and configure DC motors is fundamental to successful robot programming."
+      "content": "<p>DC motors are the primary actuators in FTC robots, providing the mechanical force needed for movement, lifting, and other mechanical functions. Understanding how to properly control and configure DC motors is fundamental to successful robot programming.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/motors/dc-motors.html' target='_blank'>gm0: DC Motors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/motor-control' target='_blank'>REV Robotics: Motor Control</a>.</p>"
     },
     {
       "type": "rules-box",
@@ -21,16 +21,16 @@
     {
       "type": "text",
       "title": "FTC Motor Types",
-      "content": "FTC allows several types of DC motors, each with unique characteristics suitable for different applications."
+      "content": "<p>FTC allows several types of DC motors, each with unique characteristics suitable for different applications. See <a href='https://gm0.org/en/latest/docs/hardware-components/motors.html' target='_blank'>gm0: Motor Comparison</a> for a detailed comparison.</p>"
     },
     {
       "type": "list",
       "title": "Common FTC Motors",
       "items": [
-        "<strong>AndyMark Neverest:</strong> 20, 40, and 60 series with different speed/torque ratios",
-        "<strong>REV HD Hex Motor:</strong> High precision with built-in encoder",
-        "<strong>GoBilda Yellow Jacket:</strong> Various options with different gear ratios",
-        "<strong>REV Core Hex Motor:</strong> Compact motor for space-constrained applications"
+        "<b>AndyMark Neverest:</b> 20, 40, and 60 series with different speed/torque ratios",
+        "<b>REV HD Hex Motor:</b> High precision with built-in encoder",
+        "<b>GoBilda Yellow Jacket:</b> Various options with different gear ratios",
+        "<b>REV Core Hex Motor:</b> Compact motor for space-constrained applications"
       ]
     },
     {
@@ -42,7 +42,7 @@
     {
       "type": "text",
       "title": "Motor Configuration",
-      "content": "Proper motor configuration is essential for reliable operation. This includes setting directions, modes, and power limits."
+      "content": "<p>Proper motor configuration is essential for reliable operation. This includes setting directions, modes, and power limits. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/motor.html' target='_blank'>FTC Docs: Motor Modes</a>.</p>"
     },
     {
       "type": "code",
@@ -53,16 +53,16 @@
     {
       "type": "text",
       "title": "Motor Control Methods",
-      "content": "There are several ways to control motors in FTC, each suitable for different applications."
+      "content": "<p>There are several ways to control motors in FTC, each suitable for different applications. See <a href='https://docs.revrobotics.com/duo-control/programming/motor-control' target='_blank'>REV Robotics: Motor Control</a> for more details.</p>"
     },
     {
       "type": "list",
       "title": "Control Methods",
       "items": [
-        "<strong>Power Control:</strong> Direct power setting (-1.0 to 1.0)",
-        "<strong>Encoder Control:</strong> Position-based control using encoders",
-        "<strong>Velocity Control:</strong> Speed-based control with PID",
-        "<strong>Run Modes:</strong> Different operating modes for various needs"
+        "<b>Power Control:</b> Direct power setting (-1.0 to 1.0)",
+        "<b>Encoder Control:</b> Position-based control using encoders",
+        "<b>Velocity Control:</b> Speed-based control with PID",
+        "<b>Run Modes:</b> Different operating modes for various needs"
       ]
     },
     {
@@ -74,7 +74,7 @@
     {
       "type": "text",
       "title": "Motor Safety",
-      "content": "Safety is paramount when working with motors. Always implement proper safety measures to prevent damage to your robot and injury to team members."
+      "content": "<p>Safety is paramount when working with motors. Always implement proper safety measures to prevent damage to your robot and injury to team members. See <a href='https://docs.revrobotics.com/duo-control/programming/motor-control#motor-safety' target='_blank'>REV Robotics: Motor Safety</a>.</p>"
     },
     {
       "type": "rules-box",
@@ -93,40 +93,31 @@
       "type": "code",
       "title": "Safety Implementation",
       "language": "java",
-      "content": "// Power limiting for safety\npublic void setMotorPowerSafely(DcMotor motor, double power) {\n    // Limit power to safe range\n    power = Math.max(-1.0, Math.min(1.0, power));\n    \n    // Additional safety checks\n    if (getBatteryVoltage() < 11.0) {\n        power *= 0.5; // Reduce power if battery is low\n    }\n    \n    motor.setPower(power);\n}\n\n// Emergency stop functionality\npublic void emergencyStop() {\n    // Stop all motors immediately\n    leftFront.setPower(0);\n    rightFront.setPower(0);\n    leftRear.setPower(0);\n    rightRear.setPower(0);\n    \n    telemetry.addData(\"STATUS\", \"EMERGENCY STOP ACTIVATED\");\n    telemetry.update();\n}"
+      "content": "// Power limiting for safety\npublic void setMotorPowerSafely(DcMotor motor, double power) {\n    // Limit power to safe range\n    power = Math.max(-1.0, Math.min(1.0, power));\n    if (getBatteryVoltage() < 11.0) {\n        power *= 0.5; // Reduce power if battery is low\n    }\n    motor.setPower(power);\n}\n// Emergency stop functionality\npublic void emergencyStop() {\n    // Stop all motors immediately\n    leftFront.setPower(0);\n    rightFront.setPower(0);\n    leftRear.setPower(0);\n    rightRear.setPower(0);\n    telemetry.addData(\"STATUS\", \"EMERGENCY STOP ACTIVATED\");\n    telemetry.update();\n}"
     },
     {
       "type": "text",
       "title": "Troubleshooting Motors",
-      "content": "Common motor issues and their solutions help teams quickly resolve problems during competitions and practice."
+      "content": "<p>Common motor issues and their solutions help teams quickly resolve problems during competitions and practice. See <a href='https://gm0.org/en/latest/docs/software/motors/dc-motors.html#troubleshooting' target='_blank'>gm0: DC Motors Troubleshooting</a>.</p>"
     },
     {
       "type": "list",
       "title": "Common Issues and Solutions",
       "items": [
-        "<strong>Motor runs in wrong direction:</strong> Change setDirection() or swap motor wires",
-        "<strong>Motor doesn't respond:</strong> Check configuration file and wiring",
-        "<strong>Uneven motor speeds:</strong> Calibrate power levels or check mechanical binding",
-        "<strong>Motor gets hot:</strong> Reduce power or check for mechanical resistance",
-        "<strong>Encoder issues:</strong> Check encoder cable and configuration"
+        "<b>Motor runs in wrong direction:</b> Change setDirection() or swap motor wires",
+        "<b>Motor doesn't respond:</b> Check configuration file and wiring",
+        "<b>Uneven motor speeds:</b> Calibrate power levels or check mechanical binding",
+        "<b>Motor gets hot:</b> Reduce power or check for mechanical resistance",
+        "<b>Encoder issues:</b> Check encoder cable and configuration"
       ]
     },
     {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        {
-          "label": "Basic Motor Control",
-          "id": "basic-motor-control"
-        },
-        {
-          "label": "Motor Encoders",
-          "id": "motor-encoders"
-        },
-        {
-          "label": "Motor Types",
-          "id": "motor-types"
-        }
+        { "label": "Basic Motor Control", "id": "basic-motor-control" },
+        { "label": "Motor Encoders", "id": "motor-encoders" },
+        { "label": "Motor Types", "id": "motor-types" }
       ]
     },
     {
@@ -142,7 +133,7 @@
         "Practice troubleshooting common motor issues",
         "Test motor behavior with different battery levels"
       ],
-      "content": "// Practice Exercise: Motor Control\n// Create an OpMode that allows testing of motor functionality\n// Include safety features and telemetry display\n// Test different power levels and directions\n\n@TeleOp(name=\"Motor Test\", group=\"Testing\")\npublic class MotorTestOpMode extends LinearOpMode {\n    \n    private DcMotor testMotor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize motor\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testMotor.setDirection(DcMotor.Direction.FORWARD);\n        testMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Control motor with gamepad\n            double power = -gamepad1.left_stick_y;\n            testMotor.setPower(power);\n            \n            // Display telemetry\n            telemetry.addData(\"Motor Power\", power);\n            telemetry.addData(\"Battery Voltage\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n}"
+      "content": "// Practice Exercise: Motor Control\n// Create an OpMode that allows testing of motor functionality\n// Include safety features and telemetry display\n// Test different power levels and directions\n\n@TeleOp(name=\"Motor Test\", group=\"Testing\")\npublic class MotorTestOpMode extends LinearOpMode {\n    private DcMotor testMotor;\n    @Override\n    public void runOpMode() {\n        // Initialize motor\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testMotor.setDirection(DcMotor.Direction.FORWARD);\n        testMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        waitForStart();\n        while (opModeIsActive()) {\n            // Control motor with gamepad\n            double power = -gamepad1.left_stick_y;\n            testMotor.setPower(power);\n            // Display telemetry\n            telemetry.addData(\"Motor Power\", power);\n            telemetry.addData(\"Battery Voltage\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n}"
     }
   ]
 } 

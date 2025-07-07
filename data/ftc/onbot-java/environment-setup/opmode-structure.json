@@ -3,208 +3,78 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to OpMode Structure",
-      "content": "OpModes are the fundamental building blocks of FTC programming. They define how your robot behaves during autonomous and teleop periods. Understanding OpMode structure is essential for creating effective robot programs."
+      "title": "What is an OpMode?",
+      "content": "An OpMode (Operation Mode) is the main entry point for your robot code. Each OpMode defines how your robot behaves during autonomous or teleop periods.<br><br>OpModes are selected and started from the Driver Station app. You can write as many OpModes as you want, each with different logic for different situations.<br><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/opmode/creating-an-opmode.html' target='_blank'>FTC Docs: Creating an OpMode</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html' target='_blank'>gm0: OpModes</a>"
     },
     {
       "type": "rules-box",
-      "title": "What is an OpMode?",
-      "subtitle": "OpMode stands for Operation Mode and includes:",
+      "title": "Types of OpModes",
+      "subtitle": "OpModes can be:",
       "items": [
-        "Autonomous OpModes that run without driver input",
-        "TeleOp OpModes that respond to driver controls",
-        "Linear OpModes with sequential execution",
-        "Iterative OpModes with continuous loops",
-        "Hardware initialization and configuration",
-        "Game logic and robot behavior definition"
+        "<code>@TeleOp</code>: For driver-controlled periods",
+        "<code>@Autonomous</code>: For autonomous periods",
+        "LinearOpMode: Runs code sequentially (most common for beginners)",
+        "Iterative OpMode: Runs code in a loop (advanced)"
       ]
-    },
-    {
-      "type": "text",
-      "title": "Basic OpMode Structure",
-      "content": "Every OpMode follows a specific structure with required components and lifecycle methods. Understanding this structure is crucial for writing functional robot code."
-    },
-    {
-      "type": "code",
-      "title": "Basic OpMode Template",
-      "language": "java",
-      "content": "package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name=\"Basic OpMode\", group=\"Examples\")\npublic class BasicOpMode extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initHardware();\n        \n        // Display status\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        // Wait for start\n        waitForStart();\n        \n        // Main loop\n        while (opModeIsActive()) {\n            // Robot logic here\n            processGamepadInput();\n            updateTelemetry();\n        }\n    }\n    \n    private void initHardware() {\n        // Map hardware components\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Configure hardware\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n    \n    private void processGamepadInput() {\n        // Process gamepad input\n        double leftPower = gamepad1.left_stick_y;\n        double rightPower = gamepad1.right_stick_y;\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    private void updateTelemetry() {\n        // Update telemetry data\n        telemetry.addData(\"Left Motor Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Arm Servo Position\", \"%.2f\", armServo.getPosition());\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "text",
       "title": "OpMode Annotations",
-      "content": "Annotations provide metadata about your OpMode and control how it appears in the Driver Station app."
-    },
-    {
-      "type": "list",
-      "title": "Common OpMode Annotations",
-      "items": [
-        "<strong>@TeleOp:</strong> Marks the OpMode as a teleop program for driver control",
-        "<strong>@Autonomous:</strong> Marks the OpMode as an autonomous program",
-        "<strong>name:</strong> Sets the display name in the Driver Station",
-        "<strong>group:</strong> Organizes OpModes into categories for easier selection",
-        "<strong>@Disabled:</strong> Temporarily disables an OpMode from appearing in the list"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Annotation Examples",
-      "language": "java",
-      "content": "// TeleOp OpMode\n@TeleOp(name=\"Tank Drive\", group=\"Drive\")\npublic class TankDrive extends LinearOpMode {\n    // OpMode code here\n}\n\n// Autonomous OpMode\n@Autonomous(name=\"Basic Auto\", group=\"Auto\")\npublic class BasicAuto extends LinearOpMode {\n    // OpMode code here\n}\n\n// Disabled OpMode\n@Disabled\n@TeleOp(name=\"Old Version\", group=\"Archive\")\npublic class OldVersion extends LinearOpMode {\n    // This OpMode won't appear in Driver Station\n}\n\n// OpMode with custom group\n@TeleOp(name=\"Advanced Control\", group=\"Advanced\")\npublic class AdvancedControl extends LinearOpMode {\n    // OpMode code here\n}"
+      "content": "Annotations tell the SDK how to display your OpMode in the Driver Station.<br><br>- <code>@TeleOp(name=...)</code> — TeleOp mode<br>- <code>@Autonomous(name=...)</code> — Autonomous mode<br>- <code>@Disabled</code> — Hide this OpMode<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/opmode/creating-an-opmode.html#opmode-annotations' target='_blank'>FTC Docs: OpMode Annotations</a>"
     },
     {
       "type": "text",
       "title": "OpMode Lifecycle",
-      "content": "Understanding the OpMode lifecycle helps you organize your code and ensure proper initialization and cleanup."
-    },
-    {
-      "type": "list",
-      "title": "OpMode Lifecycle Stages",
-      "items": [
-        "<strong>Initialization:</strong> Hardware mapping and configuration",
-        "<strong>Pre-Start:</strong> Final setup and telemetry display",
-        "<strong>Start:</strong> OpMode begins execution (waitForStart())",
-        "<strong>Active:</strong> Main loop execution (opModeIsActive())",
-        "<strong>Stop:</strong> Cleanup and resource management"
-      ]
+      "content": "A LinearOpMode runs through these stages:<br>1. Initialization (hardware setup)<br>2. Wait for Start<br>3. Active loop (robot logic)<br>4. Stop (cleanup)<br><br>Understanding this lifecycle helps you organize your code and ensure proper initialization and cleanup.<br><br>See <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html#lifecycle' target='_blank'>gm0: OpMode Lifecycle</a>"
     },
     {
       "type": "code",
-      "title": "Lifecycle Management Example",
+      "title": "Well-Structured TeleOp OpMode",
       "language": "java",
-      "content": "@TeleOp(name=\"Lifecycle Example\", group=\"Examples\")\npublic class LifecycleExample extends LinearOpMode {\n    \n    private DcMotor motor;\n    private boolean isInitialized = false;\n    \n    @Override\n    public void runOpMode() {\n        // Stage 1: Initialization\n        initHardware();\n        \n        // Stage 2: Pre-Start\n        telemetry.addData(\"Status\", \"Ready for start\");\n        telemetry.addData(\"Instructions\", \"Press START to begin\");\n        telemetry.update();\n        \n        // Stage 3: Wait for Start\n        waitForStart();\n        \n        // Stage 4: Active Execution\n        while (opModeIsActive()) {\n            // Main robot logic\n            processInput();\n            updateTelemetry();\n            \n            // Check for stop condition\n            if (gamepad1.back) {\n                requestOpModeStop();\n            }\n        }\n        \n        // Stage 5: Stop (cleanup happens automatically)\n        cleanup();\n    }\n    \n    private void initHardware() {\n        try {\n            motor = hardwareMap.get(DcMotor.class, \"motor\");\n            motor.setDirection(DcMotor.Direction.FORWARD);\n            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n            isInitialized = true;\n            telemetry.addData(\"Hardware\", \"✓ Initialized\");\n        } catch (Exception e) {\n            telemetry.addData(\"Hardware Error\", e.getMessage());\n        }\n        telemetry.update();\n    }\n    \n    private void processInput() {\n        if (!isInitialized) return;\n        \n        double power = gamepad1.right_stick_y;\n        motor.setPower(power);\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Motor Power\", \"%.2f\", motor.getPower());\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", getRuntime());\n        telemetry.update();\n    }\n    \n    private void cleanup() {\n        // Ensure motors are stopped\n        if (isInitialized) {\n            motor.setPower(0);\n        }\n        telemetry.addData(\"Status\", \"Stopped\");\n        telemetry.update();\n    }\n}"
+      "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name = \"WellStructuredTeleOp\")\npublic class WellStructuredTeleOp extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo;\n\n    private void initHardware() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n    }\n\n    private void drive() {\n        double leftPower = -gamepad1.left_stick_y;\n        double rightPower = -gamepad1.right_stick_y;\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n    }\n\n    private void controlArm() {\n        if (gamepad1.a) {\n            armServo.setPosition(1.0); // Up\n        } else if (gamepad1.b) {\n            armServo.setPosition(0.0); // Down\n        }\n    }\n\n    private void showTelemetry() {\n        telemetry.addData(\"Left Power\", leftDrive.getPower());\n        telemetry.addData(\"Right Power\", rightDrive.getPower());\n        telemetry.addData(\"Arm Position\", armServo.getPosition());\n        telemetry.update();\n    }\n\n    @Override\n    public void runOpMode() {\n        initHardware();\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        waitForStart();\n        while (opModeIsActive()) {\n            drive();\n            controlArm();\n            showTelemetry();\n        }\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Hardware Mapping",
-      "content": "Hardware mapping connects your code to physical robot components through the configuration file."
-    },
-    {
-      "type": "list",
-      "title": "Hardware Mapping Process",
-      "items": [
-        "<strong>Configuration File:</strong> Define component names and types in robot configuration",
-        "<strong>Hardware Map:</strong> Access components using hardwareMap.get() method",
-        "<strong>Component Types:</strong> DcMotor, Servo, Sensor, etc.",
-        "<strong>Error Handling:</strong> Check for missing or misconfigured hardware",
-        "<strong>Initialization:</strong> Configure component properties and settings"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Hardware Mapping Examples",
-      "language": "java",
-      "content": "// Hardware mapping for different component types\nprivate void mapAllHardware() {\n    // Motors\n    DcMotor leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n    DcMotor rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n    DcMotor armMotor = hardwareMap.get(DcMotor.class, \"arm_motor\");\n    \n    // Servos\n    Servo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n    Servo liftServo = hardwareMap.get(Servo.class, \"lift_servo\");\n    \n    // Sensors\n    TouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n    ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n    DistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n    BNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n    \n    // Configure components\n    configureMotors(leftMotor, rightMotor, armMotor);\n    configureServos(clawServo, liftServo);\n    configureSensors(touchSensor, colorSensor, distanceSensor, imu);\n}\n\nprivate void configureMotors(DcMotor... motors) {\n    for (DcMotor motor : motors) {\n        motor.setDirection(DcMotor.Direction.FORWARD);\n        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }\n}\n\nprivate void configureServos(Servo... servos) {\n    for (Servo servo : servos) {\n        servo.setDirection(Servo.Direction.FORWARD);\n    }\n}\n\nprivate void configureSensors(TouchSensor touch, ColorSensor color, \n                              DistanceSensor distance, BNO055IMU imu) {\n    // Configure IMU\n    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n    parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n    parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n    imu.initialize(parameters);\n    \n    // Enable LED on color sensor\n    color.enableLed(true);\n}"
-    },
-    {
-      "type": "text",
-      "title": "Error Handling in OpModes",
-      "content": "Proper error handling ensures your OpMode continues to function even when hardware issues occur."
-    },
-    {
-      "type": "list",
-      "title": "Error Handling Strategies",
-      "items": [
-        "<strong>Try-Catch Blocks:</strong> Handle exceptions gracefully",
-        "<strong>Hardware Validation:</strong> Check if components are available",
-        "<strong>Fallback Behavior:</strong> Provide alternative functionality",
-        "<strong>Telemetry Feedback:</strong> Inform drivers of issues",
-        "<strong>Graceful Degradation:</strong> Continue operation with reduced functionality"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Error Handling Example",
-      "language": "java",
-      "content": "@TeleOp(name=\"Error Handling Example\", group=\"Examples\")\npublic class ErrorHandlingExample extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private ColorSensor colorSensor;\n    \n    private boolean leftMotorAvailable = false;\n    private boolean rightMotorAvailable = false;\n    private boolean armServoAvailable = false;\n    private boolean colorSensorAvailable = false;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize with error handling\n        initHardwareWithErrorHandling();\n        \n        telemetry.addData(\"Status\", \"Ready\");\n        telemetry.addData(\"Left Motor\", leftMotorAvailable ? \"✓\" : \"✗\");\n        telemetry.addData(\"Right Motor\", rightMotorAvailable ? \"✓\" : \"✗\");\n        telemetry.addData(\"Arm Servo\", armServoAvailable ? \"✓\" : \"✗\");\n        telemetry.addData(\"Color Sensor\", colorSensorAvailable ? \"✓\" : \"✗\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Safe operation with error checking\n            safeDrive();\n            safeArmControl();\n            safeColorDetection();\n            updateTelemetry();\n        }\n    }\n    \n    private void initHardwareWithErrorHandling() {\n        // Initialize motors with error handling\n        try {\n            leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n            leftMotor.setDirection(DcMotor.Direction.FORWARD);\n            leftMotorAvailable = true;\n        } catch (Exception e) {\n            telemetry.addData(\"Left Motor Error\", e.getMessage());\n        }\n        \n        try {\n            rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n            rightMotor.setDirection(DcMotor.Direction.REVERSE);\n            rightMotorAvailable = true;\n        } catch (Exception e) {\n            telemetry.addData(\"Right Motor Error\", e.getMessage());\n        }\n        \n        try {\n            armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n            armServoAvailable = true;\n        } catch (Exception e) {\n            telemetry.addData(\"Arm Servo Error\", e.getMessage());\n        }\n        \n        try {\n            colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n            colorSensor.enableLed(true);\n            colorSensorAvailable = true;\n        } catch (Exception e) {\n            telemetry.addData(\"Color Sensor Error\", e.getMessage());\n        }\n    }\n    \n    private void safeDrive() {\n        double leftPower = gamepad1.left_stick_y;\n        double rightPower = gamepad1.right_stick_y;\n        \n        if (leftMotorAvailable) {\n            leftMotor.setPower(leftPower);\n        }\n        \n        if (rightMotorAvailable) {\n            rightMotor.setPower(rightPower);\n        }\n    }\n    \n    private void safeArmControl() {\n        if (!armServoAvailable) return;\n        \n        if (gamepad1.a) {\n            armServo.setPosition(0.0); // Down position\n        } else if (gamepad1.b) {\n            armServo.setPosition(1.0); // Up position\n        }\n    }\n    \n    private void safeColorDetection() {\n        if (!colorSensorAvailable) return;\n        \n        int red = colorSensor.red();\n        int green = colorSensor.green();\n        int blue = colorSensor.blue();\n        \n        // Simple color detection logic\n        if (red > green && red > blue) {\n            telemetry.addData(\"Color Detected\", \"RED\");\n        } else if (green > red && green > blue) {\n            telemetry.addData(\"Color Detected\", \"GREEN\");\n        } else if (blue > red && blue > green) {\n            telemetry.addData(\"Color Detected\", \"BLUE\");\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", getRuntime());\n        telemetry.update();\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "OpMode Organization",
-      "content": "Well-organized OpModes are easier to maintain, debug, and understand. Follow these principles for better code organization."
-    },
-    {
-      "type": "list",
-      "title": "Organization Principles",
-      "items": [
-        "<strong>Single Responsibility:</strong> Each method should have one clear purpose",
-        "<strong>Separation of Concerns:</strong> Separate hardware, logic, and telemetry",
-        "<strong>Consistent Naming:</strong> Use clear, descriptive method and variable names",
-        "<strong>Modular Design:</strong> Break complex operations into smaller methods",
-        "<strong>Documentation:</strong> Add comments explaining complex logic"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Well-Organized OpMode Example",
-      "language": "java",
-      "content": "/**\n * Well-organized OpMode demonstrating good structure and organization\n * This OpMode controls a robot with drive train, arm, and color detection\n */\n@TeleOp(name=\"Organized Example\", group=\"Examples\")\npublic class OrganizedExample extends LinearOpMode {\n    \n    // ===== HARDWARE DECLARATIONS =====\n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private ColorSensor colorSensor;\n    \n    // ===== STATE VARIABLES =====\n    private double armPosition = 0.5;\n    private boolean colorDetectionEnabled = true;\n    \n    // ===== CONSTANTS =====\n    private static final double ARM_SPEED = 0.01;\n    private static final double MIN_ARM_POSITION = 0.0;\n    private static final double MAX_ARM_POSITION = 1.0;\n    \n    @Override\n    public void runOpMode() {\n        // ===== INITIALIZATION PHASE =====\n        initializeHardware();\n        displayInitializationStatus();\n        \n        // ===== WAIT FOR START =====\n        waitForStart();\n        \n        // ===== MAIN EXECUTION LOOP =====\n        while (opModeIsActive()) {\n            processDriveInput();\n            processArmInput();\n            processColorDetection();\n            updateTelemetry();\n            \n            // Small delay to prevent overwhelming the system\n            sleep(10);\n        }\n        \n        // ===== CLEANUP =====\n        cleanup();\n    }\n    \n    // ===== HARDWARE INITIALIZATION =====\n    private void initializeHardware() {\n        // Map hardware components\n        mapDriveMotors();\n        mapArmServo();\n        mapColorSensor();\n        \n        // Configure hardware settings\n        configureDriveMotors();\n        configureArmServo();\n        configureColorSensor();\n    }\n    \n    private void mapDriveMotors() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n    }\n    \n    private void mapArmServo() {\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n    }\n    \n    private void mapColorSensor() {\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n    }\n    \n    private void configureDriveMotors() {\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n    }\n    \n    private void configureArmServo() {\n        armServo.setDirection(Servo.Direction.FORWARD);\n        armServo.setPosition(armPosition);\n    }\n    \n    private void configureColorSensor() {\n        colorSensor.enableLed(true);\n    }\n    \n    // ===== INPUT PROCESSING =====\n    private void processDriveInput() {\n        double leftPower = gamepad1.left_stick_y;\n        double rightPower = gamepad1.right_stick_y;\n        \n        // Apply dead zone to prevent drift\n        leftPower = applyDeadZone(leftPower, 0.1);\n        rightPower = applyDeadZone(rightPower, 0.1);\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    private void processArmInput() {\n        // Arm up/down with gamepad triggers\n        if (gamepad1.right_trigger > 0.1) {\n            moveArmUp();\n        } else if (gamepad1.left_trigger > 0.1) {\n            moveArmDown();\n        }\n        \n        // Toggle color detection\n        if (gamepad1.y) {\n            toggleColorDetection();\n        }\n    }\n    \n    private void processColorDetection() {\n        if (!colorDetectionEnabled) return;\n        \n        String detectedColor = detectColor();\n        if (detectedColor != null) {\n            telemetry.addData(\"Color Detected\", detectedColor);\n        }\n    }\n    \n    // ===== HELPER METHODS =====\n    private double applyDeadZone(double value, double deadZone) {\n        if (Math.abs(value) < deadZone) {\n            return 0.0;\n        }\n        return value;\n    }\n    \n    private void moveArmUp() {\n        armPosition = Math.min(armPosition + ARM_SPEED, MAX_ARM_POSITION);\n        armServo.setPosition(armPosition);\n    }\n    \n    private void moveArmDown() {\n        armPosition = Math.max(armPosition - ARM_SPEED, MIN_ARM_POSITION);\n        armServo.setPosition(armPosition);\n    }\n    \n    private void toggleColorDetection() {\n        colorDetectionEnabled = !colorDetectionEnabled;\n        colorSensor.enableLed(colorDetectionEnabled);\n    }\n    \n    private String detectColor() {\n        int red = colorSensor.red();\n        int green = colorSensor.green();\n        int blue = colorSensor.blue();\n        \n        // Simple color detection with thresholds\n        if (red > 100 && red > green * 1.5 && red > blue * 1.5) {\n            return \"RED\";\n        } else if (green > 100 && green > red * 1.5 && green > blue * 1.5) {\n            return \"GREEN\";\n        } else if (blue > 100 && blue > red * 1.5 && blue > green * 1.5) {\n            return \"BLUE\";\n        }\n        \n        return null;\n    }\n    \n    // ===== TELEMETRY =====\n    private void displayInitializationStatus() {\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.addData(\"Instructions\", \"Use left/right sticks to drive\");\n        telemetry.addData(\"Arm Control\", \"Right trigger: up, Left trigger: down\");\n        telemetry.addData(\"Color Detection\", \"Y button to toggle\");\n        telemetry.update();\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Arm Position\", \"%.2f\", armPosition);\n        telemetry.addData(\"Color Detection\", colorDetectionEnabled ? \"ON\" : \"OFF\");\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", getRuntime());\n        telemetry.update();\n    }\n    \n    // ===== CLEANUP =====\n    private void cleanup() {\n        // Stop all motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        // Turn off color sensor LED\n        colorSensor.enableLed(false);\n        \n        telemetry.addData(\"Status\", \"Stopped\");\n        telemetry.update();\n    }\n}"
+      "title": "Organizing Your OpModes",
+      "content": "- Use clear method names for hardware init, input processing, and telemetry.<br>- Separate hardware mapping from robot logic.<br>- Use comments to explain each section.<br>- Keep OpModes focused on a single purpose.<br><br>This makes your code easier to read, debug, and maintain.<br><br>See <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html#organization' target='_blank'>gm0: OpMode Organization</a>"
     },
     {
       "type": "rules-box",
-      "title": "OpMode Best Practices",
-      "subtitle": "Follow these guidelines for creating effective OpModes:",
+      "title": "Best Practices",
+      "subtitle": "For clean, reliable OpModes:",
       "items": [
-        "Always initialize hardware in a dedicated method",
-        "Use meaningful variable and method names",
-        "Include proper error handling for hardware failures",
-        "Provide clear telemetry feedback to drivers",
-        "Organize code into logical sections with comments",
-        "Test OpModes thoroughly before competition use",
-        "Keep OpModes focused on specific functionality",
-        "Use constants for magic numbers and configuration values"
+        "Initialize hardware in a dedicated method.",
+        "Use meaningful variable and method names.",
+        "Add telemetry for debugging.",
+        "Handle errors gracefully.",
+        "Test OpModes on the robot."
       ]
     },
     {
       "type": "text",
-      "title": "Resources and Documentation",
-      "content": "Additional resources for learning about OpMode structure:"
-    },
-    {
-      "type": "list",
-      "items": [
-        "<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/eventloop/opmode/package-summary.html' target='_blank'>FTC OpMode Documentation</a> - Official API documentation for OpModes",
-        "<a href='https://gm0.org/en/latest/docs/software/tutorials/gradle.html' target='_blank'>Game Manual 0 - OpMode Tutorials</a> - Comprehensive tutorials and examples",
-        "<a href='https://github.com/FIRST-Tech-Challenge/FTC_App/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode' target='_blank'>FTC SDK Examples</a> - Official example OpModes from the SDK"
-      ]
+      "title": "Further Reading & Resources",
+      "content": "- <a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/eventloop/opmode/package-summary.html' target='_blank'>FTC OpMode API</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html' target='_blank'>gm0: OpModes</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode' target='_blank'>FTC SDK Example OpModes</a>"
     },
     {
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        {
-          "label": "Linear vs Iterative OpModes",
-          "id": "linear-vs-iterative-opmodes"
-        },
-        {
-          "label": "Telemetry Logging",
-          "id": "telemetry-logging"
-        },
-        {
-          "label": "Basic Robot Control",
-          "id": "basic-robot-control"
-        },
-        {
-          "label": "Gamepad Controls",
-          "id": "gamepad-controls"
-        }
+        { "label": "Linear vs Iterative OpModes", "id": "linear-vs-iterative-opmodes" },
+        { "label": "Telemetry Logging", "id": "telemetry-logging" },
+        { "label": "Basic Robot Control", "id": "basic-robot-control" }
       ]
     },
     {
       "type": "exercise-box",
-      "title": "OpMode Structure Practice",
-      "description": "Complete these exercises to master OpMode structure:",
+      "title": "Practice: OpMode Structure",
+      "description": "Try these to reinforce your understanding:",
       "tasks": [
-        "Create a basic TeleOp OpMode with proper structure",
-        "Implement hardware mapping with error handling",
-        "Add telemetry feedback for all robot components",
-        "Organize code into logical methods and sections",
-        "Create an autonomous OpMode with sequential actions",
-        "Implement proper OpMode lifecycle management",
-        "Add configuration constants and state variables",
-        "Test OpModes with different hardware configurations"
+        "Create a TeleOp OpMode that drives a motor with the left stick.",
+        "Add telemetry to show motor power.",
+        "Use <code>@Autonomous</code> to create a simple autonomous OpMode.",
+        "Organize your code into methods for init, loop, and telemetry."
       ],
-      "content": "// Practice Exercise: Create a Complete OpMode\n// Build an OpMode that demonstrates:\n// - Proper structure and organization\n// - Hardware initialization and mapping\n// - Input processing and robot control\n// - Error handling and validation\n// - Telemetry and status feedback\n// - Cleanup and resource management\n// Use the template provided above as a starting point"
+      "content": "// Practice: Write a TeleOp OpMode that drives a motor and displays its power."
     }
   ]
 } 

@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Introduction to Motor Control",
-      "content": "Basic motor control is the foundation of FTC robot programming. Understanding how to control motor power, direction, and behavior is essential for creating functional robot mechanisms and drivetrains."
+      "content": "<p>Basic motor control is the foundation of FTC robot programming. Understanding how to control motor power, direction, and behavior is essential for creating functional robot mechanisms and drivetrains.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/motors/dc-motors.html' target='_blank'>gm0: DC Motors</a> and <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/motor.html' target='_blank'>FTC Docs: Motor Modes</a>.</p>"
     },
     {
       "type": "rules-box",
@@ -21,7 +21,7 @@
     {
       "type": "text",
       "title": "Power Control",
-      "content": "The most basic form of motor control is setting power levels. Power determines both speed and direction of the motor."
+      "content": "<p>The most basic form of motor control is setting power levels. Power determines both speed and direction of the motor. See <a href='https://docs.revrobotics.com/duo-control/programming/motor-control' target='_blank'>REV Robotics: Motor Control</a>.</p>"
     },
     {
       "type": "code",
@@ -32,7 +32,7 @@
     {
       "type": "text",
       "title": "Direction Control",
-      "content": "Motor direction can be controlled in two ways: setting the motor direction globally or using negative power values."
+      "content": "<p>Motor direction can be controlled in two ways: setting the motor direction globally or using negative power values. For drivetrain best practices, see <a href='https://gm0.org/en/latest/docs/software/drivetrains/index.html' target='_blank'>gm0: Drivetrains</a>.</p>"
     },
     {
       "type": "code",
@@ -43,15 +43,15 @@
     {
       "type": "text",
       "title": "Zero Power Behavior",
-      "content": "Zero power behavior determines what happens when you set motor power to zero. This is important for robot control and safety."
+      "content": "<p>Zero power behavior determines what happens when you set motor power to zero. This is important for robot control and safety. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/motor.html' target='_blank'>FTC Docs: Motor Modes</a>.</p>"
     },
     {
       "type": "list",
       "title": "Zero Power Behaviors",
       "items": [
-        "<strong>BRAKE:</strong> Motor actively resists movement (stops quickly)",
-        "<strong>FLOAT:</strong> Motor coasts to stop (no resistance)",
-        "<strong>Default:</strong> Usually BRAKE for most applications"
+        "<b>BRAKE:</b> Motor actively resists movement (stops quickly)",
+        "<b>FLOAT:</b> Motor coasts to stop (no resistance)",
+        "<b>Default:</b> Usually BRAKE for most applications"
       ]
     },
     {
@@ -63,16 +63,16 @@
     {
       "type": "text",
       "title": "Run Modes",
-      "content": "Run modes control how the motor responds to power commands and whether it uses encoder feedback."
+      "content": "<p>Run modes control how the motor responds to power commands and whether it uses encoder feedback. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/motor.html' target='_blank'>FTC Docs: Motor Modes</a>.</p>"
     },
     {
       "type": "list",
       "title": "Common Run Modes",
       "items": [
-        "<strong>RUN_WITHOUT_ENCODER:</strong> Direct power control, no encoder feedback",
-        "<strong>RUN_USING_ENCODER:</strong> Power control with encoder-based speed regulation",
-        "<strong>RUN_TO_POSITION:</strong> Move to a specific encoder position",
-        "<strong>STOP_AND_RESET_ENCODER:</strong> Reset encoder to zero position"
+        "<b>RUN_WITHOUT_ENCODER:</b> Direct power control, no encoder feedback",
+        "<b>RUN_USING_ENCODER:</b> Power control with encoder-based speed regulation",
+        "<b>RUN_TO_POSITION:</b> Move to a specific encoder position",
+        "<b>STOP_AND_RESET_ENCODER:</b> Reset encoder to zero position"
       ]
     },
     {
@@ -84,18 +84,18 @@
     {
       "type": "text",
       "title": "Drivetrain Control",
-      "content": "Drivetrain control is one of the most common applications of motor control in FTC. Different control schemes offer various advantages."
+      "content": "<p>Drivetrain control is one of the most common applications of motor control in FTC. Different control schemes offer various advantages. See <a href='https://gm0.org/en/latest/docs/software/drivetrains/index.html' target='_blank'>gm0: Drivetrains</a>.</p>"
     },
     {
       "type": "code",
       "title": "Drivetrain Control Schemes",
       "language": "java",
-      "content": "// Tank Drive (Differential Drive)\npublic void tankDrive(double leftPower, double rightPower) {\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Arcade Drive\npublic void arcadeDrive(double drive, double turn) {\n    double leftPower = drive + turn;\n    double rightPower = drive - turn;\n    \n    // Limit power to valid range\n    leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n    rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n    \n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Gamepad control example\nwhile (opModeIsActive()) {\n    // Tank drive\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    tankDrive(leftPower, rightPower);\n    \n    // Or arcade drive\n    double drive = -gamepad1.left_stick_y;\n    double turn = gamepad1.right_stick_x;\n    arcadeDrive(drive, turn);\n}"
+      "content": "// Tank Drive (Differential Drive)\npublic void tankDrive(double leftPower, double rightPower) {\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Arcade Drive\npublic void arcadeDrive(double drive, double turn) {\n    double leftPower = drive + turn;\n    double rightPower = drive - turn;\n    leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n    rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\n// Gamepad control example\nwhile (opModeIsActive()) {\n    // Tank drive\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    tankDrive(leftPower, rightPower);\n    // Or arcade drive\n    double drive = -gamepad1.left_stick_y;\n    double turn = gamepad1.right_stick_x;\n    arcadeDrive(drive, turn);\n}"
     },
     {
       "type": "text",
       "title": "Safety and Best Practices",
-      "content": "Implementing safety features and following best practices ensures reliable robot operation and prevents damage."
+      "content": "<p>Implementing safety features and following best practices ensures reliable robot operation and prevents damage. See <a href='https://docs.revrobotics.com/duo-control/programming/motor-control#motor-safety' target='_blank'>REV Robotics: Motor Safety</a>.</p>"
     },
     {
       "type": "rules-box",
@@ -114,46 +114,37 @@
       "type": "code",
       "title": "Safety Implementation",
       "language": "java",
-      "content": "// Power limiting utility\npublic double limitPower(double power) {\n    return Math.max(-1.0, Math.min(1.0, power));\n}\n\n// Safe motor control method\npublic void setMotorPowerSafely(DcMotor motor, double power) {\n    power = limitPower(power);\n    \n    // Check battery voltage\n    if (getBatteryVoltage() < 11.0) {\n        power *= 0.5; // Reduce power if battery is low\n    }\n    \n    motor.setPower(power);\n}\n\n// Emergency stop\npublic void emergencyStop() {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n    // Stop all other motors...\n    \n    telemetry.addData(\"STATUS\", \"EMERGENCY STOP\");\n    telemetry.update();\n}"
+      "content": "// Power limiting utility\npublic double limitPower(double power) {\n    return Math.max(-1.0, Math.min(1.0, power));\n}\n// Safe motor control method\npublic void setMotorPowerSafely(DcMotor motor, double power) {\n    power = limitPower(power);\n    if (getBatteryVoltage() < 11.0) {\n        power *= 0.5; // Reduce power if battery is low\n    }\n    motor.setPower(power);\n}\n// Emergency stop\npublic void emergencyStop() {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n    telemetry.addData(\"STATUS\", \"EMERGENCY STOP\");\n    telemetry.update();\n}"
     },
     {
       "type": "text",
       "title": "Troubleshooting",
-      "content": "Common motor control issues and their solutions help teams quickly resolve problems."
+      "content": "<p>Common motor control issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/motors/dc-motors.html#troubleshooting' target='_blank'>gm0: DC Motors Troubleshooting</a>.</p>"
     },
     {
       "type": "list",
       "title": "Common Issues",
       "items": [
-        "<strong>Motor runs in wrong direction:</strong> Change setDirection() or use negative power",
-        "<strong>Uneven motor speeds:</strong> Calibrate power levels or check mechanical issues",
-        "<strong>Motor doesn't respond:</strong> Check configuration file and wiring",
-        "<strong>Jerky movement:</strong> Add smoothing to gamepad inputs",
-        "<strong>Battery drain:</strong> Reduce power levels and check for binding"
+        "<b>Motor runs in wrong direction:</b> Change setDirection() or use negative power",
+        "<b>Uneven motor speeds:</b> Calibrate power levels or check mechanical issues",
+        "<b>Motor doesn't respond:</b> Check configuration file and wiring",
+        "<b>Jerky movement:</b> Add smoothing to gamepad inputs",
+        "<b>Battery drain:</b> Reduce power levels and check for binding"
       ]
     },
     {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        {
-          "label": "DC Motors",
-          "id": "dc-motors"
-        },
-        {
-          "label": "Motor Encoders",
-          "id": "motor-encoders"
-        },
-        {
-          "label": "Motor Types",
-          "id": "motor-types"
-        }
+        { "label": "DC Motors", "id": "dc-motors" },
+        { "label": "Motor Encoders", "id": "motor-encoders" },
+        { "label": "Motor Types", "id": "motor-types" }
       ]
     },
     {
       "type": "exercise-box",
       "title": "Motor Control Practice",
-      "description": "Practice these exercises to master motor control:",
+      "content": "Practice these exercises to master motor control:",
       "tasks": [
         "Create a simple tank drive OpMode",
         "Implement arcade drive control",
@@ -163,7 +154,10 @@
         "Practice troubleshooting motor issues",
         "Implement emergency stop functionality"
       ],
-      "content": "// Practice Exercise: Tank Drive\n// Create an OpMode that implements tank drive control\n// Include safety features and telemetry\n// Test different control schemes\n\n@TeleOp(name=\"Tank Drive Test\", group=\"Testing\")\npublic class TankDriveTestOpMode extends LinearOpMode {\n    \n    private DcMotor leftDrive, rightDrive;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize motors\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        \n        // Configure motors\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Tank drive control\n            double leftPower = limitPower(-gamepad1.left_stick_y);\n            double rightPower = limitPower(-gamepad1.right_stick_y);\n            \n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            \n            // Telemetry\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n    \n    private double limitPower(double power) {\n        return Math.max(-1.0, Math.min(1.0, power));\n    }\n}"
+      "answers": [
+        {"task": "Create a simple tank drive OpMode",
+        "content":"// Practice Exercise: Tank Drive\n// Create an OpMode that implements tank drive control\n// Include safety features and telemetry\n// Test different control schemes\n\n@TeleOp(name=\"Tank Drive Test\", group=\"Testing\")\npublic class TankDriveTestOpMode extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    @Override\n    public void runOpMode() {\n        // Initialize motors\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        // Configure motors\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        waitForStart();\n        while (opModeIsActive()) {\n            // Tank drive control\n            double leftPower = limitPower(-gamepad1.left_stick_y);\n            double rightPower = limitPower(-gamepad1.right_stick_y);\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            // Telemetry\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n    private double limitPower(double power) {\n        return Math.max(-1.0, Math.min(1.0, power));\n    }"
+      }]
     }
   ]
-} 
+}

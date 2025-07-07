@@ -3,51 +3,101 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Color Sensors",
-      "content": "Color sensors detect colors and light intensity, enabling robots to identify game elements, follow lines, and respond to environmental conditions. They provide RGB color data and can be used for sophisticated autonomous behaviors."
+      "title": "What is a Color Sensor?",
+      "content": "<p>Color sensors detect the color and intensity of light. They are used in FTC robots for tasks such as identifying game elements, line following, and detecting field markings.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/color.html' target='_blank'>gm0: Color Sensors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors#color-sensor' target='_blank'>REV Robotics: Color Sensor</a>.</p>"
     },
     {
       "type": "rules-box",
-      "title": "Color Sensor Applications",
-      "subtitle": "Key applications for color sensors:",
+      "title": "Color Sensor Basics",
+      "subtitle": "Key characteristics:",
       "items": [
-        "Line Following: Follow colored lines on the field",
-        "Object Identification: Identify game elements by color",
-        "Light Detection: Respond to ambient light conditions",
-        "Color Sorting: Sort objects by color"
+        "Detects red, green, and blue light intensity",
+        "Can measure ambient and reflected light",
+        "Used for color detection and line following",
+        "Requires calibration for accurate readings",
+        "Data accessed through hardwareMap in code"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "How Color Sensors Work",
+      "content": "<p>Color sensors use photodiodes to measure the intensity of different wavelengths of light. The sensor reports red, green, and blue values. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html#color-sensor' target='_blank'>FTC Docs: Color Sensor</a>.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Color Sensor Example",
+      "language": "java",
+      "content": "// Initialize and read a color sensor\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nint red = colorSensor.red();\nint green = colorSensor.green();\nint blue = colorSensor.blue();\ntelemetry.addData(\"Red\", red);\ntelemetry.addData(\"Green\", green);\ntelemetry.addData(\"Blue\", blue);\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Applications of Color Sensors",
+      "content": "<p>Color sensors are used for a variety of applications in FTC robots, including detecting game elements, line following, and field navigation. See <a href='https://gm0.org/en/latest/docs/software/sensors/color.html' target='_blank'>gm0: Color Sensors</a>.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Common Use Cases",
+      "items": [
+        "Detecting colored game elements",
+        "Line following on the field",
+        "Identifying field markings",
+        "Sorting objects by color",
+        "Detecting alliance color for autonomous routines"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Color Sensor Safety and Best Practices",
+      "content": "<p>Proper use of color sensors ensures reliable operation and accurate data. Always test and calibrate sensors before use. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Guidelines",
+      "subtitle": "Follow these practices for safe color sensor use:",
+      "items": [
+        "Secure sensors to prevent movement during operation",
+        "Avoid exposing sensors to excessive light or debris",
+        "Calibrate sensors for accurate readings",
+        "Monitor sensor data for unexpected values",
+        "Document sensor configuration and calibration"
       ]
     },
     {
       "type": "code",
-      "title": "Color Sensor Implementation",
-      "content": "// Color sensor control and monitoring\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n\n// Basic color reading\npublic int getRed() {\n    return colorSensor.red();\n}\n\npublic int getGreen() {\n    return colorSensor.green();\n}\n\npublic int getBlue() {\n    return colorSensor.blue();\n}\n\npublic int getAlpha() {\n    return colorSensor.alpha();\n}\n\n// Color detection with thresholds\npublic class ColorDetector {\n    private ColorSensor sensor;\n    \n    public ColorDetector(ColorSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public boolean isRed() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return red > green && red > blue && red > 100;\n    }\n    \n    public boolean isBlue() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return blue > red && blue > green && blue > 100;\n    }\n    \n    public boolean isGreen() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return green > red && green > blue && green > 100;\n    }\n    \n    public String getDominantColor() {\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        if (red > green && red > blue) return \"Red\";\n        if (green > red && green > blue) return \"Green\";\n        if (blue > red && blue > green) return \"Blue\";\n        return \"Unknown\";\n    }\n}\n\n// Line following functionality\npublic class LineFollower {\n    private ColorSensor sensor;\n    private double targetBrightness = 0.5;\n    private double lineThreshold = 0.3;\n    \n    public LineFollower(ColorSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public double getBrightness() {\n        // Calculate brightness from RGB values\n        int red = sensor.red();\n        int green = sensor.green();\n        int blue = sensor.blue();\n        \n        return (red + green + blue) / 765.0; // Normalize to 0-1\n    }\n    \n    public boolean isOnLine() {\n        return getBrightness() < lineThreshold;\n    }\n    \n    public double getLineError() {\n        double brightness = getBrightness();\n        return brightness - targetBrightness;\n    }\n    \n    public double getCorrection() {\n        return getLineError() * 0.5; // Proportional correction\n    }\n}\n\n// Color sensor calibration\npublic class ColorCalibrator {\n    private ColorSensor sensor;\n    private int[] redValues = new int[10];\n    private int[] greenValues = new int[10];\n    private int[] blueValues = new int[10];\n    private int calibrationIndex = 0;\n    \n    public ColorCalibrator(ColorSensor sensor) {\n        this.sensor = sensor;\n    }\n    \n    public void addCalibrationReading() {\n        if (calibrationIndex < 10) {\n            redValues[calibrationIndex] = sensor.red();\n            greenValues[calibrationIndex] = sensor.green();\n            blueValues[calibrationIndex] = sensor.blue();\n            calibrationIndex++;\n        }\n    }\n    \n    public int getAverageRed() {\n        int sum = 0;\n        for (int value : redValues) {\n            sum += value;\n        }\n        return sum / redValues.length;\n    }\n    \n    public int getAverageGreen() {\n        int sum = 0;\n        for (int value : greenValues) {\n            sum += value;\n        }\n        return sum / greenValues.length;\n    }\n    \n    public int getAverageBlue() {\n        int sum = 0;\n        for (int value : blueValues) {\n            sum += value;\n        }\n        return sum / blueValues.length;\n    }\n}"
+      "title": "Color Sensor Safety Example",
+      "language": "java",
+      "content": "// Safety check using a color sensor\nint red = colorSensor.red();\nint blue = colorSensor.blue();\nif (red > blue) {\n    // Detected red object\n    telemetry.addData(\"Detected\", \"Red\");\n} else {\n    // Detected blue object\n    telemetry.addData(\"Detected\", \"Blue\");\n}\ntelemetry.update();"
     },
     {
       "type": "text",
-      "title": "Practical Applications",
-      "content": "Color sensors enable robots to interact with their environment based on visual information. They are essential for line following, object identification, and creating responsive autonomous behaviors."
+      "title": "Troubleshooting Color Sensors",
+      "content": "<p>Common color sensor issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/color.html#troubleshooting' target='_blank'>gm0: Color Sensor Troubleshooting</a>.</p>"
     },
     {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        {
-          "label": "Sensors Overview",
-          "id": "sensors"
-        },
-        {
-          "label": "Touch Sensors",
-          "id": "touch-sensors"
-        },
-        {
-          "label": "Distance Sensors",
-          "id": "distance-sensors"
-        },
-        {
-          "label": "IMU",
-          "id": "imu"
-        }
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<b>Sensor not detected:</b> Check wiring and configuration",
+        "<b>Incorrect readings:</b> Calibrate or check for interference",
+        "<b>No response:</b> Test with known colors and check code",
+        "<b>Intermittent data:</b> Secure connections and avoid loose wires",
+        "<b>Unexpected values:</b> Monitor for out-of-range or error codes"
       ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Color Sensor Practice",
+      "description": "Practice these exercises to master color sensor use:",
+      "tasks": [
+        "Create an OpMode that displays color sensor data",
+        "Test sensor response to different colors and lighting",
+        "Calibrate sensors and document the process",
+        "Implement safety checks using color sensors",
+        "Practice troubleshooting common color sensor issues",
+        "Test sensor integration with autonomous code",
+        "Document sensor configuration and calibration"
+      ],
+      "content": "// Practice Exercise: Color Sensor\n// Create an OpMode that displays color sensor data\n// Include calibration and troubleshooting steps\n// Test sensor response to different conditions\n\n@TeleOp(name=\"Color Sensor Test\", group=\"Testing\")\npublic class ColorSensorTestOpMode extends LinearOpMode {\n    private ColorSensor colorSensor;\n    @Override\n    public void runOpMode() {\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Red\", colorSensor.red());\n            telemetry.addData(\"Green\", colorSensor.green());\n            telemetry.addData(\"Blue\", colorSensor.blue());\n            telemetry.update();\n        }\n    }"
     }
   ]
 } 
