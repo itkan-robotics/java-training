@@ -1,0 +1,136 @@
+{
+  "title": "Robot PID Control",
+  "type": "lesson",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Robot PID Control",
+      "content": "Robot PID control extends basic PID principles to multi-axis systems, requiring coordination between different control loops and careful consideration of system interactions. This lesson covers practical implementation of PID control for robot subsystems."
+    },
+    {
+      "type": "text",
+      "title": "Multi-Axis PID Control",
+      "content": "Robots often require multiple PID controllers working together - one for each axis or subsystem. Coordinating these controllers while avoiding interference is crucial for smooth operation."
+    },
+    {
+      "type": "code",
+      "title": "Multi-Axis PID Controller",
+      "language": "java",
+      "content": "public class MultiAxisPIDController {\n    private PIDController[] controllers;\n    private String[] axisNames;\n    private boolean[] enabled;\n    private double[] setpoints;\n    private double[] outputs;\n    \n    public MultiAxisPIDController(String[] axisNames, double[][] gains) {\n        this.axisNames = axisNames;\n        this.controllers = new PIDController[axisNames.length];\n        this.enabled = new boolean[axisNames.length];\n        this.setpoints = new double[axisNames.length];\n        this.outputs = new double[axisNames.length];\n        \n        for (int i = 0; i < axisNames.length; i++) {\n            controllers[i] = new PIDController(gains[i][0], gains[i][1], gains[i][2]);\n            enabled[i] = true;\n        }\n    }\n    \n    /**\n     * Calculate outputs for all axes\n     */\n    public double[] calculate(double[] currentValues, double currentTime) {\n        for (int i = 0; i < controllers.length; i++) {\n            if (enabled[i]) {\n                outputs[i] = controllers[i].calculate(currentValues[i], currentTime);\n            } else {\n                outputs[i] = 0.0;\n            }\n        }\n        return outputs.clone();\n    }\n    \n    /**\n     * Set setpoints for all axes\n     */\n    public void setSetpoints(double[] setpoints) {\n        for (int i = 0; i < Math.min(setpoints.length, this.setpoints.length); i++) {\n            this.setpoints[i] = setpoints[i];\n            controllers[i].setSetpoint(setpoints[i]);\n        }\n    }\n    \n    /**\n     * Enable or disable specific axis\n     */\n    public void setAxisEnabled(int axisIndex, boolean enabled) {\n        if (axisIndex >= 0 && axisIndex < this.enabled.length) {\n            this.enabled[axisIndex] = enabled;\n            if (!enabled) {\n                controllers[axisIndex].reset();\n            }\n        }\n    }\n    \n    /**\n     * Update gains for specific axis\n     */\n    public void setAxisGains(int axisIndex, double kp, double ki, double kd) {\n        if (axisIndex >= 0 && axisIndex < controllers.length) {\n            controllers[axisIndex].setGains(kp, ki, kd);\n        }\n    }\n    \n    /**\n     * Reset all controllers\n     */\n    public void reset() {\n        for (PIDController controller : controllers) {\n            controller.reset();\n        }\n    }\n    \n    public double[] getOutputs() { return outputs.clone(); }\n    public double[] getSetpoints() { return setpoints.clone(); }\n    public boolean[] getEnabled() { return enabled.clone(); }\n    public String[] getAxisNames() { return axisNames.clone(); }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Drivetrain PID Control",
+      "content": "Drivetrain PID control is essential for precise robot positioning and smooth movement. This involves controlling both linear and angular velocity while maintaining stability."
+    },
+    {
+      "type": "code",
+      "title": "Drivetrain PID Controller",
+      "language": "java",
+      "content": "public class DrivetrainPIDController extends LinearOpMode {\n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    private IMU imu;\n    \n    // PID controllers for different control modes\n    private PIDController distanceController;\n    private PIDController headingController;\n    private PIDController velocityController;\n    \n    // Robot state\n    private double targetDistance = 0.0;\n    private double targetHeading = 0.0;\n    private double currentDistance = 0.0;\n    private double currentHeading = 0.0;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        imu = hardwareMap.get(IMU.class, \"imu\");\n        \n        // Initialize IMU\n        IMU.Parameters parameters = new IMU.Parameters(\n            new RevHubOrientationOnRobot(\n                RevHubOrientationOnRobot.LogoFacingDirection.UP,\n                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD\n            )\n        );\n        imu.initialize(parameters);\n        \n        // Initialize PID controllers\n        distanceController = new PIDController(0.1, 0.0, 0.01); // Distance control\n        headingController = new PIDController(0.5, 0.0, 0.1);   // Heading control\n        velocityController = new PIDController(0.8, 0.1, 0.05); // Velocity control\n        \n        waitForStart();\n        \n        // Example: Drive to position with heading control\n        driveToPosition(24.0, 0.0); // Drive 24 inches forward\n    }\n    \n    /**\n     * Drive to a specific position while maintaining heading\n     */\n    public void driveToPosition(double targetDistance, double targetHeading) {\n        this.targetDistance = targetDistance;\n        this.targetHeading = targetHeading;\n        \n        distanceController.setSetpoint(targetDistance);\n        headingController.setSetpoint(targetHeading);\n        \n        double startTime = getRuntime();\n        \n        while (opModeIsActive()) {\n            double currentTime = getRuntime();\n            \n            // Update current state\n            updateRobotState();\n            \n            // Check if target reached\n            double distanceError = Math.abs(targetDistance - currentDistance);\n            double headingError = Math.abs(targetHeading - currentHeading);\n            \n            if (distanceError < 1.0 && headingError < 0.1) { // 1 inch, 0.1 rad tolerance\n                stopMotors();\n                break;\n            }\n            \n            // Calculate PID outputs\n            double distanceOutput = distanceController.calculate(currentDistance, currentTime);\n            double headingOutput = headingController.calculate(currentHeading, currentTime);\n            \n            // Combine outputs for differential drive\n            double leftPower = distanceOutput - headingOutput;\n            double rightPower = distanceOutput + headingOutput;\n            \n            // Apply power limits\n            leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n            rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n            \n            leftMotor.setPower(leftPower);\n            rightMotor.setPower(rightPower);\n            \n            // Telemetry\n            telemetry.addData(\"Target Distance\", targetDistance);\n            telemetry.addData(\"Current Distance\", currentDistance);\n            telemetry.addData(\"Distance Error\", distanceError);\n            telemetry.addData(\"Target Heading\", Math.toDegrees(targetHeading));\n            telemetry.addData(\"Current Heading\", Math.toDegrees(currentHeading));\n            telemetry.addData(\"Heading Error\", Math.toDegrees(headingError));\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.update();\n            \n            sleep(50); // 20Hz control loop\n        }\n    }\n    \n    private void updateRobotState() {\n        // Get current sensor readings\n        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();\n        currentHeading = orientation.getYaw(AngleUnit.RADIANS);\n        \n        // Update distance (simplified - would use odometry)\n        // In practice, you'd integrate velocity or use encoders\n        currentDistance += (leftMotor.getPower() + rightMotor.getPower()) / 2.0 * 0.05; // Simplified\n    }\n    \n    private void stopMotors() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Arm and Mechanism PID Control",
+      "content": "Arms and other mechanisms require precise positioning control. PID controllers for these systems must handle varying loads and mechanical constraints."
+    },
+    {
+      "type": "code",
+      "title": "Arm PID Controller",
+      "language": "java",
+      "content": "public class ArmPIDController {\n    private DcMotor armMotor;\n    private PIDController positionController;\n    private PIDController velocityController;\n    \n    // Arm parameters\n    private double gearRatio;\n    private double encoderTicksPerRevolution;\n    private double maxPosition;\n    private double minPosition;\n    \n    // Control state\n    private double targetPosition;\n    private double currentPosition;\n    private boolean positionControlEnabled = true;\n    \n    public ArmPIDController(DcMotor armMotor, double gearRatio, \n                           double encoderTicksPerRevolution, \n                           double minPosition, double maxPosition) {\n        this.armMotor = armMotor;\n        this.gearRatio = gearRatio;\n        this.encoderTicksPerRevolution = encoderTicksPerRevolution;\n        this.minPosition = minPosition;\n        this.maxPosition = maxPosition;\n        \n        // Initialize PID controllers\n        positionController = new PIDController(0.01, 0.0, 0.001); // Position control\n        velocityController = new PIDController(0.5, 0.1, 0.05);   // Velocity control\n        \n        // Set motor mode\n        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n    }\n    \n    /**\n     * Set target position for the arm\n     */\n    public void setTargetPosition(double position) {\n        // Clamp position within limits\n        targetPosition = Math.max(minPosition, Math.min(maxPosition, position));\n        positionController.setSetpoint(targetPosition);\n    }\n    \n    /**\n     * Update arm control\n     */\n    public void update(double currentTime) {\n        // Get current position\n        currentPosition = getCurrentPosition();\n        \n        if (positionControlEnabled) {\n            // Position control mode\n            double positionOutput = positionController.calculate(currentPosition, currentTime);\n            \n            // Convert to motor power\n            double motorPower = positionOutput;\n            motorPower = Math.max(-1.0, Math.min(1.0, motorPower));\n            \n            armMotor.setPower(motorPower);\n        }\n    }\n    \n    /**\n     * Get current arm position in encoder ticks\n     */\n    public double getCurrentPosition() {\n        return armMotor.getCurrentPosition();\n    }\n    \n    /**\n     * Get current arm position in degrees\n     */\n    public double getCurrentPositionDegrees() {\n        double ticks = getCurrentPosition();\n        return (ticks / encoderTicksPerRevolution) * 360.0 / gearRatio;\n    }\n    \n    /**\n     * Check if arm is at target position\n     */\n    public boolean isAtTarget(double tolerance) {\n        return Math.abs(targetPosition - currentPosition) < tolerance;\n    }\n    \n    /**\n     * Enable or disable position control\n     */\n    public void setPositionControlEnabled(boolean enabled) {\n        positionControlEnabled = enabled;\n        if (!enabled) {\n            armMotor.setPower(0);\n            positionController.reset();\n        }\n    }\n    \n    /**\n     * Set position control gains\n     */\n    public void setPositionGains(double kp, double ki, double kd) {\n        positionController.setGains(kp, ki, kd);\n    }\n    \n    /**\n     * Reset arm to home position\n     */\n    public void goToHome() {\n        setTargetPosition(0.0);\n    }\n    \n    /**\n     * Emergency stop\n     */\n    public void emergencyStop() {\n        armMotor.setPower(0);\n        positionControlEnabled = false;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "PID Tuning for Robot Systems",
+      "content": "Tuning PID controllers for robot systems requires understanding the specific dynamics of each subsystem and their interactions."
+    },
+    {
+      "type": "list",
+      "title": "Robot PID Tuning Guidelines",
+      "items": [
+        "Tune each axis independently before coordinating",
+        "Start with conservative gains and increase gradually",
+        "Consider mechanical constraints and safety limits",
+        "Test under various load conditions",
+        "Monitor for oscillations and instability",
+        "Use proper anti-windup protection",
+        "Validate performance in competition conditions"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "PID Tuning Helper",
+      "language": "java",
+      "content": "public class PIDTuningHelper {\n    \n    /**\n     * Auto-tune PID controller using step response\n     */\n    public static PIDGains autoTuneStepResponse(SystemResponse response) {\n        // Analyze step response to find system characteristics\n        double deadTime = response.getDeadTime();\n        double timeConstant = response.getTimeConstant();\n        double steadyStateValue = response.getSteadyStateValue();\n        \n        // Calculate gains using Ziegler-Nichols method\n        double kp = 1.2 * timeConstant / (deadTime * steadyStateValue);\n        double ki = kp / (2.0 * deadTime);\n        double kd = kp * 0.5 * deadTime;\n        \n        return new PIDGains(kp, ki, kd);\n    }\n    \n    /**\n     * Calculate conservative starting gains\n     */\n    public static PIDGains getConservativeGains(double maxOutput, double maxError) {\n        // Conservative gains based on system limits\n        double kp = 0.1 * maxOutput / maxError;\n        double ki = 0.01 * kp;\n        double kd = 0.001 * kp;\n        \n        return new PIDGains(kp, ki, kd);\n    }\n    \n    /**\n     * Analyze system response for tuning\n     */\n    public static class SystemResponse {\n        private double[] timeData;\n        private double[] responseData;\n        private double stepInput;\n        \n        public SystemResponse(double[] timeData, double[] responseData, double stepInput) {\n            this.timeData = timeData;\n            this.responseData = responseData;\n            this.stepInput = stepInput;\n        }\n        \n        public double getDeadTime() {\n            // Find time when response first starts to change\n            double threshold = 0.05 * stepInput;\n            for (int i = 0; i < responseData.length; i++) {\n                if (responseData[i] > threshold) {\n                    return timeData[i];\n                }\n            }\n            return 0.0;\n        }\n        \n        public double getTimeConstant() {\n            // Find time to reach 63.2% of final value\n            double targetValue = 0.632 * getSteadyStateValue();\n            for (int i = 0; i < responseData.length; i++) {\n                if (responseData[i] >= targetValue) {\n                    return timeData[i] - getDeadTime();\n                }\n            }\n            return 1.0; // Default value\n        }\n        \n        public double getSteadyStateValue() {\n            // Average of last 10% of data points\n            int startIndex = (int)(responseData.length * 0.9);\n            double sum = 0.0;\n            for (int i = startIndex; i < responseData.length; i++) {\n                sum += responseData[i];\n            }\n            return sum / (responseData.length - startIndex);\n        }\n    }\n    \n    public static class PIDGains {\n        public final double kp, ki, kd;\n        \n        public PIDGains(double kp, double ki, double kd) {\n            this.kp = kp;\n            this.ki = ki;\n            this.kd = kd;\n        }\n        \n        @Override\n        public String toString() {\n            return String.format(\"P: %.4f, I: %.4f, D: %.4f\", kp, ki, kd);\n        }\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Robot PID Safety Guidelines",
+      "content": "When implementing robot PID control:",
+      "items": [
+        "Always implement emergency stop functionality",
+        "Set reasonable output limits for all axes",
+        "Monitor motor temperatures and current draw",
+        "Test in a safe environment before competition",
+        "Use proper mechanical stops and limits",
+        "Implement software limits for all mechanisms",
+        "Have manual override capabilities"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Robot PID Issues",
+      "content": "Common problems in robot PID control and their solutions:"
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "Mechanical binding: Check for physical obstructions and alignment",
+        "Encoder issues: Verify encoder connections and calibration",
+        "Power supply problems: Ensure adequate current capacity",
+        "Interference between axes: Tune controllers independently first",
+        "Load variations: Test under different load conditions",
+        "Temperature effects: Monitor and compensate for temperature changes",
+        "Communication delays: Optimize control loop frequency"
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Multi-Axis PID Control",
+      "description": "Implement a multi-axis PID controller for a simple robot system.",
+      "tasks": [
+        "Create a multi-axis PID controller class",
+        "Implement independent axis control",
+        "Add coordination between axes",
+        "Test with different setpoint combinations",
+        "Implement safety features and limits"
+      ],
+      "content": "// Example implementation\npublic class RobotPIDController {\n    // Your implementation here\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": "Explore these related topics to expand your knowledge:",
+      "items": [
+        "<a href=\"../advanced-movement-control/advanced-movement-control.json\">Advanced Movement Control</a> - Kinematics and dynamics",
+        "<a href=\"../pid-control/pid-control.json\">PID Control</a> - Closed-loop control systems",
+        "<a href=\"../motion-profiling/motion-profiling.json\">Motion Profiling</a> - Advanced trajectory planning",
+        "<a href=\"../advanced-control-theory/advanced-control-theory.json\">Advanced Control Theory</a> - Mathematical foundations",
+        "<a href=\"../../motors/motor-encoders.json\">Motor Encoders</a> - Position feedback systems"
+      ]
+    },
+    {
+      "type": "emphasis-box",
+      "title": "External Resources",
+      "content": "Additional resources for robot PID control:",
+      "items": [
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/robot-pid-control.html\" target=\"_blank\">gm0: Robot PID Control</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/multi-axis-control.html\" target=\"_blank\">gm0: Multi-Axis Control</a>",
+        "<a href=\"https://docs.revrobotics.com/duo-control/duo-control-programming/robot-control\" target=\"_blank\">REV: Robot Control Guide</a>",
+        "<a href=\"https://www.chiefdelphi.com/t/paper-multi-axis-pid-control/163086\" target=\"_blank\">Chief Delphi: Multi-Axis PID Control</a>"
+      ]
+    }
+  ]
+} 

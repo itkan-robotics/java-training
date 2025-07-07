@@ -1,0 +1,41 @@
+{
+  "title": "Road Runner Trajectories",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is a Trajectory?",
+      "content": "A trajectory is a planned path that your robot will follow during autonomous. Road Runner lets you define these paths with high precision, including straight lines, curves, and complex chains of movement.<br><br>More info: <a href=\"https://acmerobotics.github.io/road-runner-docs/trajectories/overview/\" target=\"_blank\">Road Runner Docs: Trajectories</a>"
+    },
+    {
+      "type": "code",
+      "title": "Building a Simple Trajectory",
+      "content": "// Build a trajectory that moves forward 36 inches\nTrajectory trajectory = drive.trajectoryBuilder(new Pose2d())\n    .forward(36)\n    .build();\n\n// Follow the trajectory\ndrive.followTrajectory(trajectory);"
+    },
+    {
+      "type": "text",
+      "title": "Chaining Trajectories and Using Splines",
+      "content": "You can chain multiple trajectories together for complex routines. Splines allow for smooth, curved paths.<br><br>Example of chaining and splines:<br><br>See: <a href=\"https://acmerobotics.github.io/road-runner-docs/trajectories/trajectory-builder/\" target=\"_blank\">Road Runner Docs: Trajectory Builder</a>"
+    },
+    {
+      "type": "code",
+      "title": "Chaining and Splines Example",
+      "content": "// Start at (0,0) heading 0\nTrajectory traj1 = drive.trajectoryBuilder(new Pose2d())\n    .splineTo(new Vector2d(24, 24), Math.toRadians(45))\n    .build();\n\nTrajectory traj2 = drive.trajectoryBuilder(traj1.end())\n    .forward(12)\n    .build();\n\ndrive.followTrajectory(traj1);\ndrive.followTrajectory(traj2);"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices for Trajectory Design",
+      "content": "- Break up your autonomous into small, reusable methods.<br>- Avoid writing all code in a single large file.<br>- Test each trajectory separately before combining.<br><br>Best practices: <a href=\"https://gm0.org/en/latest/docs/software/advanced/roadrunner/trajectories.html#best-practices\" target=\"_blank\">gm0: Trajectory Best Practices</a>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Create and Chain Trajectories",
+      "description": "Write code to build two trajectories: one that moves forward 24 inches, then another that turns 90 degrees and moves forward 12 inches. Chain them together and follow both.",
+      "tasks": [
+        "Build the first trajectory to move forward 24 inches.",
+        "Build the second trajectory to turn 90 degrees and move forward 12 inches.",
+        "Chain and follow both trajectories."
+      ],
+      "content": "// Your code here"
+    }
+  ]
+} 

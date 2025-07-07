@@ -296,6 +296,111 @@
           ]
         },
         {
+          "id": "android-studio-advanced-movement-control",
+          "label": "Advanced Movement Control",
+          "description": "Advanced robot movement control and control theory",
+          "items": [
+            { 
+              "id": "advanced-movement-control", 
+              "label": "Advanced Movement Control", 
+              "file": "data/ftc/android-studio/advanced-movement-control/advanced-movement-control.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            { 
+              "id": "pid-control", 
+              "label": "PID Control", 
+              "file": "data/ftc/android-studio/advanced-movement-control/pid-control.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
+            },
+            { 
+              "id": "robot-pid-control", 
+              "label": "Robot PID Control", 
+              "file": "data/ftc/android-studio/advanced-movement-control/robot-pid-control.json",
+              "difficulty": "advanced",
+              "duration": "80 min"
+            },
+            { 
+              "id": "motion-profiling", 
+              "label": "Motion Profiling", 
+              "file": "data/ftc/android-studio/advanced-movement-control/motion-profiling.json",
+              "difficulty": "advanced",
+              "duration": "70 min"
+            },
+            { 
+              "id": "advanced-control-theory", 
+              "label": "Advanced Control Theory", 
+              "file": "data/ftc/android-studio/advanced-movement-control/advanced-control-theory.json",
+              "difficulty": "advanced",
+              "duration": "90 min"
+            }
+          ]
+        },
+        {
+          "id": "android-studio-odometry",
+          "label": "Odometry",
+          "description": "Advanced odometry techniques for FTC",
+          "items": [
+            { 
+              "id": "intro-to-odometry", 
+              "label": "Introduction to Odometry", 
+              "file": "data/ftc/android-studio/odometry/intro-to-odometry.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "dead-wheel-encoders", 
+              "label": "Dead Wheel Encoders", 
+              "file": "data/ftc/android-studio/odometry/dead-wheel-encoders.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "three-wheel-odometry", 
+              "label": "Three-Wheel Odometry", 
+              "file": "data/ftc/android-studio/odometry/three-wheel-odometry.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "gobilda-pinpoint", 
+              "label": "Gobilda Pinpoint", 
+              "file": "data/ftc/android-studio/odometry/gobilda-pinpoint.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            }
+          ]
+        },
+        {
+          "id": "android-studio-path-planning-roadrunner",
+          "label": "Road Runner Path Planning",
+          "description": "Motion planning and trajectory following with Road Runner",
+          "items": [
+            {
+              "id": "intro-to-roadrunner",
+              "label": "Introduction to Road Runner",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/intro-to-roadrunner.json",
+              "difficulty": "advanced",
+              "duration": "40 min"
+            },
+            {
+              "id": "roadrunner-trajectories",
+              "label": "Road Runner Trajectories",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-trajectories.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            {
+              "id": "roadrunner-advanced-tuning",
+              "label": "Advanced Road Runner Tuning",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-advanced-tuning.json",
+              "difficulty": "advanced",
+              "duration": "50 min"
+            }
+          ]
+        },
+        {
           "id": "android-studio-vision",
           "label": "Computer Vision",
           "description": "Advanced computer vision techniques for FTC",
@@ -315,14 +420,14 @@
   "metadata": {
     "version": "2.0.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 25,
+    "totalLessons": 30,
     "difficultyLevels": {
       "beginner": 15,
       "intermediate": 8,
-      "advanced": 2
+      "advanced": 7
     },
-    "estimatedDuration": "12 hours",
+    "estimatedDuration": "16 hours",
     "prerequisites": ["java-training"],
-    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop"]
+    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop", "control-theory"]
   }
 } 

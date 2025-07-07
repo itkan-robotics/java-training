@@ -1,0 +1,134 @@
+{
+  "title": "Advanced Control Theory",
+  "type": "lesson",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Advanced Control Theory",
+      "content": "Advanced control theory provides mathematical foundations for sophisticated robot control systems. This lesson covers state-space modeling, feedforward control, model predictive control, and robust control methods used in high-performance robotics."
+    },
+    {
+      "type": "text",
+      "title": "State-Space Modeling",
+      "content": "State-space models represent dynamic systems using state variables, providing a powerful framework for analysis and control design. This approach enables handling of multi-input, multi-output systems and complex dynamics."
+    },
+    {
+      "type": "code",
+      "title": "State-Space Model Implementation",
+      "language": "java",
+      "content": "public class StateSpaceModel {\n    private double[][] A; // State matrix\n    private double[][] B; // Input matrix\n    private double[][] C; // Output matrix\n    private double[][] D; // Feedthrough matrix\n    \n    private int stateDimension;\n    private int inputDimension;\n    private int outputDimension;\n    \n    public StateSpaceModel(double[][] A, double[][] B, double[][] C, double[][] D) {\n        this.A = A;\n        this.B = B;\n        this.C = C;\n        this.D = D;\n        \n        this.stateDimension = A.length;\n        this.inputDimension = B[0].length;\n        this.outputDimension = C.length;\n    }\n    \n    /**\n     * Simulate system response\n     */\n    public double[] simulate(double[] initialState, double[] input, double dt, int steps) {\n        double[] state = initialState.clone();\n        double[] output = new double[outputDimension];\n        \n        for (int i = 0; i < steps; i++) {\n            // Update state: x(k+1) = Ax(k) + Bu(k)\n            state = updateState(state, input, dt);\n            \n            // Calculate output: y(k) = Cx(k) + Du(k)\n            output = calculateOutput(state, input);\n        }\n        \n        return output;\n    }\n    \n    /**\n     * Update state using Euler integration\n     */\n    private double[] updateState(double[] currentState, double[] input, double dt) {\n        double[] newState = new double[stateDimension];\n        \n        // ẋ = Ax + Bu\n        double[] stateDerivative = new double[stateDimension];\n        \n        // Calculate Ax\n        for (int i = 0; i < stateDimension; i++) {\n            for (int j = 0; j < stateDimension; j++) {\n                stateDerivative[i] += A[i][j] * currentState[j];\n            }\n        }\n        \n        // Add Bu\n        for (int i = 0; i < stateDimension; i++) {\n            for (int j = 0; j < inputDimension; j++) {\n                stateDerivative[i] += B[i][j] * input[j];\n            }\n        }\n        \n        // Euler integration: x(k+1) = x(k) + dt * ẋ(k)\n        for (int i = 0; i < stateDimension; i++) {\n            newState[i] = currentState[i] + dt * stateDerivative[i];\n        }\n        \n        return newState;\n    }\n    \n    /**\n     * Calculate output\n     */\n    private double[] calculateOutput(double[] state, double[] input) {\n        double[] output = new double[outputDimension];\n        \n        // Calculate Cx\n        for (int i = 0; i < outputDimension; i++) {\n            for (int j = 0; j < stateDimension; j++) {\n                output[i] += C[i][j] * state[j];\n            }\n        }\n        \n        // Add Du\n        for (int i = 0; i < outputDimension; i++) {\n            for (int j = 0; j < inputDimension; j++) {\n                output[i] += D[i][j] * input[j];\n            }\n        }\n        \n        return output;\n    }\n    \n    /**\n     * Check system controllability\n     */\n    public boolean isControllable() {\n        // Simplified controllability check for 2x2 systems\n        if (stateDimension == 2 && inputDimension == 1) {\n            double det = A[0][0] * A[1][1] - A[0][1] * A[1][0];\n            double trace = A[0][0] + A[1][1];\n            \n            // System is controllable if B is not zero and system is not degenerate\n            return Math.abs(B[0][0]) > 1e-6 && Math.abs(B[1][0]) > 1e-6 && \n                   Math.abs(det) > 1e-6 && Math.abs(trace) > 1e-6;\n        }\n        return true; // Assume controllable for other cases\n    }\n    \n    /**\n     * Check system observability\n     */\n    public boolean isObservable() {\n        // Simplified observability check for 2x2 systems\n        if (stateDimension == 2 && outputDimension == 1) {\n            double det = A[0][0] * A[1][1] - A[0][1] * A[1][0];\n            double trace = A[0][0] + A[1][1];\n            \n            // System is observable if C is not zero and system is not degenerate\n            return Math.abs(C[0][0]) > 1e-6 && Math.abs(C[0][1]) > 1e-6 && \n                   Math.abs(det) > 1e-6 && Math.abs(trace) > 1e-6;\n        }\n        return true; // Assume observable for other cases\n    }\n    \n    public int getStateDimension() { return stateDimension; }\n    public int getInputDimension() { return inputDimension; }\n    public int getOutputDimension() { return outputDimension; }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Feedforward Control",
+      "content": "Feedforward control uses knowledge of system dynamics to predict and compensate for disturbances and desired responses. This improves tracking performance and reduces the burden on feedback controllers."
+    },
+    {
+      "type": "code",
+      "title": "Feedforward Controller Implementation",
+      "language": "java",
+      "content": "public class FeedforwardController {\n    private double mass;\n    private double damping;\n    private double springConstant;\n    private double gearRatio;\n    private double wheelRadius;\n    \n    public FeedforwardController(double mass, double damping, double springConstant, \n                                double gearRatio, double wheelRadius) {\n        this.mass = mass;\n        this.damping = damping;\n        this.springConstant = springConstant;\n        this.gearRatio = gearRatio;\n        this.wheelRadius = wheelRadius;\n    }\n    \n    /**\n     * Calculate feedforward control for position tracking\n     */\n    public double calculatePositionFeedforward(double desiredPosition, double desiredVelocity, \n                                              double desiredAcceleration) {\n        // Feedforward based on desired trajectory\n        // u_ff = m*a_des + b*v_des + k*x_des\n        \n        double inertia = mass * wheelRadius * wheelRadius / (gearRatio * gearRatio);\n        double feedforward = inertia * desiredAcceleration + \n                            damping * desiredVelocity + \n                            springConstant * desiredPosition;\n        \n        return feedforward;\n    }\n    \n    /**\n     * Calculate feedforward control for velocity tracking\n     */\n    public double calculateVelocityFeedforward(double desiredVelocity, double desiredAcceleration) {\n        // Feedforward for velocity control\n        // u_ff = m*a_des + b*v_des\n        \n        double inertia = mass * wheelRadius * wheelRadius / (gearRatio * gearRatio);\n        double feedforward = inertia * desiredAcceleration + damping * desiredVelocity;\n        \n        return feedforward;\n    }\n    \n    /**\n     * Calculate feedforward for motion profile\n     */\n    public double[] calculateMotionProfileFeedforward(double[] timeArray, double[] positionArray) {\n        double[] feedforwardArray = new double[timeArray.length];\n        \n        for (int i = 0; i < timeArray.length; i++) {\n            double desiredPosition = positionArray[i];\n            double desiredVelocity = 0.0;\n            double desiredAcceleration = 0.0;\n            \n            // Calculate velocity and acceleration using finite differences\n            if (i > 0 && i < timeArray.length - 1) {\n                double dt = timeArray[i+1] - timeArray[i-1];\n                desiredVelocity = (positionArray[i+1] - positionArray[i-1]) / dt;\n                desiredAcceleration = (positionArray[i+1] - 2*positionArray[i] + positionArray[i-1]) / (dt * dt);\n            }\n            \n            feedforwardArray[i] = calculatePositionFeedforward(desiredPosition, desiredVelocity, desiredAcceleration);\n        }\n        \n        return feedforwardArray;\n    }\n    \n    /**\n     * Update system parameters\n     */\n    public void updateParameters(double mass, double damping, double springConstant) {\n        this.mass = mass;\n        this.damping = damping;\n        this.springConstant = springConstant;\n    }\n    \n    public double getMass() { return mass; }\n    public double getDamping() { return damping; }\n    public double getSpringConstant() { return springConstant; }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Model Predictive Control",
+      "content": "Model Predictive Control (MPC) solves an optimization problem at each time step to find the best control sequence. This enables handling of constraints and complex objectives while maintaining performance."
+    },
+    {
+      "type": "code",
+      "title": "Simple MPC Implementation",
+      "language": "java",
+      "content": "public class SimpleMPC {\n    private int predictionHorizon;\n    private double[][] Q; // State cost matrix\n    private double[][] R; // Input cost matrix\n    private double[] stateWeights;\n    private double[] inputWeights;\n    \n    public SimpleMPC(int predictionHorizon, double[] stateWeights, double[] inputWeights) {\n        this.predictionHorizon = predictionHorizon;\n        this.stateWeights = stateWeights;\n        this.inputWeights = inputWeights;\n        \n        // Initialize cost matrices\n        int stateDim = stateWeights.length;\n        int inputDim = inputWeights.length;\n        \n        Q = new double[stateDim][stateDim];\n        R = new double[inputDim][inputDim];\n        \n        for (int i = 0; i < stateDim; i++) {\n            Q[i][i] = stateWeights[i];\n        }\n        \n        for (int i = 0; i < inputDim; i++) {\n            R[i][i] = inputWeights[i];\n        }\n    }\n    \n    /**\n     * Calculate optimal control input\n     */\n    public double[] calculateControl(double[] currentState, double[] targetState) {\n        // Simplified MPC implementation\n        // In practice, this would solve a quadratic programming problem\n        \n        // For this example, we'll use a simple proportional control with feedforward\n        double[] control = new double[inputWeights.length];\n        \n        for (int i = 0; i < control.length; i++) {\n            // Proportional control\n            double error = targetState[i] - currentState[i];\n            control[i] = error * stateWeights[i];\n            \n            // Add feedforward term\n            control[i] += targetState[i] * 0.1; // Simple feedforward\n        }\n        \n        return control;\n    }\n    \n    /**\n     * Predict future states\n     */\n    public double[][] predictStates(double[] currentState, double[] controlSequence, double dt) {\n        double[][] predictedStates = new double[predictionHorizon][currentState.length];\n        \n        // Copy current state\n        for (int i = 0; i < currentState.length; i++) {\n            predictedStates[0][i] = currentState[i];\n        }\n        \n        // Predict future states using simple model\n        for (int k = 1; k < predictionHorizon; k++) {\n            double[] control = k < controlSequence.length ? \n                new double[]{controlSequence[k]} : new double[]{0};\n            \n            // Simple first-order model: x(k+1) = x(k) + u(k)*dt\n            for (int i = 0; i < currentState.length; i++) {\n                predictedStates[k][i] = predictedStates[k-1][i] + control[0] * dt;\n            }\n        }\n        \n        return predictedStates;\n    }\n    \n    /**\n     * Calculate cost for a control sequence\n     */\n    public double calculateCost(double[] currentState, double[] controlSequence, \n                               double[] targetState, double dt) {\n        double[][] predictedStates = predictStates(currentState, controlSequence, dt);\n        double totalCost = 0.0;\n        \n        for (int k = 0; k < predictionHorizon; k++) {\n            // State cost\n            double[] stateError = new double[currentState.length];\n            for (int i = 0; i < currentState.length; i++) {\n                stateError[i] = targetState[i] - predictedStates[k][i];\n            }\n            \n            double stateCost = 0.0;\n            for (int i = 0; i < currentState.length; i++) {\n                for (int j = 0; j < currentState.length; j++) {\n                    stateCost += stateError[i] * Q[i][j] * stateError[j];\n                }\n            }\n            \n            // Input cost\n            double inputCost = 0.0;\n            if (k < controlSequence.length) {\n                inputCost = controlSequence[k] * R[0][0] * controlSequence[k];\n            }\n            \n            totalCost += stateCost + inputCost;\n        }\n        \n        return totalCost;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Robust Control Methods",
+      "content": "Robust control methods ensure system performance despite uncertainties, disturbances, and parameter variations. These methods provide guaranteed performance under various operating conditions."
+    },
+    {
+      "type": "code",
+      "title": "Robust PID Controller",
+      "language": "java",
+      "content": "public class RobustPIDController {\n    private double kp, ki, kd;\n    private double setpoint;\n    private double integral = 0.0;\n    private double lastError = 0.0;\n    private double lastTime = 0.0;\n    \n    // Robust control parameters\n    private double uncertaintyBound = 0.2; // 20% uncertainty\n    private double disturbanceBound = 0.1; // Disturbance bound\n    private double adaptationRate = 0.01;  // Adaptation rate\n    \n    public RobustPIDController(double kp, double ki, double kd) {\n        this.kp = kp;\n        this.ki = ki;\n        this.kd = kd;\n    }\n    \n    /**\n     * Calculate robust control output\n     */\n    public double calculate(double currentValue, double currentTime) {\n        double error = setpoint - currentValue;\n        \n        // Standard PID terms\n        double pTerm = kp * error;\n        \n        double iTerm = 0.0;\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            integral += error * deltaTime;\n            iTerm = ki * integral;\n        }\n        \n        double dTerm = 0.0;\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            double errorRate = (error - lastError) / deltaTime;\n            dTerm = kd * errorRate;\n        }\n        \n        // Robust control term\n        double robustTerm = calculateRobustTerm(error, currentTime);\n        \n        // Update for next iteration\n        lastError = error;\n        lastTime = currentTime;\n        \n        return pTerm + iTerm + dTerm + robustTerm;\n    }\n    \n    /**\n     * Calculate robust control term\n     */\n    private double calculateRobustTerm(double error, double currentTime) {\n        // Simple robust control using sliding mode concept\n        double sign = Math.signum(error);\n        double robustGain = uncertaintyBound + disturbanceBound;\n        \n        return robustGain * sign;\n    }\n    \n    /**\n     * Adaptive parameter adjustment\n     */\n    public void adaptParameters(double error, double currentTime) {\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            \n            // Simple adaptation rule\n            double adaptation = adaptationRate * error * deltaTime;\n            kp += adaptation;\n            ki += adaptation * 0.1;\n            kd += adaptation * 0.01;\n            \n            // Ensure parameters stay positive\n            kp = Math.max(0.001, kp);\n            ki = Math.max(0.0, ki);\n            kd = Math.max(0.0, kd);\n        }\n    }\n    \n    public void setSetpoint(double setpoint) {\n        this.setpoint = setpoint;\n        integral = 0.0; // Reset integral when setpoint changes\n    }\n    \n    public void reset() {\n        integral = 0.0;\n        lastError = 0.0;\n        lastTime = 0.0;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Control System Analysis",
+      "content": "Analyzing control system performance, stability, and characteristics using mathematical tools and simulation."
+    },
+    {
+      "type": "code",
+      "title": "Stability Analysis Tools",
+      "language": "java",
+      "content": "public class StabilityAnalysis {\n    \n    /**\n     * Check if a matrix is stable (all eigenvalues have negative real parts)\n     */\n    public static boolean isMatrixStable(double[][] A) {\n        // Simplified stability check for 2x2 matrices\n        if (A.length != 2 || A[0].length != 2) {\n            return false;\n        }\n        \n        // Calculate trace and determinant\n        double trace = A[0][0] + A[1][1];\n        double det = A[0][0] * A[1][1] - A[0][1] * A[1][0];\n        \n        // For 2x2 matrices, stability requires trace < 0 and det > 0\n        return trace < 0 && det > 0;\n    }\n    \n    /**\n     * Calculate system poles (eigenvalues of A matrix)\n     */\n    public static double[] calculatePoles(double[][] A) {\n        if (A.length != 2 || A[0].length != 2) {\n            return new double[]{0, 0}; // Simplified for 2x2 matrices\n        }\n        \n        double trace = A[0][0] + A[1][1];\n        double det = A[0][0] * A[1][1] - A[0][1] * A[1][0];\n        \n        // Calculate eigenvalues: λ = (trace ± √(trace² - 4*det)) / 2\n        double discriminant = trace * trace - 4 * det;\n        \n        if (discriminant >= 0) {\n            double sqrtDisc = Math.sqrt(discriminant);\n            return new double[]{\n                (trace + sqrtDisc) / 2,\n                (trace - sqrtDisc) / 2\n            };\n        } else {\n            // Complex conjugate poles\n            double realPart = trace / 2;\n            double imagPart = Math.sqrt(-discriminant) / 2;\n            return new double[]{realPart, realPart}; // Return real parts only\n        }\n    }\n    \n    /**\n     * Calculate system response characteristics\n     */\n    public static SystemCharacteristics analyzeSystem(double[][] A, double[][] B, double[][] C) {\n        double[] poles = calculatePoles(A);\n        boolean isStable = isMatrixStable(A);\n        \n        // Calculate natural frequency and damping ratio (for second-order systems)\n        double naturalFreq = 0.0;\n        double dampingRatio = 0.0;\n        \n        if (poles.length >= 2) {\n            double realPart = poles[0];\n            double imagPart = Math.abs(poles[1] - poles[0]) / 2;\n            \n            naturalFreq = Math.sqrt(realPart * realPart + imagPart * imagPart);\n            dampingRatio = -realPart / naturalFreq;\n        }\n        \n        return new SystemCharacteristics(isStable, poles, naturalFreq, dampingRatio);\n    }\n    \n    public static class SystemCharacteristics {\n        public final boolean isStable;\n        public final double[] poles;\n        public final double naturalFrequency;\n        public final double dampingRatio;\n        \n        public SystemCharacteristics(boolean isStable, double[] poles, \n                                   double naturalFrequency, double dampingRatio) {\n            this.isStable = isStable;\n            this.poles = poles;\n            this.naturalFrequency = naturalFrequency;\n            this.dampingRatio = dampingRatio;\n        }\n        \n        public void printAnalysis() {\n            System.out.println(\"System Stability Analysis:\");\n            System.out.println(\"Stable: \" + isStable);\n            System.out.println(\"Poles: [\" + poles[0] + \", \" + poles[1] + \"]\");\n            System.out.println(\"Natural Frequency: \" + naturalFrequency);\n            System.out.println(\"Damping Ratio: \" + dampingRatio);\n        }\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Advanced Control Safety Guidelines",
+      "content": "When implementing advanced control methods:",
+      "items": [
+        "Always validate mathematical models before implementation",
+        "Test control algorithms in simulation first",
+        "Implement proper error handling and recovery",
+        "Monitor system performance continuously",
+        "Use conservative parameters initially",
+        "Validate assumptions and constraints",
+        "Test with realistic disturbances and uncertainties"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Advanced Control Issues",
+      "content": "Common problems in advanced control theory and solutions:"
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "Model inaccuracy: Improve system identification procedures",
+        "Computational complexity: Use efficient numerical methods",
+        "Stability issues: Check system poles and adjust controller gains",
+        "Performance degradation: Tune controller parameters",
+        "Constraint violations: Implement proper constraint handling",
+        "Real-time issues: Optimize algorithms for embedded systems",
+        "Parameter uncertainty: Use robust control methods"
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Advanced Control Implementation",
+      "description": "Implement and test advanced control methods.",
+      "tasks": [
+        "Create a state-space model for a simple system",
+        "Implement feedforward control for trajectory tracking",
+        "Design a robust controller for uncertain systems",
+        "Analyze system stability and performance",
+        "Compare different control approaches"
+      ],
+      "content": "// Example implementation\npublic class AdvancedController {\n    // Your implementation here\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": "Explore these related topics to expand your knowledge:",
+      "items": [
+        "<a href=\"../advanced-movement-control/advanced-movement-control.json\">Advanced Movement Control</a> - Kinematics and dynamics",
+        "<a href=\"../pid-control/pid-control.json\">PID Control</a> - Closed-loop control systems",
+        "<a href=\"../robot-pid-control/robot-pid-control.json\">Robot PID Control</a> - Multi-axis coordination",
+        "<a href=\"../motion-profiling/motion-profiling.json\">Motion Profiling</a> - Advanced trajectory planning",
+        "<a href=\"../../sensors/imu.json\">IMU Integration</a> - Orientation and heading control"
+      ]
+    },
+    {
+      "type": "emphasis-box",
+      "title": "External Resources",
+      "content": "Additional resources for advanced control theory:",
+      "items": [
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/state-space.html\" target=\"_blank\">gm0: State Space Control</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/feedforward-control.html\" target=\"_blank\">gm0: Feedforward Control</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/model-predictive-control.html\" target=\"_blank\">gm0: Model Predictive Control</a>",
+        "<a href=\"https://docs.revrobotics.com/duo-control/duo-control-programming/system-analysis\" target=\"_blank\">REV: System Analysis</a>"
+      ]
+    }
+  ]
+} 

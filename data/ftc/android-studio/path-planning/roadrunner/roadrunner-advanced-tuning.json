@@ -1,0 +1,46 @@
+{
+  "title": "Advanced Road Runner Tuning",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Why Tuning is Necessary",
+      "content": "Tuning ensures your robot moves accurately and reliably. Poor tuning can cause overshooting, drifting, or inconsistent paths. Good tuning is essential for competitive autonomous routines.<br><br>Learn more: <a href=\"https://acmerobotics.github.io/road-runner-docs/tuning/overview/\" target=\"_blank\">Road Runner Docs: Tuning Overview</a>"
+    },
+    {
+      "type": "text",
+      "title": "Drive Constants and Their Effects",
+      "content": "Drive constants define how your robot's hardware is modeled in code. These include wheel radius, track width, and gear ratio. Adjusting these values changes how Road Runner calculates movement.<br><br>See: <a href=\"https://gm0.org/en/latest/docs/software/advanced/roadrunner/tuning.html#drive-constants\" target=\"_blank\">gm0: Tuning Drive Constants</a>"
+    },
+    {
+      "type": "code",
+      "title": "Example: Drive Constants",
+      "content": "// Example constants in a drive class\npublic static final double WHEEL_RADIUS = 2; // in inches\npublic static final double GEAR_RATIO = 1.0;\npublic static final double TRACK_WIDTH = 15.0; // in inches"
+    },
+    {
+      "type": "text",
+      "title": "PID Tuning for Translational and Heading Control",
+      "content": "PID controllers help your robot follow paths smoothly. You need to tune both translational (straight-line) and heading (turning) PID values. Adjust each value and observe the robot's response.<br><br>Step-by-step guide: <a href=\"https://acmerobotics.github.io/road-runner-docs/tuning/pid-tuning/\" target=\"_blank\">Road Runner Docs: PID Tuning</a>"
+    },
+    {
+      "type": "code",
+      "title": "Example: PID Coefficients",
+      "content": "// Example PID coefficients\npublic static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);\npublic static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);"
+    },
+    {
+      "type": "text",
+      "title": "Testing and Iterative Improvement",
+      "content": "Test your tuning with small routines. Make one change at a time and observe the effect. Avoid large, monolithic test files—write focused tests for each adjustment.<br><br>More on testing: <a href=\"https://gm0.org/en/latest/docs/software/advanced/roadrunner/tuning.html#testing\" target=\"_blank\">gm0: Tuning and Testing</a>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Tune Your Robot",
+      "description": "Write a test routine to tune your robot's drive constants and PID values. Record your observations after each change.",
+      "tasks": [
+        "Write a test OpMode for tuning drive constants.",
+        "Adjust PID values and observe the robot's movement.",
+        "Document the effect of each change."
+      ],
+      "content": "// Your code here"
+    }
+  ]
+} 

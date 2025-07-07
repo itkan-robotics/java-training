@@ -44,17 +44,27 @@
 │   ├── advanced-movement-control/
 │   │   ├── advanced-movement-control.json
 │   │   ├── pid-control.json
-│   │   ├── position-control.json
-│   │   ├── velocity-control.json
-│   │   ├── heading-control.json
+│   │   ├── robot-pid-control.json
 │   │   ├── motion-profiling.json
-│   │   ├── odometry.json
+│   │   └── advanced-control-theory.json
+|   ├── odometry/
+│   │   ├── intro-to-odometry.json
 │   │   ├── dead-wheel-encoders.json
 │   │   ├── three-wheel-odometry.json
-│   │   ├── path-planning.json
-│   │   ├── advanced-path-planning.json
-│   │   ├── robot-localization.json
-│   │   └── advanced-control-theory.json
+|   |   ├── gobilda-pinpoint.json
+├── path-planning/
+│   ├── roadrunner/
+│   │   ├── intro-to-roadrunner.json
+│   │   ├── roadrunner-trajectories.json
+│   │   └── roadrunner-advanced-tuning.json
+│   ├── pedro-pathing/
+│   │   ├── intro-to-pedro-pathing.json
+│   │   ├── pedro-localization.json
+│   │   └── pedro-advanced-configuration.json
+│   └── custom-manual-pathing/
+│       ├── intro-to-manual-pathing.json
+│       ├── motion-profiling-basics.json
+│       └── dead-wheel-odometry.json
 │   ├── autonomous-programming/
 │   │   ├── command-based-programming.json
 │   │   ├── async-programming.json

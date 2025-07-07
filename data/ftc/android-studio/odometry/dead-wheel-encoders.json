@@ -1,0 +1,74 @@
+{
+  "title": "Dead Wheel Encoders",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What Are Dead Wheel Encoders",
+      "content": "<p>Dead wheel encoders are unpowered wheels with encoders that track movement independently of the robot's drive system. Unlike drive wheel encoders, which can slip or have varying accuracy depending on surface conditions, dead wheels provide consistent and reliable tracking.</p><p><strong>Why \"dead\" wheels are more accurate:</strong></p><ul><li>No power transfer means no wheel slip from motor torque</li><li>Consistent contact pressure with the ground</li><li>Independent of drive system performance</li><li>More predictable behavior across different surfaces</li></ul><p><strong>Common mounting configurations:</strong></p><ul><li><strong>Single dead wheel:</strong> Tracks forward/backward movement</li><li><strong>Dual dead wheels:</strong> Tracks both forward/backward and lateral movement</li><li><strong>Three dead wheels:</strong> Complete position and orientation tracking</li></ul><p>Reference: <a href=\"https://www.gobilda.com/odometry/\" target=\"_blank\">GoBILDA: Dead Wheel Odometry</a></p>"
+    },
+    {
+      "type": "text",
+      "title": "Hardware Setup and Installation",
+      "content": "<p>Proper hardware setup is crucial for accurate dead wheel odometry:</p><p><strong>Wheel Selection:</strong></p><ul><li><strong>Size:</strong> Larger wheels provide better accuracy but require more space</li><li><strong>Material:</strong> Urethane or rubber wheels provide good traction</li><li><strong>Mounting:</strong> Ensure wheels can rotate freely without binding</li></ul><p><strong>Encoder Selection:</strong></p><ul><li>Use high-resolution encoders for better accuracy</li><li>REV Through Bore Encoders are popular for FTC</li><li>Ensure proper wiring and signal quality</li></ul><p><strong>Mounting Considerations:</strong></p><ul><li><strong>Height:</strong> Wheels should contact the ground consistently</li><li><strong>Spacing:</strong> Adequate distance between wheels for stability</li><li><strong>Alignment:</strong> Wheels should be parallel and perpendicular to robot frame</li><li><strong>Spring tension:</strong> Ensure consistent ground contact pressure</li></ul><p>Reference: <a href=\"https://docs.revrobotics.com/duo-control/duo-control-programming/odometry/dead-wheel-odometry\" target=\"_blank\">REV: Dead Wheel Setup</a></p>"
+    },
+    {
+      "type": "code",
+      "title": "Encoder Configuration and Calibration",
+      "content": "<p>Proper encoder configuration and calibration are essential for accurate odometry:</p><ul><li><strong>Encoder Counts per Revolution:</strong> Different encoders have different resolutions. Common values: REV Through Bore Encoder: 8192 counts per revolution, REV HD Hex Motor: 537.6 counts per revolution, GoBILDA Yellow Jacket: 537.6 counts per revolution</li><li><strong>Wheel Diameter and Circumference:</strong> Measure your wheel diameter accurately and calculate circumference: Circumference = π × Diameter</li><li><strong>Distance per Encoder Tick:</strong> MM per Tick = Wheel Circumference / Counts per Revolution</li></ul>",
+      "code": "// Dead wheel encoder configuration and calibration\npublic class DeadWheelOdometry {\n    private DcMotor leftDeadWheel;\n    private DcMotor rightDeadWheel;\n    private DcMotor horizontalDeadWheel; // For lateral movement\n    private IMU imu;\n    \n    // Robot pose variables\n    private double x = 0.0;\n    private double y = 0.0;\n    private double heading = 0.0;\n    \n    // Encoder specifications\n    private static final double WHEEL_DIAMETER_MM = 35.0;\n    private static final double WHEEL_CIRCUMFERENCE_MM = WHEEL_DIAMETER_MM * Math.PI;\n    private static final double TICKS_PER_REVOLUTION = 8192.0; // REV Through Bore\n    private static final double MM_PER_TICK = WHEEL_CIRCUMFERENCE_MM / TICKS_PER_REVOLUTION;\n    \n    // Robot dimensions (distance between wheels)\n    private static final double TRACK_WIDTH_MM = 300.0; // Distance between left and right wheels\n    private static final double HORIZONTAL_OFFSET_MM = 150.0; // Distance from center to horizontal wheel\n    \n    // Previous encoder values for delta calculations\n    private int prevLeftTicks = 0;\n    private int prevRightTicks = 0;\n    private int prevHorizontalTicks = 0;\n    \n    public DeadWheelOdometry(DcMotor leftDeadWheel, DcMotor rightDeadWheel, \n                           DcMotor horizontalDeadWheel, IMU imu) {\n        this.leftDeadWheel = leftDeadWheel;\n        this.rightDeadWheel = rightDeadWheel;\n        this.horizontalDeadWheel = horizontalDeadWheel;\n        this.imu = imu;\n        \n        // Reset all encoders\n        leftDeadWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        rightDeadWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        horizontalDeadWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    }\n    \n    // Convert encoder ticks to distance in millimeters\n    public double ticksToDistance(int ticks) {\n        return ticks * MM_PER_TICK;\n    }\n    \n    // Get current heading from IMU\n    public double getHeading() {\n        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);\n    }\n    \n    // Update robot position using dead wheel encoders\n    public void updatePosition() {\n        // Get current encoder values\n        int currentLeftTicks = leftDeadWheel.getCurrentPosition();\n        int currentRightTicks = rightDeadWheel.getCurrentPosition();\n        int currentHorizontalTicks = horizontalDeadWheel.getCurrentPosition();\n        \n        // Calculate delta values (change since last update)\n        int deltaLeftTicks = currentLeftTicks - prevLeftTicks;\n        int deltaRightTicks = currentRightTicks - prevRightTicks;\n        int deltaHorizontalTicks = currentHorizontalTicks - prevHorizontalTicks;\n        \n        // Convert to distances\n        double deltaLeftDistance = ticksToDistance(deltaLeftTicks);\n        double deltaRightDistance = ticksToDistance(deltaRightTicks);\n        double deltaHorizontalDistance = ticksToDistance(deltaHorizontalTicks);\n        \n        // Calculate robot movement\n        double deltaForward = (deltaLeftDistance + deltaRightDistance) / 2.0;\n        double deltaHeading = (deltaRightDistance - deltaLeftDistance) / TRACK_WIDTH_MM;\n        double deltaLateral = deltaHorizontalDistance - (deltaHeading * HORIZONTAL_OFFSET_MM);\n        \n        // Update heading\n        heading = getHeading();\n        double headingRadians = Math.toRadians(heading);\n        \n        // Update position\n        x += deltaForward * Math.cos(headingRadians) - deltaLateral * Math.sin(headingRadians);\n        y += deltaForward * Math.sin(headingRadians) + deltaLateral * Math.cos(headingRadians);\n        \n        // Store current values for next update\n        prevLeftTicks = currentLeftTicks;\n        prevRightTicks = currentRightTicks;\n        prevHorizontalTicks = currentHorizontalTicks;\n    }\n    \n    // Get current robot pose\n    public double getX() { return x; }\n    public double getY() { return y; }\n    public double getHeadingDegrees() { return heading; }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Dead Wheel Odometry Mathematics",
+      "content": "<p>The mathematics behind dead wheel odometry involves calculating position changes from encoder deltas:</p><ul><li><strong>Forward/Backward Movement:</strong> ΔForward = (ΔLeft + ΔRight) / 2</li><li><strong>Lateral Movement:</strong> ΔLateral = ΔHorizontal - (ΔHeading × Horizontal Offset)</li><li><strong>Heading Change:</strong> ΔHeading = (ΔRight - ΔLeft) / Track Width</li><li><strong>Position Update:</strong> New X = Current X + (ΔForward × cos(heading)) - (ΔLateral × sin(heading)), New Y = Current Y + (ΔForward × sin(heading)) + (ΔLateral × cos(heading))</li></ul>"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Common Issues and Troubleshooting",
+      "content": "<p>Dead wheel odometry systems can encounter several common issues:</p><ul><li><strong>Wheel Slippage Detection:</strong> Inconsistent position tracking, sudden jumps in position. Solutions: Increase spring tension, use better wheel material, regular maintenance.</li><li><strong>Encoder Noise and Filtering:</strong> Jittery position updates, inconsistent readings. Solutions: Use shielded cables, secure connections, implement software filtering.</li><li><strong>Calibration Drift Over Time:</strong> Gradual position errors, increasing inaccuracy over time. Solutions: Regular recalibration, use vision correction, monitor performance.</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Software Filtering Example",
+      "content": "<p>Simple filtering to reduce encoder noise:</p>",
+      "code": "// Simple filtering to reduce encoder noise\npublic class FilteredDeadWheelOdometry extends DeadWheelOdometry {\n    private static final int FILTER_SIZE = 5;\n    private Queue<Double> leftFilter = new LinkedList<>();\n    private Queue<Double> rightFilter = new LinkedList<>();\n    private Queue<Double> horizontalFilter = new LinkedList<>();\n    \n    // Apply moving average filter to encoder readings\n    private double applyFilter(Queue<Double> filter, double newValue) {\n        filter.offer(newValue);\n        if (filter.size() > FILTER_SIZE) {\n            filter.poll();\n        }\n        \n        return filter.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);\n    }\n    \n    @Override\n    public void updatePosition() {\n        // Get raw encoder values\n        int currentLeftTicks = leftDeadWheel.getCurrentPosition();\n        int currentRightTicks = rightDeadWheel.getCurrentPosition();\n        int currentHorizontalTicks = horizontalDeadWheel.getCurrentPosition();\n        \n        // Apply filtering\n        double filteredLeftDistance = applyFilter(leftFilter, ticksToDistance(currentLeftTicks));\n        double filteredRightDistance = applyFilter(rightFilter, ticksToDistance(currentRightTicks));\n        double filteredHorizontalDistance = applyFilter(horizontalFilter, ticksToDistance(currentHorizontalTicks));\n        \n        // Use filtered values for position calculation\n        // ... rest of position update logic\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise: Dead Wheel Odometry Setup",
+      "description": "Set up a dead wheel odometry system on your robot.",
+      "tasks": [
+        "Install three dead wheels (left, right, horizontal) with encoders",
+        "Measure and record the track width and horizontal offset",
+        "Configure encoder parameters (ticks per revolution, wheel diameter)",
+        "Implement the dead wheel odometry class",
+        "Test accuracy by driving in known patterns (square, circle)",
+        "Compare accuracy with drive wheel encoders",
+        "Challenge: Implement automatic calibration using known field markers or AprilTags."
+      ],
+      "content": "// See code examples above for implementation guidance."
+    },
+    {
+      "type": "list",
+      "title": "Key Takeaways",
+      "items": [
+        "Dead wheels provide more accurate tracking than drive wheel encoders",
+        "Proper hardware setup is crucial for accuracy",
+        "Encoder calibration and configuration are essential",
+        "Three-wheel systems provide complete position and orientation tracking",
+        "Regular maintenance and troubleshooting are important",
+        "Software filtering can improve accuracy and reduce noise"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps: Related Topics",
+      "content": "Explore these related topics for further learning.",
+      "links": [
+        {"id": "three-wheel-odometry", "label": "Three Wheel Odometry"},
+        {"id": "gobilda-pinpoint", "label": "GoBILDA Pinpoint"},
+        {"id": "vision-introduction", "label": "Vision Introduction"}
+      ]
+    }
+  ]
+} 

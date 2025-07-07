@@ -1,0 +1,125 @@
+{
+  "title": "PID Control",
+  "type": "lesson",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to PID Control",
+      "content": "PID (Proportional-Integral-Derivative) control is a fundamental control algorithm used in robotics to achieve precise positioning and smooth motion. Understanding PID control is essential for creating responsive and accurate robot systems."
+    },
+    {
+      "type": "text",
+      "title": "PID Control Theory",
+      "content": "PID control combines three control actions to achieve optimal system response: Proportional control responds to current error, Integral control eliminates steady-state error, and Derivative control reduces overshoot and improves stability."
+    },
+    {
+      "type": "code",
+      "title": "Basic PID Controller Implementation",
+      "language": "java",
+      "content": "public class PIDController {\n    private double kp, ki, kd;\n    private double setpoint;\n    private double integral = 0.0;\n    private double lastError = 0.0;\n    private double lastTime = 0.0;\n    private double integralLimit = 1.0;\n    \n    public PIDController(double kp, double ki, double kd) {\n        this.kp = kp;\n        this.ki = ki;\n        this.kd = kd;\n    }\n    \n    /**\n     * Calculate PID output\n     */\n    public double calculate(double currentValue, double currentTime) {\n        double error = setpoint - currentValue;\n        \n        // Proportional term\n        double pTerm = kp * error;\n        \n        // Integral term\n        double iTerm = 0.0;\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            integral += error * deltaTime;\n            \n            // Apply integral limit to prevent windup\n            integral = Math.max(-integralLimit, Math.min(integralLimit, integral));\n            \n            iTerm = ki * integral;\n        }\n        \n        // Derivative term\n        double dTerm = 0.0;\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            double errorRate = (error - lastError) / deltaTime;\n            dTerm = kd * errorRate;\n        }\n        \n        // Update for next iteration\n        lastError = error;\n        lastTime = currentTime;\n        \n        return pTerm + iTerm + dTerm;\n    }\n    \n    public void setSetpoint(double setpoint) {\n        this.setpoint = setpoint;\n        integral = 0.0; // Reset integral when setpoint changes\n    }\n    \n    public void setGains(double kp, double ki, double kd) {\n        this.kp = kp;\n        this.ki = ki;\n        this.kd = kd;\n    }\n    \n    public void setIntegralLimit(double limit) {\n        this.integralLimit = limit;\n    }\n    \n    public void reset() {\n        integral = 0.0;\n        lastError = 0.0;\n        lastTime = 0.0;\n    }\n    \n    public double getSetpoint() { return setpoint; }\n    public double getIntegral() { return integral; }\n    public double getLastError() { return lastError; }\n}"
+    },
+    {
+      "type": "text",
+      "title": "PID Tuning Methods",
+      "content": "Proper PID tuning is crucial for optimal performance. Several methods exist for tuning PID controllers, each with different approaches and trade-offs."
+    },
+    {
+      "type": "code",
+      "title": "Ziegler-Nichols Tuning Method",
+      "language": "java",
+      "content": "public class ZieglerNicholsTuner {\n    \n    /**\n     * Ziegler-Nichols step response method\n     * Requires step response data with dead time and time constant\n     */\n    public static PIDGains calculateStepResponseGains(double deadTime, double timeConstant) {\n        double kp = 1.2 * timeConstant / deadTime;\n        double ki = kp / (2.0 * deadTime);\n        double kd = kp * 0.5 * deadTime;\n        \n        return new PIDGains(kp, ki, kd);\n    }\n    \n    /**\n     * Ziegler-Nichols ultimate sensitivity method\n     * Requires critical gain and critical period\n     */\n    public static PIDGains calculateUltimateSensitivityGains(double criticalGain, double criticalPeriod) {\n        double kp = 0.6 * criticalGain;\n        double ki = 1.2 * criticalGain / criticalPeriod;\n        double kd = 0.075 * criticalGain * criticalPeriod;\n        \n        return new PIDGains(kp, ki, kd);\n    }\n    \n    /**\n     * Auto-tuning using relay feedback\n     */\n    public static PIDGains autoTune(SystemResponse response) {\n        // Simulate relay feedback to find critical point\n        double criticalGain = response.findCriticalGain();\n        double criticalPeriod = response.findCriticalPeriod();\n        \n        return calculateUltimateSensitivityGains(criticalGain, criticalPeriod);\n    }\n    \n    public static class PIDGains {\n        public final double kp, ki, kd;\n        \n        public PIDGains(double kp, double ki, double kd) {\n            this.kp = kp;\n            this.ki = ki;\n            this.kd = kd;\n        }\n        \n        @Override\n        public String toString() {\n            return String.format(\"P: %.3f, I: %.3f, D: %.3f\", kp, ki, kd);\n        }\n    }\n    \n    public static class SystemResponse {\n        // Simplified system response class for demonstration\n        public double findCriticalGain() {\n            // Implementation would analyze system response\n            return 10.0; // Example value\n        }\n        \n        public double findCriticalPeriod() {\n            // Implementation would analyze system response\n            return 0.5; // Example value\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "PID Tuning Best Practices",
+      "content": "Effective PID tuning requires systematic approach and understanding of system dynamics. Follow these best practices for successful tuning."
+    },
+    {
+      "type": "list",
+      "title": "Tuning Best Practices",
+      "items": [
+        "Start with P-only control and gradually add I and D terms",
+        "Use small gains initially and increase gradually",
+        "Test in simulation before implementing on hardware",
+        "Monitor system response and adjust gains accordingly",
+        "Consider system constraints and safety limits",
+        "Document tuning process and final gains",
+        "Validate performance under various conditions"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Advanced PID Controller with Features",
+      "language": "java",
+      "content": "public class AdvancedPIDController {\n    private double kp, ki, kd;\n    private double setpoint;\n    private double integral = 0.0;\n    private double lastError = 0.0;\n    private double lastTime = 0.0;\n    \n    // Advanced features\n    private double integralLimit = 1.0;\n    private double outputLimit = 1.0;\n    private boolean enabled = true;\n    private double deadband = 0.01;\n    private double derivativeFilter = 0.1;\n    private double filteredDerivative = 0.0;\n    \n    public AdvancedPIDController(double kp, double ki, double kd) {\n        this.kp = kp;\n        this.ki = ki;\n        this.kd = kd;\n    }\n    \n    /**\n     * Calculate PID output with advanced features\n     */\n    public double calculate(double currentValue, double currentTime) {\n        if (!enabled) return 0.0;\n        \n        double error = setpoint - currentValue;\n        \n        // Apply deadband\n        if (Math.abs(error) < deadband) {\n            error = 0.0;\n        }\n        \n        // Proportional term\n        double pTerm = kp * error;\n        \n        // Integral term with anti-windup\n        double iTerm = 0.0;\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            integral += error * deltaTime;\n            \n            // Anti-windup: limit integral\n            integral = Math.max(-integralLimit, Math.min(integralLimit, integral));\n            \n            iTerm = ki * integral;\n        }\n        \n        // Derivative term with filtering\n        double dTerm = 0.0;\n        if (lastTime > 0) {\n            double deltaTime = currentTime - lastTime;\n            double errorRate = (error - lastError) / deltaTime;\n            \n            // Apply low-pass filter to derivative\n            filteredDerivative = derivativeFilter * errorRate + \n                                (1.0 - derivativeFilter) * filteredDerivative;\n            \n            dTerm = kd * filteredDerivative;\n        }\n        \n        // Calculate output\n        double output = pTerm + iTerm + dTerm;\n        \n        // Apply output limits\n        output = Math.max(-outputLimit, Math.min(outputLimit, output));\n        \n        // Update for next iteration\n        lastError = error;\n        lastTime = currentTime;\n        \n        return output;\n    }\n    \n    public void setDeadband(double deadband) {\n        this.deadband = deadband;\n    }\n    \n    public void setDerivativeFilter(double filter) {\n        this.derivativeFilter = filter;\n    }\n    \n    public void setOutputLimit(double limit) {\n        this.outputLimit = limit;\n    }\n    \n    public void setEnabled(boolean enabled) {\n        this.enabled = enabled;\n        if (!enabled) {\n            reset();\n        }\n    }\n    \n    public void setSetpoint(double setpoint) {\n        this.setpoint = setpoint;\n        integral = 0.0;\n    }\n    \n    public void reset() {\n        integral = 0.0;\n        lastError = 0.0;\n        lastTime = 0.0;\n        filteredDerivative = 0.0;\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "PID Tuning Safety Guidelines",
+      "content": "When tuning PID controllers:",
+      "items": [
+        "Always start with conservative gains",
+        "Test in a safe environment first",
+        "Have emergency stop functionality ready",
+        "Monitor system behavior continuously",
+        "Set reasonable output limits",
+        "Use proper anti-windup protection",
+        "Validate performance under load"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Common PID Tuning Issues",
+      "content": "Understanding common problems helps in effective troubleshooting and tuning."
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "Oscillations: Reduce P gain or increase D gain",
+        "Slow response: Increase P gain or reduce I gain",
+        "Steady-state error: Increase I gain",
+        "Overshoot: Increase D gain or reduce P gain",
+        "Integral windup: Implement anti-windup protection",
+        "Noise sensitivity: Add derivative filtering",
+        "Poor disturbance rejection: Increase I gain"
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: PID Controller Implementation",
+      "description": "Implement a PID controller and tune it for a simple system.",
+      "tasks": [
+        "Create a basic PID controller class",
+        "Implement step response analysis",
+        "Tune the controller using Ziegler-Nichols method",
+        "Test performance with different setpoints",
+        "Add anti-windup and filtering features"
+      ],
+      "content": "// Example implementation\npublic class MyPIDController {\n    // Your implementation here\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": "Explore these related topics to expand your knowledge:",
+      "items": [
+        "<a href=\"../advanced-movement-control/advanced-movement-control.json\">Advanced Movement Control</a> - Kinematics and dynamics",
+        "<a href=\"../robot-pid-control/robot-pid-control.json\">Robot PID Control</a> - Multi-axis coordination",
+        "<a href=\"../motion-profiling/motion-profiling.json\">Motion Profiling</a> - Advanced trajectory planning",
+        "<a href=\"../advanced-control-theory/advanced-control-theory.json\">Advanced Control Theory</a> - Mathematical foundations",
+        "<a href=\"../../sensors/imu.json\">IMU Integration</a> - Orientation and heading control"
+      ]
+    },
+    {
+      "type": "emphasis-box",
+      "title": "External Resources",
+      "content": "Additional resources for PID control:",
+      "items": [
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/pid-control.html\" target=\"_blank\">gm0: PID Control Tutorial</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/pid-tuning.html\" target=\"_blank\">gm0: PID Tuning Guide</a>",
+        "<a href=\"https://docs.revrobotics.com/duo-control/duo-control-programming/pid-control\" target=\"_blank\">REV: PID Control Guide</a>",
+        "<a href=\"https://www.chiefdelphi.com/t/paper-pid-control-for-robots/163085\" target=\"_blank\">Chief Delphi: PID Control Paper</a>"
+      ]
+    }
+  ]
+} 

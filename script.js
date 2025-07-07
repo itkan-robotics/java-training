@@ -218,9 +218,21 @@ class ContentManager {
     loadGroupsContent(groups, sectionId, sectionConfig) {
         const promises = [];
         groups.forEach(group => {
+            // Handle direct items in group
             if (Array.isArray(group.items)) {
                 group.items.forEach(item => {
                     promises.push(this.loadItemContent(item, sectionId, sectionConfig, group));
+                });
+            }
+            
+            // Handle nested children structure (like FTC config)
+            if (Array.isArray(group.children)) {
+                group.children.forEach(child => {
+                    if (Array.isArray(child.items)) {
+                        child.items.forEach(item => {
+                            promises.push(this.loadItemContent(item, sectionId, sectionConfig, child));
+                        });
+                    }
                 });
             }
         });
@@ -354,21 +366,34 @@ class ContentManager {
 }
 
     renderCodeSection(container, data) {
-    if (data.title) {
-        const h3 = document.createElement('h3');
-        h3.textContent = data.title;
-        container.appendChild(h3);
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
+            container.appendChild(h3);
+        }
+        // Render content as HTML above the code block, if present
+        if (data.content) {
+            const div = document.createElement('div');
+            div.innerHTML = data.content;
+            container.appendChild(div);
+        }
+        const codeBlock = document.createElement('div');
+        codeBlock.className = 'code-block';
+        // Add language class if specified
+        if (data.language) {
+            codeBlock.classList.add(`language-${data.language}`);
+        }
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        // Set language class on code element for syntax highlighting
+        if (data.language) {
+            code.className = `language-${data.language}`;
+        }
+        code.textContent = data.code;
+        pre.appendChild(code);
+        codeBlock.appendChild(pre);
+        container.appendChild(codeBlock);
     }
-    
-    const codeBlock = document.createElement('div');
-    codeBlock.className = 'code-block';
-    const pre = document.createElement('pre');
-    const code = document.createElement('code');
-    code.textContent = data.content;
-    pre.appendChild(code);
-    codeBlock.appendChild(pre);
-    container.appendChild(codeBlock);
-}
 
     renderRulesBox(container, data) {
         const rulesBox = document.createElement('div');
@@ -604,12 +629,42 @@ class ContentManager {
         const grid = document.createElement('div');
         grid.className = 'link-grid';
         
-        data.links.forEach(link => {
+        // Handle both 'links' and 'items' properties for backward compatibility
+        const links = data.links || data.items || [];
+        
+        if (!Array.isArray(links)) {
+            console.warn('Link grid data is not an array:', links);
+            return;
+        }
+        
+        links.forEach(link => {
             const linkButton = document.createElement('div');
             linkButton.className = 'link-grid-button';
             
             // Handle different link formats
-            if (link.url) {
+            if (typeof link === 'string') {
+                // Parse HTML string to extract text and href
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = link;
+                const anchor = tempDiv.querySelector('a');
+                
+                if (anchor) {
+                    // Extract text content (remove HTML tags)
+                    const textContent = anchor.textContent || anchor.innerText || 'Link';
+                    linkButton.textContent = textContent;
+                    
+                    linkButton.onclick = () => {
+                        if (anchor.target === '_blank') {
+                            window.open(anchor.href, '_blank', 'noopener,noreferrer');
+                        } else {
+                            window.location.href = anchor.href;
+                        }
+                    };
+                } else {
+                    // Fallback if no anchor found
+                    linkButton.textContent = link;
+                }
+            } else if (link.url) {
                 // External link format
                 linkButton.onclick = () => {
                     if (link.external) {
@@ -630,9 +685,9 @@ class ContentManager {
             }
             
             grid.appendChild(linkButton);
-    });
-    
-    container.appendChild(grid);
+        });
+        
+        container.appendChild(grid);
     }
 
     renderSectionTypeSection(container, data) {
@@ -677,6 +732,18 @@ class NavigationManager {
         // Adjust layout after navigation is generated
         setTimeout(() => {
             this.adjustLayoutForSidebar();
+            // If sidebar navigation is empty, forcibly close sidebar and reset layout
+            const navList = document.getElementById('sidebar-navigation');
+            const navCheckbox = document.getElementById('__navigation');
+            if (navList && navList.children.length === 0 && navCheckbox) {
+                // Ensure the CSS variable is set before closing
+                const sidebarDrawer = document.querySelector('.sidebar-drawer');
+                if (sidebarDrawer) {
+                    const currentWidth = sidebarDrawer.style.width || '15em';
+                    sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
+                }
+                navCheckbox.checked = false;
+            }
         }, 100);
     }
 
@@ -803,6 +870,7 @@ class NavigationManager {
             itemsUl.className = 'children-nav expanded';
             itemsUl.id = `children-${group.id}`;
 
+            // Handle direct items in group
             if (Array.isArray(group.items)) {
                 group.items.forEach(item => {
                     const itemLi = document.createElement('li');
@@ -817,6 +885,52 @@ class NavigationManager {
                     };
                     itemLi.appendChild(itemA);
                     itemsUl.appendChild(itemLi);
+                });
+            }
+
+            // Handle nested children structure (like FTC config)
+            if (Array.isArray(group.children)) {
+                group.children.forEach(child => {
+                    // Create child group header
+                    const childGroupLi = document.createElement('li');
+                    childGroupLi.className = 'toctree-l2 parent-tab';
+                    
+                    const childGroupA = document.createElement('a');
+                    childGroupA.className = 'reference parent-reference';
+                    childGroupA.href = '#';
+                    childGroupA.innerHTML = `
+                        <span class="expand-icon expand-icon-${child.id}">▼</span>
+                        ${child.label}
+                    `;
+                    childGroupA.onclick = (e) => {
+                        e.preventDefault();
+                        this.toggleGroup(child.id);
+                    };
+                    childGroupLi.appendChild(childGroupA);
+
+                    const childItemsUl = document.createElement('ul');
+                    childItemsUl.className = 'children-nav expanded';
+                    childItemsUl.id = `children-${child.id}`;
+
+                    if (Array.isArray(child.items)) {
+                        child.items.forEach(item => {
+                            const itemLi = document.createElement('li');
+                            itemLi.className = 'toctree-l3 child-tab';
+                            const itemA = document.createElement('a');
+                            itemA.className = 'reference child-reference';
+                            itemA.href = `#${item.id}`;
+                            itemA.textContent = item.label;
+                            itemA.onclick = (e) => {
+                                e.preventDefault();
+                                this.navigateToTab(item.id);
+                            };
+                            itemLi.appendChild(itemA);
+                            childItemsUl.appendChild(itemLi);
+                        });
+                    }
+
+                    childGroupLi.appendChild(childItemsUl);
+                    itemsUl.appendChild(childGroupLi);
                 });
             }
 
@@ -861,28 +975,21 @@ class NavigationManager {
     }
 
     adjustLayoutForSidebar() {
-        // Only adjust on desktop (screen width > 63em)
-        if (window.innerWidth <= 1008) { // 63em = 1008px
-            return;
-        }
-
         const sidebarDrawer = document.querySelector('.sidebar-drawer');
         const mainContent = document.querySelector('.main');
-        
+        const navCheckbox = document.getElementById('__navigation');
         if (!sidebarDrawer || !mainContent) {
             return;
         }
-
-        // Calculate the optimal width based on visible navigation items
         const sidebarContent = sidebarDrawer.querySelector('.sidebar-scroll');
         if (!sidebarContent) {
             return;
         }
-
+        // Check if sidebar is currently visible (checkbox is checked)
+        const isSidebarVisible = navCheckbox && navCheckbox.checked;
         // Temporarily make sidebar visible to measure content
         const originalLeft = sidebarDrawer.style.left;
         const originalVisibility = sidebarDrawer.style.visibility;
-        
         sidebarDrawer.style.left = '0';
         sidebarDrawer.style.visibility = 'visible';
         sidebarDrawer.style.position = 'absolute'; // Temporarily change to absolute to measure
@@ -930,11 +1037,43 @@ class NavigationManager {
         // Apply the optimal width
         sidebarDrawer.style.width = `${optimalWidth}px`;
         sidebarDrawer.querySelector('.sidebar-container').style.width = `${optimalWidth}px`;
+        // Set the CSS variable for sidebar width
+        sidebarDrawer.style.setProperty('--sidebar-width', `${optimalWidth}px`);
+        
+        // If sidebar is visible and we have a stored width, use it for immediate opening
+        if (isSidebarVisible && sidebarDrawer.dataset.storedWidth) {
+            const storedWidth = parseInt(sidebarDrawer.dataset.storedWidth);
+            sidebarDrawer.style.width = `${storedWidth}px`;
+            sidebarDrawer.querySelector('.sidebar-container').style.width = `${storedWidth}px`;
+            // Set the CSS variable for sidebar width
+            sidebarDrawer.style.setProperty('--sidebar-width', `${storedWidth}px`);
+        } else if (isSidebarVisible && !sidebarDrawer.dataset.storedWidth) {
+            const localStorageWidth = localStorage.getItem('sidebarWidth');
+            let width = optimalWidth;
+            if (localStorageWidth) {
+                width = parseInt(localStorageWidth);
+            }
+            sidebarDrawer.style.width = `${width}px`;
+            sidebarDrawer.querySelector('.sidebar-container').style.width = `${width}px`;
+            // Set the CSS variable for sidebar width
+            sidebarDrawer.style.setProperty('--sidebar-width', `${width}px`);
+            sidebarDrawer.dataset.storedWidth = width;
+        } else {
+            // Set the CSS variable for sidebar width
+            sidebarDrawer.style.setProperty('--sidebar-width', `${optimalWidth}px`);
+        }
 
-        // Adjust main content area with more generous spacing
-        const sidebarOffset = optimalWidth + 120; // Increased buffer for better spacing
-        mainContent.style.marginLeft = `${sidebarOffset}px`;
-        mainContent.style.maxWidth = `calc(100% - ${sidebarOffset}px)`;
+        // Only adjust main content if sidebar is actually visible
+        if (isSidebarVisible) {
+            // Adjust main content area with more generous spacing
+            const sidebarOffset = optimalWidth + 0; // Reduced buffer for better spacing
+            mainContent.style.marginLeft = `${sidebarOffset}px`;
+            mainContent.style.maxWidth = `calc(100% - ${sidebarOffset}px)`;
+        } else {
+            // If sidebar is not visible but we have a stored width, use it for the next time it opens
+            // This ensures the sidebar opens with the correct width immediately
+            sidebarDrawer.dataset.storedWidth = optimalWidth;
+        }
 
         // Store the current sidebar width for responsive adjustments
         sidebarDrawer.dataset.currentWidth = optimalWidth;
@@ -946,6 +1085,8 @@ class NavigationManager {
             sidebarScroll.style.overflowY = 'auto';
             sidebarScroll.style.overflowX = 'hidden';
         }
+
+
     }
 
     countVisibleNavigationItems() {
@@ -1029,21 +1170,36 @@ class NavigationManager {
     resetLayoutForHiddenSidebar() {
         const sidebarDrawer = document.querySelector('.sidebar-drawer');
         const mainContent = document.querySelector('.main');
-        
         if (!sidebarDrawer || !mainContent) {
             return;
         }
-
+        
+        // Get current width before resetting
+        const currentWidth = sidebarDrawer.style.width || '15em';
+        
         // Reset sidebar width to default
         sidebarDrawer.style.width = '15em';
         sidebarDrawer.querySelector('.sidebar-container').style.width = '15em';
         
-        // Reset main content
+        // Set the CSS variable to current width for smooth closing
+        sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
+        
+        // Reset main content with smooth transition
         mainContent.style.marginLeft = '0';
         mainContent.style.maxWidth = '100%';
         
         // Clear stored width
         delete sidebarDrawer.dataset.currentWidth;
+    }
+
+    // Method to ensure smooth sidebar opening
+    ensureSmoothSidebarTransition() {
+        const sidebarDrawer = document.querySelector('.sidebar-drawer');
+        if (!sidebarDrawer) return;
+        
+        // Ensure the CSS variable is set to the current width
+        const currentWidth = sidebarDrawer.style.width || '15em';
+        sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
     }
 
 
@@ -1154,13 +1310,63 @@ class NavigationManager {
     }
 
     async handleSectionNavigation(sectionId) {
+        // Always close sidebar when switching sections
+        const navCheckbox = document.getElementById('__navigation');
+        const sidebarDrawer = document.querySelector('.sidebar-drawer');
+        
+        if (navCheckbox && sidebarDrawer) {
+            // Set the CSS variable before closing to ensure smooth transition
+            const currentWidth = sidebarDrawer.style.width || '15em';
+            sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
+            
+            // Temporarily disable transition
+            const originalTransition = sidebarDrawer.style.transition;
+            sidebarDrawer.style.transition = 'none';
+            
+            // Force close
+            navCheckbox.checked = false;
+            this.resetLayoutForHiddenSidebar();
+            
+            // Re-enable transition after a brief delay
+            setTimeout(() => {
+                sidebarDrawer.style.transition = originalTransition;
+            }, 50);
+        }
+
         const section = appState.config.sections[sectionId];
         if (!section || !section.file) return;
+
+        // Check if we're navigating to a different section
+        const currentSection = appState.currentSection;
+        const isDifferentSection = currentSection !== sectionId;
+        
+        // Close sidebar if navigating to a different section (but not on mobile)
+        if (isDifferentSection && window.innerWidth > 1008) {
+            const navCheckbox = document.getElementById('__navigation');
+            if (navCheckbox && navCheckbox.checked) {
+                // Set the CSS variable before closing to ensure smooth transition
+                const currentWidth = sidebarDrawer.style.width || '15em';
+                sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
+                
+                navCheckbox.checked = false;
+                // Reset layout immediately to ensure smooth transition
+                this.resetLayoutForHiddenSidebar();
+            }
+        }
 
         try {
             await this.contentManager.loadSectionContent(sectionId);
             const updatedSection = appState.config.sections[sectionId];
             
+                    // After loading content and updating navigation, ensure sidebar is properly closed
+        const navCheckbox2 = document.getElementById('__navigation');
+        if (navCheckbox2 && navCheckbox2.checked) {
+            // Ensure the CSS variable is set before closing
+            const currentWidth = sidebarDrawer.style.width || '15em';
+            sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
+            navCheckbox2.checked = false;
+        }
+
             if (updatedSection.intro) {
                 await this.navigateToTab(updatedSection.intro.id);
                 return;
@@ -1684,6 +1890,136 @@ class SearchManager {
 }
 
 // ============================================================================
+// SIDEBAR RESIZE MANAGER
+// ============================================================================
+
+class SidebarResizeManager {
+    constructor() {
+        this.isResizing = false;
+        this.startX = 0;
+        this.startWidth = 0;
+        this.minWidth = 240; // 15em minimum
+        this.maxWidth = 600; // Maximum width
+        this.resizeHandle = null;
+        this.sidebarDrawer = null;
+        this.sidebarContainer = null;
+        this.mainContent = null;
+    }
+
+    initialize() {
+        this.resizeHandle = document.querySelector('.sidebar-resize-handle');
+        this.sidebarDrawer = document.querySelector('.sidebar-drawer');
+        this.sidebarContainer = document.querySelector('.sidebar-container');
+        this.mainContent = document.querySelector('.main');
+
+        if (this.resizeHandle && this.sidebarDrawer) {
+            this.setupResizeEvents();
+            this.loadStoredWidth();
+        }
+    }
+
+    setupResizeEvents() {
+        // Mouse events
+        this.resizeHandle.addEventListener('mousedown', (e) => this.startResize(e));
+        document.addEventListener('mousemove', (e) => this.resize(e));
+        document.addEventListener('mouseup', () => this.stopResize());
+
+        // Touch events for mobile
+        this.resizeHandle.addEventListener('touchstart', (e) => this.startResize(e));
+        document.addEventListener('touchmove', (e) => this.resize(e));
+        document.addEventListener('touchend', () => this.stopResize());
+
+        // Prevent text selection during resize
+        this.resizeHandle.addEventListener('selectstart', (e) => e.preventDefault());
+    }
+
+    startResize(e) {
+        // Only allow resizing on desktop
+        if (window.innerWidth <= 1008) { // 63em = 1008px
+            return;
+        }
+
+        this.isResizing = true;
+        this.startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+        this.startWidth = this.sidebarDrawer.offsetWidth;
+
+        this.resizeHandle.classList.add('resizing');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+
+        // Prevent default behavior
+        e.preventDefault();
+    }
+
+    resize(e) {
+        if (!this.isResizing) return;
+
+        const currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+        const deltaX = currentX - this.startX;
+        const newWidth = Math.max(this.minWidth, Math.min(this.maxWidth, this.startWidth + deltaX));
+
+        this.setSidebarWidth(newWidth);
+        this.adjustMainContent(newWidth);
+
+        e.preventDefault();
+    }
+
+    stopResize() {
+        if (!this.isResizing) return;
+
+        this.isResizing = false;
+        this.resizeHandle.classList.remove('resizing');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+
+        // Store the new width for persistence
+        const currentWidth = this.sidebarDrawer.offsetWidth;
+        this.sidebarDrawer.dataset.storedWidth = currentWidth;
+        this.sidebarDrawer.dataset.currentWidth = currentWidth;
+
+        // Save to localStorage
+        localStorage.setItem('sidebarWidth', currentWidth.toString());
+    }
+
+    setSidebarWidth(width) {
+        const sidebarDrawer = document.querySelector('.sidebar-drawer');
+        if (sidebarDrawer) {
+            sidebarDrawer.style.width = `${width}px`;
+            sidebarDrawer.querySelector('.sidebar-container').style.width = `${width}px`;
+            // Set the CSS variable for sidebar width
+            sidebarDrawer.style.setProperty('--sidebar-width', `${width}px`);
+        }
+        this.adjustMainContent(width);
+        localStorage.setItem('sidebarWidth', width);
+    }
+
+    adjustMainContent(sidebarWidth) {
+        if (this.mainContent) {
+            const navCheckbox = document.getElementById('__navigation');
+            const isSidebarVisible = navCheckbox && navCheckbox.checked;
+
+            if (isSidebarVisible) {
+                const sidebarOffset = sidebarWidth + 32; // Reduced buffer for spacing
+                this.mainContent.style.marginLeft = `${sidebarOffset}px`;
+                this.mainContent.style.maxWidth = `calc(100% - ${sidebarOffset}px)`;
+            }
+        }
+    }
+
+    loadStoredWidth() {
+        const storedWidth = localStorage.getItem('sidebarWidth');
+        if (storedWidth) {
+            const width = parseInt(storedWidth);
+            if (width >= this.minWidth && width <= this.maxWidth) {
+                this.setSidebarWidth(width);
+                this.sidebarDrawer.dataset.storedWidth = width;
+                this.sidebarDrawer.dataset.currentWidth = width;
+            }
+        }
+    }
+}
+
+// ============================================================================
 // EVENT MANAGER
 // ============================================================================
 
@@ -1726,13 +2062,40 @@ class EventManager {
         if (navToggle) {
             navToggle.addEventListener('change', (e) => {
                 if (e.target.checked) {
-                    // Sidebar is now visible
-                    setTimeout(() => {
-                        this.navigationManager.adjustLayoutForSidebar();
-                    }, 300); // Wait for transition
+                    // Sidebar is now visible - ensure smooth transition
+                    this.navigationManager.ensureSmoothSidebarTransition();
+                    // Adjust layout immediately for smooth animation
+                    this.navigationManager.adjustLayoutForSidebar();
                 } else {
                     // Sidebar is now hidden
                     this.navigationManager.resetLayoutForHiddenSidebar();
+                }
+            });
+        }
+
+        // Hide sidebar when clicking on main content
+        const mainContent = document.querySelector('.main');
+        const sidebarDrawer = document.querySelector('.sidebar-drawer');
+        if (mainContent && sidebarDrawer && navToggle) {
+            mainContent.addEventListener('mousedown', (e) => {
+                // Only close if sidebar is open and click is outside sidebar
+                if (navToggle.checked) {
+                    // Check if click is inside sidebar
+                    if (!sidebarDrawer.contains(e.target)) {
+                        // Ensure smooth transition before closing
+                        this.navigationManager.ensureSmoothSidebarTransition();
+                        navToggle.checked = false;
+                    }
+                }
+            });
+            // Also support touch events
+            mainContent.addEventListener('touchstart', (e) => {
+                if (navToggle.checked) {
+                    if (!sidebarDrawer.contains(e.target)) {
+                        // Ensure smooth transition before closing
+                        this.navigationManager.ensureSmoothSidebarTransition();
+                        navToggle.checked = false;
+                    }
                 }
             });
         }
@@ -1863,6 +2226,7 @@ class Application {
         this.navigationManager.searchManager = this.searchManager; // Set the reference back
         this.themeManager = new ThemeManager();
         this.eventManager = new EventManager(this.navigationManager, this.themeManager, this.searchManager);
+        this.sidebarResizeManager = new SidebarResizeManager();
     }
 
     async initialize() {
@@ -1878,6 +2242,9 @@ class Application {
             
             // Generate initial navigation
             await this.navigationManager.generateNavigation();
+            
+            // Initialize sidebar resize functionality
+            this.sidebarResizeManager.initialize();
             
             // Show default tab
             this.showDefaultTab();

@@ -1,0 +1,120 @@
+{
+  "title": "Advanced Movement Control",
+  "type": "lesson",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Advanced Movement Control",
+      "content": "Advanced movement control involves sophisticated techniques for precise robot positioning, smooth motion, and coordinated multi-axis movement. This lesson covers coordinate systems, kinematics, and advanced control methods used in competitive robotics."
+    },
+    {
+      "type": "text",
+      "title": "Coordinate Systems and Transformations",
+      "content": "Understanding coordinate systems is fundamental to advanced movement control. Robots operate in multiple coordinate frames that must be transformed between each other for accurate positioning and movement."
+    },
+    {
+      "type": "code",
+      "title": "Coordinate System Implementation",
+      "language": "java",
+      "content": "public class CoordinateSystem {\n    private double x, y, theta;\n    private static final double PI = Math.PI;\n    \n    public CoordinateSystem(double x, double y, double theta) {\n        this.x = x;\n        this.y = y;\n        this.theta = theta;\n    }\n    \n    /**\n     * Transform point from robot coordinates to field coordinates\n     */\n    public Point2D transformToField(Point2D robotPoint) {\n        double cosTheta = Math.cos(theta);\n        double sinTheta = Math.sin(theta);\n        \n        double fieldX = x + robotPoint.getX() * cosTheta - robotPoint.getY() * sinTheta;\n        double fieldY = y + robotPoint.getX() * sinTheta + robotPoint.getY() * cosTheta;\n        \n        return new Point2D(fieldX, fieldY);\n    }\n    \n    /**\n     * Transform point from field coordinates to robot coordinates\n     */\n    public Point2D transformToRobot(Point2D fieldPoint) {\n        double cosTheta = Math.cos(-theta);\n        double sinTheta = Math.sin(-theta);\n        \n        double robotX = (fieldPoint.getX() - x) * cosTheta - (fieldPoint.getY() - y) * sinTheta;\n        double robotY = (fieldPoint.getX() - x) * sinTheta + (fieldPoint.getY() - y) * cosTheta;\n        \n        return new Point2D(robotX, robotY);\n    }\n    \n    public void updatePosition(double newX, double newY, double newTheta) {\n        this.x = newX;\n        this.y = newY;\n        this.theta = newTheta;\n    }\n    \n    public double getX() { return x; }\n    public double getY() { return y; }\n    public double getTheta() { return theta; }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Differential Drive Kinematics",
+      "content": "Differential drive robots use two independently controlled wheels to achieve movement. Understanding the kinematics allows for precise control of linear and angular velocity."
+    },
+    {
+      "type": "code",
+      "title": "Differential Drive Kinematics",
+      "language": "java",
+      "content": "public class DifferentialDriveKinematics {\n    private double trackWidth; // Distance between wheels\n    private double wheelRadius;\n    \n    public DifferentialDriveKinematics(double trackWidth, double wheelRadius) {\n        this.trackWidth = trackWidth;\n        this.wheelRadius = wheelRadius;\n    }\n    \n    /**\n     * Convert wheel velocities to robot velocities\n     */\n    public RobotVelocities wheelVelocitiesToRobotVelocities(\n            double leftWheelVelocity, double rightWheelVelocity) {\n        \n        double linearVelocity = (leftWheelVelocity + rightWheelVelocity) / 2.0;\n        double angularVelocity = (rightWheelVelocity - leftWheelVelocity) / trackWidth;\n        \n        return new RobotVelocities(linearVelocity, angularVelocity);\n    }\n    \n    /**\n     * Convert robot velocities to wheel velocities\n     */\n    public WheelVelocities robotVelocitiesToWheelVelocities(\n            double linearVelocity, double angularVelocity) {\n        \n        double leftWheelVelocity = linearVelocity - (angularVelocity * trackWidth) / 2.0;\n        double rightWheelVelocity = linearVelocity + (angularVelocity * trackWidth) / 2.0;\n        \n        return new WheelVelocities(leftWheelVelocity, rightWheelVelocity);\n    }\n    \n    /**\n     * Calculate wheel velocities for arc motion\n     */\n    public WheelVelocities calculateArcVelocities(double radius, double velocity) {\n        if (Math.abs(radius) < 0.001) {\n            // Straight line motion\n            return new WheelVelocities(velocity, velocity);\n        }\n        \n        double angularVelocity = velocity / radius;\n        return robotVelocitiesToWheelVelocities(velocity, angularVelocity);\n    }\n    \n    public static class RobotVelocities {\n        public final double linearVelocity;\n        public final double angularVelocity;\n        \n        public RobotVelocities(double linearVelocity, double angularVelocity) {\n            this.linearVelocity = linearVelocity;\n            this.angularVelocity = angularVelocity;\n        }\n    }\n    \n    public static class WheelVelocities {\n        public final double leftVelocity;\n        public final double rightVelocity;\n        \n        public WheelVelocities(double leftVelocity, double rightVelocity) {\n            this.leftVelocity = leftVelocity;\n            this.rightVelocity = rightVelocity;\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Holonomic Drive Control",
+      "content": "Holonomic drives (like mecanum or omni wheels) allow movement in any direction without changing orientation. This provides greater maneuverability but requires more complex control algorithms."
+    },
+    {
+      "type": "code",
+      "title": "Mecanum Drive Kinematics",
+      "language": "java",
+      "content": "public class MecanumDriveKinematics {\n    private double wheelBase; // Front to back wheel distance\n    private double trackWidth; // Left to right wheel distance\n    \n    public MecanumDriveKinematics(double wheelBase, double trackWidth) {\n        this.wheelBase = wheelBase;\n        this.trackWidth = trackWidth;\n    }\n    \n    /**\n     * Convert robot velocities to wheel velocities for mecanum drive\n     */\n    public MecanumWheelVelocities robotVelocitiesToWheelVelocities(\n            double forwardVelocity, double strafeVelocity, double angularVelocity) {\n        \n        // Mecanum wheel velocity calculations\n        double frontLeftVelocity = forwardVelocity + strafeVelocity + angularVelocity;\n        double frontRightVelocity = forwardVelocity - strafeVelocity - angularVelocity;\n        double rearLeftVelocity = forwardVelocity - strafeVelocity + angularVelocity;\n        double rearRightVelocity = forwardVelocity + strafeVelocity - angularVelocity;\n        \n        return new MecanumWheelVelocities(\n            frontLeftVelocity, frontRightVelocity,\n            rearLeftVelocity, rearRightVelocity\n        );\n    }\n    \n    /**\n     * Convert wheel velocities to robot velocities\n     */\n    public RobotVelocities wheelVelocitiesToRobotVelocities(\n            double frontLeftVelocity, double frontRightVelocity,\n            double rearLeftVelocity, double rearRightVelocity) {\n        \n        double forwardVelocity = (frontLeftVelocity + frontRightVelocity + \n                                 rearLeftVelocity + rearRightVelocity) / 4.0;\n        \n        double strafeVelocity = (frontLeftVelocity - frontRightVelocity - \n                                rearLeftVelocity + rearRightVelocity) / 4.0;\n        \n        double angularVelocity = (frontLeftVelocity - frontRightVelocity + \n                                 rearLeftVelocity - rearRightVelocity) / 4.0;\n        \n        return new RobotVelocities(forwardVelocity, strafeVelocity, angularVelocity);\n    }\n    \n    public static class MecanumWheelVelocities {\n        public final double frontLeft;\n        public final double frontRight;\n        public final double rearLeft;\n        public final double rearRight;\n        \n        public MecanumWheelVelocities(double frontLeft, double frontRight,\n                                     double rearLeft, double rearRight) {\n            this.frontLeft = frontLeft;\n            this.frontRight = frontRight;\n            this.rearLeft = rearLeft;\n            this.rearRight = rearRight;\n        }\n    }\n    \n    public static class RobotVelocities {\n        public final double forwardVelocity;\n        public final double strafeVelocity;\n        public final double angularVelocity;\n        \n        public RobotVelocities(double forwardVelocity, double strafeVelocity, double angularVelocity) {\n            this.forwardVelocity = forwardVelocity;\n            this.strafeVelocity = strafeVelocity;\n            this.angularVelocity = angularVelocity;\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Velocity and Acceleration Control",
+      "content": "Smooth robot movement requires careful control of velocity and acceleration. This prevents jerky motion, reduces wear on components, and improves overall performance."
+    },
+    {
+      "type": "code",
+      "title": "Velocity and Acceleration Limiter",
+      "language": "java",
+      "content": "public class VelocityAccelerationLimiter {\n    private double maxVelocity;\n    private double maxAcceleration;\n    private double maxDeceleration;\n    private double currentVelocity = 0.0;\n    private double lastTime = 0.0;\n    \n    public VelocityAccelerationLimiter(double maxVelocity, double maxAcceleration, double maxDeceleration) {\n        this.maxVelocity = maxVelocity;\n        this.maxAcceleration = maxAcceleration;\n        this.maxDeceleration = maxDeceleration;\n    }\n    \n    /**\n     * Limit velocity and acceleration\n     */\n    public double limitVelocity(double targetVelocity, double currentTime) {\n        if (lastTime <= 0) {\n            lastTime = currentTime;\n            currentVelocity = targetVelocity;\n            return targetVelocity;\n        }\n        \n        double deltaTime = currentTime - lastTime;\n        double velocityChange = targetVelocity - currentVelocity;\n        \n        // Determine if we're accelerating or decelerating\n        double maxChange;\n        if (velocityChange > 0) {\n            maxChange = maxAcceleration * deltaTime;\n        } else {\n            maxChange = -maxDeceleration * deltaTime;\n        }\n        \n        // Limit the velocity change\n        if (Math.abs(velocityChange) > Math.abs(maxChange)) {\n            velocityChange = maxChange;\n        }\n        \n        // Apply the limited change\n        currentVelocity += velocityChange;\n        \n        // Ensure we don't exceed max velocity\n        currentVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, currentVelocity));\n        \n        lastTime = currentTime;\n        return currentVelocity;\n    }\n    \n    /**\n     * Reset the limiter\n     */\n    public void reset() {\n        currentVelocity = 0.0;\n        lastTime = 0.0;\n    }\n    \n    public double getCurrentVelocity() {\n        return currentVelocity;\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Considerations",
+      "content": "When implementing advanced movement control:",
+      "items": [
+        "Always test new control algorithms in simulation first",
+        "Implement emergency stop functionality",
+        "Set reasonable velocity and acceleration limits",
+        "Monitor motor temperatures and current draw",
+        "Use proper coordinate system transformations",
+        "Validate all mathematical calculations",
+        "Test with various robot configurations"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Common Issues",
+      "content": "Common problems in advanced movement control and their solutions:"
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "Incorrect coordinate transformations: Double-check rotation matrices and angle conventions",
+        "Jerky movement: Reduce acceleration limits or implement smoother velocity profiles",
+        "Inaccurate positioning: Calibrate wheel encoders and verify track width measurements",
+        "Poor turning performance: Adjust differential drive parameters or check wheel alignment",
+        "Holonomic drive issues: Verify wheel orientation and check for mechanical binding"
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Implement Coordinate Transformations",
+      "description": "Create a coordinate system class that can transform between robot and field coordinates.",
+      "tasks": [
+        "Implement forward transformation (robot to field coordinates)",
+        "Implement inverse transformation (field to robot coordinates)",
+        "Test with various robot positions and orientations",
+        "Add methods to update robot position based on sensor readings"
+      ],
+      "content": "// Example implementation\npublic class CoordinateTransform {\n    // Your implementation here\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": "Explore these related topics to expand your knowledge:",
+      "items": [
+        "<a href=\"../pid-control/pid-control.json\">PID Control</a> - Closed-loop control systems",
+        "<a href=\"../robot-pid-control/robot-pid-control.json\">Robot PID Control</a> - Multi-axis coordination",
+        "<a href=\"../motion-profiling/motion-profiling.json\">Motion Profiling</a> - Advanced trajectory planning",
+        "<a href=\"../advanced-control-theory/advanced-control-theory.json\">Advanced Control Theory</a> - Mathematical foundations",
+        "<a href=\"../../sensors/imu.json\">IMU Integration</a> - Orientation and heading control"
+      ]
+    },
+    {
+      "type": "emphasis-box",
+      "title": "External Resources",
+      "content": "Additional resources for advanced movement control:",
+      "items": [
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/kinematics.html\" target=\"_blank\">gm0: Robot Kinematics</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/advanced/coordinate-systems.html\" target=\"_blank\">gm0: Coordinate Systems</a>",
+        "<a href=\"https://docs.revrobotics.com/duo-control/duo-control-programming/kinematics\" target=\"_blank\">REV: Kinematics Guide</a>",
+        "<a href=\"https://www.chiefdelphi.com/t/paper-4-wheel-independent-drive-independent-steering-4wids-kinematics/163084\" target=\"_blank\">Chief Delphi: 4WIDS Kinematics</a>"
+      ]
+    }
+  ]
+} 

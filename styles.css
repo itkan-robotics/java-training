@@ -527,11 +527,11 @@ body {
 .sidebar-drawer {
   position: fixed;
   top: 0;
-  left: -20em;
+  left: calc(-1 * var(--sidebar-width, 600px));
   width: 15em;
   height: 100vh;
   background-color: var(--color-sidebar-background);
-  transition: left 0.3s ease, width 0.3s ease;
+  transition: left 0.3s ease;
   z-index: 2;
   overflow: hidden;
   box-shadow: var(--shadow-xl);
@@ -540,17 +540,71 @@ body {
   min-width: 15em; /* Ensure minimum width */
   max-width: 600px; /* Maximum width for very wide content */
 }
+
+/* Sidebar resize handle */
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 10;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-resize-handle:hover,
+.sidebar-resize-handle.resizing {
+  background-color: var(--color-brand-primary);
+  opacity: 0.3;
+}
+
+.sidebar-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 40px;
+  background-color: var(--color-foreground-border);
+  border-radius: 1px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-resize-handle:hover::before,
+.sidebar-resize-handle.resizing::before {
+  opacity: 1;
+}
+
+/* Hide resize handle on mobile */
+/* @media (max-width: 63em) {
+  .sidebar-resize-handle {
+    display: none;
+  }
+} */
+
+/* Dark theme adjustments for resize handle */
+[data-theme="dark"] .sidebar-resize-handle::before {
+  background-color: var(--color-foreground-border);
+}
+
+[data-theme="dark"] .sidebar-resize-handle:hover,
+[data-theme="dark"] .sidebar-resize-handle.resizing {
+  background-color: var(--color-brand-primary);
+  opacity: 0.4;
+}
   /* Sidebar Content */
 .sidebar-drawer .sidebar-container {
   padding-top: 0px;
-  transition: width 0.3s ease;
   width: 100%; /* Take full width of parent */
 }
 
 .sidebar-container {
   box-sizing: border-box;
   width: 15em;
-  transition: width 0.3s ease;
   min-width: 15em;
 }
 
@@ -1191,7 +1245,7 @@ footer {
 }
 
 .sidebar-drawer {
-  transition: left 0.25s ease-in-out;
+  transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
   z-index: 30;
   padding-top: calc(var(--header-height) + 0.0rem); /* Adjust 1rem as needed for spacing */
 }
@@ -1210,8 +1264,14 @@ footer {
 
 /* Shift Main Content when checkbox is checked (sidebar visible)*/
 #\__navigation:checked ~ .page .main {
-  max-width: calc(100%  - 20em); /* Reduce max-width when sidebar is open */
-  margin-left: 20em;
+  max-width: calc(100% - var(--sidebar-width, 600px));
+  margin-left: var(--sidebar-width, 600px);
+  transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out;
+}
+
+/* Add transition to main content for smooth sidebar animation */
+.main {
+  transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out;
 }
 
 /* Responsive design */
