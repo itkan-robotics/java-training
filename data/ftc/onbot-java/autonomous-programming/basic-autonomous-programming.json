@@ -1,0 +1,186 @@
+{
+  "title": "Basic Autonomous Programming",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Autonomous Programming",
+      "content": "Autonomous programming is the foundation of advanced FTC robotics. This lesson covers the essential concepts and techniques for creating autonomous routines that allow your robot to perform tasks without human intervention."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is Autonomous Mode?",
+      "subtitle": "Autonomous mode is:",
+      "items": [
+        "The robot-controlled period at the start of an FTC match",
+        "When the robot performs pre-programmed tasks without human input",
+        "Typically 30 seconds long in most FTC games",
+        "Critical for scoring early points and gaining field position",
+        "Where programming skill and strategy are most important"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Autonomous Programming Concepts",
+      "content": "Understanding these fundamental concepts is essential for effective autonomous programming:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<strong>Sequential Execution:</strong> Tasks are performed in a specific order",
+        "<strong>Timing Control:</strong> Using time to coordinate robot actions",
+        "<strong>Sensor Feedback:</strong> Using sensors to make decisions and verify actions",
+        "<strong>State Management:</strong> Tracking what the robot is currently doing",
+        "<strong>Error Handling:</strong> Dealing with unexpected situations"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Basic Autonomous Structure",
+      "content": "Every autonomous OpMode follows a basic structure that includes initialization, waiting for start, and the main autonomous routine."
+    },
+    {
+      "type": "code",
+      "title": "Basic Autonomous OpMode Structure",
+      "language": "java",
+      "code": "@Autonomous(name=\"Basic Autonomous\", group=\"Examples\")\npublic class BasicAutonomous extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private TouchSensor touchSensor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initHardware();\n        \n        // Display status\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\n        telemetry.update();\n        \n        // Wait for start\n        waitForStart();\n        \n        // Main autonomous routine\n        runAutonomous();\n    }\n    \n    private void initHardware() {\n        // Initialize motors\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Set motor directions\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        // Initialize servos\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Initialize sensors\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n    }\n    \n    private void runAutonomous() {\n        // Your autonomous routine goes here\n        telemetry.addData(\"Status\", \"Running autonomous\");\n        telemetry.update();\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.iterator().next().getVoltage();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Time-Based Movement",
+      "content": "Time-based movement is the simplest form of autonomous control. The robot performs actions for a specified amount of time."
+    },
+    {
+      "type": "code",
+      "title": "Time-Based Movement Example",
+      "language": "java",
+      "code": "private void runTimeBasedAutonomous() {\n    // Move forward for 2 seconds\n    telemetry.addData(\"Action\", \"Moving forward\");\n    telemetry.update();\n    \n    leftMotor.setPower(0.5);\n    rightMotor.setPower(0.5);\n    \n    // Wait for 2 seconds\n    sleep(2000);\n    \n    // Stop motors\n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    \n    // Turn right for 1 second\n    telemetry.addData(\"Action\", \"Turning right\");\n    telemetry.update();\n    \n    leftMotor.setPower(0.5);\n    rightMotor.setPower(-0.5);\n    \n    sleep(1000);\n    \n    // Stop motors\n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    \n    // Move arm to position\n    telemetry.addData(\"Action\", \"Moving arm\");\n    telemetry.update();\n    \n    armServo.setPosition(1.0);\n    sleep(1000);\n    \n    telemetry.addData(\"Status\", \"Autonomous complete\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Sensor-Based Decisions",
+      "content": "Using sensors to make decisions makes autonomous routines more reliable and adaptable to different situations."
+    },
+    {
+      "type": "code",
+      "title": "Sensor-Based Autonomous Example",
+      "language": "java",
+      "code": "private void runSensorBasedAutonomous() {\n    // Move forward until touch sensor is pressed\n    telemetry.addData(\"Action\", \"Moving forward until contact\");\n    telemetry.update();\n    \n    leftMotor.setPower(0.3);\n    rightMotor.setPower(0.3);\n    \n    // Wait until touch sensor is pressed or timeout\n    double startTime = getRuntime().seconds();\n    while (!touchSensor.isPressed() && \n           (getRuntime().seconds() - startTime) < 5.0 && \n           opModeIsActive()) {\n        \n        telemetry.addData(\"Time\", \"%.1f seconds\", getRuntime().seconds() - startTime);\n        telemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n        telemetry.update();\n        \n        sleep(50); // Small delay to prevent excessive telemetry\n    }\n    \n    // Stop motors\n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    \n    if (touchSensor.isPressed()) {\n        telemetry.addData(\"Status\", \"Contact detected - stopping\");\n    } else {\n        telemetry.addData(\"Status\", \"Timeout reached - stopping\");\n    }\n    telemetry.update();\n    \n    // Back up a little\n    telemetry.addData(\"Action\", \"Backing up\");\n    telemetry.update();\n    \n    leftMotor.setPower(-0.3);\n    rightMotor.setPower(-0.3);\n    sleep(1000);\n    \n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n}"
+    },
+    {
+      "type": "text",
+      "title": "State Machine Programming",
+      "content": "State machines are a powerful way to organize autonomous routines. Each state represents a specific action or condition."
+    },
+    {
+      "type": "code",
+      "title": "State Machine Example",
+      "language": "java",
+      "code": "// Define states\nenum AutonomousState {\n    START,\n    MOVE_FORWARD,\n    TURN_RIGHT,\n    MOVE_ARM,\n    COMPLETE\n}\n\nprivate AutonomousState currentState = AutonomousState.START;\nprivate double stateStartTime;\n\nprivate void runStateMachineAutonomous() {\n    while (opModeIsActive()) {\n        switch (currentState) {\n            case START:\n                // Initialize for autonomous\n                telemetry.addData(\"State\", \"START\");\n                telemetry.update();\n                \n                // Move to next state\n                currentState = AutonomousState.MOVE_FORWARD;\n                stateStartTime = getRuntime().seconds();\n                break;\n                \n            case MOVE_FORWARD:\n                // Move forward for 2 seconds\n                telemetry.addData(\"State\", \"MOVE_FORWARD\");\n                telemetry.addData(\"Time\", \"%.1f seconds\", getRuntime().seconds() - stateStartTime);\n                telemetry.update();\n                \n                leftMotor.setPower(0.5);\n                rightMotor.setPower(0.5);\n                \n                // Check if time has elapsed\n                if ((getRuntime().seconds() - stateStartTime) >= 2.0) {\n                    leftMotor.setPower(0);\n                    rightMotor.setPower(0);\n                    currentState = AutonomousState.TURN_RIGHT;\n                    stateStartTime = getRuntime().seconds();\n                }\n                break;\n                \n            case TURN_RIGHT:\n                // Turn right for 1 second\n                telemetry.addData(\"State\", \"TURN_RIGHT\");\n                telemetry.addData(\"Time\", \"%.1f seconds\", getRuntime().seconds() - stateStartTime);\n                telemetry.update();\n                \n                leftMotor.setPower(0.5);\n                rightMotor.setPower(-0.5);\n                \n                if ((getRuntime().seconds() - stateStartTime) >= 1.0) {\n                    leftMotor.setPower(0);\n                    rightMotor.setPower(0);\n                    currentState = AutonomousState.MOVE_ARM;\n                    stateStartTime = getRuntime().seconds();\n                }\n                break;\n                \n            case MOVE_ARM:\n                // Move arm to position\n                telemetry.addData(\"State\", \"MOVE_ARM\");\n                telemetry.update();\n                \n                armServo.setPosition(1.0);\n                \n                currentState = AutonomousState.COMPLETE;\n                break;\n                \n            case COMPLETE:\n                // Autonomous is complete\n                telemetry.addData(\"State\", \"COMPLETE\");\n                telemetry.addData(\"Status\", \"Autonomous routine finished\");\n                telemetry.update();\n                \n                // Exit the loop\n                return;\n        }\n        \n        sleep(50); // Small delay to prevent excessive loop execution\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Autonomous Strategy Development",
+      "content": "Developing effective autonomous strategies requires understanding the game rules, field layout, and your robot's capabilities."
+    },
+    {
+      "type": "list",
+      "title": "Strategy Considerations",
+      "items": [
+        "<strong>Game Analysis:</strong> Understand the game rules and scoring opportunities",
+        "<strong>Field Layout:</strong> Know the field dimensions and key locations",
+        "<strong>Robot Capabilities:</strong> Understand what your robot can and cannot do",
+        "<strong>Alliance Coordination:</strong> Coordinate with your alliance partner",
+        "<strong>Risk Assessment:</strong> Balance high-risk, high-reward strategies with reliable scoring"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Testing and Debugging",
+      "content": "Thorough testing is essential for reliable autonomous performance. Use systematic testing methods to identify and fix issues."
+    },
+    {
+      "type": "list",
+      "title": "Testing Methods",
+      "items": [
+        "<strong>Component Testing:</strong> Test individual mechanisms before combining them",
+        "<strong>Timing Verification:</strong> Verify that timing is consistent and appropriate",
+        "<strong>Sensor Calibration:</strong> Ensure sensors are properly calibrated and reliable",
+        "<strong>Field Testing:</strong> Test on the actual field with proper game elements",
+        "<strong>Competition Simulation:</strong> Practice under competition-like conditions"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Debugging Autonomous Code",
+      "language": "java",
+      "code": "// Debugging example with extensive telemetry\nprivate void runDebugAutonomous() {\n    double startTime = getRuntime().seconds();\n    \n    telemetry.addData(\"=== AUTONOMOUS DEBUG ===\", \"\");\n    telemetry.addData(\"Start Time\", \"%.2f seconds\", startTime);\n    telemetry.addData(\"Battery Voltage\", \"%.1f volts\", getBatteryVoltage());\n    telemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n    telemetry.update();\n    \n    // Move forward with continuous monitoring\n    telemetry.addData(\"Action\", \"Moving forward with monitoring\");\n    telemetry.update();\n    \n    leftMotor.setPower(0.5);\n    rightMotor.setPower(0.5);\n    \n    for (int i = 0; i < 40; i++) { // 2 seconds with 50ms intervals\n        double currentTime = getRuntime().seconds();\n        \n        telemetry.addData(\"Time Elapsed\", \"%.2f seconds\", currentTime - startTime);\n        telemetry.addData(\"Left Motor Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n        telemetry.addData(\"Battery\", \"%.1f volts\", getBatteryVoltage());\n        telemetry.update();\n        \n        sleep(50);\n    }\n    \n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    \n    telemetry.addData(\"Status\", \"Debug autonomous complete\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Autonomous Best Practices",
+      "subtitle": "Follow these guidelines for effective autonomous programming:",
+      "items": [
+        "Start with simple, reliable routines and gradually add complexity",
+        "Use sensors whenever possible to make decisions more reliable",
+        "Test each component individually before combining them",
+        "Implement proper error handling and timeout mechanisms",
+        "Use extensive telemetry for debugging and monitoring",
+        "Document your autonomous strategies and code",
+        "Practice autonomous routines frequently with your team"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Common Autonomous Challenges",
+      "content": "Understanding common challenges helps you develop better autonomous routines."
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<strong>Inconsistent Timing:</strong> Use sensors instead of relying solely on time",
+        "<strong>Battery Voltage Changes:</strong> Monitor battery and adjust power accordingly",
+        "<strong>Field Variations:</strong> Test on different field surfaces and conditions",
+        "<strong>Sensor Reliability:</strong> Implement multiple sensors and redundancy",
+        "<strong>Code Complexity:</strong> Break complex routines into smaller, manageable functions"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Time-Based Movement",
+          "id": "time-based-movement"
+        },
+        {
+          "label": "Encoder-Based Movement",
+          "id": "encoder-based-movement"
+        },
+        {
+          "label": "Basic Debugging Techniques",
+          "id": "basic-debugging-techniques"
+        },
+        {
+          "label": "State Machines",
+          "id": "state-machines"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Autonomous Programming Practice",
+      "description": "Complete these exercises to master autonomous programming:",
+      "tasks": [
+        "Create a simple time-based autonomous routine",
+        "Implement sensor-based decision making",
+        "Develop a state machine for a complex autonomous sequence",
+        "Add comprehensive debugging and telemetry",
+        "Test your autonomous routine under various conditions",
+        "Practice autonomous strategy development",
+        "Coordinate autonomous routines with your alliance partner"
+      ],
+      "code": "// Practice Exercise: Complete Autonomous Routine\n// Create an autonomous OpMode that includes:\n// - Time-based movement for basic navigation\n// - Sensor-based decision making\n// - State machine organization\n// - Comprehensive telemetry and debugging\n// - Error handling and timeout mechanisms\n// - Multiple autonomous strategies for different starting positions"
+    }
+  ]
+} 

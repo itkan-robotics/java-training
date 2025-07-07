@@ -1,0 +1,138 @@
+{
+  "title": "Drivetrain Basics",
+  "sections": [
+    {
+      "type": "text",
+      "content": "The drivetrain is the most fundamental component of any FTC robot. It's responsible for moving your robot around the field and is typically the first mechanism you'll build and program."
+    },
+    {
+      "type": "rules-box",
+      "title": "Key Concepts",
+      "subtitle": "Essential drivetrain knowledge",
+      "items": [
+        "Drivetrain provides movement and steering",
+        "Most FTC robots use 4-wheel or 6-wheel configurations",
+        "Motor power and gearing affect speed and torque",
+        "Wheel type and size impact traction and maneuverability"
+      ]
+    },
+    {
+      "type": "text",
+      "content": "FTC robots commonly use several drivetrain configurations, each with their own advantages and trade-offs."
+    },
+    {
+      "type": "code-block",
+      "title": "Common Drivetrain Types",
+      "language": "java",
+      "content": "// Tank Drive (Differential Drive)\n// Left and right sides controlled independently\n// Good for: Simple control, turning in place\n// Challenge: Strafe movement not possible\n\n// Mecanum Drive\n// Four wheels with angled rollers\n// Good for: Omnidirectional movement, strafing\n// Challenge: More complex control, higher cost\n\n// Swerve Drive\n// Wheels that can rotate and drive\n// Good for: Precise control, smooth movement\n// Challenge: Very complex, expensive\n\n// Holonomic Drive\n// Similar to mecanum but different wheel design\n// Good for: Smooth omnidirectional movement\n// Challenge: Complex control algorithms"
+    },
+    {
+      "type": "text",
+      "content": "For beginners, tank drive is the most straightforward to build and program. It uses two motors on each side of the robot, allowing for forward/backward movement and turning."
+    },
+    {
+      "type": "code-block",
+      "title": "Basic Tank Drive Implementation",
+      "language": "java",
+      "content": "public class TankDriveOpMode extends OpMode {\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n    \n    @Override\n    public void init() {\n        // Initialize motors\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        \n        // Set motor directions\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        \n        // Set to run without encoders for basic control\n        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }\n    \n    @Override\n    public void loop() {\n        // Get gamepad inputs\n        double leftPower = -gamepad1.left_stick_y;\n        double rightPower = -gamepad1.right_stick_y;\n        \n        // Apply power to motors\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "content": "When building your drivetrain, consider these important factors that will affect your robot's performance."
+    },
+    {
+      "type": "rules-box",
+      "title": "Drivetrain Design Considerations",
+      "subtitle": "Factors that impact performance",
+      "items": [
+        "Wheel diameter affects speed and torque",
+        "Gear ratios determine power vs speed trade-off",
+        "Weight distribution affects traction and stability",
+        "Ground clearance impacts obstacle navigation",
+        "Center of gravity height affects tipping resistance"
+      ]
+    },
+    {
+      "type": "text",
+      "content": "Motor selection is crucial for drivetrain performance. FTC allows several motor types, each with different characteristics."
+    },
+    {
+      "type": "code-block",
+      "title": "FTC Motor Types",
+      "language": "java",
+      "content": "// Neverest 20 - High speed, low torque\n// Good for: Fast movement, light loads\n// RPM: ~3000, Torque: Low\n\n// Neverest 40 - Balanced speed and torque\n// Good for: General purpose drivetrain\n// RPM: ~1600, Torque: Medium\n\n// Neverest 60 - High torque, low speed\n// Good for: Heavy loads, climbing\n// RPM: ~1050, Torque: High\n\n// REV HD Hex Motor - Modern alternative\n// Good for: High precision, encoder feedback\n// RPM: Variable with gearing, Torque: High"
+    },
+    {
+      "type": "text",
+      "content": "Proper motor configuration in your code is essential for reliable drivetrain operation."
+    },
+    {
+      "type": "code-block",
+      "title": "Motor Configuration Best Practices",
+      "language": "java",
+      "content": "// Always set motor directions consistently\nleftDrive.setDirection(DcMotor.Direction.FORWARD);\nrightDrive.setDirection(DcMotor.Direction.REVERSE);\n\n// Use appropriate run modes\n// RUN_WITHOUT_ENCODER: Simple power control\n// RUN_USING_ENCODER: PID control for position\n// RUN_TO_POSITION: Move to specific encoder position\n\n// Set zero power behavior\nleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\nrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n\n// Configure motor limits for safety\nleftDrive.setPower(Range.clip(leftPower, -1.0, 1.0));\nrightDrive.setPower(Range.clip(rightPower, -1.0, 1.0));"
+    },
+    {
+      "type": "text",
+      "content": "Testing your drivetrain is an important step before adding other mechanisms. Start with simple movements and gradually increase complexity."
+    },
+    {
+      "type": "rules-box",
+      "title": "Drivetrain Testing Checklist",
+      "subtitle": "Essential tests for reliable operation",
+      "items": [
+        "Forward and backward movement",
+        "Left and right turning",
+        "Straight line driving",
+        "Turning in place",
+        "Speed control at different power levels",
+        "Emergency stop functionality",
+        "Battery voltage monitoring"
+      ]
+    },
+    {
+      "type": "text",
+      "content": "Common drivetrain issues include uneven movement, poor turning, and inconsistent behavior. These are often caused by mechanical or programming issues."
+    },
+    {
+      "type": "code-block",
+      "title": "Troubleshooting Common Issues",
+      "language": "java",
+      "content": "// Issue: Robot drives in circles\n// Solution: Check motor directions and wheel alignment\nleftDrive.setDirection(DcMotor.Direction.FORWARD);\nrightDrive.setDirection(DcMotor.Direction.REVERSE);\n\n// Issue: Uneven speed on each side\n// Solution: Calibrate motor power or check mechanical binding\ndouble leftPower = -gamepad1.left_stick_y * 0.95; // Slight reduction\ndouble rightPower = -gamepad1.right_stick_y;\n\n// Issue: Robot doesn't stop when joysticks are centered\n// Solution: Ensure proper zero power behavior\nleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\nrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n\n// Issue: Jerky movement\n// Solution: Add smoothing to joystick inputs\ndouble smoothing = 0.1;\nleftPower = leftPower * smoothing + lastLeftPower * (1 - smoothing);\nrightPower = rightPower * smoothing + lastRightPower * (1 - smoothing);"
+    },
+    {
+      "type": "text",
+      "content": "As you become more experienced, you can implement advanced drivetrain features like field-oriented control, path following, and autonomous navigation."
+    },
+    {
+      "type": "rules-box",
+      "title": "Next Steps",
+      "subtitle": "Advanced drivetrain concepts to explore",
+      "items": [
+        "Encoder-based position control",
+        "PID tuning for precise movement",
+        "Field coordinate systems",
+        "Path planning and following",
+        "Odometry for position tracking",
+        "Advanced control algorithms"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "title": "FTC Game Manual",
+      "url": "https://www.firstinspires.org/resource-library/ftc/game-and-season-info",
+      "description": "Official rules and regulations for FTC robots"
+    },
+    {
+      "title": "REV Robotics Documentation",
+      "url": "https://docs.revrobotics.com/",
+      "description": "Comprehensive documentation for REV hardware"
+    },
+    {
+      "title": "FTC Forum",
+      "url": "http://ftcforum.firstinspires.org/",
+      "description": "Community discussions about FTC robotics"
+    }
+  ]
+} 

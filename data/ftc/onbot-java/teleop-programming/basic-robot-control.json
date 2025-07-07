@@ -1,0 +1,181 @@
+{
+  "title": "Basic Robot Control",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Basic Robot Control",
+      "content": "Basic robot control is the foundation of FTC programming. This lesson covers the essential concepts and techniques for controlling your robot during the driver-controlled (teleop) period of a match."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is TeleOp?",
+      "subtitle": "TeleOp (Teleoperated) mode is:",
+      "items": [
+        "The driver-controlled period of an FTC match",
+        "When human drivers control the robot using gamepads",
+        "Typically 2 minutes long in most FTC games",
+        "The primary opportunity for scoring points",
+        "Where teamwork and driver skill are crucial"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Basic Control Concepts",
+      "content": "Understanding these fundamental concepts is essential for effective robot control:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<strong>Motor Power:</strong> Controls the speed and direction of motors (-1.0 to 1.0)",
+        "<strong>Servo Position:</strong> Controls the position of servos (0.0 to 1.0)",
+        "<strong>Gamepad Input:</strong> Reads controller inputs for driver control",
+        "<strong>Telemetry:</strong> Displays information to help drivers make decisions",
+        "<strong>Safety:</strong> Prevents robot damage and ensures reliable operation"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Basic Drivetrain Control",
+      "content": "The drivetrain is the most fundamental part of robot control. It determines how your robot moves around the field."
+    },
+    {
+      "type": "code",
+      "title": "Basic Tank Drive Example",
+      "language": "java",
+      "code": "@TeleOp(name=\"Basic Tank Drive\", group=\"Examples\")\npublic class BasicTankDrive extends LinearOpMode {\n    \n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Set motor directions\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Read gamepad inputs\n            double leftPower = gamepad1.left_stick_y;\n            double rightPower = gamepad1.right_stick_y;\n            \n            // Apply power to motors\n            leftMotor.setPower(leftPower);\n            rightMotor.setPower(rightPower);\n            \n            // Display telemetry\n            telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n            telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Arcade Drive Control",
+      "content": "Arcade drive is an alternative control scheme that many drivers prefer. It uses one joystick for forward/backward and another for turning."
+    },
+    {
+      "type": "code",
+      "title": "Arcade Drive Example",
+      "language": "java",
+      "code": "// Arcade drive control\nwhile (opModeIsActive()) {\n    // Read gamepad inputs\n    double forward = -gamepad1.left_stick_y;  // Forward/backward\n    double turn = gamepad1.right_stick_x;     // Left/right turn\n    \n    // Calculate motor powers\n    double leftPower = forward + turn;\n    double rightPower = forward - turn;\n    \n    // Limit power to valid range\n    leftPower = Range.clip(leftPower, -1.0, 1.0);\n    rightPower = Range.clip(rightPower, -1.0, 1.0);\n    \n    // Apply power to motors\n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n    \n    // Display telemetry\n    telemetry.addData(\"Forward\", \"%.2f\", forward);\n    telemetry.addData(\"Turn\", \"%.2f\", turn);\n    telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n    telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Servo Control",
+      "content": "Servos provide precise position control for mechanisms like arms, claws, and lifts. Understanding servo control is essential for manipulating game elements."
+    },
+    {
+      "type": "code",
+      "title": "Basic Servo Control Example",
+      "language": "java",
+      "code": "// Servo control example\nprivate Servo armServo;\nprivate Servo clawServo;\n\n// Initialize servos\narmServo = hardwareMap.get(Servo.class, \"arm_servo\");\nclawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n\n// Set initial positions\narmServo.setPosition(0.5);  // Middle position\nclawServo.setPosition(0.0); // Closed position\n\n// Servo control in main loop\nwhile (opModeIsActive()) {\n    // Arm control with D-pad\n    if (gamepad1.dpad_up) {\n        armServo.setPosition(1.0);  // Up position\n    } else if (gamepad1.dpad_down) {\n        armServo.setPosition(0.0);  // Down position\n    }\n    \n    // Claw control with buttons\n    if (gamepad1.a) {\n        clawServo.setPosition(0.0);  // Close claw\n    } else if (gamepad1.b) {\n        clawServo.setPosition(1.0);  // Open claw\n    }\n    \n    // Display servo positions\n    telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n    telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Safety and Best Practices",
+      "content": "Implementing safety measures and following best practices ensures reliable robot operation and prevents damage."
+    },
+    {
+      "type": "list",
+      "title": "Safety Guidelines",
+      "items": [
+        "<strong>Power Limits:</strong> Never exceed motor power limits or servo position ranges",
+        "<strong>Battery Monitoring:</strong> Check battery voltage and warn drivers of low battery",
+        "<strong>Emergency Stop:</strong> Implement a way to quickly stop all robot movement",
+        "<strong>Sensor Limits:</strong> Use sensors to prevent mechanisms from damaging themselves",
+        "<strong>Driver Feedback:</strong> Provide clear telemetry so drivers know robot status"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Safety Implementation Example",
+      "language": "java",
+      "code": "// Safety features implementation\nwhile (opModeIsActive()) {\n    // Check battery voltage\n    double batteryVoltage = getBatteryVoltage();\n    if (batteryVoltage < 11.0) {\n        telemetry.addData(\"WARNING\", \"Low battery: %.1f volts\", batteryVoltage);\n        // Reduce motor power when battery is low\n        leftMotor.setPower(leftMotor.getPower() * 0.5);\n        rightMotor.setPower(rightMotor.getPower() * 0.5);\n    }\n    \n    // Emergency stop\n    if (gamepad1.back) {\n        // Stop all motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        armServo.setPosition(armServo.getPosition()); // Hold current position\n        telemetry.addData(\"STATUS\", \"EMERGENCY STOP\");\n    }\n    \n    // Use touch sensor as limit switch\n    if (touchSensor.isPressed()) {\n        // Stop arm movement if it hits something\n        armServo.setPosition(armServo.getPosition());\n        telemetry.addData(\"WARNING\", \"Arm limit reached!\");\n    }\n    \n    telemetry.update();\n}\n\nprivate double getBatteryVoltage() {\n    return hardwareMap.voltageSensor.iterator().next().getVoltage();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Control Techniques",
+      "content": "Once you master basic control, you can implement more advanced techniques for better robot performance."
+    },
+    {
+      "type": "list",
+      "title": "Advanced Techniques",
+      "items": [
+        "<strong>Power Scaling:</strong> Adjust motor power based on gamepad input for finer control",
+        "<strong>Dead Zone:</strong> Ignore small joystick movements to prevent drift",
+        "<strong>Speed Modes:</strong> Implement different speed modes for precision vs. speed",
+        "<strong>Button Mapping:</strong> Use buttons for quick actions and preset positions",
+        "<strong>Combined Controls:</strong> Coordinate multiple mechanisms for complex actions"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Advanced Control Example",
+      "language": "java",
+      "code": "// Advanced control with power scaling and dead zone\nwhile (opModeIsActive()) {\n    // Read gamepad inputs with dead zone\n    double leftStickY = gamepad1.left_stick_y;\n    double rightStickY = gamepad1.right_stick_y;\n    \n    // Apply dead zone\n    if (Math.abs(leftStickY) < 0.1) leftStickY = 0;\n    if (Math.abs(rightStickY) < 0.1) rightStickY = 0;\n    \n    // Power scaling based on speed mode\n    double speedMultiplier = gamepad1.left_bumper ? 0.5 : 1.0; // Slow mode\n    \n    // Calculate motor powers\n    double leftPower = leftStickY * speedMultiplier;\n    double rightPower = rightStickY * speedMultiplier;\n    \n    // Apply power to motors\n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n    \n    // Quick actions with buttons\n    if (gamepad1.x) {\n        // Quick turn left\n        leftMotor.setPower(-0.5);\n        rightMotor.setPower(0.5);\n    } else if (gamepad1.y) {\n        // Quick turn right\n        leftMotor.setPower(0.5);\n        rightMotor.setPower(-0.5);\n    }\n    \n    // Display status\n    telemetry.addData(\"Speed Mode\", gamepad1.left_bumper ? \"Slow\" : \"Normal\");\n    telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n    telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Control Best Practices",
+      "subtitle": "Follow these guidelines for effective robot control:",
+      "items": [
+        "Test your controls thoroughly before competition",
+        "Provide clear feedback to drivers through telemetry",
+        "Implement safety features to prevent damage",
+        "Use consistent control schemes across your team",
+        "Practice with your drivers to improve coordination",
+        "Keep controls simple and intuitive",
+        "Have backup control schemes for emergencies"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Driver Training",
+      "content": "Effective robot control requires well-trained drivers who understand the robot's capabilities and limitations."
+    },
+    {
+      "type": "list",
+      "title": "Driver Training Tips",
+      "items": [
+        "<strong>Practice Regularly:</strong> Drivers should practice with the robot frequently",
+        "<strong>Clear Communication:</strong> Establish clear communication protocols between drivers",
+        "<strong>Strategy Planning:</strong> Develop strategies that work with your control scheme",
+        "<strong>Backup Plans:</strong> Have backup strategies for when things go wrong",
+        "<strong>Team Coordination:</strong> Practice coordination between driver and operator"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Gamepad Controls",
+          "id": "gamepad-controls"
+        },
+        {
+          "label": "Motor Power Control",
+          "id": "motor-power-control"
+        },
+        {
+          "label": "Servo Control",
+          "id": "servo-control"
+        },
+        {
+          "label": "Basic Autonomous Programming",
+          "id": "basic-autonomous-programming"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Basic Control Practice",
+      "description": "Complete these exercises to master basic robot control:",
+      "tasks": [
+        "Create a basic tank drive OpMode",
+        "Implement arcade drive control",
+        "Add servo control for a simple mechanism",
+        "Implement safety features and battery monitoring",
+        "Create different speed modes for your robot",
+        "Practice with drivers to improve coordination",
+        "Test your controls in various scenarios"
+      ],
+      "code": "// Practice Exercise: Complete Robot Control\n// Create a teleop OpMode that includes:\n// - Tank drive or arcade drive control\n// - Servo control for at least one mechanism\n// - Safety features (battery monitoring, emergency stop)\n// - Clear telemetry for driver feedback\n// - Multiple speed modes or control options"
+    }
+  ]
+} 

@@ -1,0 +1,214 @@
+{
+  "title": "SDK Installation",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to FTC SDK Installation",
+      "content": "Proper installation of the FTC SDK is the first step in FTC programming. This lesson covers the complete process of downloading, installing, and configuring the FTC Software Development Kit for both OnBot Java and Android Studio environments."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is the FTC SDK?",
+      "subtitle": "The FTC SDK includes:",
+      "items": [
+        "Core robot control libraries and APIs",
+        "Hardware abstraction layer for motors, servos, and sensors",
+        "OpMode framework for autonomous and teleop programming",
+        "Telemetry system for debugging and data logging",
+        "Gamepad input handling for driver controls",
+        "Built-in support for common FTC hardware components"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Prerequisites",
+      "content": "Before installing the FTC SDK, ensure you have the following prerequisites:"
+    },
+    {
+      "type": "list",
+      "title": "System Requirements",
+      "items": [
+        "<strong>Operating System:</strong> Windows 10/11, macOS 10.14+, or Linux",
+        "<strong>Java Development Kit:</strong> JDK 8 or higher (JDK 11 recommended)",
+        "<strong>Internet Connection:</strong> Required for downloading SDK components",
+        "<strong>Storage Space:</strong> At least 2GB free space for SDK and tools",
+        "<strong>FTC Hardware:</strong> Control Hub, Expansion Hub, and robot components"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "OnBot Java SDK Installation",
+      "content": "OnBot Java is the web-based development environment that doesn't require local installation. The SDK is automatically available when you access the OnBot Java interface."
+    },
+    {
+      "type": "list",
+      "title": "OnBot Java Setup Steps",
+      "items": [
+        "<strong>1. Access OnBot Java:</strong> Connect to your Control Hub's WiFi network",
+        "<strong>2. Open Browser:</strong> Navigate to the Control Hub's IP address (usually 192.168.43.1)",
+        "<strong>3. Launch OnBot Java:</strong> Click on the OnBot Java button in the Robot Controller app",
+        "<strong>4. SDK Access:</strong> The FTC SDK is automatically available in the OnBot Java environment",
+        "<strong>5. Create Project:</strong> Start a new project or open an existing one"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "OnBot Java Connection Example",
+      "language": "java",
+      "code": "// OnBot Java automatically provides SDK access\n// No manual installation required\n\n// Example: Basic OpMode structure in OnBot Java\n@TeleOp(name=\"OnBot Example\", group=\"Examples\")\npublic class OnBotExample extends LinearOpMode {\n    \n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    \n    @Override\n    public void runOpMode() {\n        // Hardware initialization\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Set motor directions\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Basic tank drive\n            double leftPower = gamepad1.left_stick_y;\n            double rightPower = gamepad1.right_stick_y;\n            \n            leftMotor.setPower(leftPower);\n            rightMotor.setPower(rightPower);\n            \n            telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n            telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Android Studio SDK Installation",
+      "content": "For Android Studio development, you need to install the FTC SDK as a dependency in your project. This provides access to all SDK features and allows for more advanced development."
+    },
+    {
+      "type": "list",
+      "title": "Android Studio Setup Steps",
+      "items": [
+        "<strong>1. Install Android Studio:</strong> Download and install the latest version from developer.android.com",
+        "<strong>2. Install Android SDK:</strong> Android Studio will guide you through SDK installation",
+        "<strong>3. Download FTC SDK:</strong> Clone or download the FTC SDK from GitHub",
+        "<strong>4. Import SDK:</strong> Import the SDK as a module in your Android Studio project",
+        "<strong>5. Configure Dependencies:</strong> Add SDK dependencies to your build.gradle file"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Android Studio build.gradle Configuration",
+      "language": "gradle",
+      "code": "// build.gradle (Module: TeamCode)\napply plugin: 'com.android.application'\n\nandroid {\n    compileSdkVersion 28\n    \n    defaultConfig {\n        applicationId \"org.firstinspires.ftc.teamcode\"\n        minSdkVersion 23\n        targetSdkVersion 28\n        versionCode 1\n        versionName \"1.0\"\n    }\n    \n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n}\n\nrepositories {\n    maven { url = \"https://dl.bintray.com/first-tech-challenge/ftcsdk/\" }\n    google()\n    jcenter()\n}\n\ndependencies {\n    implementation 'com.qualcomm.robotcore:ftc-robotcore:6.1.1'\n    implementation 'com.qualcomm.hardware:ftc-robotcore:6.1.1'\n    implementation 'com.qualcomm.robotcore:ftc-robotcore:6.1.1'\n    \n    // Additional dependencies for advanced features\n    implementation 'org.openftc:easyopencv:1.5.2'  // For computer vision\n    implementation 'org.openftc:apriltag:1.1.1'    // For AprilTag detection\n}"
+    },
+    {
+      "type": "text",
+      "title": "SDK Version Management",
+      "content": "The FTC SDK is regularly updated with new features, bug fixes, and compatibility improvements. Understanding version management is important for maintaining your projects."
+    },
+    {
+      "type": "list",
+      "title": "Version Considerations",
+      "items": [
+        "<strong>SDK Versions:</strong> Different versions may have breaking changes",
+        "<strong>Compatibility:</strong> Ensure SDK version matches your hardware firmware",
+        "<strong>Updates:</strong> Regular updates provide new features and bug fixes",
+        "<strong>Migration:</strong> Plan for upgrading between major versions",
+        "<strong>Documentation:</strong> Check release notes for version-specific changes"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Version-Specific Code Example",
+      "language": "java",
+      "code": "// Example of version-specific features\n// This code works with FTC SDK 6.1+\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\nimport com.qualcomm.robotcore.hardware.TouchSensor;\nimport com.qualcomm.robotcore.hardware.ColorSensor;\nimport com.qualcomm.robotcore.hardware.DistanceSensor;\nimport com.qualcomm.robotcore.hardware.BNO055IMU;\n\n@TeleOp(name=\"Version Example\", group=\"Examples\")\npublic class VersionExample extends LinearOpMode {\n    \n    // Hardware declarations for SDK 6.1+\n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private TouchSensor touchSensor;\n    private ColorSensor colorSensor;\n    private DistanceSensor distanceSensor;\n    private BNO055IMU imu;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware with new SDK features\n        initHardware();\n        \n        telemetry.addData(\"SDK Version\", \"6.1.1\");\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Use new SDK features\n            processSensors();\n            updateTelemetry();\n        }\n    }\n    \n    private void initHardware() {\n        // Hardware mapping with new SDK\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        \n        // Configure IMU with new SDK features\n        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n        parameters.calibrationDataFile = \"BNO055IMUCalibration.json\";\n        parameters.loggingEnabled = true;\n        parameters.loggingTag = \"IMU\";\n        imu.initialize(parameters);\n    }\n    \n    private void processSensors() {\n        // Process sensor data with new SDK features\n        boolean touchPressed = touchSensor.isPressed();\n        int red = colorSensor.red();\n        int green = colorSensor.green();\n        int blue = colorSensor.blue();\n        double distance = distanceSensor.getDistance(DistanceUnit.CM);\n        \n        // Use new IMU features\n        AngularOrientation orientation = imu.getAngularOrientation();\n        double heading = orientation.firstAngle;\n        \n        // Process sensor data\n        if (touchPressed) {\n            telemetry.addData(\"Touch Sensor\", \"PRESSED\");\n        }\n        \n        telemetry.addData(\"Color\", \"R:%d G:%d B:%d\", red, green, blue);\n        telemetry.addData(\"Distance\", \"%.1f cm\", distance);\n        telemetry.addData(\"Heading\", \"%.1f degrees\", heading);\n    }\n    \n    private void updateTelemetry() {\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "SDK Configuration",
+      "content": "Proper SDK configuration ensures that your development environment is set up correctly and that your robot can communicate with the SDK components."
+    },
+    {
+      "type": "list",
+      "title": "Configuration Steps",
+      "items": [
+        "<strong>Hardware Configuration:</strong> Set up robot configuration file with component names",
+        "<strong>Network Configuration:</strong> Configure WiFi settings for robot communication",
+        "<strong>Driver Station Setup:</strong> Install and configure Driver Station app",
+        "<strong>Robot Controller Setup:</strong> Install and configure Robot Controller app",
+        "<strong>SDK Dependencies:</strong> Ensure all required libraries are available"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Hardware Configuration Example",
+      "language": "json",
+      "code": "{\n  \"robotType\": \"MyRobot\",\n  \"hardware\": [\n    {\n      \"name\": \"left_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 0\n    },\n    {\n      \"name\": \"right_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 1\n    },\n    {\n      \"name\": \"arm_servo\",\n      \"type\": \"Servo\",\n      \"port\": 0\n    },\n    {\n      \"name\": \"touch_sensor\",\n      \"type\": \"TouchSensor\",\n      \"port\": 0\n    },\n    {\n      \"name\": \"color_sensor\",\n      \"type\": \"ColorSensor\",\n      \"port\": 1\n    },\n    {\n      \"name\": \"distance_sensor\",\n      \"type\": \"DistanceSensor\",\n      \"port\": 2\n    },\n    {\n      \"name\": \"imu\",\n      \"type\": \"BNO055IMU\",\n      \"port\": 3\n    }\n  ]\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Installation Issues",
+      "content": "Common installation issues and their solutions help you get started quickly with FTC programming."
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<strong>SDK Not Found:</strong> Check repository URLs and network connectivity",
+        "<strong>Version Conflicts:</strong> Ensure compatible versions of all components",
+        "<strong>Build Errors:</strong> Check build.gradle configuration and dependencies",
+        "<strong>Hardware Not Detected:</strong> Verify hardware configuration and connections",
+        "<strong>Communication Issues:</strong> Check network settings and app pairing"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Troubleshooting Code Example",
+      "language": "java",
+      "code": "// Troubleshooting helper methods\npublic class InstallationTroubleshooter {\n    \n    public static void checkSDKInstallation(LinearOpMode opMode) {\n        try {\n            // Check if SDK classes are available\n            Class.forName(\"com.qualcomm.robotcore.eventloop.opmode.LinearOpMode\");\n            opMode.telemetry.addData(\"SDK Status\", \"✓ SDK classes available\");\n            \n            // Check hardware map\n            if (opMode.hardwareMap != null) {\n                opMode.telemetry.addData(\"Hardware Map\", \"✓ Hardware map initialized\");\n            } else {\n                opMode.telemetry.addData(\"Hardware Map\", \"✗ Hardware map not available\");\n            }\n            \n            // Check telemetry\n            if (opMode.telemetry != null) {\n                opMode.telemetry.addData(\"Telemetry\", \"✓ Telemetry system available\");\n            } else {\n                opMode.telemetry.addData(\"Telemetry\", \"✗ Telemetry system not available\");\n            }\n            \n        } catch (ClassNotFoundException e) {\n            opMode.telemetry.addData(\"SDK Error\", \"✗ SDK classes not found: \" + e.getMessage());\n        } catch (Exception e) {\n            opMode.telemetry.addData(\"Installation Error\", \"✗ \" + e.getMessage());\n        }\n        \n        opMode.telemetry.update();\n    }\n    \n    public static void checkHardwareConfiguration(LinearOpMode opMode) {\n        // Test hardware access\n        try {\n            DcMotor testMotor = opMode.hardwareMap.get(DcMotor.class, \"left_motor\");\n            opMode.telemetry.addData(\"Left Motor\", \"✓ Found\");\n        } catch (Exception e) {\n            opMode.telemetry.addData(\"Left Motor\", \"✗ Not found: \" + e.getMessage());\n        }\n        \n        try {\n            Servo testServo = opMode.hardwareMap.get(Servo.class, \"arm_servo\");\n            opMode.telemetry.addData(\"Arm Servo\", \"✓ Found\");\n        } catch (Exception e) {\n            opMode.telemetry.addData(\"Arm Servo\", \"✗ Not found: \" + e.getMessage());\n        }\n        \n        opMode.telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Installation Best Practices",
+      "subtitle": "Follow these guidelines for successful SDK installation:",
+      "items": [
+        "Use the latest stable version of the FTC SDK",
+        "Follow the official installation documentation",
+        "Test your installation with a simple OpMode",
+        "Keep backup copies of working configurations",
+        "Document any custom installation steps",
+        "Verify hardware compatibility before installation",
+        "Test communication between all components"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Resources and Documentation",
+      "content": "Several resources are available to help with SDK installation and troubleshooting:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<a href='https://github.com/FIRST-Tech-Challenge/FTC_App' target='_blank'>FTC SDK GitHub Repository</a> - Official SDK source code and installation instructions",
+        "<a href='https://gm0.org/en/latest/docs/software/index.html' target='_blank'>Game Manual 0</a> - Comprehensive FTC documentation including installation guides",
+        "<a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Resources</a> - Official FIRST documentation and support",
+        "<a href='https://ftc-docs.firstinspires.org/' target='_blank'>FTC Documentation</a> - Official SDK documentation and API reference"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        {
+          "label": "OpMode Structure",
+          "id": "opmode-structure"
+        },
+        {
+          "label": "Linear vs Iterative OpModes",
+          "id": "linear-vs-iterative-opmodes"
+        },
+        {
+          "label": "Telemetry Logging",
+          "id": "telemetry-logging"
+        },
+        {
+          "label": "Robot Hardware Overview",
+          "id": "robot-hardware-overview"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "SDK Installation Practice",
+      "description": "Complete these exercises to master SDK installation:",
+      "tasks": [
+        "Install the FTC SDK for both OnBot Java and Android Studio",
+        "Create a simple test OpMode to verify installation",
+        "Configure hardware mapping for your robot",
+        "Test communication between Driver Station and Robot Controller",
+        "Troubleshoot common installation issues",
+        "Update SDK to the latest version",
+        "Document your installation process for team reference"
+      ],
+      "code": "// Practice Exercise: SDK Installation Verification\n// Create a simple OpMode that tests all SDK components:\n// - Hardware mapping and initialization\n// - Basic motor and servo control\n// - Sensor reading and telemetry\n// - Gamepad input handling\n// - Error handling and troubleshooting\n// Verify that all SDK features work correctly"
+    }
+  ]
+} 

@@ -1,0 +1,233 @@
+{
+  "title": "Control Hub & Expansion Hub",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Control Hub & Expansion Hub",
+      "content": "The Control Hub and Expansion Hub are the core hardware components of FTC robots. Understanding how to set up, configure, and use these hubs is essential for successful robot operation."
+    },
+    {
+      "type": "rules-box",
+      "title": "What are the Control Hub & Expansion Hub?",
+      "subtitle": "Key components of FTC robot hardware:",
+      "items": [
+        "Control Hub: Main computer and WiFi router for the robot",
+        "Expansion Hub: Additional ports for motors, servos, and sensors",
+        "Control Hub: Runs the Robot Controller app and OnBot Java",
+        "Expansion Hub: Extends the robot's hardware capabilities",
+        "Control Hub: Provides WiFi network for Driver Station connection",
+        "Expansion Hub: Connects to Control Hub via USB or I2C"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Control Hub Overview",
+      "content": "The Control Hub is the brain of your FTC robot. It's a powerful Android device that runs the Robot Controller app, provides WiFi connectivity, and manages all robot operations."
+    },
+    {
+      "type": "list",
+      "title": "Control Hub Features",
+      "items": [
+        "<strong>Android Device:</strong> Runs Android 8.1 with FTC software",
+        "<strong>WiFi Router:</strong> Creates network for Driver Station connection",
+        "<strong>USB Ports:</strong> Connect Expansion Hubs and other devices",
+        "<strong>I2C Ports:</strong> Connect sensors and additional hardware",
+        "<strong>Motor Ports:</strong> Direct connection for up to 4 motors",
+        "<strong>Servo Ports:</strong> Direct connection for up to 6 servos",
+        "<strong>Digital Ports:</strong> Connect digital sensors and devices",
+        "<strong>Analog Ports:</strong> Connect analog sensors"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Control Hub Configuration Example",
+      "language": "java",
+      "code": "// Example of hardware mapping for Control Hub\n@TeleOp(name=\"Control Hub Example\", group=\"Examples\")\npublic class ControlHubExample extends LinearOpMode {\n    \n    // Control Hub direct connections\n    private DcMotor frontLeftMotor;  // Port 0\n    private DcMotor frontRightMotor; // Port 1\n    private DcMotor backLeftMotor;   // Port 2\n    private DcMotor backRightMotor;  // Port 3\n    \n    private Servo armServo;          // Port 0\n    private Servo clawServo;         // Port 1\n    \n    private TouchSensor touchSensor; // Port 0\n    private ColorSensor colorSensor; // Port 1\n    private DistanceSensor distanceSensor; // Port 2\n    \n    @Override\n    public void runOpMode() {\n        // Initialize Control Hub hardware\n        initControlHubHardware();\n        \n        telemetry.addData(\"Status\", \"Control Hub initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Process input and control robot\n            processInput();\n            updateTelemetry();\n        }\n    }\n    \n    private void initControlHubHardware() {\n        // Map motors connected directly to Control Hub\n        frontLeftMotor = hardwareMap.get(DcMotor.class, \"front_left_motor\");\n        frontRightMotor = hardwareMap.get(DcMotor.class, \"front_right_motor\");\n        backLeftMotor = hardwareMap.get(DcMotor.class, \"back_left_motor\");\n        backRightMotor = hardwareMap.get(DcMotor.class, \"back_right_motor\");\n        \n        // Configure motor directions for mecanum drive\n        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);\n        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);\n        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);\n        backRightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        // Set motor modes\n        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        // Map servos\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        \n        armServo.setDirection(Servo.Direction.FORWARD);\n        clawServo.setDirection(Servo.Direction.FORWARD);\n        \n        // Map sensors\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n        \n        // Configure sensors\n        if (colorSensor != null) {\n            colorSensor.enableLed(true);\n        }\n    }\n    \n    private void processInput() {\n        // Mecanum drive control\n        double forward = gamepad1.left_stick_y;\n        double strafe = gamepad1.left_stick_x;\n        double rotate = gamepad1.right_stick_x;\n        \n        // Calculate motor powers for mecanum drive\n        double frontLeftPower = forward + strafe + rotate;\n        double frontRightPower = forward - strafe - rotate;\n        double backLeftPower = forward - strafe + rotate;\n        double backRightPower = forward + strafe - rotate;\n        \n        // Apply power limits\n        frontLeftPower = Math.max(-1.0, Math.min(1.0, frontLeftPower));\n        frontRightPower = Math.max(-1.0, Math.min(1.0, frontRightPower));\n        backLeftPower = Math.max(-1.0, Math.min(1.0, backLeftPower));\n        backRightPower = Math.max(-1.0, Math.min(1.0, backRightPower));\n        \n        // Set motor powers\n        frontLeftMotor.setPower(frontLeftPower);\n        frontRightMotor.setPower(frontRightPower);\n        backLeftMotor.setPower(backLeftPower);\n        backRightMotor.setPower(backRightPower);\n        \n        // Arm control\n        if (gamepad1.right_trigger > 0.1) {\n            armServo.setPosition(1.0); // Raise arm\n        } else if (gamepad1.left_trigger > 0.1) {\n            armServo.setPosition(0.0); // Lower arm\n        }\n        \n        // Claw control\n        if (gamepad1.a) {\n            clawServo.setPosition(1.0); // Open claw\n        } else if (gamepad1.b) {\n            clawServo.setPosition(0.0); // Close claw\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Front Left Power\", \"%.2f\", frontLeftMotor.getPower());\n        telemetry.addData(\"Front Right Power\", \"%.2f\", frontRightMotor.getPower());\n        telemetry.addData(\"Back Left Power\", \"%.2f\", backLeftMotor.getPower());\n        telemetry.addData(\"Back Right Power\", \"%.2f\", backRightMotor.getPower());\n        \n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n        \n        if (touchSensor != null) {\n            telemetry.addData(\"Touch Sensor\", touchSensor.isPressed() ? \"PRESSED\" : \"Not Pressed\");\n        }\n        \n        if (colorSensor != null) {\n            telemetry.addData(\"Color\", \"R:%d G:%d B:%d\", \n                              colorSensor.red(), colorSensor.green(), colorSensor.blue());\n        }\n        \n        if (distanceSensor != null) {\n            telemetry.addData(\"Distance\", \"%.1f cm\", distanceSensor.getDistance(DistanceUnit.CM));\n        }\n        \n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Expansion Hub Overview",
+      "content": "The Expansion Hub provides additional ports for connecting more motors, servos, and sensors. It connects to the Control Hub and extends the robot's hardware capabilities."
+    },
+    {
+      "type": "list",
+      "title": "Expansion Hub Features",
+      "items": [
+        "<strong>Additional Motor Ports:</strong> 4 more motor connections",
+        "<strong>Additional Servo Ports:</strong> 6 more servo connections",
+        "<strong>Additional Digital Ports:</strong> More digital sensor connections",
+        "<strong>Additional Analog Ports:</strong> More analog sensor connections",
+        "<strong>I2C Ports:</strong> Connect I2C sensors and devices",
+        "<strong>USB Connection:</strong> Connects to Control Hub via USB",
+        "<strong>Power Distribution:</strong> Distributes power to connected devices",
+        "<strong>Firmware Updates:</strong> Can be updated independently"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Expansion Hub Configuration Example",
+      "language": "java",
+      "code": "// Example of hardware mapping for Expansion Hub\n@TeleOp(name=\"Expansion Hub Example\", group=\"Examples\")\npublic class ExpansionHubExample extends LinearOpMode {\n    \n    // Control Hub connections\n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    \n    // Expansion Hub connections\n    private DcMotor liftMotor, intakeMotor;\n    private Servo clawServo, wristServo;\n    private TouchSensor limitSwitch;\n    private ColorSensor colorSensor;\n    private DistanceSensor distanceSensor;\n    private BNO055IMU imu;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize both Control Hub and Expansion Hub hardware\n        initAllHardware();\n        \n        telemetry.addData(\"Status\", \"All hubs initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            processInput();\n            updateTelemetry();\n        }\n    }\n    \n    private void initAllHardware() {\n        // Initialize Control Hub hardware\n        initControlHubHardware();\n        \n        // Initialize Expansion Hub hardware\n        initExpansionHubHardware();\n    }\n    \n    private void initControlHubHardware() {\n        // Control Hub motors\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        // Control Hub servo\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        armServo.setDirection(Servo.Direction.FORWARD);\n    }\n    \n    private void initExpansionHubHardware() {\n        // Expansion Hub motors\n        liftMotor = hardwareMap.get(DcMotor.class, \"lift_motor\");\n        intakeMotor = hardwareMap.get(DcMotor.class, \"intake_motor\");\n        \n        liftMotor.setDirection(DcMotor.Direction.FORWARD);\n        intakeMotor.setDirection(DcMotor.Direction.FORWARD);\n        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        // Expansion Hub servos\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        wristServo = hardwareMap.get(Servo.class, \"wrist_servo\");\n        \n        clawServo.setDirection(Servo.Direction.FORWARD);\n        wristServo.setDirection(Servo.Direction.FORWARD);\n        \n        // Expansion Hub sensors\n        limitSwitch = hardwareMap.get(TouchSensor.class, \"limit_switch\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        \n        // Configure sensors\n        if (colorSensor != null) {\n            colorSensor.enableLed(true);\n        }\n        \n        if (imu != null) {\n            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n            imu.initialize(parameters);\n        }\n    }\n    \n    private void processInput() {\n        // Drive control (Control Hub motors)\n        double leftPower = gamepad1.left_stick_y;\n        double rightPower = gamepad1.right_stick_y;\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n        \n        // Lift control (Expansion Hub motor)\n        if (gamepad1.right_trigger > 0.1) {\n            liftMotor.setPower(0.5); // Lift up\n        } else if (gamepad1.left_trigger > 0.1) {\n            liftMotor.setPower(-0.5); // Lift down\n        } else {\n            liftMotor.setPower(0);\n        }\n        \n        // Intake control (Expansion Hub motor)\n        if (gamepad1.a) {\n            intakeMotor.setPower(1.0); // Intake\n        } else if (gamepad1.b) {\n            intakeMotor.setPower(-1.0); // Outtake\n        } else {\n            intakeMotor.setPower(0);\n        }\n        \n        // Arm control (Control Hub servo)\n        if (gamepad1.x) {\n            armServo.setPosition(1.0); // Raise arm\n        } else if (gamepad1.y) {\n            armServo.setPosition(0.0); // Lower arm\n        }\n        \n        // Claw and wrist control (Expansion Hub servos)\n        if (gamepad1.dpad_up) {\n            clawServo.setPosition(1.0); // Open claw\n        } else if (gamepad1.dpad_down) {\n            clawServo.setPosition(0.0); // Close claw\n        }\n        \n        if (gamepad1.dpad_left) {\n            wristServo.setPosition(0.0); // Rotate left\n        } else if (gamepad1.dpad_right) {\n            wristServo.setPosition(1.0); // Rotate right\n        }\n    }\n    \n    private void updateTelemetry() {\n        // Control Hub telemetry\n        telemetry.addData(\"Left Motor\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Arm Position\", \"%.2f\", armServo.getPosition());\n        \n        // Expansion Hub telemetry\n        telemetry.addData(\"Lift Motor\", \"%.2f\", liftMotor.getPower());\n        telemetry.addData(\"Intake Motor\", \"%.2f\", intakeMotor.getPower());\n        telemetry.addData(\"Claw Position\", \"%.2f\", clawServo.getPosition());\n        telemetry.addData(\"Wrist Position\", \"%.2f\", wristServo.getPosition());\n        \n        if (limitSwitch != null) {\n            telemetry.addData(\"Limit Switch\", limitSwitch.isPressed() ? \"PRESSED\" : \"Not Pressed\");\n        }\n        \n        if (colorSensor != null) {\n            telemetry.addData(\"Color\", \"R:%d G:%d B:%d\", \n                              colorSensor.red(), colorSensor.green(), colorSensor.blue());\n        }\n        \n        if (distanceSensor != null) {\n            telemetry.addData(\"Distance\", \"%.1f cm\", distanceSensor.getDistance(DistanceUnit.CM));\n        }\n        \n        if (imu != null) {\n            double heading = imu.getAngularOrientation().firstAngle;\n            telemetry.addData(\"Heading\", \"%.1f°\", heading);\n        }\n        \n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Hardware Configuration",
+      "content": "Proper hardware configuration is essential for successful robot operation. The configuration file defines how your hardware is connected and named."
+    },
+    {
+      "type": "list",
+      "title": "Configuration Process",
+      "items": [
+        "<strong>Hardware Mapping:</strong> Define component names and types",
+        "<strong>Port Assignment:</strong> Specify which ports components use",
+        "<strong>Hub Assignment:</strong> Indicate which hub components connect to",
+        "<strong>Component Types:</strong> Specify motor, servo, sensor types",
+        "<strong>Configuration File:</strong> Save settings for consistent operation",
+        "<strong>Validation:</strong> Test configuration before use"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Hardware Configuration Example",
+      "language": "json",
+      "code": "{\n  \"robotType\": \"MyFTCRobot\",\n  \"hardware\": [\n    {\n      \"name\": \"left_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 0,\n      \"hub\": \"Control Hub\"\n    },\n    {\n      \"name\": \"right_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 1,\n      \"hub\": \"Control Hub\"\n    },\n    {\n      \"name\": \"arm_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 2,\n      \"hub\": \"Control Hub\"\n    },\n    {\n      \"name\": \"lift_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 0,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"intake_motor\",\n      \"type\": \"DcMotor\",\n      \"port\": 1,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"arm_servo\",\n      \"type\": \"Servo\",\n      \"port\": 0,\n      \"hub\": \"Control Hub\"\n    },\n    {\n      \"name\": \"claw_servo\",\n      \"type\": \"Servo\",\n      \"port\": 0,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"wrist_servo\",\n      \"type\": \"Servo\",\n      \"port\": 1,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"touch_sensor\",\n      \"type\": \"TouchSensor\",\n      \"port\": 0,\n      \"hub\": \"Control Hub\"\n    },\n    {\n      \"name\": \"limit_switch\",\n      \"type\": \"TouchSensor\",\n      \"port\": 0,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"color_sensor\",\n      \"type\": \"ColorSensor\",\n      \"port\": 1,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"distance_sensor\",\n      \"type\": \"DistanceSensor\",\n      \"port\": 2,\n      \"hub\": \"Expansion Hub\"\n    },\n    {\n      \"name\": \"imu\",\n      \"type\": \"BNO055IMU\",\n      \"port\": 3,\n      \"hub\": \"Expansion Hub\"\n    }\n  ],\n  \"configuration\": {\n    \"controlHub\": {\n      \"firmware\": \"1.8.2\",\n      \"serialNumber\": \"CH123456\"\n    },\n    \"expansionHub\": {\n      \"firmware\": \"1.8.2\",\n      \"serialNumber\": \"EH789012\",\n      \"connection\": \"USB\"\n    }\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Network Configuration",
+      "content": "The Control Hub creates a WiFi network that the Driver Station connects to. Proper network configuration ensures reliable communication between the robot and driver station."
+    },
+    {
+      "type": "list",
+      "title": "Network Setup Steps",
+      "items": [
+        "<strong>Control Hub Network:</strong> Control Hub creates WiFi network automatically",
+        "<strong>Network Name:</strong> Usually includes Control Hub serial number",
+        "<strong>Password:</strong> Default password or custom password",
+        "<strong>Driver Station Connection:</strong> Connect Driver Station to Control Hub network",
+        "<strong>IP Address:</strong> Control Hub typically uses 192.168.43.1",
+        "<strong>Port Configuration:</strong> Standard ports for FTC communication"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Network Configuration Example",
+      "language": "java",
+      "code": "// Example of network configuration and connection checking\npublic class NetworkConfiguration {\n    \n    private static final String CONTROL_HUB_IP = \"192.168.43.1\";\n    private static final int CONTROL_HUB_PORT = 8000;\n    private static final String NETWORK_NAME_PREFIX = \"DIRECT-xy-\";\n    \n    public static void checkNetworkConnection(LinearOpMode opMode) {\n        // Check if connected to Control Hub network\n        String currentNetwork = getCurrentNetworkName();\n        \n        if (currentNetwork != null && currentNetwork.startsWith(NETWORK_NAME_PREFIX)) {\n            opMode.telemetry.addData(\"Network\", \"✓ Connected to Control Hub\");\n            opMode.telemetry.addData(\"Network Name\", currentNetwork);\n        } else {\n            opMode.telemetry.addData(\"Network\", \"✗ Not connected to Control Hub\");\n            opMode.telemetry.addData(\"Instructions\", \"Connect to Control Hub WiFi network\");\n        }\n        \n        // Check Control Hub connectivity\n        if (pingControlHub()) {\n            opMode.telemetry.addData(\"Control Hub\", \"✓ Reachable\");\n        } else {\n            opMode.telemetry.addData(\"Control Hub\", \"✗ Not reachable\");\n        }\n        \n        opMode.telemetry.update();\n    }\n    \n    private static String getCurrentNetworkName() {\n        // This would typically use Android's WifiManager\n        // For demonstration purposes, return a placeholder\n        return \"DIRECT-xy-123456\";\n    }\n    \n    private static boolean pingControlHub() {\n        // This would typically ping the Control Hub IP\n        // For demonstration purposes, return true\n        return true;\n    }\n    \n    public static void displayNetworkInfo(LinearOpMode opMode) {\n        opMode.telemetry.addData(\"=== NETWORK INFORMATION ===\", \"\");\n        opMode.telemetry.addData(\"Control Hub IP\", CONTROL_HUB_IP);\n        opMode.telemetry.addData(\"Control Hub Port\", CONTROL_HUB_PORT);\n        opMode.telemetry.addData(\"Network Prefix\", NETWORK_NAME_PREFIX);\n        opMode.telemetry.addLine(\"\");\n        opMode.telemetry.addData(\"Connection Steps:\", \"\");\n        opMode.telemetry.addData(\"1.\", \"Power on Control Hub\");\n        opMode.telemetry.addData(\"2.\", \"Wait for WiFi network to appear\");\n        opMode.telemetry.addData(\"3.\", \"Connect Driver Station to network\");\n        opMode.telemetry.addData(\"4.\", \"Launch Robot Controller app\");\n        opMode.telemetry.addData(\"5.\", \"Pair with Driver Station\");\n        opMode.telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Firmware Management",
+      "content": "Both the Control Hub and Expansion Hub run firmware that may need to be updated. Understanding firmware management helps maintain optimal performance and compatibility."
+    },
+    {
+      "type": "list",
+      "title": "Firmware Considerations",
+      "items": [
+        "<strong>Firmware Versions:</strong> Keep firmware up to date for best performance",
+        "<strong>Compatibility:</strong> Ensure firmware versions are compatible",
+        "<strong>Update Process:</strong> Follow official update procedures",
+        "<strong>Backup Configuration:</strong> Save configuration before updates",
+        "<strong>Testing:</strong> Test robot after firmware updates",
+        "<strong>Documentation:</strong> Keep track of firmware versions"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Firmware Management Example",
+      "language": "java",
+      "code": "// Example of firmware version checking and management\npublic class FirmwareManagement {\n    \n    private static final String REQUIRED_CONTROL_HUB_FIRMWARE = \"1.8.2\";\n    private static final String REQUIRED_EXPANSION_HUB_FIRMWARE = \"1.8.2\";\n    \n    public static void checkFirmwareVersions(LinearOpMode opMode) {\n        opMode.telemetry.addData(\"=== FIRMWARE CHECK ===\", \"\");\n        \n        // Check Control Hub firmware\n        String controlHubFirmware = getControlHubFirmwareVersion();\n        if (controlHubFirmware != null) {\n            opMode.telemetry.addData(\"Control Hub Firmware\", controlHubFirmware);\n            if (isFirmwareCompatible(controlHubFirmware, REQUIRED_CONTROL_HUB_FIRMWARE)) {\n                opMode.telemetry.addData(\"Control Hub Status\", \"✓ Compatible\");\n            } else {\n                opMode.telemetry.addData(\"Control Hub Status\", \"⚠ Update recommended\");\n            }\n        } else {\n            opMode.telemetry.addData(\"Control Hub Status\", \"✗ Version unknown\");\n        }\n        \n        // Check Expansion Hub firmware\n        String expansionHubFirmware = getExpansionHubFirmwareVersion();\n        if (expansionHubFirmware != null) {\n            opMode.telemetry.addData(\"Expansion Hub Firmware\", expansionHubFirmware);\n            if (isFirmwareCompatible(expansionHubFirmware, REQUIRED_EXPANSION_HUB_FIRMWARE)) {\n                opMode.telemetry.addData(\"Expansion Hub Status\", \"✓ Compatible\");\n            } else {\n                opMode.telemetry.addData(\"Expansion Hub Status\", \"⚠ Update recommended\");\n            }\n        } else {\n            opMode.telemetry.addData(\"Expansion Hub Status\", \"✗ Version unknown\");\n        }\n        \n        opMode.telemetry.update();\n    }\n    \n    private static String getControlHubFirmwareVersion() {\n        // This would typically read from the Control Hub\n        // For demonstration purposes, return a version\n        return \"1.8.2\";\n    }\n    \n    private static String getExpansionHubFirmwareVersion() {\n        // This would typically read from the Expansion Hub\n        // For demonstration purposes, return a version\n        return \"1.8.2\";\n    }\n    \n    private static boolean isFirmwareCompatible(String currentVersion, String requiredVersion) {\n        // Simple version comparison\n        // In practice, you might want more sophisticated version parsing\n        return currentVersion.equals(requiredVersion);\n    }\n    \n    public static void displayFirmwareUpdateInstructions(LinearOpMode opMode) {\n        opMode.telemetry.addData(\"=== FIRMWARE UPDATE INSTRUCTIONS ===\", \"\");\n        opMode.telemetry.addData(\"Control Hub:\", \"\");\n        opMode.telemetry.addData(\"1.\", \"Download firmware from FIRST website\");\n        opMode.telemetry.addData(\"2.\", \"Connect Control Hub to computer\");\n        opMode.telemetry.addData(\"3.\", \"Use FTC Robot Controller app to update\");\n        opMode.telemetry.addData(\"4.\", \"Follow on-screen instructions\");\n        opMode.telemetry.addLine(\"\");\n        opMode.telemetry.addData(\"Expansion Hub:\", \"\");\n        opMode.telemetry.addData(\"1.\", \"Download firmware from FIRST website\");\n        opMode.telemetry.addData(\"2.\", \"Connect Expansion Hub to computer\");\n        opMode.telemetry.addData(\"3.\", \"Use FTC Robot Controller app to update\");\n        opMode.telemetry.addData(\"4.\", \"Follow on-screen instructions\");\n        opMode.telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Common Issues",
+      "content": "Understanding common issues with Control Hub and Expansion Hub helps you quickly resolve problems and get your robot running."
+    },
+    {
+      "type": "list",
+      "title": "Common Issues and Solutions",
+      "items": [
+        "<strong>Connection Issues:</strong> Check USB cables and network settings",
+        "<strong>Hardware Not Detected:</strong> Verify configuration and port assignments",
+        "<strong>Firmware Problems:</strong> Update firmware or check compatibility",
+        "<strong>Power Issues:</strong> Check power supply and connections",
+        "<strong>Network Problems:</strong> Reset network settings or reconnect",
+        "<strong>App Crashes:</strong> Restart apps or reboot hubs"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Troubleshooting Example",
+      "language": "java",
+      "code": "// Example of comprehensive troubleshooting\npublic class HubTroubleshooting {\n    \n    public static void runDiagnostics(LinearOpMode opMode) {\n        opMode.telemetry.addData(\"=== HUB DIAGNOSTICS ===\", \"\");\n        \n        // Check Control Hub status\n        checkControlHubStatus(opMode);\n        \n        // Check Expansion Hub status\n        checkExpansionHubStatus(opMode);\n        \n        // Check network connectivity\n        checkNetworkConnectivity(opMode);\n        \n        // Check hardware connections\n        checkHardwareConnections(opMode);\n        \n        opMode.telemetry.update();\n    }\n    \n    private static void checkControlHubStatus(LinearOpMode opMode) {\n        opMode.telemetry.addLine(\"\\n--- CONTROL HUB STATUS ---\");\n        \n        // Check if Control Hub is responding\n        if (isControlHubResponding()) {\n            opMode.telemetry.addData(\"Control Hub\", \"✓ Responding\");\n            \n            // Check firmware version\n            String firmware = getControlHubFirmwareVersion();\n            opMode.telemetry.addData(\"Firmware\", firmware);\n            \n            // Check battery level\n            double batteryLevel = getControlHubBatteryLevel();\n            opMode.telemetry.addData(\"Battery\", \"%.1fV\", batteryLevel);\n            \n            if (batteryLevel < 11.0) {\n                opMode.telemetry.addData(\"⚠ WARNING\", \"Low battery level\");\n            }\n        } else {\n            opMode.telemetry.addData(\"Control Hub\", \"✗ Not responding\");\n            opMode.telemetry.addData(\"Troubleshooting:\", \"Check power and USB connections\");\n        }\n    }\n    \n    private static void checkExpansionHubStatus(LinearOpMode opMode) {\n        opMode.telemetry.addLine(\"\\n--- EXPANSION HUB STATUS ---\");\n        \n        // Check if Expansion Hub is connected\n        if (isExpansionHubConnected()) {\n            opMode.telemetry.addData(\"Expansion Hub\", \"✓ Connected\");\n            \n            // Check firmware version\n            String firmware = getExpansionHubFirmwareVersion();\n            opMode.telemetry.addData(\"Firmware\", firmware);\n            \n            // Check connection type\n            String connectionType = getExpansionHubConnectionType();\n            opMode.telemetry.addData(\"Connection\", connectionType);\n        } else {\n            opMode.telemetry.addData(\"Expansion Hub\", \"✗ Not connected\");\n            opMode.telemetry.addData(\"Troubleshooting:\", \"Check USB cable and power\");\n        }\n    }\n    \n    private static void checkNetworkConnectivity(LinearOpMode opMode) {\n        opMode.telemetry.addLine(\"\\n--- NETWORK CONNECTIVITY ---\");\n        \n        // Check WiFi connection\n        if (isWifiConnected()) {\n            opMode.telemetry.addData(\"WiFi\", \"✓ Connected\");\n            \n            String networkName = getCurrentNetworkName();\n            opMode.telemetry.addData(\"Network\", networkName);\n            \n            // Check signal strength\n            int signalStrength = getWifiSignalStrength();\n            opMode.telemetry.addData(\"Signal\", \"%d dBm\", signalStrength);\n            \n            if (signalStrength < -70) {\n                opMode.telemetry.addData(\"⚠ WARNING\", \"Weak signal strength\");\n            }\n        } else {\n            opMode.telemetry.addData(\"WiFi\", \"✗ Not connected\");\n            opMode.telemetry.addData(\"Troubleshooting:\", \"Connect to Control Hub network\");\n        }\n    }\n    \n    private static void checkHardwareConnections(LinearOpMode opMode) {\n        opMode.telemetry.addLine(\"\\n--- HARDWARE CONNECTIONS ---\");\n        \n        // Check motor connections\n        checkMotorConnections(opMode);\n        \n        // Check servo connections\n        checkServoConnections(opMode);\n        \n        // Check sensor connections\n        checkSensorConnections(opMode);\n    }\n    \n    private static void checkMotorConnections(LinearOpMode opMode) {\n        String[] motorNames = {\"left_motor\", \"right_motor\", \"arm_motor\", \"lift_motor\"};\n        \n        for (String motorName : motorNames) {\n            try {\n                DcMotor motor = opMode.hardwareMap.get(DcMotor.class, motorName);\n                if (motor != null) {\n                    opMode.telemetry.addData(motorName, \"✓ Connected\");\n                } else {\n                    opMode.telemetry.addData(motorName, \"✗ Not found\");\n                }\n            } catch (Exception e) {\n                opMode.telemetry.addData(motorName, \"✗ Error: \" + e.getMessage());\n            }\n        }\n    }\n    \n    private static void checkServoConnections(LinearOpMode opMode) {\n        String[] servoNames = {\"arm_servo\", \"claw_servo\", \"wrist_servo\"};\n        \n        for (String servoName : servoNames) {\n            try {\n                Servo servo = opMode.hardwareMap.get(Servo.class, servoName);\n                if (servo != null) {\n                    opMode.telemetry.addData(servoName, \"✓ Connected\");\n                } else {\n                    opMode.telemetry.addData(servoName, \"✗ Not found\");\n                }\n            } catch (Exception e) {\n                opMode.telemetry.addData(servoName, \"✗ Error: \" + e.getMessage());\n            }\n        }\n    }\n    \n    private static void checkSensorConnections(LinearOpMode opMode) {\n        String[] sensorNames = {\"touch_sensor\", \"color_sensor\", \"distance_sensor\", \"imu\"};\n        \n        for (String sensorName : sensorNames) {\n            try {\n                // Try to get the sensor (type doesn't matter for this check)\n                Object sensor = opMode.hardwareMap.get(Object.class, sensorName);\n                if (sensor != null) {\n                    opMode.telemetry.addData(sensorName, \"✓ Connected\");\n                } else {\n                    opMode.telemetry.addData(sensorName, \"✗ Not found\");\n                }\n            } catch (Exception e) {\n                opMode.telemetry.addData(sensorName, \"✗ Error: \" + e.getMessage());\n            }\n        }\n    }\n    \n    // Placeholder methods for demonstration\n    private static boolean isControlHubResponding() { return true; }\n    private static boolean isExpansionHubConnected() { return true; }\n    private static boolean isWifiConnected() { return true; }\n    private static String getCurrentNetworkName() { return \"DIRECT-xy-123456\"; }\n    private static int getWifiSignalStrength() { return -45; }\n    private static String getControlHubFirmwareVersion() { return \"1.8.2\"; }\n    private static String getExpansionHubFirmwareVersion() { return \"1.8.2\"; }\n    private static String getExpansionHubConnectionType() { return \"USB\"; }\n    private static double getControlHubBatteryLevel() { return 12.5; }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Hub Best Practices",
+      "subtitle": "Follow these guidelines for optimal hub performance:",
+      "items": [
+        "Keep firmware updated to latest stable versions",
+        "Use high-quality USB cables for Expansion Hub connections",
+        "Ensure proper power supply for both hubs",
+        "Test all hardware connections before competition",
+        "Document your hardware configuration",
+        "Keep backup configuration files",
+        "Monitor battery levels during operation",
+        "Check network connectivity regularly",
+        "Use proper cable management to prevent damage",
+        "Follow FIRST safety guidelines for all hardware"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Resources and Documentation",
+      "content": "Additional resources for learning about Control Hub and Expansion Hub:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Resources</a> - Official documentation and support",
+        "<a href='https://gm0.org/en/latest/docs/hardware/index.html' target='_blank'>Game Manual 0 - Hardware Documentation</a> - Comprehensive hardware guides",
+        "<a href='https://ftc-docs.firstinspires.org/' target='_blank'>FTC Documentation</a> - Official SDK documentation and API reference"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        {
+          "label": "Robot Hardware Overview",
+          "id": "robot-hardware-overview"
+        },
+        {
+          "label": "DC Motors",
+          "id": "dc-motors"
+        },
+        {
+          "label": "Servos",
+          "id": "servos"
+        },
+        {
+          "label": "Sensors",
+          "id": "sensors"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Control Hub & Expansion Hub Practice",
+      "description": "Complete these exercises to master hub configuration:",
+      "tasks": [
+        "Set up Control Hub and Expansion Hub hardware",
+        "Configure hardware mapping for both hubs",
+        "Test all motor, servo, and sensor connections",
+        "Verify network connectivity and communication",
+        "Update firmware to latest versions",
+        "Create comprehensive hardware configuration file",
+        "Run diagnostics and troubleshoot issues",
+        "Document your setup for team reference"
+      ],
+      "code": "// Practice Exercise: Complete Hub Setup\n// Set up a robot with both Control Hub and Expansion Hub:\n// - Configure all motors, servos, and sensors\n// - Test hardware connections and functionality\n// - Verify network connectivity and communication\n// - Update firmware and check compatibility\n// - Create comprehensive configuration documentation\n// - Run diagnostics and troubleshoot any issues\n// - Test complete robot operation with all components"
+    }
+  ]
+} 

@@ -1,0 +1,49 @@
+{
+  "title": "Distance Sensors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Measuring Proximity in FTC",
+      "content": "Distance sensors measure how far away an object is, using infrared or ultrasonic technology. They are useful for obstacle detection, alignment, and autonomous navigation."
+    },
+    {
+      "type": "rules-box",
+      "title": "Distance Sensor Facts",
+      "subtitle": "How they work",
+      "items": [
+        "Return distance in centimeters or inches",
+        "Can detect walls, game elements, or other robots",
+        "Useful for autonomous routines"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Distance Sensor Example",
+      "language": "java",
+      "code": "DistanceSensor dist = hardwareMap.get(DistanceSensor.class, \"dist\");\ndouble distance = dist.getDistance(DistanceUnit.CM);"
+    },
+    {
+      "type": "text",
+      "title": "Mounting and Testing",
+      "content": "Mount distance sensors securely and test their range and accuracy in your environment."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Touch Sensors",
+          "id": "touch-sensors"
+        },
+        {
+          "label": "Color Sensors",
+          "id": "color-sensors"
+        }
+      ]
+    }
+  ]
+} 

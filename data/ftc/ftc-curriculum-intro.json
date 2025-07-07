@@ -1,82 +1,118 @@
 {
-  "title": "FTC Java Programming Curriculum Overview",
+  "title": "FTC Curriculum Overview",
   "sections": [
     {
       "type": "text",
-      "title": "Welcome to FTC Java Programming",
-      "content": "This comprehensive curriculum is designed for students with a solid Java background who want to learn FTC (FIRST Tech Challenge) robotics programming. The curriculum is structured in three progressive tiers, each building upon the previous level."
+      "title": "Welcome to FTC Programming",
+      "content": "Welcome to the comprehensive FTC (FIRST Tech Challenge) programming curriculum! This curriculum is designed to take you from complete beginner to advanced FTC programmer, covering both OnBot Java and Android Studio development environments."
     },
     {
       "type": "rules-box",
+      "title": "What is FTC?",
+      "subtitle": "FIRST Tech Challenge is:",
+      "items": [
+        "A robotics competition for students in grades 7-12",
+        "A platform for learning real-world engineering and programming",
+        "An opportunity to work with modern robotics hardware and software",
+        "A chance to develop problem-solving and teamwork skills",
+        "A pathway to careers in STEM fields"
+      ]
+    },
+    {
+      "type": "text",
       "title": "Curriculum Structure",
-      "items": [
-        "<strong>Beginner Tier:</strong> Focus on OnBot Java development with simple concepts and immediate feedback",
-        "<strong>Intermediate Tier:</strong> Introduction to Android Studio, Git version control, and more complex programming patterns",
-        "<strong>Advanced Tier:</strong> Advanced autonomous systems, computer vision, and competition strategies"
-      ],
-      "subtitle": "Our curriculum follows a progressive learning path designed to take you from basic robot control to advanced autonomous systems."
-    },
-    {
-      "type": "text",
-      "title": "Prerequisites",
-      "content": "Before starting this curriculum, you should have:"
+      "content": "This FTC curriculum is organized into two main development environments, each with comprehensive learning paths:"
     },
     {
       "type": "list",
+      "title": "Learning Paths",
       "items": [
-        "Solid understanding of Java programming fundamentals",
-        "Basic knowledge of object-oriented programming concepts",
-        "Familiarity with control structures (if/else, loops)",
-        "Understanding of methods and classes",
-        "Basic knowledge of arrays and data structures"
+        "<strong>OnBot Java:</strong> Web-based development environment perfect for beginners. Learn robot hardware, basic programming, and autonomous control without complex setup.",
+        "<strong>Android Studio:</strong> Professional development environment for advanced programming. Master advanced control theory, computer vision, and sophisticated autonomous behaviors."
       ]
     },
     {
       "type": "text",
-      "title": "Learning Resources",
-      "content": "This curriculum is based on the following authoritative sources:"
+      "title": "OnBot Java Learning Path",
+      "content": "Start with OnBot Java if you're new to FTC programming:"
     },
     {
       "type": "list",
       "items": [
-        "<a href='https://gm0.org/en/latest/docs/software/index.html' target='_blank'>Game Manual 0 (gm0.org)</a> - Official FTC documentation and best practices",
-        "<a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Information</a> - Official FIRST resources and documentation",
-        "<a href='https://github.com/KookyBotz' target='_blank'>KookyBotz GitHub</a> - Advanced FTC programming examples and libraries",
-        "<a href='https://pedropathing.com/' target='_blank'>PedroPathing</a> - Advanced autonomous path following library",
-        "<a href='https://docs.seattlesolvers.com/' target='_blank'>Seattle Solvers Documentation</a> - Advanced FTC programming resources"
+        "<strong>Environment Setup:</strong> Learn FTC SDK basics, OpMode structure, and telemetry logging",
+        "<strong>Robot Hardware:</strong> Master DC motors, servos, sensors, and hardware integration",
+        "<strong>TeleOp Programming:</strong> Create driver-controlled robot behaviors and gamepad controls",
+        "<strong>Autonomous Programming:</strong> Develop time-based and encoder-based autonomous routines",
+        "<strong>Debugging & Best Practices:</strong> Learn debugging techniques, state machines, and code organization"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Android Studio Learning Path",
+      "content": "Progress to Android Studio for advanced programming:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<strong>Environment Setup:</strong> Set up Android Studio, project structure, and version control",
+        "<strong>Advanced Movement Control:</strong> Master PID control, odometry, path planning, and motion profiling",
+        "<strong>Autonomous Programming:</strong> Learn command-based programming, async operations, and custom libraries",
+        "<strong>Vision & Computer Vision:</strong> Implement camera usage, OpenCV, AprilTags, and machine learning",
+        "<strong>Debugging & Best Practices:</strong> Advanced debugging, performance optimization, and software development practices"
       ]
     },
     {
       "type": "rules-box",
-      "title": "Development Environments",
+      "title": "Prerequisites",
+      "subtitle": "Before starting FTC programming, you should have:",
       "items": [
-        "<strong>OnBot Java:</strong> Web-based development environment perfect for beginners and rapid prototyping",
-        "<strong>Android Studio:</strong> Professional IDE for advanced development with full debugging capabilities"
-      ],
-      "subtitle": "You'll learn to work with two main development environments:"
+        "Basic understanding of Java programming fundamentals",
+        "Familiarity with object-oriented programming concepts",
+        "Understanding of basic electronics and hardware",
+        "Access to FTC robot hardware (or simulation environment)",
+        "Willingness to learn and experiment with robotics"
+      ]
     },
     {
       "type": "text",
       "title": "Getting Started",
-      "content": "Start with the Beginner Tier if you're new to FTC programming. Each lesson includes hands-on exercises and example code. Make sure to complete the exercises and experiment with the provided code examples."
+      "content": "Ready to begin your FTC programming journey? Start with the <strong>FTC SDK Basics</strong> lesson in the OnBot Java Environment Setup section to learn the fundamentals of FTC programming."
     },
     {
       "type": "link-grid",
-      "title": "Ready to Begin?",
+      "title": "Quick Navigation",
       "links": [
         {
-          "id": "ftc-onbot-setup",
-          "label": "Start with OnBot Setup"
+          "label": "FTC SDK Basics",
+          "id": "ftc-sdk-basics"
         },
         {
-          "id": "ftc-basic-drivetrain",
-          "label": "Basic Drivetrain"
+          "label": "Robot Hardware Overview",
+          "id": "robot-hardware-overview"
         },
         {
-          "id": "ftc-gamepad-control",
-          "label": "Gamepad Control"
+          "label": "Basic Robot Control",
+          "id": "basic-robot-control"
+        },
+        {
+          "label": "Android Studio Environment",
+          "id": "android-studio-environment"
         }
       ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "FTC Programming Readiness",
+      "description": "Before starting FTC programming, assess your readiness:",
+      "tasks": [
+        "Do you have access to FTC robot hardware or simulation tools?",
+        "Are you comfortable with basic Java programming concepts?",
+        "How much time can you dedicate to learning and practice?",
+        "What are your goals (competition, learning, career development)?",
+        "Are you comfortable working with hardware and electronics?",
+        "Do you have a team or mentor to work with?"
+      ],
+      "code": "// FTC programming is about bringing robots to life\n// Start with the fundamentals and build your skills systematically\n// Remember: practice and experimentation are key to success!"
     }
   ]
 }

@@ -1,0 +1,46 @@
+{
+  "title": "Servos",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Precise Position Control",
+      "content": "Servos are motors designed for precise position control, commonly used for arms, claws, and other mechanisms."
+    },
+    {
+      "type": "rules-box",
+      "title": "Servo Facts",
+      "subtitle": "What makes servos special?",
+      "items": [
+        "Move to a specific angle or position",
+        "Standard servos: 0-180 degrees",
+        "Continuous rotation servos: spin like a motor",
+        "Controlled by setPosition() (0.0 to 1.0)"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Basic Servo Control",
+      "language": "java",
+      "code": "Servo claw = hardwareMap.get(Servo.class, \"claw_servo\");\nclaw.setPosition(0.5); // Move to middle position"
+    },
+    {
+      "type": "text",
+      "title": "Applications",
+      "content": "Use servos for mechanisms that require repeatable, precise movement."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Continuous vs Non-Continuous Servos",
+          "id": "continuous-vs-noncontinuous"
+        },
+        {
+          "label": "Servo Positions",
+          "id": "servo-positions"
+        }
+      ]
+    }
+  ]
+} 

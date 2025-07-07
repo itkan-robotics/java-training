@@ -1,0 +1,202 @@
+{
+  "title": "Android Studio Environment",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Android Studio for FTC",
+      "content": "Android Studio is the professional development environment for advanced FTC programming. It provides powerful tools for debugging, version control, and complex project management that aren't available in OnBot Java."
+    },
+    {
+      "type": "rules-box",
+      "title": "Why Use Android Studio?",
+      "subtitle": "Android Studio offers several advantages over OnBot Java:",
+      "items": [
+        "Full IDE with advanced debugging capabilities",
+        "Integrated version control with Git",
+        "Better code organization and project structure",
+        "Access to external libraries and dependencies",
+        "Advanced refactoring and code analysis tools",
+        "Professional development workflow",
+        "Better support for complex autonomous algorithms"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "System Requirements",
+      "content": "Before setting up Android Studio for FTC development, ensure your system meets these requirements:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<strong>Operating System:</strong> Windows 10/11, macOS 10.14+, or Linux",
+        "<strong>RAM:</strong> Minimum 8GB, recommended 16GB or more",
+        "<strong>Storage:</strong> At least 10GB free space for Android Studio and SDK",
+        "<strong>Java Development Kit:</strong> JDK 8 or higher",
+        "<strong>Internet Connection:</strong> Required for downloading SDK components"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Installation Process",
+      "content": "Setting up Android Studio for FTC development involves several steps:"
+    },
+    {
+      "type": "list",
+      "title": "Installation Steps",
+      "items": [
+        "<strong>Download Android Studio:</strong> Get the latest version from developer.android.com",
+        "<strong>Install Android Studio:</strong> Follow the installation wizard for your operating system",
+        "<strong>Install Android SDK:</strong> Android Studio will guide you through SDK installation",
+        "<strong>Install FTC SDK:</strong> Download and configure the FTC SDK for Android Studio",
+        "<strong>Configure Project:</strong> Set up your first FTC project with proper structure"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Project Structure Example",
+      "language": "java",
+      "code": "// Typical FTC Android Studio project structure\nTeamCode/\n├── src/main/java/org/firstinspires/ftc/teamcode/\n│   ├── teleop/\n│   │   ├── BasicTeleOp.java\n│   │   └── AdvancedTeleOp.java\n│   ├── autonomous/\n│   │   ├── BasicAutonomous.java\n│   │   └── AdvancedAutonomous.java\n│   ├── hardware/\n│   │   ├── RobotHardware.java\n│   │   └── HardwareMap.java\n│   ├── subsystems/\n│   │   ├── DriveTrain.java\n│   │   ├── Intake.java\n│   │   └── Lift.java\n│   └── utils/\n│       ├── PIDController.java\n│       └── MathUtils.java\n├── build.gradle\n└── AndroidManifest.xml"
+    },
+    {
+      "type": "text",
+      "title": "Key Android Studio Features",
+      "content": "Android Studio provides powerful features that enhance FTC development:"
+    },
+    {
+      "type": "list",
+      "title": "Development Features",
+      "items": [
+        "<strong>IntelliJ IDEA Platform:</strong> Advanced code completion and analysis",
+        "<strong>Integrated Debugger:</strong> Set breakpoints and inspect variables during execution",
+        "<strong>Git Integration:</strong> Built-in version control with visual diff tools",
+        "<strong>Gradle Build System:</strong> Automated dependency management and builds",
+        "<strong>Layout Editor:</strong> Visual design tools for Android UI components",
+        "<strong>APK Analyzer:</strong> Analyze and optimize your robot controller app"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "FTC SDK Integration",
+      "content": "The FTC SDK must be properly integrated into your Android Studio project to access all robot control features."
+    },
+    {
+      "type": "code",
+      "title": "build.gradle Configuration",
+      "language": "gradle",
+      "code": "// build.gradle (Module: TeamCode)\napply plugin: 'com.android.application'\n\nandroid {\n    compileSdkVersion 28\n    \n    defaultConfig {\n        applicationId \"org.firstinspires.ftc.teamcode\"\n        minSdkVersion 23\n        targetSdkVersion 28\n        versionCode 1\n        versionName \"1.0\"\n    }\n    \n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n}\n\nrepositories {\n    maven { url = \"https://dl.bintray.com/first-tech-challenge/ftcsdk/\" }\n}\n\ndependencies {\n    implementation 'com.qualcomm.robotcore:ftc-robotcore:6.1.1'\n    implementation 'com.qualcomm.hardware:ftc-robotcore:6.1.1'\n    implementation 'com.qualcomm.robotcore:ftc-robotcore:6.1.1'\n}"
+    },
+    {
+      "type": "text",
+      "title": "Project Organization",
+      "content": "Proper project organization is crucial for maintainable FTC code. Organize your code into logical packages and classes."
+    },
+    {
+      "type": "list",
+      "title": "Recommended Package Structure",
+      "items": [
+        "<strong>teleop:</strong> Driver-controlled OpModes",
+        "<strong>autonomous:</strong> Autonomous OpModes and routines",
+        "<strong>hardware:</strong> Hardware abstraction and configuration",
+        "<strong>subsystems:</strong> Robot subsystem classes (drivetrain, intake, etc.)",
+        "<strong>utils:</strong> Utility classes and helper functions",
+        "<strong>commands:</strong> Command-based programming classes",
+        "<strong>vision:</strong> Computer vision and image processing"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Hardware Abstraction Example",
+      "language": "java",
+      "code": "// RobotHardware.java - Hardware abstraction class\npublic class RobotHardware {\n    // Hardware components\n    public DcMotor leftFront, rightFront, leftRear, rightRear;\n    public Servo armServo, clawServo;\n    public TouchSensor touchSensor;\n    public ColorSensor colorSensor;\n    public BNO055IMU imu;\n    \n    // Hardware map reference\n    private HardwareMap hardwareMap;\n    \n    public RobotHardware(HardwareMap hardwareMap) {\n        this.hardwareMap = hardwareMap;\n        initHardware();\n    }\n    \n    private void initHardware() {\n        // Initialize motors\n        leftFront = hardwareMap.get(DcMotor.class, \"left_front\");\n        rightFront = hardwareMap.get(DcMotor.class, \"right_front\");\n        leftRear = hardwareMap.get(DcMotor.class, \"left_rear\");\n        rightRear = hardwareMap.get(DcMotor.class, \"right_rear\");\n        \n        // Set motor directions\n        leftFront.setDirection(DcMotor.Direction.FORWARD);\n        rightFront.setDirection(DcMotor.Direction.REVERSE);\n        leftRear.setDirection(DcMotor.Direction.FORWARD);\n        rightRear.setDirection(DcMotor.Direction.REVERSE);\n        \n        // Initialize servos\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n        \n        // Initialize sensors\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        \n        // Initialize IMU\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n        imu.initialize(parameters);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Debugging in Android Studio",
+      "content": "Android Studio's debugging capabilities are essential for complex FTC programming. Learn to use breakpoints, variable inspection, and logging effectively."
+    },
+    {
+      "type": "list",
+      "title": "Debugging Features",
+      "items": [
+        "<strong>Breakpoints:</strong> Pause execution at specific lines to inspect state",
+        "<strong>Variable Inspection:</strong> View and modify variable values during debugging",
+        "<strong>Call Stack:</strong> Trace the execution path through your code",
+        "<strong>Logcat:</strong> View system and application logs in real-time",
+        "<strong>Conditional Breakpoints:</strong> Only pause when specific conditions are met",
+        "<strong>Remote Debugging:</strong> Debug code running on the Control Hub"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Debugging Example",
+      "language": "java",
+      "code": "// Example of debugging-friendly code\n@TeleOp(name=\"Debug Example\", group=\"Examples\")\npublic class DebugExample extends LinearOpMode {\n    \n    private RobotHardware robot;\n    \n    @Override\n    public void runOpMode() {\n        robot = new RobotHardware(hardwareMap);\n        \n        // Add debug information\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Debug motor values\n            telemetry.addData(\"Left Front Power\", robot.leftFront.getPower());\n            telemetry.addData(\"Right Front Power\", robot.rightFront.getPower());\n            telemetry.addData(\"Arm Position\", robot.armServo.getPosition());\n            telemetry.addData(\"Touch Sensor\", robot.touchSensor.isPressed());\n            \n            // Use Android logging for debugging\n            Log.d(\"DebugExample\", \"Robot running - battery: \" + getBatteryVoltage());\n            \n            telemetry.update();\n        }\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.iterator().next().getVoltage();\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Android Studio Best Practices",
+      "subtitle": "Follow these guidelines for effective Android Studio development:",
+      "items": [
+        "Use consistent naming conventions for packages and classes",
+        "Organize code into logical packages and subsystems",
+        "Use hardware abstraction classes for better maintainability",
+        "Implement proper error handling and exception management",
+        "Use Android Studio's refactoring tools to improve code structure",
+        "Regularly commit code to version control",
+        "Test your code frequently on actual hardware",
+        "Use the debugger to troubleshoot complex issues"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Resources and Documentation",
+      "content": "Several resources are available to help you master Android Studio for FTC:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<a href='https://developer.android.com/studio' target='_blank'>Android Studio Official Documentation</a> - Complete IDE documentation and tutorials",
+        "<a href='https://github.com/FIRST-Tech-Challenge/FTC_App' target='_blank'>FTC SDK GitHub Repository</a> - Official SDK with Android Studio examples",
+        "<a href='https://gm0.org/en/latest/docs/software/android_studio/index.html' target='_blank'>Game Manual 0 Android Studio Guide</a> - FTC-specific Android Studio tutorials",
+        "<a href='https://www.jetbrains.com/help/idea/' target='_blank'>IntelliJ IDEA Documentation</a> - Platform features and shortcuts"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        {
+          "label": "SDK Installation",
+          "id": "sdk-installation"
+        },
+        {
+          "label": "Project Structure",
+          "id": "project-structure"
+        },
+        {
+          "label": "Advanced Movement Control",
+          "id": "advanced-movement-control"
+        },
+        {
+          "label": "Command-Based Programming",
+          "id": "command-based-programming"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Android Studio Setup Practice",
+      "description": "Complete these exercises to master Android Studio setup:",
+      "tasks": [
+        "Install Android Studio and configure it for FTC development",
+        "Create a new FTC project with proper package structure",
+        "Set up hardware abstraction classes for your robot",
+        "Configure Git version control for your project",
+        "Test the debugger with a simple OpMode",
+        "Practice using Android Studio's refactoring tools",
+        "Create a basic autonomous OpMode using Android Studio"
+      ],
+      "code": "// Android Studio Practice Exercise\n// Create a new FTC project in Android Studio\n// Implement a basic hardware abstraction class\n// Create a simple teleop OpMode that uses the abstraction\n// Test debugging features with breakpoints and variable inspection"
+    }
+  ]
+} 

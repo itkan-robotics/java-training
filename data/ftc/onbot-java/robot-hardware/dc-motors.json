@@ -1,0 +1,51 @@
+{
+  "title": "DC Motors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to DC Motors",
+      "content": "DC motors are the primary actuators for FTC robots, providing the force needed for movement and mechanism operation."
+    },
+    {
+      "type": "rules-box",
+      "title": "Key DC Motor Facts",
+      "subtitle": "What you need to know",
+      "items": [
+        "DC motors convert electrical energy into rotational motion",
+        "FTC legal motors include Neverest, REV HD Hex, and others",
+        "Motors are controlled by setting power from -1.0 to 1.0",
+        "Direction and speed are programmable in code",
+        "Encoders can be attached for precise control"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Basic Motor Control Example",
+      "language": "java",
+      "code": "DcMotor motor = hardwareMap.get(DcMotor.class, \"left_drive\");\nmotor.setPower(0.5); // Set motor to 50% power\nmotor.setDirection(DcMotor.Direction.FORWARD);"
+    },
+    {
+      "type": "text",
+      "title": "Configuration",
+      "content": "Always check motor wiring and configuration in the Robot Controller app. Incorrect setup can lead to unexpected behavior."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Basic Motor Control",
+          "id": "basic-motor-control"
+        },
+        {
+          "label": "Motor Encoders",
+          "id": "motor-encoders"
+        },
+        {
+          "label": "Motor Types",
+          "id": "motor-types"
+        }
+      ]
+    }
+  ]
+} 

@@ -1,0 +1,45 @@
+{
+  "title": "Touch Sensors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Detecting Contact in FTC Robots",
+      "content": "Touch sensors are simple digital sensors that detect when they are pressed or released. They are useful for limit switches, bumpers, and detecting mechanism positions."
+    },
+    {
+      "type": "rules-box",
+      "title": "Touch Sensor Facts",
+      "subtitle": "How they work",
+      "items": [
+        "Digital input: pressed (true) or not pressed (false)",
+        "Can be used for safety stops",
+        "Great for detecting end of travel on arms/lifts"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Touch Sensor Example",
+      "language": "java",
+      "code": "TouchSensor touch = hardwareMap.get(TouchSensor.class, \"touch\");\nif (touch.isPressed()) {\n    // Stop motor or trigger action\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices",
+      "content": "Always test touch sensors in code and check wiring for reliable operation."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Distance Sensors",
+          "id": "distance-sensors"
+        }
+      ]
+    }
+  ]
+} 

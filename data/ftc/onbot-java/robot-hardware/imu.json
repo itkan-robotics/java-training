@@ -1,0 +1,45 @@
+{
+  "title": "IMU (Inertial Measurement Unit)",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Measuring Orientation and Acceleration",
+      "content": "The IMU is a sensor that measures the robot's orientation (angle) and acceleration. It is essential for advanced autonomous navigation and maintaining heading."
+    },
+    {
+      "type": "rules-box",
+      "title": "IMU Facts",
+      "subtitle": "What does the IMU do?",
+      "items": [
+        "Measures yaw, pitch, and roll (angles)",
+        "Detects acceleration and rotation",
+        "Used for gyro-based turning and field-oriented control"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "IMU Initialization Example",
+      "language": "java",
+      "code": "BNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\nBNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\nparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nimu.initialize(parameters);"
+    },
+    {
+      "type": "text",
+      "title": "Applications",
+      "content": "Use the IMU for precise turns, maintaining heading, and advanced autonomous routines."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Sensors Overview",
+          "id": "sensors"
+        },
+        {
+          "label": "Color Sensors",
+          "id": "color-sensors"
+        }
+      ]
+    }
+  ]
+} 

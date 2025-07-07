@@ -1,0 +1,227 @@
+{
+  "title": "Linear vs Iterative OpModes",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to OpMode Types",
+      "content": "FTC provides two main types of OpModes: Linear and Iterative. Understanding the differences between these types is crucial for choosing the right approach for your robot programming needs."
+    },
+    {
+      "type": "rules-box",
+      "title": "OpMode Types Overview",
+      "subtitle": "Two main OpMode types in FTC:",
+      "items": [
+        "Linear OpModes: Sequential execution with built-in delays",
+        "Iterative OpModes: Continuous loops with manual timing control",
+        "Linear OpModes: Easier to write and understand",
+        "Iterative OpModes: More control over execution timing",
+        "Linear OpModes: Better for beginners and simple tasks",
+        "Iterative OpModes: Better for complex, time-sensitive operations"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Linear OpModes",
+      "content": "Linear OpModes execute code sequentially, one line at a time, with automatic timing control. They are easier to write and understand, making them ideal for beginners and simple robot operations."
+    },
+    {
+      "type": "list",
+      "title": "Linear OpMode Characteristics",
+      "items": [
+        "<strong>Sequential Execution:</strong> Code runs line by line in order",
+        "<strong>Automatic Timing:</strong> Built-in delays prevent overwhelming the system",
+        "<strong>Simple Structure:</strong> Easy to read and understand",
+        "<strong>Built-in Delays:</strong> sleep() method provides automatic timing",
+        "<strong>Beginner Friendly:</strong> Less complex than iterative OpModes",
+        "<strong>Good for Autonomous:</strong> Perfect for step-by-step autonomous sequences"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Linear OpMode Example",
+      "language": "java",
+      "code": "package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.Autonomous;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@Autonomous(name=\"Linear Example\", group=\"Examples\")\npublic class LinearExample extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initHardware();\n        \n        telemetry.addData(\"Status\", \"Ready for start\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        // Linear execution - each step happens in sequence\n        \n        // Step 1: Move forward for 2 seconds\n        telemetry.addData(\"Step\", \"1 - Moving forward\");\n        telemetry.update();\n        \n        leftMotor.setPower(0.5);\n        rightMotor.setPower(0.5);\n        sleep(2000); // Wait for 2 seconds\n        \n        // Step 2: Stop motors\n        telemetry.addData(\"Step\", \"2 - Stopping\");\n        telemetry.update();\n        \n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        sleep(500); // Wait for 0.5 seconds\n        \n        // Step 3: Raise arm\n        telemetry.addData(\"Step\", \"3 - Raising arm\");\n        telemetry.update();\n        \n        armServo.setPosition(1.0);\n        sleep(1000); // Wait for 1 second\n        \n        // Step 4: Turn right\n        telemetry.addData(\"Step\", \"4 - Turning right\");\n        telemetry.update();\n        \n        leftMotor.setPower(0.5);\n        rightMotor.setPower(-0.5);\n        sleep(1500); // Wait for 1.5 seconds\n        \n        // Step 5: Stop and lower arm\n        telemetry.addData(\"Step\", \"5 - Final position\");\n        telemetry.update();\n        \n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        armServo.setPosition(0.0);\n        sleep(1000);\n        \n        telemetry.addData(\"Status\", \"Autonomous complete\");\n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Iterative OpModes",
+      "content": "Iterative OpModes run in a continuous loop, giving you full control over timing and execution. They are more complex but provide greater flexibility for advanced robot operations."
+    },
+    {
+      "type": "list",
+      "title": "Iterative OpMode Characteristics",
+      "items": [
+        "<strong>Continuous Loop:</strong> Code runs in a repeating loop",
+        "<strong>Manual Timing:</strong> You control all timing and delays",
+        "<strong>Real-time Control:</strong> Immediate response to inputs",
+        "<strong>Complex Logic:</strong> Can handle sophisticated algorithms",
+        "<strong>Performance Critical:</strong> Better for time-sensitive operations",
+        "<strong>Advanced Features:</strong> Supports complex state machines and PID control"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Iterative OpMode Example",
+      "language": "java",
+      "code": "package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.IterativeOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\n@TeleOp(name=\"Iterative Example\", group=\"Examples\")\npublic class IterativeExample extends IterativeOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private ElapsedTime runtime;\n    \n    // State variables\n    private double armPosition = 0.5;\n    private boolean armMoving = false;\n    private long lastArmUpdate = 0;\n    private static final long ARM_UPDATE_INTERVAL = 50; // 50ms between updates\n    \n    @Override\n    public void init() {\n        // Initialize hardware\n        initHardware();\n        runtime = new ElapsedTime();\n        \n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n    }\n    \n    @Override\n    public void init_loop() {\n        // This runs while waiting for start\n        telemetry.addData(\"Status\", \"Waiting for start...\");\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n        telemetry.update();\n    }\n    \n    @Override\n    public void start() {\n        // This runs once when start is pressed\n        runtime.reset();\n        telemetry.addData(\"Status\", \"Started\");\n        telemetry.update();\n    }\n    \n    @Override\n    public void loop() {\n        // This runs continuously during the OpMode\n        \n        // Process drive input\n        processDriveInput();\n        \n        // Process arm input with timing control\n        processArmInput();\n        \n        // Update telemetry\n        updateTelemetry();\n        \n        // Optional: Add a small delay to prevent overwhelming the system\n        // This is manual control - you decide the timing\n        try {\n            Thread.sleep(10); // 10ms delay\n        } catch (InterruptedException e) {\n            // Handle interruption if needed\n        }\n    }\n    \n    @Override\n    public void stop() {\n        // This runs when the OpMode is stopped\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        telemetry.addData(\"Status\", \"Stopped\");\n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        \n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        armServo.setPosition(armPosition);\n    }\n    \n    private void processDriveInput() {\n        // Get gamepad input\n        double leftPower = gamepad1.left_stick_y;\n        double rightPower = gamepad1.right_stick_y;\n        \n        // Apply dead zone\n        leftPower = applyDeadZone(leftPower, 0.1);\n        rightPower = applyDeadZone(rightPower, 0.1);\n        \n        // Set motor powers\n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    private void processArmInput() {\n        // Check if enough time has passed since last update\n        long currentTime = System.currentTimeMillis();\n        if (currentTime - lastArmUpdate < ARM_UPDATE_INTERVAL) {\n            return; // Skip this update\n        }\n        \n        // Process arm controls\n        if (gamepad1.right_trigger > 0.1) {\n            // Move arm up\n            armPosition = Math.min(armPosition + 0.01, 1.0);\n            armMoving = true;\n        } else if (gamepad1.left_trigger > 0.1) {\n            // Move arm down\n            armPosition = Math.max(armPosition - 0.01, 0.0);\n            armMoving = true;\n        } else {\n            armMoving = false;\n        }\n        \n        // Update servo position\n        armServo.setPosition(armPosition);\n        lastArmUpdate = currentTime;\n    }\n    \n    private double applyDeadZone(double value, double deadZone) {\n        if (Math.abs(value) < deadZone) {\n            return 0.0;\n        }\n        return value;\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n        telemetry.addData(\"Left Motor Power\", \"%.2f\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", \"%.2f\", rightMotor.getPower());\n        telemetry.addData(\"Arm Position\", \"%.2f\", armPosition);\n        telemetry.addData(\"Arm Moving\", armMoving ? \"Yes\" : \"No\");\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Key Differences",
+      "content": "Understanding the key differences between Linear and Iterative OpModes helps you choose the right approach for your specific needs."
+    },
+    {
+      "type": "list",
+      "title": "Linear vs Iterative Comparison",
+      "items": [
+        "<strong>Execution Model:</strong> Linear = Sequential, Iterative = Continuous loop",
+        "<strong>Timing Control:</strong> Linear = Automatic, Iterative = Manual",
+        "<strong>Complexity:</strong> Linear = Simple, Iterative = Complex",
+        "<strong>Performance:</strong> Linear = Good for simple tasks, Iterative = Better for complex tasks",
+        "<strong>Real-time Response:</strong> Linear = Limited, Iterative = Immediate",
+        "<strong>Learning Curve:</strong> Linear = Beginner-friendly, Iterative = Advanced"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Side-by-Side Comparison",
+      "language": "java",
+      "code": "// LINEAR OPMODE - Simple, sequential execution\n@Autonomous(name=\"Linear Auto\", group=\"Auto\")\npublic class LinearAuto extends LinearOpMode {\n    \n    @Override\n    public void runOpMode() {\n        waitForStart();\n        \n        // Step 1: Move forward\n        driveForward(0.5, 2000);\n        \n        // Step 2: Turn\n        turnRight(0.5, 1000);\n        \n        // Step 3: Move forward again\n        driveForward(0.5, 1500);\n        \n        // Done - automatic timing\n    }\n    \n    private void driveForward(double power, long timeMs) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n        sleep(timeMs); // Automatic delay\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n    \n    private void turnRight(double power, long timeMs) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(-power);\n        sleep(timeMs); // Automatic delay\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n}\n\n// ITERATIVE OPMODE - Complex, real-time control\n@TeleOp(name=\"Iterative TeleOp\", group=\"TeleOp\")\npublic class IterativeTeleOp extends IterativeOpMode {\n    \n    private ElapsedTime runtime;\n    private boolean autoDriveEnabled = false;\n    private double targetHeading = 0;\n    \n    @Override\n    public void init() {\n        runtime = new ElapsedTime();\n        // Initialize hardware\n    }\n    \n    @Override\n    public void loop() {\n        // Real-time input processing\n        processGamepadInput();\n        \n        // Complex state machine\n        if (autoDriveEnabled) {\n            maintainHeading();\n        }\n        \n        // Continuous sensor monitoring\n        monitorSensors();\n        \n        // Manual timing control\n        if (runtime.milliseconds() % 50 == 0) { // Update every 50ms\n            updateTelemetry();\n        }\n    }\n    \n    private void processGamepadInput() {\n        // Immediate response to input\n        if (gamepad1.a) {\n            autoDriveEnabled = !autoDriveEnabled;\n        }\n        \n        // Complex input processing\n        double drive = gamepad1.left_stick_y;\n        double turn = gamepad1.right_stick_x;\n        \n        // Apply advanced control algorithms\n        applyDriveControl(drive, turn);\n    }\n    \n    private void maintainHeading() {\n        // PID control for heading maintenance\n        double currentHeading = imu.getAngularOrientation().firstAngle;\n        double error = targetHeading - currentHeading;\n        \n        // Apply PID correction\n        double correction = calculatePIDCorrection(error);\n        applyCorrection(correction);\n    }\n    \n    private void monitorSensors() {\n        // Continuous sensor monitoring\n        if (distanceSensor.getDistance(DistanceUnit.CM) < 10) {\n            // Obstacle detected - take action\n            emergencyStop();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "When to Use Linear OpModes",
+      "content": "Linear OpModes are best suited for specific scenarios where simplicity and sequential execution are more important than real-time control."
+    },
+    {
+      "type": "list",
+      "title": "Linear OpMode Use Cases",
+      "items": [
+        "<strong>Simple Autonomous:</strong> Basic movement sequences and routines",
+        "<strong>Beginner Programming:</strong> Learning FTC programming concepts",
+        "<strong>Testing and Debugging:</strong> Step-by-step testing of robot functions",
+        "<strong>Simple TeleOp:</strong> Basic driver control without complex features",
+        "<strong>Documentation:</strong> Clear, readable code for team reference",
+        "<strong>Quick Prototyping:</strong> Rapid development of basic functionality"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Linear OpMode Best Practices",
+      "language": "java",
+      "code": "@Autonomous(name=\"Linear Best Practices\", group=\"Auto\")\npublic class LinearBestPractices extends LinearOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    \n    // Constants for better maintainability\n    private static final double DRIVE_POWER = 0.5;\n    private static final double TURN_POWER = 0.3;\n    private static final long FORWARD_TIME = 2000;\n    private static final long TURN_TIME = 1000;\n    \n    @Override\n    public void runOpMode() {\n        initHardware();\n        \n        telemetry.addData(\"Status\", \"Ready\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        // Use descriptive method names\n        driveForward();\n        turnRight();\n        raiseArm();\n        driveForward();\n        lowerArm();\n        \n        telemetry.addData(\"Status\", \"Complete\");\n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        // Configure hardware\n        configureMotors();\n        configureServo();\n    }\n    \n    private void configureMotors() {\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n    }\n    \n    private void configureServo() {\n        armServo.setDirection(Servo.Direction.FORWARD);\n        armServo.setPosition(0.0); // Start position\n    }\n    \n    private void driveForward() {\n        telemetry.addData(\"Action\", \"Driving forward\");\n        telemetry.update();\n        \n        leftMotor.setPower(DRIVE_POWER);\n        rightMotor.setPower(DRIVE_POWER);\n        sleep(FORWARD_TIME);\n        \n        stopMotors();\n    }\n    \n    private void turnRight() {\n        telemetry.addData(\"Action\", \"Turning right\");\n        telemetry.update();\n        \n        leftMotor.setPower(TURN_POWER);\n        rightMotor.setPower(-TURN_POWER);\n        sleep(TURN_TIME);\n        \n        stopMotors();\n    }\n    \n    private void raiseArm() {\n        telemetry.addData(\"Action\", \"Raising arm\");\n        telemetry.update();\n        \n        armServo.setPosition(1.0);\n        sleep(1000); // Wait for servo to reach position\n    }\n    \n    private void lowerArm() {\n        telemetry.addData(\"Action\", \"Lowering arm\");\n        telemetry.update();\n        \n        armServo.setPosition(0.0);\n        sleep(1000); // Wait for servo to reach position\n    }\n    \n    private void stopMotors() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        sleep(200); // Brief pause after stopping\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "When to Use Iterative OpModes",
+      "content": "Iterative OpModes are ideal for scenarios requiring real-time control, complex logic, or precise timing."
+    },
+    {
+      "type": "list",
+      "title": "Iterative OpMode Use Cases",
+      "items": [
+        "<strong>Advanced TeleOp:</strong> Complex driver control with multiple features",
+        "<strong>PID Control:</strong> Precise motor control and positioning",
+        "<strong>Real-time Sensing:</strong> Continuous sensor monitoring and response",
+        "<strong>State Machines:</strong> Complex autonomous behaviors",
+        "<strong>Performance Critical:</strong> Time-sensitive operations",
+        "<strong>Advanced Features:</strong> Vision processing, advanced algorithms"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Iterative OpMode Best Practices",
+      "language": "java",
+      "code": "@TeleOp(name=\"Iterative Best Practices\", group=\"TeleOp\")\npublic class IterativeBestPractices extends IterativeOpMode {\n    \n    private DcMotor leftMotor, rightMotor;\n    private Servo armServo;\n    private ColorSensor colorSensor;\n    private BNO055IMU imu;\n    \n    private ElapsedTime runtime;\n    private ElapsedTime telemetryTimer;\n    \n    // State variables\n    private double armPosition = 0.5;\n    private boolean autoDriveEnabled = false;\n    private double targetHeading = 0;\n    private int driveMode = 0; // 0 = tank, 1 = arcade, 2 = mecanum\n    \n    // Constants\n    private static final double ARM_SPEED = 0.01;\n    private static final long TELEMETRY_INTERVAL = 50; // 50ms\n    private static final double DEAD_ZONE = 0.1;\n    \n    @Override\n    public void init() {\n        runtime = new ElapsedTime();\n        telemetryTimer = new ElapsedTime();\n        \n        initHardware();\n        \n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n    }\n    \n    @Override\n    public void init_loop() {\n        // Show initialization progress\n        telemetry.addData(\"Status\", \"Waiting for start...\");\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n        telemetry.update();\n    }\n    \n    @Override\n    public void start() {\n        runtime.reset();\n        telemetryTimer.reset();\n        \n        telemetry.addData(\"Status\", \"Started\");\n        telemetry.update();\n    }\n    \n    @Override\n    public void loop() {\n        // Process all inputs\n        processDriveInput();\n        processArmInput();\n        processModeInput();\n        \n        // Update systems\n        updateAutoDrive();\n        updateColorDetection();\n        \n        // Update telemetry at regular intervals\n        if (telemetryTimer.milliseconds() >= TELEMETRY_INTERVAL) {\n            updateTelemetry();\n            telemetryTimer.reset();\n        }\n    }\n    \n    @Override\n    public void stop() {\n        // Cleanup\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        telemetry.addData(\"Status\", \"Stopped\");\n        telemetry.update();\n    }\n    \n    private void initHardware() {\n        // Map hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        \n        // Configure hardware\n        configureMotors();\n        configureServo();\n        configureSensors();\n    }\n    \n    private void configureMotors() {\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n    }\n    \n    private void configureServo() {\n        armServo.setDirection(Servo.Direction.FORWARD);\n        armServo.setPosition(armPosition);\n    }\n    \n    private void configureSensors() {\n        colorSensor.enableLed(true);\n        \n        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n        imu.initialize(parameters);\n    }\n    \n    private void processDriveInput() {\n        double leftPower, rightPower;\n        \n        switch (driveMode) {\n            case 0: // Tank drive\n                leftPower = applyDeadZone(gamepad1.left_stick_y, DEAD_ZONE);\n                rightPower = applyDeadZone(gamepad1.right_stick_y, DEAD_ZONE);\n                break;\n            case 1: // Arcade drive\n                double drive = applyDeadZone(gamepad1.left_stick_y, DEAD_ZONE);\n                double turn = applyDeadZone(gamepad1.right_stick_x, DEAD_ZONE);\n                leftPower = drive + turn;\n                rightPower = drive - turn;\n                break;\n            default: // Mecanum drive\n                double forward = applyDeadZone(gamepad1.left_stick_y, DEAD_ZONE);\n                double strafe = applyDeadZone(gamepad1.left_stick_x, DEAD_ZONE);\n                double rotate = applyDeadZone(gamepad1.right_stick_x, DEAD_ZONE);\n                leftPower = forward + strafe + rotate;\n                rightPower = forward - strafe - rotate;\n                break;\n        }\n        \n        // Apply power limits\n        leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n        rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    private void processArmInput() {\n        // Arm control with triggers\n        if (gamepad1.right_trigger > 0.1) {\n            armPosition = Math.min(armPosition + ARM_SPEED, 1.0);\n        } else if (gamepad1.left_trigger > 0.1) {\n            armPosition = Math.max(armPosition - ARM_SPEED, 0.0);\n        }\n        \n        armServo.setPosition(armPosition);\n    }\n    \n    private void processModeInput() {\n        // Mode switching\n        if (gamepad1.a) {\n            driveMode = 0; // Tank drive\n        } else if (gamepad1.b) {\n            driveMode = 1; // Arcade drive\n        } else if (gamepad1.x) {\n            driveMode = 2; // Mecanum drive\n        }\n        \n        // Auto drive toggle\n        if (gamepad1.y) {\n            autoDriveEnabled = !autoDriveEnabled;\n            if (autoDriveEnabled) {\n                targetHeading = imu.getAngularOrientation().firstAngle;\n            }\n        }\n    }\n    \n    private void updateAutoDrive() {\n        if (!autoDriveEnabled) return;\n        \n        double currentHeading = imu.getAngularOrientation().firstAngle;\n        double error = targetHeading - currentHeading;\n        \n        // Simple P control for heading maintenance\n        double correction = error * 0.01;\n        \n        // Apply correction\n        double currentLeftPower = leftMotor.getPower();\n        double currentRightPower = rightMotor.getPower();\n        \n        leftMotor.setPower(currentLeftPower + correction);\n        rightMotor.setPower(currentRightPower - correction);\n    }\n    \n    private void updateColorDetection() {\n        int red = colorSensor.red();\n        int green = colorSensor.green();\n        int blue = colorSensor.blue();\n        \n        // Store color data for telemetry\n        // Could trigger actions based on color\n    }\n    \n    private double applyDeadZone(double value, double deadZone) {\n        if (Math.abs(value) < deadZone) {\n            return 0.0;\n        }\n        return value;\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Runtime\", \"%.1f seconds\", runtime.seconds());\n        telemetry.addData(\"Drive Mode\", getDriveModeName());\n        telemetry.addData(\"Auto Drive\", autoDriveEnabled ? \"ON\" : \"OFF\");\n        telemetry.addData(\"Arm Position\", \"%.2f\", armPosition);\n        telemetry.addData(\"Heading\", \"%.1f°\", imu.getAngularOrientation().firstAngle);\n        telemetry.update();\n    }\n    \n    private String getDriveModeName() {\n        switch (driveMode) {\n            case 0: return \"Tank\";\n            case 1: return \"Arcade\";\n            case 2: return \"Mecanum\";\n            default: return \"Unknown\";\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Converting Between OpMode Types",
+      "content": "Sometimes you need to convert between Linear and Iterative OpModes. Understanding the conversion process helps you adapt your code as your needs change."
+    },
+    {
+      "type": "list",
+      "title": "Conversion Considerations",
+      "items": [
+        "<strong>Linear to Iterative:</strong> Replace sleep() with manual timing control",
+        "<strong>Iterative to Linear:</strong> Replace loop() with sequential execution",
+        "<strong>Method Structure:</strong> Adapt initialization and cleanup methods",
+        "<strong>Timing Control:</strong> Implement appropriate timing mechanisms",
+        "<strong>State Management:</strong> Handle state variables appropriately",
+        "<strong>Error Handling:</strong> Adapt error handling for the new structure"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Conversion Example",
+      "language": "java",
+      "code": "// ORIGINAL LINEAR OPMODE\n@Autonomous(name=\"Linear Original\", group=\"Auto\")\npublic class LinearOriginal extends LinearOpMode {\n    \n    @Override\n    public void runOpMode() {\n        waitForStart();\n        \n        // Sequential execution\n        driveForward(0.5, 2000);\n        turnRight(0.5, 1000);\n        driveForward(0.5, 1500);\n    }\n    \n    private void driveForward(double power, long timeMs) {\n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n        sleep(timeMs); // Automatic timing\n        stopMotors();\n    }\n}\n\n// CONVERTED TO ITERATIVE OPMODE\n@Autonomous(name=\"Iterative Converted\", group=\"Auto\")\npublic class IterativeConverted extends IterativeOpMode {\n    \n    private ElapsedTime runtime;\n    private int currentStep = 0;\n    private boolean stepComplete = false;\n    \n    // Step timing\n    private long stepStartTime = 0;\n    private static final long FORWARD_TIME = 2000;\n    private static final long TURN_TIME = 1000;\n    \n    @Override\n    public void init() {\n        runtime = new ElapsedTime();\n        // Initialize hardware\n    }\n    \n    @Override\n    public void loop() {\n        // Manual state machine\n        switch (currentStep) {\n            case 0:\n                if (!stepComplete) {\n                    startDriveForward();\n                } else if (runtime.milliseconds() - stepStartTime >= FORWARD_TIME) {\n                    completeStep();\n                }\n                break;\n            case 1:\n                if (!stepComplete) {\n                    startTurnRight();\n                } else if (runtime.milliseconds() - stepStartTime >= TURN_TIME) {\n                    completeStep();\n                }\n                break;\n            case 2:\n                if (!stepComplete) {\n                    startDriveForward();\n                } else if (runtime.milliseconds() - stepStartTime >= FORWARD_TIME) {\n                    completeStep();\n                }\n                break;\n            default:\n                // Autonomous complete\n                stopMotors();\n                break;\n        }\n    }\n    \n    private void startDriveForward() {\n        leftMotor.setPower(0.5);\n        rightMotor.setPower(0.5);\n        stepStartTime = runtime.milliseconds();\n        stepComplete = false;\n    }\n    \n    private void startTurnRight() {\n        leftMotor.setPower(0.5);\n        rightMotor.setPower(-0.5);\n        stepStartTime = runtime.milliseconds();\n        stepComplete = false;\n    }\n    \n    private void completeStep() {\n        stopMotors();\n        stepComplete = true;\n        currentStep++;\n    }\n    \n    private void stopMotors() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Choosing the Right OpMode Type",
+      "subtitle": "Use these guidelines to choose between Linear and Iterative OpModes:",
+      "items": [
+        "Use Linear OpModes for simple, sequential operations",
+        "Use Iterative OpModes for complex, real-time control",
+        "Choose Linear for autonomous routines with fixed timing",
+        "Choose Iterative for TeleOp with immediate response needs",
+        "Use Linear for learning and debugging",
+        "Use Iterative for advanced features and performance",
+        "Consider team experience level when choosing",
+        "Start with Linear and upgrade to Iterative as needed"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Resources and Documentation",
+      "content": "Additional resources for learning about OpMode types:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/eventloop/opmode/LinearOpMode.html' target='_blank'>LinearOpMode Documentation</a> - Official API documentation for Linear OpModes",
+        "<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/eventloop/opmode/IterativeOpMode.html' target='_blank'>IterativeOpMode Documentation</a> - Official API documentation for Iterative OpModes",
+        "<a href='https://gm0.org/en/latest/docs/software/tutorials/gradle.html' target='_blank'>Game Manual 0 - OpMode Tutorials</a> - Comprehensive tutorials and examples"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        {
+          "label": "Telemetry Logging",
+          "id": "telemetry-logging"
+        },
+        {
+          "label": "Basic Robot Control",
+          "id": "basic-robot-control"
+        },
+        {
+          "label": "Gamepad Controls",
+          "id": "gamepad-controls"
+        },
+        {
+          "label": "DC Motors",
+          "id": "dc-motors"
+        }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "OpMode Types Practice",
+      "description": "Complete these exercises to master both OpMode types:",
+      "tasks": [
+        "Create a simple Linear OpMode for basic autonomous movement",
+        "Convert the Linear OpMode to an Iterative OpMode",
+        "Build an Iterative TeleOp with real-time control features",
+        "Implement a state machine in an Iterative OpMode",
+        "Add timing control to both OpMode types",
+        "Compare performance and responsiveness between types",
+        "Create documentation explaining when to use each type",
+        "Practice converting between OpMode types"
+      ],
+      "code": "// Practice Exercise: OpMode Type Comparison\n// Create both Linear and Iterative versions of the same robot behavior:\n// - Basic autonomous movement sequence\n// - TeleOp with drive and arm control\n// - Sensor monitoring and response\n// - Error handling and recovery\n// Compare the complexity, performance, and maintainability of each approach"
+    }
+  ]
+} 
