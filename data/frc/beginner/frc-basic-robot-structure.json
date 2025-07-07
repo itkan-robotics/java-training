@@ -1,0 +1,103 @@
+{
+  "title": "Basic Robot Structure and Organization",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Understanding FRC Robot Architecture",
+      "content": "FRC robots follow a specific structure that helps organize code and make it maintainable. Understanding this structure is crucial for writing clean, efficient robot code that your team can easily understand and modify."
+    },
+    {
+      "type": "rules-box",
+      "title": "Key Components of FRC Robot Code",
+      "items": [
+        "<strong>Main Robot Class:</strong> Extends TimedRobot and controls robot modes",
+        "<strong>Subsystems:</strong> Organized components like drivetrain, arm, intake",
+        "<strong>OI (Operator Interface):</strong> Handles controller input",
+        "<strong>Constants:</strong> Configuration values and robot parameters",
+        "<strong>Utilities:</strong> Helper classes and common functions"
+      ],
+      "subtitle": "A well-structured FRC robot consists of:"
+    },
+    {
+      "type": "text",
+      "title": "The TimedRobot Class",
+      "content": "TimedRobot is the base class for FRC robots. It provides a framework with specific methods that are called at different times during robot operation. Understanding these methods is essential for proper robot programming."
+    },
+    {
+      "type": "code",
+      "title": "Basic TimedRobot Structure",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class Robot extends TimedRobot {\n    // Robot components\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    private final OI m_oi = new OI();\n    \n    // Robot state\n    private boolean m_autonomousComplete = false;\n    \n    @Override\n    public void robotInit() {\n        // Called once when the robot starts\n        SmartDashboard.putString(\"Robot Status\", \"Initialized\");\n        \n        // Initialize subsystems\n        m_drivetrain.initialize();\n        m_arm.initialize();\n        m_intake.initialize();\n    }\n    \n    @Override\n    public void robotPeriodic() {\n        // Called every 20ms regardless of mode\n        // Update SmartDashboard\n        updateDashboard();\n    }\n    \n    @Override\n    public void autonomousInit() {\n        // Called once when autonomous starts\n        m_autonomousComplete = false;\n        SmartDashboard.putString(\"Mode\", \"Autonomous\");\n    }\n    \n    @Override\n    public void autonomousPeriodic() {\n        // Called every 20ms during autonomous\n        if (!m_autonomousComplete) {\n            runAutonomousSequence();\n        }\n    }\n    \n    @Override\n    public void teleopInit() {\n        // Called once when teleop starts\n        SmartDashboard.putString(\"Mode\", \"Teleop\");\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        // Called every 20ms during teleop\n        // Handle controller input\n        handleControllerInput();\n        \n        // Update subsystems\n        m_drivetrain.update();\n        m_arm.update();\n        m_intake.update();\n    }\n    \n    @Override\n    public void disabledInit() {\n        // Called once when robot is disabled\n        SmartDashboard.putString(\"Mode\", \"Disabled\");\n        \n        // Stop all motors\n        m_drivetrain.stop();\n        m_arm.stop();\n        m_intake.stop();\n    }\n    \n    @Override\n    public void testInit() {\n        // Called once when test mode starts\n        SmartDashboard.putString(\"Mode\", \"Test\");\n    }\n    \n    @Override\n    public void testPeriodic() {\n        // Called every 20ms during test mode\n        // Test individual components\n        testComponents();\n    }\n    \n    // Helper methods\n    private void updateDashboard() {\n        SmartDashboard.putNumber(\"Match Time\", DriverStation.getMatchTime());\n        SmartDashboard.putBoolean(\"Robot Enabled\", DriverStation.isEnabled());\n    }\n    \n    private void handleControllerInput() {\n        // Handle drivetrain input\n        double leftY = m_oi.getLeftY();\n        double rightX = m_oi.getRightX();\n        m_drivetrain.arcadeDrive(leftY, rightX);\n        \n        // Handle arm input\n        if (m_oi.getArmUp()) {\n            m_arm.moveUp();\n        } else if (m_oi.getArmDown()) {\n            m_arm.moveDown();\n        } else {\n            m_arm.stop();\n        }\n        \n        // Handle intake input\n        if (m_oi.getIntakeIn()) {\n            m_intake.intake();\n        } else if (m_oi.getIntakeOut()) {\n            m_intake.outtake();\n        } else {\n            m_intake.stop();\n        }\n    }\n    \n    private void runAutonomousSequence() {\n        // Simple autonomous sequence\n        double matchTime = DriverStation.getMatchTime();\n        \n        if (matchTime > 13.0) {\n            // Drive forward for first 2 seconds\n            m_drivetrain.arcadeDrive(0.5, 0.0);\n        } else if (matchTime > 11.0) {\n            // Turn right for 2 seconds\n            m_drivetrain.arcadeDrive(0.0, 0.5);\n        } else {\n            // Stop and complete\n            m_drivetrain.stop();\n            m_autonomousComplete = true;\n        }\n    }\n    \n    private void testComponents() {\n        // Test individual components\n        if (m_oi.getTestDrivetrain()) {\n            m_drivetrain.arcadeDrive(0.3, 0.0);\n        } else {\n            m_drivetrain.stop();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Creating Subsystems",
+      "content": "Subsystems are organized components of your robot that handle specific functionality. They help keep your code organized and make it easier to maintain and debug."
+    },
+    {
+      "type": "code",
+      "title": "Example Drivetrain Subsystem",
+      "content": "package frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;\nimport edu.wpi.first.wpilibj.drive.DifferentialDrive;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class Drivetrain {\n    // Motor controllers\n    private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);\n    private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);\n    private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);\n    \n    // Configuration\n    private static final double DEADZONE = 0.1;\n    private static final double MAX_SPEED = 1.0;\n    \n    public void initialize() {\n        // Configure motor controllers\n        m_rightMotor.setInverted(true);\n        \n        // Set safety timeout\n        m_drive.setSafetyEnabled(true);\n        m_drive.setExpiration(0.1);\n        \n        SmartDashboard.putString(\"Drivetrain Status\", \"Initialized\");\n    }\n    \n    public void arcadeDrive(double forward, double turn) {\n        // Apply deadzone\n        forward = applyDeadzone(forward);\n        turn = applyDeadzone(turn);\n        \n        // Limit speed\n        forward = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, forward));\n        turn = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, turn));\n        \n        // Drive the robot\n        m_drive.arcadeDrive(forward, turn);\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Forward Speed\", forward);\n        SmartDashboard.putNumber(\"Turn Speed\", turn);\n    }\n    \n    public void tankDrive(double left, double right) {\n        // Apply deadzone\n        left = applyDeadzone(left);\n        right = applyDeadzone(right);\n        \n        // Limit speed\n        left = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, left));\n        right = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, right));\n        \n        // Drive the robot\n        m_drive.tankDrive(left, right);\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Left Speed\", left);\n        SmartDashboard.putNumber(\"Right Speed\", right);\n    }\n    \n    public void stop() {\n        m_drive.stopMotor();\n        SmartDashboard.putString(\"Drivetrain Status\", \"Stopped\");\n    }\n    \n    public void update() {\n        // Called every robot loop\n        // Add any periodic updates here\n    }\n    \n    private double applyDeadzone(double value) {\n        if (Math.abs(value) < DEADZONE) {\n            return 0.0;\n        }\n        return value;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Operator Interface (OI)",
+      "content": "The Operator Interface class handles all controller input. This keeps your main robot code clean and makes it easy to modify control schemes."
+    },
+    {
+      "type": "code",
+      "title": "Example OI Class",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.XboxController;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class OI {\n    // Controllers\n    private final XboxController m_driverController = new XboxController(0);\n    private final XboxController m_operatorController = new XboxController(1);\n    \n    // Deadzone\n    private static final double DEADZONE = 0.1;\n    \n    public OI() {\n        // Initialize controllers\n        SmartDashboard.putString(\"OI Status\", \"Initialized\");\n    }\n    \n    // Drivetrain controls\n    public double getLeftY() {\n        return applyDeadzone(-m_driverController.getLeftY());\n    }\n    \n    public double getRightX() {\n        return applyDeadzone(m_driverController.getRightX());\n    }\n    \n    public double getLeftX() {\n        return applyDeadzone(m_driverController.getLeftX());\n    }\n    \n    public double getRightY() {\n        return applyDeadzone(-m_driverController.getRightY());\n    }\n    \n    // Arm controls\n    public boolean getArmUp() {\n        return m_operatorController.getRightBumper();\n    }\n    \n    public boolean getArmDown() {\n        return m_operatorController.getLeftBumper();\n    }\n    \n    public double getArmManual() {\n        return applyDeadzone(m_operatorController.getLeftY());\n    }\n    \n    // Intake controls\n    public boolean getIntakeIn() {\n        return m_operatorController.getAButton();\n    }\n    \n    public boolean getIntakeOut() {\n        return m_operatorController.getBButton();\n    }\n    \n    // Autonomous controls\n    public boolean getAutoStart() {\n        return m_driverController.getStartButton();\n    }\n    \n    // Test controls\n    public boolean getTestDrivetrain() {\n        return m_driverController.getYButton();\n    }\n    \n    public boolean getTestArm() {\n        return m_operatorController.getYButton();\n    }\n    \n    private double applyDeadzone(double value) {\n        if (Math.abs(value) < DEADZONE) {\n            return 0.0;\n        }\n        return value;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Constants and Configuration",
+      "content": "Using constants makes your code more maintainable and easier to tune. Create a Constants class to store all your robot's configuration values."
+    },
+    {
+      "type": "code",
+      "title": "Constants Class Example",
+      "content": "package frc.robot;\n\npublic final class Constants {\n    // Prevent instantiation\n    private Constants() {}\n    \n    // Controller deadzones\n    public static final double CONTROLLER_DEADZONE = 0.1;\n    \n    // Motor controller ports\n    public static final int LEFT_DRIVE_MOTOR_PORT = 0;\n    public static final int RIGHT_DRIVE_MOTOR_PORT = 1;\n    public static final int ARM_MOTOR_PORT = 2;\n    public static final int INTAKE_MOTOR_PORT = 3;\n    \n    // Speed limits\n    public static final double MAX_DRIVE_SPEED = 1.0;\n    public static final double MAX_ARM_SPEED = 0.8;\n    public static final double MAX_INTAKE_SPEED = 0.7;\n    \n    // Autonomous timing\n    public static final double AUTO_DRIVE_TIME = 2.0;\n    public static final double AUTO_TURN_TIME = 2.0;\n    \n    // PID values (we'll cover these later)\n    public static final double ARM_KP = 0.1;\n    public static final double ARM_KI = 0.0;\n    public static final double ARM_KD = 0.0;\n    \n    // Arm positions\n    public static final double ARM_GROUND_POSITION = 0.0;\n    public static final double ARM_LOW_SCORE_POSITION = 45.0;\n    public static final double ARM_HIGH_SCORE_POSITION = 90.0;\n    \n    // Intake speeds\n    public static final double INTAKE_IN_SPEED = 0.7;\n    public static final double INTAKE_OUT_SPEED = -0.5;\n    \n    // Safety timeouts\n    public static final double DRIVE_SAFETY_TIMEOUT = 0.1;\n    public static final double ARM_SAFETY_TIMEOUT = 0.1;\n}"
+    },
+    {
+      "type": "text",
+      "title": "Project Organization",
+      "content": "Organizing your project files properly makes it easier for your team to find and modify code. Follow a consistent structure for all your FRC projects."
+    },
+    {
+      "type": "code",
+      "title": "Recommended Project Structure",
+      "content": "src/main/java/frc/robot/\n├── Robot.java                 # Main robot class\n├── OI.java                    # Operator Interface\n├── Constants.java             # Robot constants\n├── subsystems/                # Subsystem classes\n│   ├── Drivetrain.java\n│   ├── Arm.java\n│   ├── Intake.java\n│   └── Shooter.java\n├── commands/                  # Commands (for command-based)\n│   ├── DriveCommand.java\n│   ├── MoveArmCommand.java\n│   └── IntakeCommand.java\n└── utils/                     # Utility classes\n    ├── MathUtils.java\n    ├── PIDController.java\n    └── DashboardUtils.java\n\nsrc/main/java/frc/robot/autonomous/\n├── AutonomousRoutine.java     # Autonomous sequence\n└── PathPlannerRoutine.java    # PathPlanner integration\n\nsrc/main/java/frc/robot/config/\n├── RobotConfig.java           # Robot configuration\n└── MotorConfig.java           # Motor settings"
+    },
+    {
+      "type": "rules-box",
+      "title": "Code Organization Best Practices",
+      "items": [
+        "<strong>Single Responsibility:</strong> Each class should have one clear purpose",
+        "<strong>Consistent Naming:</strong> Use clear, descriptive names for classes and methods",
+        "<strong>Comments:</strong> Document complex logic and important decisions",
+        "<strong>Constants:</strong> Use constants instead of magic numbers",
+        "<strong>Error Handling:</strong> Add safety checks and error handling",
+        "<strong>Testing:</strong> Test each subsystem individually before integration"
+      ],
+      "subtitle": "Follow these guidelines for clean, maintainable code:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Robot Structure Practice",
+      "description": "Create a well-structured robot project with proper organization and subsystems.",
+      "tasks": [
+        "Create a new TimedRobot project",
+        "Add a Constants class with robot configuration values",
+        "Create a Drivetrain subsystem class",
+        "Create an OI class for controller input",
+        "Organize your main Robot class with proper structure",
+        "Add SmartDashboard outputs for debugging",
+        "Create a simple autonomous sequence",
+        "Add safety features and error handling",
+        "Test each subsystem individually",
+        "Document your code with comments"
+      ],
+      "code": "// Example of a well-structured Robot.java:\n\npublic class Robot extends TimedRobot {\n    // Subsystems\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final OI m_oi = new OI();\n    \n    // Robot state\n    private boolean m_autonomousComplete = false;\n    \n    @Override\n    public void robotInit() {\n        // Initialize subsystems\n        m_drivetrain.initialize();\n        \n        // Setup dashboard\n        SmartDashboard.putString(\"Robot Status\", \"Initialized\");\n        SmartDashboard.putString(\"Team\", \"Team 1234\");\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        // Get controller input\n        double forward = m_oi.getLeftY();\n        double turn = m_oi.getRightX();\n        \n        // Drive robot\n        m_drivetrain.arcadeDrive(forward, turn);\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Forward\", forward);\n        SmartDashboard.putNumber(\"Turn\", turn);\n        SmartDashboard.putNumber(\"Match Time\", DriverStation.getMatchTime());\n    }\n    \n    @Override\n    public void autonomousPeriodic() {\n        if (!m_autonomousComplete) {\n            double time = DriverStation.getMatchTime();\n            \n            if (time > Constants.AUTO_DRIVE_TIME) {\n                m_drivetrain.arcadeDrive(0.5, 0.0);\n            } else {\n                m_drivetrain.stop();\n                m_autonomousComplete = true;\n            }\n        }\n    }\n    \n    @Override\n    public void disabledInit() {\n        m_drivetrain.stop();\n        SmartDashboard.putString(\"Robot Status\", \"Disabled\");\n    }\n}"
+    }
+  ]
+}

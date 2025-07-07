@@ -1,0 +1,128 @@
+{
+  "title": "Command-Based Programming",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Command-Based Programming",
+      "content": "Command-based programming is a design pattern that organizes robot code into commands and subsystems. This approach makes code more modular, testable, and maintainable, especially for complex robots with multiple mechanisms."
+    },
+    {
+      "type": "rules-box",
+      "title": "Why Command-Based Programming?",
+      "items": [
+        "<strong>Modularity:</strong> Each command handles one specific action",
+        "<strong>Reusability:</strong> Commands can be combined and reused",
+        "<strong>Testability:</strong> Individual commands can be tested separately",
+        "<strong>Maintainability:</strong> Easier to modify and debug specific behaviors",
+        "<strong>Parallel Execution:</strong> Multiple commands can run simultaneously",
+        "<strong>Complex Sequences:</strong> Easy to create complex autonomous routines"
+      ],
+      "subtitle": "Command-based programming offers significant advantages:"
+    },
+    {
+      "type": "text",
+      "title": "Core Concepts",
+      "content": "Command-based programming consists of three main components: Commands, Subsystems, and the Scheduler."
+    },
+    {
+      "type": "rules-box",
+      "title": "Key Components",
+      "items": [
+        "<strong>Commands:</strong> Actions that the robot performs (drive forward, raise arm, etc.)",
+        "<strong>Subsystems:</strong> Groups of related hardware (drivetrain, arm, intake, etc.)",
+        "<strong>Scheduler:</strong> Manages command execution and subsystem requirements",
+        "<strong>Requirements:</strong> Commands specify which subsystems they need"
+      ],
+      "subtitle": "Understanding the command-based architecture:"
+    },
+    {
+      "type": "text",
+      "title": "Basic Command Structure",
+      "content": "Commands are the building blocks of command-based programming. Each command represents a single action the robot can perform."
+    },
+    {
+      "type": "code",
+      "title": "Basic Command Template",
+      "content": "package org.firstinspires.ftc.teamcode.commands;\n\nimport com.qualcomm.robotcore.util.ElapsedTime;\nimport org.firstinspires.ftc.teamcode.subsystems.Drivetrain;\n\npublic class DriveForwardCommand implements Command {\n    \n    private Drivetrain drivetrain;\n    private double distance;\n    private double speed;\n    private ElapsedTime timer;\n    private double timeout;\n    \n    private boolean isFinished = false;\n    \n    public DriveForwardCommand(Drivetrain drivetrain, double distance, double speed, double timeout) {\n        this.drivetrain = drivetrain;\n        this.distance = distance;\n        this.speed = speed;\n        this.timeout = timeout;\n        this.timer = new ElapsedTime();\n    }\n    \n    @Override\n    public void initialize() {\n        // Called once when command starts\n        drivetrain.resetEncoders();\n        drivetrain.setTargetPosition((int)(distance * drivetrain.getTicksPerInch()));\n        drivetrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        drivetrain.setPower(speed);\n        timer.reset();\n        isFinished = false;\n    }\n    \n    @Override\n    public void execute() {\n        // Called repeatedly while command is running\n        // Check if we've reached the target or timed out\n        if (drivetrain.isAtTarget() || timer.seconds() > timeout) {\n            isFinished = true;\n        }\n    }\n    \n    @Override\n    public void end() {\n        // Called once when command ends\n        drivetrain.stop();\n        drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return isFinished;\n    }\n    \n    @Override\n    public void interrupted() {\n        // Called if command is interrupted\n        end();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Subsystem Implementation",
+      "content": "Subsystems group related hardware components and provide a clean interface for commands to interact with the robot."
+    },
+    {
+      "type": "code",
+      "title": "Drivetrain Subsystem",
+      "content": "package org.firstinspires.ftc.teamcode.subsystems;\n\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.DcMotorSimple;\nimport com.qualcomm.robotcore.hardware.HardwareMap;\n\npublic class Drivetrain implements Subsystem {\n    \n    private DcMotor leftFront, rightFront, leftBack, rightBack;\n    private double ticksPerInch;\n    \n    public Drivetrain(HardwareMap hardwareMap) {\n        // Initialize motors\n        leftFront = hardwareMap.get(DcMotor.class, \"leftFront\");\n        rightFront = hardwareMap.get(DcMotor.class, \"rightFront\");\n        leftBack = hardwareMap.get(DcMotor.class, \"leftBack\");\n        rightBack = hardwareMap.get(DcMotor.class, \"rightBack\");\n        \n        // Set motor directions\n        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);\n        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);\n        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);\n        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);\n        \n        // Set zero power behavior\n        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        \n        // Calculate ticks per inch (depends on your robot)\n        ticksPerInch = 537.6 / (4 * Math.PI); // Example for 4-inch wheels\n    }\n    \n    public void drive(double forward, double strafe, double turn) {\n        // Mecanum drive logic\n        double leftFrontPower = forward + strafe + turn;\n        double rightFrontPower = forward - strafe - turn;\n        double leftBackPower = forward - strafe + turn;\n        double rightBackPower = forward + strafe - turn;\n        \n        // Normalize powers\n        double maxPower = Math.max(Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower)),\n                                  Math.max(Math.abs(leftBackPower), Math.abs(rightBackPower)));\n        if (maxPower > 1.0) {\n            leftFrontPower /= maxPower;\n            rightFrontPower /= maxPower;\n            leftBackPower /= maxPower;\n            rightBackPower /= maxPower;\n        }\n        \n        // Set motor powers\n        leftFront.setPower(leftFrontPower);\n        rightFront.setPower(rightFrontPower);\n        leftBack.setPower(leftBackPower);\n        rightBack.setPower(rightBackPower);\n    }\n    \n    public void stop() {\n        leftFront.setPower(0);\n        rightFront.setPower(0);\n        leftBack.setPower(0);\n        rightBack.setPower(0);\n    }\n    \n    public void resetEncoders() {\n        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    }\n    \n    public void setTargetPosition(int position) {\n        leftFront.setTargetPosition(position);\n        rightFront.setTargetPosition(position);\n        leftBack.setTargetPosition(position);\n        rightBack.setTargetPosition(position);\n    }\n    \n    public void setMode(DcMotor.RunMode mode) {\n        leftFront.setMode(mode);\n        rightFront.setMode(mode);\n        leftBack.setMode(mode);\n        rightBack.setMode(mode);\n    }\n    \n    public void setPower(double power) {\n        leftFront.setPower(power);\n        rightFront.setPower(power);\n        leftBack.setPower(power);\n        rightBack.setPower(power);\n    }\n    \n    public boolean isAtTarget() {\n        return !leftFront.isBusy() && !rightFront.isBusy() && \n               !leftBack.isBusy() && !rightBack.isBusy();\n    }\n    \n    public double getTicksPerInch() {\n        return ticksPerInch;\n    }\n    \n    @Override\n    public void periodic() {\n        // Called every robot loop - update telemetry, etc.\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Command Scheduler",
+      "content": "The command scheduler manages the execution of commands and ensures that subsystem requirements are met."
+    },
+    {
+      "type": "code",
+      "title": "Simple Command Scheduler",
+      "content": "package org.firstinspires.ftc.teamcode.commands;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class CommandScheduler {\n    \n    private static CommandScheduler instance;\n    private List<Command> commands;\n    private List<Subsystem> subsystems;\n    \n    private CommandScheduler() {\n        commands = new ArrayList<>();\n        subsystems = new ArrayList<>();\n    }\n    \n    public static CommandScheduler getInstance() {\n        if (instance == null) {\n            instance = new CommandScheduler();\n        }\n        return instance;\n    }\n    \n    public void addSubsystem(Subsystem subsystem) {\n        subsystems.add(subsystem);\n    }\n    \n    public void scheduleCommand(Command command) {\n        // Check if command can run (no conflicts)\n        if (canScheduleCommand(command)) {\n            commands.add(command);\n            command.initialize();\n        }\n    }\n    \n    private boolean canScheduleCommand(Command command) {\n        // Simple conflict checking - can be made more sophisticated\n        for (Command runningCommand : commands) {\n            if (runningCommand.isFinished()) continue;\n            \n            // Check for subsystem conflicts\n            if (hasSubsystemConflict(command, runningCommand)) {\n                return false;\n            }\n        }\n        return true;\n    }\n    \n    private boolean hasSubsystemConflict(Command command1, Command command2) {\n        // This is a simplified version - real implementations are more complex\n        // You would check if both commands require the same subsystem\n        return false;\n    }\n    \n    public void run() {\n        // Execute all running commands\n        List<Command> finishedCommands = new ArrayList<>();\n        \n        for (Command command : commands) {\n            if (command.isFinished()) {\n                command.end();\n                finishedCommands.add(command);\n            } else {\n                command.execute();\n            }\n        }\n        \n        // Remove finished commands\n        commands.removeAll(finishedCommands);\n        \n        // Update all subsystems\n        for (Subsystem subsystem : subsystems) {\n            subsystem.periodic();\n        }\n    }\n    \n    public void cancelAll() {\n        for (Command command : commands) {\n            command.interrupted();\n        }\n        commands.clear();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Command Groups",
+      "content": "Command groups allow you to combine multiple commands into complex sequences. This is especially useful for autonomous routines."
+    },
+    {
+      "type": "code",
+      "title": "Sequential Command Group",
+      "content": "package org.firstinspires.ftc.teamcode.commands;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class SequentialCommandGroup implements Command {\n    \n    private List<Command> commands;\n    private int currentCommandIndex;\n    private boolean isFinished;\n    \n    public SequentialCommandGroup(Command... commands) {\n        this.commands = new ArrayList<>();\n        for (Command command : commands) {\n            this.commands.add(command);\n        }\n        this.currentCommandIndex = 0;\n        this.isFinished = false;\n    }\n    \n    @Override\n    public void initialize() {\n        currentCommandIndex = 0;\n        isFinished = false;\n        \n        if (!commands.isEmpty()) {\n            commands.get(0).initialize();\n        }\n    }\n    \n    @Override\n    public void execute() {\n        if (isFinished || commands.isEmpty()) {\n            return;\n        }\n        \n        Command currentCommand = commands.get(currentCommandIndex);\n        \n        if (currentCommand.isFinished()) {\n            currentCommand.end();\n            currentCommandIndex++;\n            \n            if (currentCommandIndex >= commands.size()) {\n                isFinished = true;\n            } else {\n                commands.get(currentCommandIndex).initialize();\n            }\n        } else {\n            currentCommand.execute();\n        }\n    }\n    \n    @Override\n    public void end() {\n        if (!commands.isEmpty() && currentCommandIndex < commands.size()) {\n            commands.get(currentCommandIndex).end();\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return isFinished;\n    }\n    \n    @Override\n    public void interrupted() {\n        end();\n    }\n}\n\n// Example usage:\n// CommandGroup autonomousRoutine = new SequentialCommandGroup(\n//     new DriveForwardCommand(drivetrain, 24, 0.5, 3.0),\n//     new TurnCommand(drivetrain, 90, 0.3, 2.0),\n//     new DriveForwardCommand(drivetrain, 12, 0.5, 2.0),\n//     new RaiseArmCommand(arm, 1000, 0.5, 3.0)\n// );"
+    },
+    {
+      "type": "text",
+      "title": "Parallel Command Group",
+      "content": "Parallel command groups allow multiple commands to run simultaneously, which is useful for complex robot behaviors."
+    },
+    {
+      "type": "code",
+      "title": "Parallel Command Group",
+      "content": "package org.firstinspires.ftc.teamcode.commands;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class ParallelCommandGroup implements Command {\n    \n    private List<Command> commands;\n    private boolean isFinished;\n    \n    public ParallelCommandGroup(Command... commands) {\n        this.commands = new ArrayList<>();\n        for (Command command : commands) {\n            this.commands.add(command);\n        }\n        this.isFinished = false;\n    }\n    \n    @Override\n    public void initialize() {\n        isFinished = false;\n        for (Command command : commands) {\n            command.initialize();\n        }\n    }\n    \n    @Override\n    public void execute() {\n        if (isFinished) {\n            return;\n        }\n        \n        boolean allFinished = true;\n        \n        for (Command command : commands) {\n            if (!command.isFinished()) {\n                command.execute();\n                allFinished = false;\n            }\n        }\n        \n        if (allFinished) {\n            isFinished = true;\n        }\n    }\n    \n    @Override\n    public void end() {\n        for (Command command : commands) {\n            if (!command.isFinished()) {\n                command.interrupted();\n            }\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return isFinished;\n    }\n    \n    @Override\n    public void interrupted() {\n        end();\n    }\n}\n\n// Example usage:\n// CommandGroup complexRoutine = new ParallelCommandGroup(\n//     new DriveForwardCommand(drivetrain, 36, 0.5, 5.0),\n//     new RaiseArmCommand(arm, 500, 0.3, 3.0),\n//     new StartIntakeCommand(intake, 1.0)\n// );"
+    },
+    {
+      "type": "text",
+      "title": "Command-Based TeleOp",
+      "content": "Command-based programming can also be used for teleop, making it easier to handle complex control schemes."
+    },
+    {
+      "type": "code",
+      "title": "Command-Based TeleOp Example",
+      "content": "package org.firstinspires.ftc.teamcode.teleop;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport org.firstinspires.ftc.teamcode.commands.*;\nimport org.firstinspires.ftc.teamcode.subsystems.*;\n\n@TeleOp(name=\"Command-Based TeleOp\", group=\"Advanced\")\npublic class CommandBasedTeleOp extends LinearOpMode {\n    \n    private Drivetrain drivetrain;\n    private Arm arm;\n    private Intake intake;\n    private CommandScheduler scheduler;\n    \n    // Commands for different actions\n    private DriveCommand driveCommand;\n    private ArmCommand armCommand;\n    private IntakeCommand intakeCommand;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize subsystems\n        drivetrain = new Drivetrain(hardwareMap);\n        arm = new Arm(hardwareMap);\n        intake = new Intake(hardwareMap);\n        \n        // Initialize scheduler\n        scheduler = CommandScheduler.getInstance();\n        scheduler.addSubsystem(drivetrain);\n        scheduler.addSubsystem(arm);\n        scheduler.addSubsystem(intake);\n        \n        // Initialize commands\n        driveCommand = new DriveCommand(drivetrain, gamepad1);\n        armCommand = new ArmCommand(arm, gamepad2);\n        intakeCommand = new IntakeCommand(intake, gamepad2);\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Update command inputs\n            driveCommand.updateInputs(gamepad1);\n            armCommand.updateInputs(gamepad2);\n            intakeCommand.updateInputs(gamepad2);\n            \n            // Schedule commands\n            scheduler.scheduleCommand(driveCommand);\n            scheduler.scheduleCommand(armCommand);\n            scheduler.scheduleCommand(intakeCommand);\n            \n            // Run scheduler\n            scheduler.run();\n            \n            // Update telemetry\n            updateTelemetry();\n            \n            sleep(10);\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Drivetrain Status\", drivetrain.getStatus());\n        telemetry.addData(\"Arm Position\", arm.getCurrentPosition());\n        telemetry.addData(\"Intake Status\", intake.getStatus());\n        telemetry.addData(\"Active Commands\", scheduler.getActiveCommandCount());\n        telemetry.update();\n    }\n}\n\n// Example command that runs continuously\nclass DriveCommand implements Command {\n    \n    private Drivetrain drivetrain;\n    private Gamepad gamepad;\n    private boolean isFinished = false;\n    \n    public DriveCommand(Drivetrain drivetrain, Gamepad gamepad) {\n        this.drivetrain = drivetrain;\n        this.gamepad = gamepad;\n    }\n    \n    public void updateInputs(Gamepad gamepad) {\n        this.gamepad = gamepad;\n    }\n    \n    @Override\n    public void initialize() {\n        // Nothing to initialize for continuous command\n    }\n    \n    @Override\n    public void execute() {\n        // Read gamepad and drive\n        double forward = -gamepad.left_stick_y;\n        double strafe = gamepad.left_stick_x;\n        double turn = gamepad.right_stick_x;\n        \n        drivetrain.drive(forward, strafe, turn);\n    }\n    \n    @Override\n    public void end() {\n        drivetrain.stop();\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return isFinished; // Never finishes unless interrupted\n    }\n    \n    @Override\n    public void interrupted() {\n        end();\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Command-Based Best Practices",
+      "items": [
+        "<strong>Keep commands simple:</strong> Each command should do one thing well",
+        "<strong>Use meaningful names:</strong> Command names should clearly describe their purpose",
+        "<strong>Handle interruptions:</strong> Always implement the interrupted() method",
+        "<strong>Check requirements:</strong> Ensure commands don't conflict with each other",
+        "<strong>Test individually:</strong> Test each command separately before combining",
+        "<strong>Use command groups:</strong> Combine simple commands into complex behaviors"
+      ],
+      "subtitle": "Follow these best practices for effective command-based programming:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Command-Based Programming Practice",
+      "description": "Implement command-based programming for your robot. Start with simple commands and gradually build complex behaviors.",
+      "tasks": [
+        "Create a basic drivetrain subsystem",
+        "Implement simple commands (drive forward, turn, stop)",
+        "Create a command scheduler to manage command execution",
+        "Build command groups for autonomous sequences",
+        "Implement command-based teleop with multiple mechanisms",
+        "Add parallel command execution for complex behaviors",
+        "Test and debug your command-based system",
+        "Document your command structure for the team"
+      ],
+      "code": "// Example: Complete command-based autonomous routine\n// CommandGroup autonomousRoutine = new SequentialCommandGroup(\n//     new DriveForwardCommand(drivetrain, 24, 0.5, 3.0),\n//     new ParallelCommandGroup(\n//         new TurnCommand(drivetrain, 90, 0.3, 2.0),\n//         new RaiseArmCommand(arm, 500, 0.3, 2.0)\n//     ),\n//     new DriveForwardCommand(drivetrain, 12, 0.5, 2.0),\n//     new DropElementCommand(arm, claw)\n// );\n// \n// scheduler.scheduleCommand(autonomousRoutine);\n// \n// while (opModeIsActive() && !autonomousRoutine.isFinished()) {\n//     scheduler.run();\n//     sleep(10);\n// }"
+    }
+  ]
+}

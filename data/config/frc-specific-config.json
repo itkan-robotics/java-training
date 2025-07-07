@@ -1,17 +1,112 @@
 {
-  "id": "frc-specific",
-  "label": "FRC-Specific Training",
-  "intro": { "id": "frc-intro", "label": "Introduction to FRC", "file": "data/frc/frc-intro.json" },
+  "title": "FRC Curriculum",
+  "intro": {
+    "id": "frc-intro",
+    "label": "FRC Curriculum Overview",
+    "file": "data/frc/frc-intro.json"
+  },
   "groups": [
     {
-      "id": "frc-basics",
-      "label": "FRC Basics",
+      "id": "frc-beginner",
+      "label": "Beginner",
       "items": [
-        { "id": "frc-wpilib", "label": "WPILib Introduction", "file": "data/frc/frc-wpilib.json" },
-        { "id": "frc-motors", "label": "Motor Control", "file": "data/frc/frc-motors.json" },
-        { "id": "frc-commands", "label": "Commands & Subsystems", "file": "data/frc/frc-commands.json" },
-        { "id": "frc-command-based", "label": "Command-Based Programming", "file": "data/frc/frc-command-based.json" },
-        { "id": "frc-pid", "label": "PID Control", "file": "data/frc/frc-pid.json" }
+        {
+          "id": "frc-wpilib-setup",
+          "label": "WPILib Setup",
+          "file": "data/frc/beginner/frc-wpilib-setup.json"
+        },
+        {
+          "id": "frc-git-github-basics",
+          "label": "Git/GitHub Basics",
+          "file": "data/frc/beginner/frc-git-github-basics.json"
+        },
+        {
+          "id": "frc-basic-robot-structure",
+          "label": "Basic Robot Structure",
+          "file": "data/frc/beginner/frc-basic-robot-structure.json"
+        },
+        {
+          "id": "frc-drivetrain-control",
+          "label": "Drivetrain Control",
+          "file": "data/frc/beginner/frc-drivetrain-control.json"
+        },
+        {
+          "id": "frc-gamepad-control",
+          "label": "Gamepad Control",
+          "file": "data/frc/beginner/frc-gamepad-control.json"
+        },
+        {
+          "id": "frc-basic-sensors",
+          "label": "Basic Sensors",
+          "file": "data/frc/beginner/frc-basic-sensors.json"
+        },
+        {
+          "id": "frc-simple-autonomous",
+          "label": "Simple Autonomous",
+          "file": "data/frc/beginner/frc-simple-autonomous.json"
+        },
+        {
+          "id": "frc-basic-mechanisms",
+          "label": "Basic Mechanisms",
+          "file": "data/frc/beginner/frc-basic-mechanisms.json"
+        }
+      ]
+    },
+    {
+      "id": "frc-intermediate",
+      "label": "Intermediate",
+      "items": [
+        {
+          "id": "frc-command-based-intro",
+          "label": "Command-Based Programming Introduction",
+          "file": "data/frc/intermediate/frc-command-based-intro.json"
+        },
+        {
+          "id": "frc-pid-control",
+          "label": "PID Control",
+          "file": "data/frc/intermediate/frc-pid-control.json"
+        },
+        {
+          "id": "frc-motion-profiling",
+          "label": "Motion Profiling",
+          "file": "data/frc/intermediate/frc-motion-profiling.json"
+        },
+        {
+          "id": "frc-pathplanner",
+          "label": "PathPlanner",
+          "file": "data/frc/intermediate/frc-pathplanner.json"
+        },
+        {
+          "id": "frc-advantagekit-swerve",
+          "label": "AdvantageKit Swerve",
+          "file": "data/frc/intermediate/frc-advantagekit-swerve.json"
+        }
+      ]
+    },
+    {
+      "id": "frc-advanced",
+      "label": "Advanced",
+      "items": [
+        {
+          "id": "frc-advantagescope",
+          "label": "AdvantageScope",
+          "file": "data/frc/advanced/frc-advantagescope.json"
+        },
+        {
+          "id": "frc-advanced-logging",
+          "label": "Advanced Logging",
+          "file": "data/frc/advanced/frc-advanced-logging.json"
+        },
+        {
+          "id": "frc-simulation",
+          "label": "Simulation",
+          "file": "data/frc/advanced/frc-simulation.json"
+        },
+        {
+          "id": "frc-advanced-topics",
+          "label": "Advanced Topics",
+          "file": "data/frc/advanced/frc-advanced-topics.json"
+        }
       ]
     }
   ]

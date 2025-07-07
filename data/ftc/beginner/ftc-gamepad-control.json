@@ -1,0 +1,98 @@
+{
+  "title": "Gamepad Control and Input Handling",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Understanding Gamepad Inputs",
+      "content": "FTC uses gamepads for robot control, providing both analog (sticks, triggers) and digital (buttons) inputs. Understanding how to read and process these inputs is crucial for effective robot control."
+    },
+    {
+      "type": "rules-box",
+      "title": "Gamepad Components",
+      "items": [
+        "<strong>Analog Sticks:</strong> Left and right sticks with X and Y axes (-1.0 to 1.0)",
+        "<strong>Triggers:</strong> Left and right triggers (0.0 to 1.0)",
+        "<strong>Buttons:</strong> A, B, X, Y, D-pad, bumpers, start, back",
+        "<strong>D-pad:</strong> Digital directional pad with 8 positions"
+      ],
+      "subtitle": "The FTC gamepad provides these input types:"
+    },
+    {
+      "type": "text",
+      "title": "Reading Analog Inputs",
+      "content": "Analog inputs provide continuous values that are perfect for proportional control of motors and servos."
+    },
+    {
+      "type": "code",
+      "title": "Basic Analog Input Reading",
+      "content": "private void readAnalogInputs() {\n    // Read stick values (range: -1.0 to 1.0)\n    double leftStickX = gamepad1.left_stick_x;\n    double leftStickY = gamepad1.left_stick_y;\n    double rightStickX = gamepad1.right_stick_x;\n    double rightStickY = gamepad1.right_stick_y;\n    \n    // Read trigger values (range: 0.0 to 1.0)\n    double leftTrigger = gamepad1.left_trigger;\n    double rightTrigger = gamepad1.right_trigger;\n    \n    // Apply deadzone to prevent drift\n    if (Math.abs(leftStickX) < 0.1) leftStickX = 0;\n    if (Math.abs(leftStickY) < 0.1) leftStickY = 0;\n    if (Math.abs(rightStickX) < 0.1) rightStickX = 0;\n    if (Math.abs(rightStickY) < 0.1) rightStickY = 0;\n    \n    // Use these values for motor control\n    // Example: Use left stick for drivetrain\n    driveWithSticks(leftStickX, leftStickY, rightStickX);\n    \n    // Example: Use triggers for arm control\n    controlArm(leftTrigger, rightTrigger);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Reading Digital Inputs",
+      "content": "Digital inputs (buttons) provide boolean values and are perfect for toggling mechanisms or triggering actions."
+    },
+    {
+      "type": "code",
+      "title": "Digital Input Handling",
+      "content": "private void readDigitalInputs() {\n    // Read button states (true when pressed)\n    boolean aButton = gamepad1.a;\n    boolean bButton = gamepad1.b;\n    boolean xButton = gamepad1.x;\n    boolean yButton = gamepad1.y;\n    \n    // Read bumper states\n    boolean leftBumper = gamepad1.left_bumper;\n    boolean rightBumper = gamepad1.right_bumper;\n    \n    // Read D-pad states\n    boolean dpadUp = gamepad1.dpad_up;\n    boolean dpadDown = gamepad1.dpad_down;\n    boolean dpadLeft = gamepad1.dpad_left;\n    boolean dpadRight = gamepad1.dpad_right;\n    \n    // Handle button presses\n    if (aButton) {\n        // Action when A is pressed\n        clawServo.setPosition(1.0);\n    }\n    \n    if (bButton) {\n        // Action when B is pressed\n        clawServo.setPosition(0.0);\n    }\n    \n    // Handle D-pad for preset positions\n    if (dpadUp) {\n        armMotor.setTargetPosition(1000);\n    } else if (dpadDown) {\n        armMotor.setTargetPosition(0);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Toggle Controls",
+      "content": "Toggle controls allow you to switch between states with a single button press, which is useful for mechanisms that have two positions."
+    },
+    {
+      "type": "code",
+      "title": "Toggle Implementation",
+      "content": "// Add these to your class variables\nprivate boolean clawOpen = false;\nprivate boolean slowMode = false;\nprivate boolean lastAButton = false;\nprivate boolean lastBButton = false;\n\nprivate void handleToggles() {\n    // Toggle claw with A button\n    if (gamepad1.a && !lastAButton) {\n        clawOpen = !clawOpen;\n        if (clawOpen) {\n            clawServo.setPosition(1.0);\n        } else {\n            clawServo.setPosition(0.0);\n        }\n    }\n    lastAButton = gamepad1.a;\n    \n    // Toggle slow mode with B button\n    if (gamepad1.b && !lastBButton) {\n        slowMode = !slowMode;\n    }\n    lastBButton = gamepad1.b;\n}"
+    },
+    {
+      "type": "text",
+      "title": "Multi-Gamepad Control",
+      "content": "FTC supports two gamepads, allowing for driver and operator control. This is common in competitive robotics."
+    },
+    {
+      "type": "code",
+      "title": "Dual Gamepad Control",
+      "content": "private void dualGamepadControl() {\n    // Gamepad 1 (Driver) - Controls drivetrain\n    double leftStickY = -gamepad1.left_stick_y;\n    double leftStickX = gamepad1.left_stick_x;\n    double rightStickX = gamepad1.right_stick_x;\n    \n    // Apply deadzone\n    if (Math.abs(leftStickY) < 0.1) leftStickY = 0;\n    if (Math.abs(leftStickX) < 0.1) leftStickX = 0;\n    if (Math.abs(rightStickX) < 0.1) rightStickX = 0;\n    \n    // Drive the robot\n    driveRobot(leftStickY, leftStickX, rightStickX);\n    \n    // Gamepad 2 (Operator) - Controls mechanisms\n    if (gamepad2.a) {\n        // Intake\n        intakeMotor.setPower(1.0);\n    } else if (gamepad2.b) {\n        // Outtake\n        intakeMotor.setPower(-1.0);\n    } else {\n        intakeMotor.setPower(0.0);\n    }\n    \n    // Arm control with gamepad 2 sticks\n    double armPower = -gamepad2.left_stick_y;\n    if (Math.abs(armPower) < 0.1) armPower = 0;\n    armMotor.setPower(armPower);\n    \n    // Claw control with gamepad 2 triggers\n    if (gamepad2.left_trigger > 0.1) {\n        clawServo.setPosition(1.0);\n    } else if (gamepad2.right_trigger > 0.1) {\n        clawServo.setPosition(0.0);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Input Processing",
+      "content": "Advanced input processing includes features like input smoothing, button combinations, and custom control schemes."
+    },
+    {
+      "type": "code",
+      "title": "Advanced Input Features",
+      "content": "// Input smoothing for more precise control\nprivate double smoothInput(double input, double smoothingFactor) {\n    return input * smoothingFactor + (1 - smoothingFactor) * lastInput;\n}\n\n// Button combination detection\nprivate void handleButtonCombinations() {\n    // Emergency stop - both bumpers pressed\n    if (gamepad1.left_bumper && gamepad1.right_bumper) {\n        stopAllMotors();\n        return;\n    }\n    \n    // Precision mode - left bumper + slow movement\n    if (gamepad1.left_bumper) {\n        // Apply additional speed reduction\n        speedMultiplier *= 0.5;\n    }\n    \n    // Turbo mode - right bumper + full power\n    if (gamepad1.right_bumper) {\n        speedMultiplier = 1.0;\n    }\n}\n\n// Custom control scheme\nprivate void customControlScheme() {\n    // Use left stick for forward/backward\n    double forward = -gamepad1.left_stick_y;\n    \n    // Use right stick X for turning\n    double turn = gamepad1.right_stick_x;\n    \n    // Use right stick Y for strafe (if mecanum)\n    double strafe = gamepad1.right_stick_y;\n    \n    // Apply deadzone and smoothing\n    forward = smoothInput(applyDeadzone(forward, 0.1), 0.8);\n    turn = smoothInput(applyDeadzone(turn, 0.1), 0.8);\n    strafe = smoothInput(applyDeadzone(strafe, 0.1), 0.8);\n    \n    // Apply to drivetrain\n    mecanumDrive(forward, strafe, turn);\n}\n\nprivate double applyDeadzone(double input, double deadzone) {\n    if (Math.abs(input) < deadzone) {\n        return 0.0;\n    }\n    return input;\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "items": [
+        "<strong>Always use deadzones:</strong> Prevents motor drift from stick noise",
+        "<strong>Implement toggles properly:</strong> Use edge detection to avoid rapid switching",
+        "<strong>Separate driver and operator controls:</strong> Use different gamepads for different functions",
+        "<strong>Provide visual feedback:</strong> Use telemetry to show current control states",
+        "<strong>Test control schemes thoroughly:</strong> Ensure controls are intuitive for drivers"
+      ],
+      "subtitle": "Follow these best practices for gamepad control:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Gamepad Control Practice",
+      "description": "Implement various gamepad control schemes and test them on your robot. Focus on creating intuitive and reliable controls.",
+      "tasks": [
+        "Implement basic analog and digital input reading",
+        "Create toggle controls for a mechanism (like a claw)",
+        "Set up dual gamepad control (driver and operator)",
+        "Implement button combinations (like emergency stop)",
+        "Add input smoothing for more precise control",
+        "Create a custom control scheme for your robot's specific needs",
+        "Add comprehensive telemetry to show all input states"
+      ],
+      "code": "// Example: Complete gamepad control implementation\n// Add to your class variables:\n// private boolean lastAButton = false;\n// private boolean lastBButton = false;\n// private double lastLeftStickY = 0;\n// private double lastRightStickX = 0;\n\n// Add to your main loop:\n// handleGamepadInputs();\n// handleToggles();\n// updateControlTelemetry();\n\n// Implement these methods:\n// private void handleGamepadInputs() { /* your input handling */ }\n// private void handleToggles() { /* your toggle logic */ }\n// private void updateControlTelemetry() { /* your telemetry */ }"
+    }
+  ]
+}

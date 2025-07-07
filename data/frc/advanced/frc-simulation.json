@@ -1,0 +1,88 @@
+{
+  "title": "FRC Simulation",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to FRC Simulation",
+      "content": "Simulation is a powerful tool for testing and validating robot code without requiring physical hardware. WPILib provides a comprehensive simulation framework that allows you to test your robot's behavior in a virtual environment."
+    },
+    {
+      "type": "rules-box",
+      "title": "Benefits of Simulation",
+      "items": [
+        "<strong>Early Development:</strong> Test code before robot construction is complete",
+        "<strong>Safe Testing:</strong> Experiment with dangerous operations without risk",
+        "<strong>Rapid Iteration:</strong> Quickly test and refine algorithms",
+        "<strong>Team Training:</strong> Train drivers and operators on virtual robots",
+        "<strong>Competition Preparation:</strong> Practice game strategies and autonomous routines"
+      ],
+      "subtitle": "Simulation offers several advantages for FRC teams:"
+    },
+    {
+      "type": "text",
+      "title": "WPILib Simulation Framework",
+      "content": "WPILib's simulation framework provides realistic physics simulation, sensor simulation, and field visualization. It integrates seamlessly with your existing robot code, requiring minimal changes to run in simulation mode."
+    },
+    {
+      "type": "code",
+      "title": "Basic Simulation Setup",
+      "content": "public class Robot extends TimedRobot {\n    private DrivetrainSim m_drivetrainSim;\n    private EncoderSim m_leftEncoderSim;\n    private EncoderSim m_rightEncoderSim;\n    private GyroSim m_gyroSim;\n    \n    @Override\n    public void robotInit() {\n        // Initialize your robot subsystems\n        m_drivetrain = new Drivetrain();\n        \n        // Initialize simulation objects\n        if (RobotBase.isSimulation()) {\n            m_drivetrainSim = new DifferentialDrivetrainSim(\n                DCMotor.getNEO(2), // 2 NEO motors per side\n                7.29, // Gear ratio\n                7.5, // Moment of inertia\n                60.0, // Robot mass in kg\n                0.7112, // Wheel radius in meters\n                0.8, // Track width in meters\n                VecBuilder.fill(0.001, 0.001, 0.0001, 0.1, 0.1, 0.005, 0.005) // Measurement noise\n            );\n            \n            m_leftEncoderSim = new EncoderSim(m_drivetrain.getLeftEncoder());\n            m_rightEncoderSim = new EncoderSim(m_drivetrain.getRightEncoder());\n            m_gyroSim = new ADXRS450_GyroSim(m_drivetrain.getGyro());\n        }\n    }\n    \n    @Override\n    public void simulationPeriodic() {\n        // Update simulation\n        m_drivetrainSim.setInputs(\n            m_drivetrain.getLeftMotor().get() * RobotController.getBatteryVoltage(),\n            m_drivetrain.getRightMotor().get() * RobotController.getBatteryVoltage()\n        );\n        \n        m_drivetrainSim.update(0.02); // 20ms timestep\n        \n        // Update simulated sensors\n        m_leftEncoderSim.setDistance(m_drivetrainSim.getLeftPositionMeters());\n        m_leftEncoderSim.setRate(m_drivetrainSim.getLeftVelocityMetersPerSecond());\n        m_rightEncoderSim.setDistance(m_drivetrainSim.getRightPositionMeters());\n        m_rightEncoderSim.setRate(m_drivetrainSim.getRightVelocityMetersPerSecond());\n        m_gyroSim.setAngle(-Math.toDegrees(m_drivetrainSim.getHeading().getRadians()));\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Field Visualization",
+      "content": "WPILib's simulation includes a 3D field visualization that shows your robot's position and orientation on the field. This is invaluable for testing autonomous routines and understanding robot behavior."
+    },
+    {
+      "type": "code",
+      "title": "Field Visualization Setup",
+      "content": "public class Robot extends TimedRobot {\n    private Field2d m_field;\n    private DifferentialDriveOdometry m_odometry;\n    \n    @Override\n    public void robotInit() {\n        // Initialize field visualization\n        m_field = new Field2d();\n        SmartDashboard.putData(\"Field\", m_field);\n        \n        // Initialize odometry\n        m_odometry = new DifferentialDriveOdometry(\n            m_drivetrain.getGyro().getRotation2d(),\n            m_drivetrain.getLeftEncoder().getDistance(),\n            m_drivetrain.getRightEncoder().getDistance()\n        );\n    }\n    \n    @Override\n    public void robotPeriodic() {\n        // Update odometry\n        m_odometry.update(\n            m_drivetrain.getGyro().getRotation2d(),\n            m_drivetrain.getLeftEncoder().getDistance(),\n            m_drivetrain.getRightEncoder().getDistance()\n        );\n        \n        // Update field visualization\n        m_field.setRobotPose(m_odometry.getPoseMeters());\n        \n        // Display robot pose\n        SmartDashboard.putNumber(\"Robot X\", m_odometry.getPoseMeters().getX());\n        SmartDashboard.putNumber(\"Robot Y\", m_odometry.getPoseMeters().getY());\n        SmartDashboard.putNumber(\"Robot Angle\", m_odometry.getPoseMeters().getRotation().getDegrees());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Sensor Simulation",
+      "content": "WPILib provides simulation classes for most common sensors, allowing you to test sensor-dependent code without physical hardware."
+    },
+    {
+      "type": "code",
+      "title": "Sensor Simulation Examples",
+      "content": "public class Robot extends TimedRobot {\n    // Encoder simulation\n    private EncoderSim m_encoderSim;\n    \n    // Gyro simulation\n    private ADXRS450_GyroSim m_gyroSim;\n    \n    // Limit switch simulation\n    private DigitalInputSim m_limitSwitchSim;\n    \n    // Analog input simulation (for potentiometers)\n    private AnalogInputSim m_potentiometerSim;\n    \n    // Ultrasonic simulation\n    private AnalogInputSim m_ultrasonicSim;\n    \n    @Override\n    public void robotInit() {\n        if (RobotBase.isSimulation()) {\n            // Initialize sensor simulations\n            m_encoderSim = new EncoderSim(m_encoder);\n            m_gyroSim = new ADXRS450_GyroSim(m_gyro);\n            m_limitSwitchSim = new DigitalInputSim(m_limitSwitch);\n            m_potentiometerSim = new AnalogInputSim(m_potentiometer);\n            m_ultrasonicSim = new AnalogInputSim(m_ultrasonic);\n        }\n    }\n    \n    @Override\n    public void simulationPeriodic() {\n        // Simulate encoder movement\n        m_encoderSim.setDistance(m_encoderSim.getDistance() + 0.1);\n        m_encoderSim.setRate(5.0); // 5 units per second\n        \n        // Simulate gyro rotation\n        m_gyroSim.setAngle(m_gyroSim.getAngle() + 1.0); // 1 degree per cycle\n        \n        // Simulate limit switch (triggered when arm reaches certain position)\n        if (m_encoderSim.getDistance() > 100) {\n            m_limitSwitchSim.setValue(true);\n        } else {\n            m_limitSwitchSim.setValue(false);\n        }\n        \n        // Simulate potentiometer (0-5V range)\n        double potValue = (m_encoderSim.getDistance() / 200.0) * 5.0; // Scale to voltage\n        m_potentiometerSim.setVoltage(potValue);\n        \n        // Simulate ultrasonic sensor (distance in cm)\n        double distance = 50.0 + Math.sin(Timer.getFPGATimestamp()) * 10.0; // Varying distance\n        m_ultrasonicSim.setVoltage(distance / 100.0); // Convert to voltage\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Simulation Features",
+      "content": "WPILib simulation supports advanced features like trajectory following, path planning, and complex mechanism simulation."
+    },
+    {
+      "type": "code",
+      "title": "Trajectory Simulation",
+      "content": "public class Robot extends TimedRobot {\n    private Trajectory m_trajectory;\n    private RamseteController m_ramseteController;\n    private DifferentialDriveOdometry m_odometry;\n    private Timer m_timer;\n    \n    @Override\n    public void robotInit() {\n        // Create a simple trajectory\n        m_trajectory = TrajectoryGenerator.generateTrajectory(\n            new Pose2d(0, 0, new Rotation2d(0)),\n            List.of(\n                new Translation2d(1, 0),\n                new Translation2d(2, 1)\n            ),\n            new Pose2d(3, 0, new Rotation2d(0)),\n            new TrajectoryConfig(2.0, 1.0) // Max velocity and acceleration\n        );\n        \n        m_ramseteController = new RamseteController();\n        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());\n        m_timer = new Timer();\n    }\n    \n    @Override\n    public void autonomousInit() {\n        m_timer.reset();\n        m_timer.start();\n        m_odometry.resetPosition(new Pose2d(), m_gyro.getRotation2d());\n    }\n    \n    @Override\n    public void autonomousPeriodic() {\n        double time = m_timer.get();\n        Trajectory.State desiredState = m_trajectory.sample(time);\n        \n        Pose2d currentPose = m_odometry.getPoseMeters();\n        \n        ChassisSpeeds targetChassisSpeeds = m_ramseteController.calculate(\n            currentPose, desiredState);\n        \n        DifferentialDriveWheelSpeeds targetWheelSpeeds = \n            m_kinematics.toWheelSpeeds(targetChassisSpeeds);\n        \n        double leftSpeed = targetWheelSpeeds.leftMetersPerSecond;\n        double rightSpeed = targetWheelSpeeds.rightMetersPerSecond;\n        \n        m_drivetrain.setSpeeds(leftSpeed, rightSpeed);\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Simulation Best Practices",
+      "items": [
+        "<strong>Realistic Parameters:</strong> Use accurate robot parameters (mass, dimensions, gear ratios)",
+        "<strong>Sensor Noise:</strong> Include realistic sensor noise and latency",
+        "<strong>Regular Testing:</strong> Test both simulation and real robot regularly",
+        "<strong>Documentation:</strong> Document simulation parameters and assumptions",
+        "<strong>Team Training:</strong> Use simulation for driver and operator training"
+      ],
+      "subtitle": "Follow these guidelines for effective simulation:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Simulation Practice",
+      "description": "Set up and test simulation for your robot's subsystems.",
+      "tasks": [
+        "Set up basic drivetrain simulation with realistic parameters",
+        "Add field visualization to track robot position",
+        "Simulate encoders, gyro, and other sensors",
+        "Test autonomous routines in simulation",
+        "Compare simulation behavior with real robot behavior",
+        "Use simulation to tune PID controllers and motion profiles"
+      ],
+      "code": "// Example: Add simulation to your existing robot code\n// 1. Add simulation objects to your robot class\n// 2. Initialize them in robotInit() when RobotBase.isSimulation() is true\n// 3. Update them in simulationPeriodic()\n// 4. Add field visualization for autonomous testing\n\n// Key simulation classes:\n// - DifferentialDrivetrainSim for tank drive\n// - SwerveDriveSim for swerve drive\n// - EncoderSim for encoders\n// - ADXRS450_GyroSim for gyros\n// - DigitalInputSim for limit switches\n// - AnalogInputSim for analog sensors"
+    }
+  ]
+}

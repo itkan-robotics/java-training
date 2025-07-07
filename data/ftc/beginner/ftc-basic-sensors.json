@@ -1,0 +1,100 @@
+{
+  "title": "Basic Sensors and Feedback",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Sensors",
+      "content": "Sensors provide feedback to your robot about its environment and internal state. Understanding how to use sensors is essential for creating autonomous behaviors and improving robot performance."
+    },
+    {
+      "type": "rules-box",
+      "title": "Common FTC Sensors",
+      "items": [
+        "<strong>Motor Encoders:</strong> Built into motors, provide position and velocity feedback",
+        "<strong>Touch Sensors:</strong> Digital sensors that detect contact",
+        "<strong>Color Sensors:</strong> Detect colors and light intensity",
+        "<strong>Distance Sensors:</strong> Measure distance to objects",
+        "<strong>Gyroscope:</strong> Measure rotation and heading"
+      ],
+      "subtitle": "FTC robots commonly use these sensors:"
+    },
+    {
+      "type": "text",
+      "title": "Motor Encoders",
+      "content": "Motor encoders are the most commonly used sensors in FTC. They provide precise position and velocity feedback, essential for autonomous movement and mechanism control."
+    },
+    {
+      "type": "code",
+      "title": "Basic Encoder Usage",
+      "content": "// Add to your hardware declarations\nprivate DcMotor armMotor;\nprivate DcMotor liftMotor;\n\n// Add to initializeHardware()\narmMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\nliftMotor = hardwareMap.get(DcMotor.class, \"liftMotor\");\n\n// Set encoder mode\narmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nliftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n\n// Set target position mode\narmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\nliftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n\n// Set power for position mode\narmMotor.setPower(0.5);\nliftMotor.setPower(0.5);\n\n// Move to specific positions\narmMotor.setTargetPosition(1000);\nliftMotor.setTargetPosition(500);\n\n// Check if motors are busy\nwhile (armMotor.isBusy() || liftMotor.isBusy()) {\n    // Wait for motors to reach target\n    telemetry.addData(\"Arm Position\", armMotor.getCurrentPosition());\n    telemetry.addData(\"Lift Position\", liftMotor.getCurrentPosition());\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Touch Sensors",
+      "content": "Touch sensors provide simple digital feedback when the robot makes contact with objects. They're commonly used for limit switches and detecting when mechanisms reach their limits."
+    },
+    {
+      "type": "code",
+      "title": "Touch Sensor Implementation",
+      "content": "// Add to your hardware declarations\nprivate DigitalChannel armLimitSwitch;\nprivate DigitalChannel liftLimitSwitch;\n\n// Add to initializeHardware()\narmLimitSwitch = hardwareMap.get(DigitalChannel.class, \"armLimitSwitch\");\nliftLimitSwitch = hardwareMap.get(DigitalChannel.class, \"liftLimitSwitch\");\n\n// Set mode (usually INPUT)\narmLimitSwitch.setMode(DigitalChannel.Mode.INPUT);\nliftLimitSwitch.setMode(DigitalChannel.Mode.INPUT);\n\n// Check touch sensor state\nprivate void checkLimitSwitches() {\n    boolean armPressed = armLimitSwitch.getState();\n    boolean liftPressed = liftLimitSwitch.getState();\n    \n    // Stop motors if limit switches are pressed\n    if (armPressed) {\n        armMotor.setPower(0);\n        telemetry.addData(\"Arm Limit\", \"PRESSED\");\n    }\n    \n    if (liftPressed) {\n        liftMotor.setPower(0);\n        telemetry.addData(\"Lift Limit\", \"PRESSED\");\n    }\n    \n    telemetry.addData(\"Arm Limit State\", armPressed);\n    telemetry.addData(\"Lift Limit State\", liftPressed);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Color Sensors",
+      "content": "Color sensors can detect colors and light intensity. They're useful for detecting game elements, following lines, and determining robot position on the field."
+    },
+    {
+      "type": "code",
+      "title": "Color Sensor Usage",
+      "content": "// Add to your hardware declarations\nimport com.qualcomm.robotcore.hardware.ColorSensor;\nimport com.qualcomm.robotcore.hardware.NormalizedColorSensor;\nimport com.qualcomm.robotcore.hardware.NormalizedRGBA;\n\nprivate ColorSensor colorSensor;\nprivate NormalizedColorSensor normalizedColorSensor;\n\n// Add to initializeHardware()\ncolorSensor = hardwareMap.get(ColorSensor.class, \"colorSensor\");\nnormalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, \"colorSensor\");\n\n// Read color values\nprivate void readColorSensor() {\n    // Read raw RGB values\n    int red = colorSensor.red();\n    int green = colorSensor.green();\n    int blue = colorSensor.blue();\n    int alpha = colorSensor.alpha();\n    \n    // Read normalized values (0.0 to 1.0)\n    NormalizedRGBA colors = normalizedColorSensor.getNormalizedColors();\n    \n    // Determine dominant color\n    String dominantColor = \"Unknown\";\n    if (red > green && red > blue) {\n        dominantColor = \"Red\";\n    } else if (green > red && green > blue) {\n        dominantColor = \"Green\";\n    } else if (blue > red && blue > green) {\n        dominantColor = \"Blue\";\n    }\n    \n    // Display values\n    telemetry.addData(\"Red\", red);\n    telemetry.addData(\"Green\", green);\n    telemetry.addData(\"Blue\", blue);\n    telemetry.addData(\"Alpha\", alpha);\n    telemetry.addData(\"Dominant Color\", dominantColor);\n    telemetry.addData(\"Light Detected\", colorSensor.alpha());\n}"
+    },
+    {
+      "type": "text",
+      "title": "Distance Sensors",
+      "content": "Distance sensors measure the distance to objects. They're useful for obstacle detection, wall following, and precise positioning."
+    },
+    {
+      "type": "code",
+      "title": "Distance Sensor Implementation",
+      "content": "// Add to your hardware declarations\nimport com.qualcomm.robotcore.hardware.DistanceSensor;\nimport org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;\n\nprivate DistanceSensor frontDistance;\nprivate DistanceSensor leftDistance;\nprivate DistanceSensor rightDistance;\n\n// Add to initializeHardware()\nfrontDistance = hardwareMap.get(DistanceSensor.class, \"frontDistance\");\nleftDistance = hardwareMap.get(DistanceSensor.class, \"leftDistance\");\nrightDistance = hardwareMap.get(DistanceSensor.class, \"rightDistance\");\n\n// Read distance values\nprivate void readDistanceSensors() {\n    double frontDist = frontDistance.getDistance(DistanceUnit.CM);\n    double leftDist = leftDistance.getDistance(DistanceUnit.CM);\n    double rightDist = rightDistance.getDistance(DistanceUnit.CM);\n    \n    // Obstacle detection\n    if (frontDist < 10.0) {\n        // Stop forward movement\n        telemetry.addData(\"Warning\", \"Obstacle detected ahead!\");\n    }\n    \n    // Wall following logic\n    double targetDistance = 15.0; // Target distance from wall\n    double error = leftDist - targetDistance;\n    double correction = error * 0.1; // Simple proportional control\n    \n    // Apply correction to drive\n    // leftPower += correction;\n    // rightPower -= correction;\n    \n    // Display values\n    telemetry.addData(\"Front Distance (cm)\", frontDist);\n    telemetry.addData(\"Left Distance (cm)\", leftDist);\n    telemetry.addData(\"Right Distance (cm)\", rightDist);\n    telemetry.addData(\"Wall Error\", error);\n    telemetry.addData(\"Correction\", correction);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Gyroscope (IMU)",
+      "content": "The gyroscope (IMU) measures the robot's orientation and rotation. It's essential for autonomous navigation and precise turning."
+    },
+    {
+      "type": "code",
+      "title": "IMU Setup and Usage",
+      "content": "// Add to your hardware declarations\nimport com.qualcomm.hardware.bosch.BNO055IMU;\nimport com.qualcomm.robotcore.hardware.IMU;\nimport org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;\nimport org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;\nimport org.firstinspires.ftc.robotcore.external.navigation.AxesReference;\nimport org.firstinspires.ftc.robotcore.external.navigation.Orientation;\n\nprivate IMU imu;\n\n// Add to initializeHardware()\nimu = hardwareMap.get(IMU.class, \"imu\");\n\n// Configure IMU\nBNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\nparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\nparameters.calibrationDataFile = \"BNO055IMUCalibration.json\";\nparameters.loggingEnabled = true;\nparameters.loggingTag = \"IMU\";\n\nimu.initialize(parameters);\n\n// Read IMU values\nprivate void readIMU() {\n    Orientation angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);\n    \n    double heading = angles.firstAngle;\n    double roll = angles.secondAngle;\n    double pitch = angles.thirdAngle;\n    \n    // Normalize heading to 0-360 degrees\n    if (heading < 0) {\n        heading += 360;\n    }\n    \n    // Display values\n    telemetry.addData(\"Heading\", \"%.1f degrees\", heading);\n    telemetry.addData(\"Roll\", \"%.1f degrees\", roll);\n    telemetry.addData(\"Pitch\", \"%.1f degrees\", pitch);\n}\n\n// Turn to specific angle\nprivate void turnToAngle(double targetAngle) {\n    Orientation angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);\n    double currentAngle = angles.firstAngle;\n    \n    // Normalize angles\n    if (currentAngle < 0) currentAngle += 360;\n    if (targetAngle < 0) targetAngle += 360;\n    \n    double error = targetAngle - currentAngle;\n    \n    // Handle angle wrapping\n    if (error > 180) error -= 360;\n    if (error < -180) error += 360;\n    \n    // Simple proportional control\n    double power = error * 0.01;\n    \n    // Apply to motors\n    leftFront.setPower(power);\n    leftBack.setPower(power);\n    rightFront.setPower(-power);\n    rightBack.setPower(-power);\n    \n    telemetry.addData(\"Target Angle\", targetAngle);\n    telemetry.addData(\"Current Angle\", currentAngle);\n    telemetry.addData(\"Error\", error);\n    telemetry.addData(\"Power\", power);\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Sensor Best Practices",
+      "items": [
+        "<strong>Always initialize sensors properly:</strong> Set correct modes and parameters",
+        "<strong>Use appropriate units:</strong> Be consistent with distance and angle units",
+        "<strong>Handle sensor failures gracefully:</strong> Check for null values and errors",
+        "<strong>Calibrate sensors when needed:</strong> Some sensors require calibration",
+        "<strong>Use multiple sensors for redundancy:</strong> Don't rely on a single sensor",
+        "<strong>Filter sensor data:</strong> Use averaging or smoothing to reduce noise"
+      ],
+      "subtitle": "Follow these best practices when using sensors:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Sensor Integration Practice",
+      "description": "Integrate multiple sensors into your robot program and create autonomous behaviors based on sensor feedback.",
+      "tasks": [
+        "Set up motor encoders and create position-based arm control",
+        "Implement limit switches to prevent mechanism damage",
+        "Use color sensors to detect game elements",
+        "Create wall-following behavior using distance sensors",
+        "Implement precise turning using the IMU",
+        "Combine multiple sensors for complex autonomous behaviors",
+        "Add comprehensive telemetry for all sensor values"
+      ],
+      "code": "// Example: Complete sensor integration\n// Add to your main loop:\n// readAllSensors();\n// handleSensorBasedActions();\n// updateSensorTelemetry();\n\n// Implement these methods:\n// private void readAllSensors() { /* read all sensors */ }\n// private void handleSensorBasedActions() { /* sensor-based logic */ }\n// private void updateSensorTelemetry() { /* display sensor data */ }\n\n// Example: Autonomous line following\n// private void followLine() {\n//     int lightLevel = colorSensor.alpha();\n//     if (lightLevel < 100) {\n//         // On line - go straight\n//         driveStraight(0.3);\n//     } else {\n//         // Off line - turn to find it\n//         turnLeft(0.2);\n//     }\n// }"
+    }
+  ]
+}

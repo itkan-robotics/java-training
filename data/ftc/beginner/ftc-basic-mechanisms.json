@@ -1,0 +1,101 @@
+{
+  "title": "Basic Mechanisms Programming",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Mechanisms",
+      "content": "Mechanisms are the specialized components of your robot that perform specific tasks like grabbing, lifting, or manipulating game elements. Understanding how to program these mechanisms is essential for competitive robotics."
+    },
+    {
+      "type": "rules-box",
+      "title": "Common FTC Mechanisms",
+      "items": [
+        "<strong>Arms:</strong> Extend and retract to reach different heights",
+        "<strong>Claws/Grippers:</strong> Open and close to grab objects",
+        "<strong>Lifts:</strong> Raise and lower mechanisms vertically",
+        "<strong>Intakes:</strong> Collect game elements using spinning wheels",
+        "<strong>Launchers:</strong> Shoot or release game elements",
+        "<strong>Linear Slides:</strong> Extend horizontally for reaching"
+      ],
+      "subtitle": "FTC robots typically include these types of mechanisms:"
+    },
+    {
+      "type": "text",
+      "title": "Servo Control",
+      "content": "Servos are commonly used for mechanisms that need to move to specific positions, like claws, arms, and launchers. They provide precise position control."
+    },
+    {
+      "type": "code",
+      "title": "Basic Servo Control",
+      "content": "// Add to your hardware declarations\nimport com.qualcomm.robotcore.hardware.Servo;\n\nprivate Servo clawServo;\nprivate Servo armServo;\nprivate Servo launcherServo;\n\n// Add to initializeHardware()\nclawServo = hardwareMap.get(Servo.class, \"clawServo\");\narmServo = hardwareMap.get(Servo.class, \"armServo\");\nlauncherServo = hardwareMap.get(Servo.class, \"launcherServo\");\n\n// Set initial positions\nclawServo.setPosition(0.0); // Closed\narmServo.setPosition(0.5);  // Middle position\nlauncherServo.setPosition(0.0); // Ready position\n\n// Basic servo control methods\nprivate void openClaw() {\n    clawServo.setPosition(1.0);\n    telemetry.addData(\"Claw\", \"Open\");\n}\n\nprivate void closeClaw() {\n    clawServo.setPosition(0.0);\n    telemetry.addData(\"Claw\", \"Closed\");\n}\n\nprivate void raiseArm() {\n    armServo.setPosition(1.0);\n    telemetry.addData(\"Arm\", \"Raised\");\n}\n\nprivate void lowerArm() {\n    armServo.setPosition(0.0);\n    telemetry.addData(\"Arm\", \"Lowered\");\n}\n\nprivate void launch() {\n    launcherServo.setPosition(1.0);\n    sleep(500);\n    launcherServo.setPosition(0.0);\n    telemetry.addData(\"Launcher\", \"Fired!\");\n}"
+    },
+    {
+      "type": "text",
+      "title": "Motor-Based Mechanisms",
+      "content": "Motors are used for mechanisms that need continuous motion or precise position control using encoders. Examples include lifts, arms, and intakes."
+    },
+    {
+      "type": "code",
+      "title": "Motor Mechanism Control",
+      "content": "// Add to your hardware declarations\nprivate DcMotor liftMotor;\nprivate DcMotor intakeMotor;\nprivate DcMotor armMotor;\n\n// Add to initializeHardware()\nliftMotor = hardwareMap.get(DcMotor.class, \"liftMotor\");\nintakeMotor = hardwareMap.get(DcMotor.class, \"intakeMotor\");\narmMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\n\n// Set motor directions\nliftMotor.setDirection(DcMotorSimple.Direction.FORWARD);\nintakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);\narmMotor.setDirection(DcMotorSimple.Direction.FORWARD);\n\n// Set motor modes\nliftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\nintakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\narmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n\n// Basic motor control methods\nprivate void raiseLift(double power) {\n    liftMotor.setPower(power);\n    telemetry.addData(\"Lift\", \"Raising\");\n}\n\nprivate void lowerLift(double power) {\n    liftMotor.setPower(-power);\n    telemetry.addData(\"Lift\", \"Lowering\");\n}\n\nprivate void stopLift() {\n    liftMotor.setPower(0);\n    telemetry.addData(\"Lift\", \"Stopped\");\n}\n\nprivate void startIntake() {\n    intakeMotor.setPower(1.0);\n    telemetry.addData(\"Intake\", \"Running\");\n}\n\nprivate void reverseIntake() {\n    intakeMotor.setPower(-1.0);\n    telemetry.addData(\"Intake\", \"Reversed\");\n}\n\nprivate void stopIntake() {\n    intakeMotor.setPower(0);\n    telemetry.addData(\"Intake\", \"Stopped\");\n}\n\nprivate void moveArm(double power) {\n    armMotor.setPower(power);\n    telemetry.addData(\"Arm\", \"Moving\");\n}\n\nprivate void stopArm() {\n    armMotor.setPower(0);\n    telemetry.addData(\"Arm\", \"Stopped\");\n}"
+    },
+    {
+      "type": "text",
+      "title": "Position-Based Mechanisms",
+      "content": "For mechanisms that need to move to specific positions, use motor encoders for precise control. This is especially useful for lifts and arms."
+    },
+    {
+      "type": "code",
+      "title": "Position-Based Control",
+      "content": "// Position-based lift control\nprivate void moveLiftToPosition(int targetPosition, double power) {\n    // Set to run to position mode\n    liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    // Set target position\n    liftMotor.setTargetPosition(targetPosition);\n    \n    // Set power and start moving\n    liftMotor.setPower(power);\n    \n    // Wait until motor reaches target\n    while (liftMotor.isBusy()) {\n        telemetry.addData(\"Lift Position\", liftMotor.getCurrentPosition());\n        telemetry.addData(\"Target Position\", targetPosition);\n        telemetry.update();\n        \n        if (!opModeIsActive()) return;\n    }\n    \n    // Stop motor\n    liftMotor.setPower(0);\n    \n    // Reset to run without encoder mode\n    liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n}\n\n// Preset positions for lift\nprivate void liftToGround() {\n    moveLiftToPosition(0, 0.5);\n}\n\nprivate void liftToLow() {\n    moveLiftToPosition(500, 0.5);\n}\n\nprivate void liftToMedium() {\n    moveLiftToPosition(1000, 0.5);\n}\n\nprivate void liftToHigh() {\n    moveLiftToPosition(1500, 0.5);\n}\n\n// Position-based arm control\nprivate void moveArmToPosition(int targetPosition, double power) {\n    // Set to run to position mode\n    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    // Set target position\n    armMotor.setTargetPosition(targetPosition);\n    \n    // Set power and start moving\n    armMotor.setPower(power);\n    \n    // Wait until motor reaches target\n    while (armMotor.isBusy()) {\n        telemetry.addData(\"Arm Position\", armMotor.getCurrentPosition());\n        telemetry.addData(\"Target Position\", targetPosition);\n        telemetry.update();\n        \n        if (!opModeIsActive()) return;\n    }\n    \n    // Stop motor\n    armMotor.setPower(0);\n    \n    // Reset to run without encoder mode\n    armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n}\n\n// Preset positions for arm\nprivate void armToFront() {\n    moveArmToPosition(0, 0.5);\n}\n\nprivate void armToSide() {\n    moveArmToPosition(500, 0.5);\n}\n\nprivate void armToBack() {\n    moveArmToPosition(1000, 0.5);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Combined Mechanism Control",
+      "content": "Often you need to coordinate multiple mechanisms to perform complex tasks. This requires careful timing and state management."
+    },
+    {
+      "type": "code",
+      "title": "Complex Mechanism Sequences",
+      "content": "// State variables for mechanism control\nprivate boolean clawOpen = false;\nprivate int liftPosition = 0;\nprivate boolean intakeRunning = false;\n\n// Complex mechanism sequences\nprivate void grabAndLift() {\n    // Step 1: Open claw\n    openClaw();\n    sleep(500);\n    \n    // Step 2: Lower lift to ground\n    liftToGround();\n    \n    // Step 3: Close claw to grab\n    closeClaw();\n    sleep(500);\n    \n    // Step 4: Raise lift\n    liftToMedium();\n    \n    telemetry.addData(\"Status\", \"Grab and lift complete\");\n}\n\nprivate void scoreElement() {\n    // Step 1: Raise lift to scoring height\n    liftToHigh();\n    \n    // Step 2: Extend arm\n    armToSide();\n    \n    // Step 3: Open claw to release\n    openClaw();\n    sleep(500);\n    \n    // Step 4: Retract arm\n    armToFront();\n    \n    // Step 5: Lower lift\n    liftToGround();\n    \n    telemetry.addData(\"Status\", \"Scoring complete\");\n}\n\nprivate void intakeSequence() {\n    // Step 1: Start intake\n    startIntake();\n    intakeRunning = true;\n    \n    // Step 2: Lower lift to ground\n    liftToGround();\n    \n    // Step 3: Drive forward slowly (assuming you have drive methods)\n    // driveForward(0.2);\n    // sleep(2000);\n    // stopDriving();\n    \n    // Step 4: Stop intake\n    stopIntake();\n    intakeRunning = false;\n    \n    // Step 5: Raise lift with collected element\n    liftToMedium();\n    \n    telemetry.addData(\"Status\", \"Intake sequence complete\");\n}\n\n// Emergency stop for all mechanisms\nprivate void emergencyStop() {\n    // Stop all motors\n    liftMotor.setPower(0);\n    intakeMotor.setPower(0);\n    armMotor.setPower(0);\n    \n    // Reset motor modes\n    liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    \n    telemetry.addData(\"Status\", \"EMERGENCY STOP\");\n}"
+    },
+    {
+      "type": "text",
+      "title": "Gamepad Integration",
+      "content": "Integrating mechanisms with gamepad controls allows for intuitive operator control during teleop periods."
+    },
+    {
+      "type": "code",
+      "title": "Gamepad Mechanism Control",
+      "content": "private void handleMechanismControls() {\n    // Claw control with triggers\n    if (gamepad2.left_trigger > 0.1) {\n        openClaw();\n    } else if (gamepad2.right_trigger > 0.1) {\n        closeClaw();\n    }\n    \n    // Lift control with left stick\n    double liftPower = -gamepad2.left_stick_y;\n    if (Math.abs(liftPower) > 0.1) {\n        liftMotor.setPower(liftPower * 0.5); // Scale down for precision\n    } else {\n        liftMotor.setPower(0);\n    }\n    \n    // Intake control with buttons\n    if (gamepad2.a) {\n        startIntake();\n    } else if (gamepad2.b) {\n        reverseIntake();\n    } else {\n        stopIntake();\n    }\n    \n    // Arm control with right stick\n    double armPower = -gamepad2.right_stick_y;\n    if (Math.abs(armPower) > 0.1) {\n        armMotor.setPower(armPower * 0.3); // Scale down for precision\n    } else {\n        armMotor.setPower(0);\n    }\n    \n    // Preset positions with D-pad\n    if (gamepad2.dpad_up) {\n        liftToHigh();\n    } else if (gamepad2.dpad_down) {\n        liftToGround();\n    } else if (gamepad2.dpad_left) {\n        liftToLow();\n    } else if (gamepad2.dpad_right) {\n        liftToMedium();\n    }\n    \n    // Emergency stop with both bumpers\n    if (gamepad2.left_bumper && gamepad2.right_bumper) {\n        emergencyStop();\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Mechanism Best Practices",
+      "items": [
+        "<strong>Use appropriate control methods:</strong> Servos for positions, motors for continuous motion",
+        "<strong>Implement safety features:</strong> Limit switches, emergency stops, and position limits",
+        "<strong>Test mechanisms individually:</strong> Ensure each mechanism works before combining them",
+        "<strong>Use meaningful variable names:</strong> Make your code readable and maintainable",
+        "<strong>Add comprehensive telemetry:</strong> Display mechanism states for debugging",
+        "<strong>Plan for failures:</strong> Have backup strategies if mechanisms fail"
+      ],
+      "subtitle": "Follow these best practices when programming mechanisms:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Mechanism Programming Practice",
+      "description": "Create and test various mechanism controls. Start with simple servo and motor control, then progress to complex coordinated sequences.",
+      "tasks": [
+        "Implement basic servo control for a claw or arm",
+        "Create motor-based lift control with position presets",
+        "Add gamepad integration for intuitive operator control",
+        "Implement safety features like limit switches and emergency stops",
+        "Create complex sequences that coordinate multiple mechanisms",
+        "Add comprehensive telemetry for all mechanism states",
+        "Test your mechanisms thoroughly and refine the control parameters"
+      ],
+      "code": "// Example: Complete mechanism control implementation\n// Add to your main loop:\n// handleMechanismControls();\n// updateMechanismTelemetry();\n\n// Implement these methods:\n// private void handleMechanismControls() { /* your mechanism logic */ }\n// private void updateMechanismTelemetry() { /* your telemetry */ }\n\n// Example: Autonomous mechanism sequence\n// private void autonomousMechanismSequence() {\n//     // Grab element\n//     openClaw();\n//     sleep(500);\n//     lowerLift(0.3);\n//     sleep(1000);\n//     closeClaw();\n//     sleep(500);\n//     \n//     // Move to scoring position\n//     raiseLift(0.5);\n//     sleep(1500);\n//     \n//     // Score element\n//     openClaw();\n//     sleep(500);\n// }"
+    }
+  ]
+}

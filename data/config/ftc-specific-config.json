@@ -1,46 +1,97 @@
 {
-  "id": "ftc-specific",
-  "label": "FTC-Specific Training",
-  "intro": { "id": "ftc-intro", "label": "Introduction to FTC", "file": "data/ftc/ftc-intro.json" },
+  "title": "FTC Curriculum",
+  "intro": {
+    "id": "ftc-curriculum-intro",
+    "label": "FTC Curriculum Overview",
+    "file": "data/ftc/ftc-curriculum-intro.json"
+  },
   "groups": [
     {
-      "id": "ftc-basics",
-      "label": "FTC Basics",
+      "id": "ftc-beginner",
+      "label": "Beginner",
       "items": [
-        { "id": "ftc-intro", "label": "Introduction to FTC", "file": "data/ftc/ftc-intro.json" },
-        { "id": "ftc-basic-control", "label": "Basic Robot Control", "file": "data/ftc/ftc-basic-control.json" },
-        { "id": "ftc-advanced-motors", "label": "Advanced Motor Control", "file": "data/ftc/ftc-advanced-motors.json" },
-        { "id": "ftc-sensors", "label": "Sensors & Feedback", "file": "data/ftc/ftc-sensors.json" },
-        { "id": "ftc-game-controllers", "label": "Game Controllers", "file": "data/ftc/ftc-game-controllers.json" }
+        {
+          "id": "ftc-onbot-setup",
+          "label": "OnBot Java Setup",
+          "file": "data/ftc/beginner/ftc-onbot-setup.json"
+        },
+        {
+          "id": "ftc-basic-drivetrain",
+          "label": "Basic Drivetrain",
+          "file": "data/ftc/beginner/ftc-basic-drivetrain.json"
+        },
+        {
+          "id": "ftc-gamepad-control",
+          "label": "Gamepad Control",
+          "file": "data/ftc/beginner/ftc-gamepad-control.json"
+        },
+        {
+          "id": "ftc-basic-sensors",
+          "label": "Basic Sensors",
+          "file": "data/ftc/beginner/ftc-basic-sensors.json"
+        },
+        {
+          "id": "ftc-simple-autonomous",
+          "label": "Simple Autonomous",
+          "file": "data/ftc/beginner/ftc-simple-autonomous.json"
+        },
+        {
+          "id": "ftc-basic-mechanisms",
+          "label": "Basic Mechanisms",
+          "file": "data/ftc/beginner/ftc-basic-mechanisms.json"
+        }
       ]
     },
     {
-      "id": "ftc-autonomous",
-      "label": "Autonomous Programming",
+      "id": "ftc-intermediate",
+      "label": "Intermediate",
       "items": [
-        { "id": "ftc-autonomous-basics", "label": "Autonomous Basics", "file": "data/ftc/ftc-autonomous-basics.json" },
-        { "id": "ftc-advanced-autonomous", "label": "Advanced Autonomous", "file": "data/ftc/ftc-advanced-autonomous.json" },
-        { "id": "ftc-advanced-sensors", "label": "Advanced Sensors", "file": "data/ftc/ftc-advanced-sensors.json" },
-        { "id": "ftc-computer-vision", "label": "Computer Vision", "file": "data/ftc/ftc-computer-vision.json" },
-        { "id": "ftc-vision-autonomous", "label": "Vision-Based Autonomous", "file": "data/ftc/ftc-vision-autonomous.json" }
+        {
+          "id": "ftc-android-studio-intro",
+          "label": "Android Studio Introduction",
+          "file": "data/ftc/intermediate/ftc-android-studio-intro.json"
+        },
+        {
+          "id": "ftc-onbot-vs-android",
+          "label": "OnBot vs Android Studio",
+          "file": "data/ftc/intermediate/ftc-onbot-vs-android.json"
+        },
+        {
+          "id": "ftc-git-version-control",
+          "label": "Git Version Control",
+          "file": "data/ftc/intermediate/ftc-git-version-control.json"
+        },
+        {
+          "id": "ftc-command-based",
+          "label": "Command-Based Programming",
+          "file": "data/ftc/intermediate/ftc-command-based.json"
+        },
+        {
+          "id": "ftc-pedropathing",
+          "label": "PedroPathing",
+          "file": "data/ftc/intermediate/ftc-pedropathing.json"
+        }
       ]
     },
     {
       "id": "ftc-advanced",
-      "label": "Advanced FTC",
+      "label": "Advanced",
       "items": [
-        { "id": "ftc-advanced-teleop", "label": "Advanced Teleop", "file": "data/ftc/ftc-advanced-teleop.json" },
-        { "id": "ftc-mechanisms", "label": "Mechanism Programming", "file": "data/ftc/ftc-mechanisms.json" },
-        { "id": "ftc-optimization", "label": "Code Optimization", "file": "data/ftc/ftc-optimization.json" },
-        { "id": "ftc-advanced-control", "label": "Advanced Control Systems", "file": "data/ftc/ftc-advanced-control.json" }
-      ]
-    },
-    {
-      "id": "ftc-development",
-      "label": "Development Environment",
-      "items": [
-        { "id": "ftc-android-setup", "label": "Android Studio Setup", "file": "data/ftc/ftc-android-setup.json" },
-        { "id": "ftc-sdk-deep-dive", "label": "FTC SDK Deep Dive", "file": "data/ftc/ftc-sdk-deep-dive.json" }
+        {
+          "id": "ftc-advanced-command-based",
+          "label": "Advanced Command-Based Programming",
+          "file": "data/ftc/advanced/ftc-advanced-command-based.json"
+        },
+        {
+          "id": "ftc-advanced-pedropathing",
+          "label": "Advanced PedroPathing",
+          "file": "data/ftc/advanced/ftc-advanced-pedropathing.json"
+        },
+        {
+          "id": "ftc-advanced-computer-vision",
+          "label": "Advanced Computer Vision",
+          "file": "data/ftc/advanced/ftc-advanced-computer-vision.json"
+        }
       ]
     }
   ]

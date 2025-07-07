@@ -1,0 +1,87 @@
+{
+  "title": "OnBot Java Setup and Basic Structure",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to OnBot Java",
+      "content": "OnBot Java is a web-based development environment that allows you to program your FTC robot directly from a web browser. It's perfect for beginners as it provides immediate feedback and doesn't require complex setup."
+    },
+    {
+      "type": "rules-box",
+      "title": "Why OnBot Java?",
+      "items": [
+        "No complex IDE setup required",
+        "Immediate code deployment to robot",
+        "Built-in code validation",
+        "Easy access from any device with a web browser",
+        "Real-time error checking and suggestions"
+      ],
+      "subtitle": "OnBot Java is ideal for beginners because:"
+    },
+    {
+      "type": "text",
+      "title": "Accessing OnBot Java",
+      "content": "To access OnBot Java, you need to connect to your robot's WiFi network. The robot creates a WiFi hotspot that you can connect to from your computer or phone."
+    },
+    {
+      "type": "list",
+      "title": "Setup Steps",
+      "items": [
+        "Power on your robot (Control Hub or Robot Controller)",
+        "Connect to the robot's WiFi network (usually named something like 'TEAM-XXXX-XXXX')",
+        "Open a web browser and navigate to <code>http://192.168.43.1:8080</code>",
+        "You should see the OnBot Java interface"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Basic FTC Robot Structure",
+      "content": "Every FTC robot program follows a specific structure with two main classes: an OpMode class and a Robot class. The OpMode class contains the main logic for autonomous and teleop periods."
+    },
+    {
+      "type": "code",
+      "title": "Basic OpMode Template",
+      "content": "package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.DcMotorSimple;\n\n@TeleOp(name=\"Basic TeleOp\", group=\"Basic\")\npublic class BasicTeleOp extends LinearOpMode {\n    \n    // Declare hardware variables\n    private DcMotor leftFront;\n    private DcMotor rightFront;\n    private DcMotor leftBack;\n    private DcMotor rightBack;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initializeHardware();\n        \n        // Wait for start\n        waitForStart();\n        \n        // Main loop\n        while (opModeIsActive()) {\n            // Your robot logic goes here\n            driveRobot();\n            \n            // Update telemetry\n            updateTelemetry();\n        }\n    }\n    \n    private void initializeHardware() {\n        // Initialize motors\n        leftFront = hardwareMap.get(DcMotor.class, \"leftFront\");\n        rightFront = hardwareMap.get(DcMotor.class, \"rightFront\");\n        leftBack = hardwareMap.get(DcMotor.class, \"leftBack\");\n        rightBack = hardwareMap.get(DcMotor.class, \"rightBack\");\n        \n        // Set motor directions\n        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);\n        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);\n        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);\n        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);\n        \n        // Set motor modes\n        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }\n    \n    private void driveRobot() {\n        // Get gamepad inputs\n        double leftStickY = -gamepad1.left_stick_y;\n        double leftStickX = gamepad1.left_stick_x;\n        double rightStickX = gamepad1.right_stick_x;\n        \n        // Calculate motor powers\n        double leftFrontPower = leftStickY + leftStickX + rightStickX;\n        double rightFrontPower = leftStickY - leftStickX - rightStickX;\n        double leftBackPower = leftStickY - leftStickX + rightStickX;\n        double rightBackPower = leftStickY + leftStickX - rightStickX;\n        \n        // Normalize powers\n        double maxPower = Math.max(Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower)),\n                                  Math.max(Math.abs(leftBackPower), Math.abs(rightBackPower)));\n        if (maxPower > 1.0) {\n            leftFrontPower /= maxPower;\n            rightFrontPower /= maxPower;\n            leftBackPower /= maxPower;\n            rightBackPower /= maxPower;\n        }\n        \n        // Set motor powers\n        leftFront.setPower(leftFrontPower);\n        rightFront.setPower(rightFrontPower);\n        leftBack.setPower(leftBackPower);\n        rightBack.setPower(rightBackPower);\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Left Front Power\", leftFront.getPower());\n        telemetry.addData(\"Right Front Power\", rightFront.getPower());\n        telemetry.addData(\"Left Back Power\", leftBack.getPower());\n        telemetry.addData(\"Right Back Power\", rightBack.getPower());\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Key Components Explained",
+      "content": "Let's break down the essential parts of this template:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<strong>@TeleOp annotation:</strong> Tells the FTC SDK this is a teleop program that appears in the driver station",
+        "<strong>Hardware variables:</strong> Declare your motors, servos, and sensors as class variables",
+        "<strong>runOpMode():</strong> The main method that runs when the program starts",
+        "<strong>initializeHardware():</strong> Sets up all your hardware components",
+        "<strong>driveRobot():</strong> Contains the main robot logic that runs continuously",
+        "<strong>updateTelemetry():</strong> Displays information on the driver station"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Important Notes",
+      "items": [
+        "Always save your code before running it on the robot",
+        "Check the console for error messages if your code doesn't work",
+        "Use meaningful names for your hardware components",
+        "Test your code frequently with small changes"
+      ],
+      "subtitle": "Remember these key points when working with OnBot Java:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise",
+      "description": "Create your first OnBot Java program using the template above. Modify the code to add a simple mechanism control (like a single motor or servo) and test it on your robot.",
+      "tasks": [
+        "Copy the template code into OnBot Java",
+        "Add a single motor or servo to control a simple mechanism",
+        "Modify the driveRobot() method to control this mechanism with gamepad buttons",
+        "Test the program on your robot",
+        "Add telemetry to display the mechanism's status"
+      ],
+      "code": "// Add this to your hardware declarations:\n// private DcMotor armMotor;\n// private Servo clawServo;\n\n// Add this to initializeHardware():\n// armMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\n// clawServo = hardwareMap.get(Servo.class, \"clawServo\");\n\n// Add this to driveRobot():\n// if (gamepad1.a) {\n//     armMotor.setPower(0.5);\n// } else if (gamepad1.b) {\n//     armMotor.setPower(-0.5);\n// } else {\n//     armMotor.setPower(0);\n// }\n\n// if (gamepad1.x) {\n//     clawServo.setPosition(1.0);\n// } else if (gamepad1.y) {\n//     clawServo.setPosition(0.0);\n// }"
+    }
+  ]
+}

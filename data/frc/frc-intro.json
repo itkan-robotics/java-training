@@ -1,31 +1,76 @@
 {
-  "id": "frc-intro",
-  "title": "Introduction to FRC",
+  "title": "FRC Java Programming Curriculum Overview",
   "sections": [
     {
       "type": "text",
-      "title": "Welcome to FRC Programming",
-      "content": "FIRST Robotics Competition (FRC) is the highest level of FIRST robotics, featuring large robots that compete in complex game scenarios. This course will teach you how to program these robots using Java and the WPILib framework."
+      "title": "Welcome to FRC Java Programming",
+      "content": "This comprehensive curriculum is designed for students with a solid Java background who want to learn FRC (FIRST Robotics Competition) robotics programming. The curriculum is structured in three progressive tiers, each building upon the previous level."
+    },
+    {
+      "type": "rules-box",
+      "title": "Curriculum Structure",
+      "subtitle": "Our curriculum follows a progressive learning path designed to take you from basic robot control to advanced autonomous systems.",
+      "items": [
+        "<strong>Beginner Tier:</strong> Focus on WPILib setup, Git/GitHub basics, basic robot structure, drivetrain control, gamepad control, sensors, simple autonomous, and basic mechanisms",
+        "<strong>Intermediate Tier:</strong> Command-based programming, PID control, motion profiling, PathPlanner, and AdvantageKit swerve tuning",
+        "<strong>Advanced Tier:</strong> AdvantageScope, advanced logging, simulation, and advanced topics for competition robotics"
+      ]
     },
     {
       "type": "text",
-      "title": "What is FRC?",
-      "content": "<ul><li><strong>Large Scale:</strong> Robots are 120+ pounds and compete on a 27' x 54' field</li><li><strong>Complex Gameplay:</strong> Each season features a new game with multiple objectives</li><li><strong>Professional Tools:</strong> Uses industrial-grade components and software</li><li><strong>Team Competition:</strong> 3v3 alliance format with strategic gameplay</li><li><strong>Career Preparation:</strong> Skills directly transfer to engineering careers</li></ul>"
+      "title": "Prerequisites",
+      "content": "Before starting this curriculum, you should have:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Solid understanding of Java programming fundamentals",
+        "Basic knowledge of object-oriented programming concepts",
+        "Familiarity with control structures (if/else, loops)",
+        "Understanding of methods and classes",
+        "Basic knowledge of arrays and data structures",
+        "Understanding of Git version control basics"
+      ]
     },
     {
       "type": "text",
-      "title": "Programming in FRC",
-      "content": "FRC robots are programmed using:<br><br><strong>Java:</strong> Primary programming language<br><strong>WPILib:</strong> FIRST's robotics library for Java<br><strong>Command-Based Programming:</strong> Advanced software architecture<br><strong>PID Control:</strong> Precise motion and positioning<br><strong>Vision Processing:</strong> Camera-based autonomous navigation"
+      "title": "Learning Resources",
+      "content": "This curriculum is based on the following authoritative sources:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<a href='https://docs.wpilib.org/' target='_blank'>WPILib Documentation</a> - Official FRC programming framework documentation",
+        "<a href='https://www.firstinspires.org/resource-library/frc/technology-information-and-resources' target='_blank'>FIRST Technology Information</a> - Official FIRST resources and documentation",
+        "<a href='https://github.com/Mechanical-Advantage/AdvantageKit' target='_blank'>AdvantageKit</a> - Advanced FRC programming framework",
+        "<a href='https://pathplanner.dev/' target='_blank'>PathPlanner</a> - Autonomous path planning tool",
+        "<a href='https://github.com/Mechanical-Advantage/AdvantageScope' target='_blank'>AdvantageScope</a> - Data analysis and visualization tool"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Development Environment",
+      "subtitle": "You'll learn to work with the professional FRC development environment:",
+      "items": [
+        "<strong>WPILib:</strong> Official FRC programming framework with comprehensive libraries and tools",
+        "<strong>Git/GitHub:</strong> Version control and collaboration tools essential for team development",
+        "<strong>AdvantageKit:</strong> Advanced framework for complex robot control and data logging",
+        "<strong>PathPlanner:</strong> Visual path planning tool for autonomous routines"
+      ]
     },
     {
       "type": "text",
-      "title": "Course Structure",
-      "content": "This course covers:<br><br><strong>WPILib Introduction:</strong> Understanding the framework<br><strong>Motor Control:</strong> Driving and mechanism control<br><strong>Commands & Subsystems:</strong> Command-based architecture<br><strong>PID Control:</strong> Precise positioning and motion<br><strong>Advanced Features:</strong> Vision, autonomous, and optimization"
+      "title": "Getting Started",
+      "content": "Start with the Beginner Tier if you're new to FRC programming. Each lesson includes hands-on exercises and example code. Make sure to complete the exercises and experiment with the provided code examples."
     },
     {
-      "type": "code",
-      "title": "Basic FRC Robot Program",
-      "content": "public class Robot extends TimedRobot {\n    private Drivetrain drivetrain;\n    private XboxController controller;\n    \n    @Override\n    public void robotInit() {\n        drivetrain = new Drivetrain();\n        controller = new XboxController(0);\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        double leftSpeed = controller.getLeftY();\n        double rightSpeed = controller.getRightY();\n        drivetrain.tankDrive(leftSpeed, rightSpeed);\n    }\n}"
+      "type": "link-grid",
+      "title": "Ready to Begin?",
+      "links": [
+        { "id": "frc-wpilib-setup", "label": "Start with WPILib Setup" },
+        { "id": "frc-git-github-basics", "label": "Git/GitHub Basics" },
+        { "id": "frc-basic-robot-structure", "label": "Basic Robot Structure" }
+      ]
     }
   ]
 } 

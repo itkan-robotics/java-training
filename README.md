@@ -13,6 +13,32 @@ A comprehensive, interactive web-based learning platform for Java programming, r
 - **Search Functionality**: Global search across all content with Ctrl+K shortcut
 - **Exercise System**: Interactive practice problems with show/hide answers
 
+## 🏗 Architecture Overview
+
+The platform uses a modular, class-based architecture with clear separation of concerns:
+
+### Core Architecture Components
+
+```
+Application
+├── AppState (Global State Management)
+├── ConfigManager (Configuration Loading & Caching)
+├── ContentManager (Content Loading & Rendering)
+├── NavigationManager (Navigation & Routing)
+├── ThemeManager (Theme Switching)
+├── SearchManager (Global Search)
+└── EventManager (Event Handling)
+```
+
+### Key Design Principles
+
+1. **Single Responsibility**: Each class has one clear purpose
+2. **Dependency Injection**: Managers are injected where needed
+3. **State Management**: Centralized state in AppState class
+4. **Error Handling**: Comprehensive error handling throughout
+5. **Caching**: Config and content caching for performance
+6. **Modularity**: Easy to extend and maintain
+
 ## 📚 Training Sections
 
 ### 🏠 Home
@@ -28,10 +54,9 @@ A comprehensive, interactive web-based learning platform for Java programming, r
 
 ### 🤖 FTC-Specific Training
 **Complete FTC robotics programming curriculum**
-- **FTC Basics**: Robot control, motors, sensors, game controllers
-- **Autonomous Programming**: Basic and advanced autonomous, vision systems
-- **Advanced FTC**: Teleop features, mechanisms, optimization, control systems
-- **Development Environment**: Android Studio setup, FTC SDK deep dive
+- **Beginner Tier**: OnBot Java setup, basic drivetrain, gamepad control, sensors, simple autonomous, mechanisms
+- **Intermediate Tier**: Android Studio intro, OnBot vs Android Studio, Git & version control, command-based programming, PedroPathing
+- **Advanced Tier**: Advanced command-based programming, advanced PedroPathing, computer vision
 
 ### 🏆 FRC-Specific Training
 **Professional FRC robotics development**
@@ -85,7 +110,8 @@ Then visit: `http://localhost:8000/`
 ## 🛠 Technical Stack
 
 - **Frontend**: Pure HTML5, CSS3, JavaScript (ES6+)
-- **Architecture**: Single-page application with dynamic content loading
+- **Architecture**: Modular class-based architecture with dependency injection
+- **State Management**: Centralized state management with AppState class
 - **Data**: JSON-based content management system with modular configs
 - **Styling**: Custom CSS with CSS Grid and Flexbox
 - **Theme**: Furo documentation theme adaptation
@@ -97,13 +123,13 @@ Then visit: `http://localhost:8000/`
 java-training/
 ├── index.html                          # Main application entry point
 ├── styles.css                          # Main stylesheet with theme system
-├── script.js                           # Core application logic
+├── script.js                           # Core application logic (modular architecture)
 ├── data/                               # Content organization
 │   ├── config/                         # Configuration files
 │   │   ├── config.json                 # Main navigation configuration
 │   │   ├── homepage.json               # Home page content
 │   │   ├── java-training-config.json   # Java section config
-│   │   ├── ftc-specific-config.json    # FTC section config
+│   │   ├── ftc-specific-config.json    # FTC section config (tiers structure)
 │   │   ├── frc-specific-config.json    # FRC section config
 │   │   └── competitive-training-config.json # Competitive section config
 │   ├── java/                           # Java training content
@@ -112,10 +138,18 @@ java-training/
 │   │   ├── java-variables.json         # Variables and data types
 │   │   └── ...                         # Additional Java topics
 │   ├── ftc/                            # FTC training content
-│   │   ├── ftc-intro.json              # FTC introduction
-│   │   ├── ftc-basic-control.json      # Basic robot control
-│   │   ├── ftc-advanced-motors.json    # Advanced motor control
-│   │   └── ...                         # Additional FTC topics
+│   │   ├── beginner/                   # Beginner tier lessons
+│   │   │   ├── ftc-onbot-setup.json
+│   │   │   ├── ftc-basic-drivetrain.json
+│   │   │   └── ...
+│   │   ├── intermediate/               # Intermediate tier lessons
+│   │   │   ├── ftc-android-studio-intro.json
+│   │   │   ├── ftc-command-based.json
+│   │   │   └── ...
+│   │   └── advanced/                   # Advanced tier lessons
+│   │       ├── ftc-advanced-command-based.json
+│   │       ├── ftc-advanced-computer-vision.json
+│   │       └── ...
 │   ├── frc/                            # FRC training content
 │   │   ├── frc-intro.json              # FRC introduction
 │   │   ├── frc-wpilib.json             # WPILib framework
@@ -130,13 +164,56 @@ java-training/
 └── README.md                           # This file
 ```
 
-## 🎨 Content Structure
+## 🏗 Navigation Architecture
 
-### JSON Content Format
-Each content file follows a structured format:
+### Configuration Structure
+
+The platform supports two main navigation structures:
+
+#### 1. Groups Structure (Traditional)
 ```json
 {
-  "id": "unique-identifier",
+  "title": "Section Title",
+  "groups": [
+    {
+      "id": "group-id",
+      "label": "Group Label",
+      "items": [
+        {
+          "id": "item-id",
+          "label": "Item Label",
+          "file": "data/section/item.json"
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### 2. Tiers Structure (FTC Curriculum)
+```json
+{
+  "title": "Section Title",
+  "tiers": [
+    {
+      "id": "tier-id",
+      "title": "Tier Title",
+      "description": "Tier description",
+      "lessons": [
+        "tier/lesson-file.json",
+        "tier/another-lesson.json"
+      ]
+    }
+  ]
+}
+```
+
+### Content File Structure
+
+All content files follow a standardized JSON format:
+
+```json
+{
   "title": "Page Title",
   "sections": [
     {
@@ -148,12 +225,23 @@ Each content file follows a structured format:
       "type": "code",
       "title": "Code Example",
       "content": "public class Example {\n    // Code here\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise",
+      "description": "Exercise description",
+      "tasks": [
+        "Task 1",
+        "Task 2"
+      ],
+      "code": "// Example code"
     }
   ]
 }
 ```
 
 ### Supported Content Types
+
 - `text`: Regular paragraphs with HTML formatting
 - `code`: Syntax-highlighted code blocks
 - `rules-box`: Important rules and guidelines
@@ -164,51 +252,215 @@ Each content file follows a structured format:
 - `logical-operators`: Operator reference tables
 - `link-grid`: Navigation to related topics
 
-## 🎨 Customization
+## 🔧 Development Guidelines
 
 ### Adding New Content
-1. Create a new JSON file in the appropriate section folder (`data/java/`, `data/ftc/`, etc.)
-2. Follow the existing content structure with sections array
-3. Add the new item to the corresponding section config file
-4. Use the naming convention: `[section-prefix]-[topic-name].json`
+
+#### 1. Create Content File
+Create a new JSON file in the appropriate section folder following the content structure above.
+
+#### 2. Update Section Configuration
+Add the new content to the corresponding section config file:
+
+**For Groups Structure:**
+```json
+{
+  "id": "new-item",
+  "label": "New Item Label",
+  "file": "data/section/new-item.json"
+}
+```
+
+**For Tiers Structure:**
+```json
+{
+  "lessons": [
+    "existing-lesson.json",
+    "new-lesson.json"  // Add your new lesson
+  ]
+}
+```
+
+#### 3. Naming Conventions
+- **Files**: `[section-prefix]-[descriptive-name].json`
+- **IDs**: `[section-prefix]-[descriptive-name]`
+- **Labels**: Human-readable, descriptive titles
 
 ### Adding New Sections
-1. Create a new config file in `data/config/`
-2. Add the section to the main `config.json`
-3. Create a content folder in `data/`
-4. Update the frontend to handle the new section
 
-### Theming
-- Modify CSS custom properties in `styles.css`
-- Color scheme defined in `:root` selector
-- Dark mode variants in `[data-theme="dark"]`
-- Theme toggle with sun/moon icons
+#### 1. Create Section Configuration
+Create a new config file in `data/config/`:
 
-## 🔍 Search Functionality
+```json
+{
+  "title": "New Section Title",
+  "groups": [
+    {
+      "id": "main-group",
+      "label": "Main Group",
+      "items": [
+        {
+          "id": "intro",
+          "label": "Introduction",
+          "file": "data/new-section/intro.json"
+        }
+      ]
+    }
+  ]
+}
+```
 
-- **Global Search**: Search across all loaded content
+#### 2. Add to Main Configuration
+Update `data/config/config.json`:
+
+```json
+{
+  "sections": {
+    "new-section": {
+      "id": "new-section",
+      "label": "New Section",
+      "file": "data/config/new-section-config.json"
+    }
+  }
+}
+```
+
+#### 3. Create Content Directory
+Create a folder in `data/` for your section content.
+
+### Extending the Architecture
+
+#### Adding New Content Types
+
+1. **Add Renderer Method** in `ContentManager`:
+```javascript
+renderNewType(container, data) {
+    // Your rendering logic here
+}
+```
+
+2. **Register in renderSection Method**:
+```javascript
+const renderers = {
+    'new-type': this.renderNewType.bind(this),
+    // ... existing renderers
+};
+```
+
+#### Adding New Managers
+
+1. **Create Manager Class**:
+```javascript
+class NewManager {
+    constructor() {
+        // Initialize
+    }
+    
+    // Your methods
+}
+```
+
+2. **Integrate with Application**:
+```javascript
+class Application {
+    constructor() {
+        this.newManager = new NewManager();
+        // ... other managers
+    }
+}
+```
+
+## 🎨 Theming System
+
+### CSS Custom Properties
+The theme system uses CSS custom properties for easy customization:
+
+```css
+:root {
+    --color-background: #ffffff;
+    --color-text: #000000;
+    --color-sidebar-background: #f8f9fa;
+    /* ... more properties */
+}
+
+[data-theme="dark"] {
+    --color-background: #1a1a1a;
+    --color-text: #ffffff;
+    --color-sidebar-background: #2d2d2d;
+    /* ... dark theme overrides */
+}
+```
+
+### Adding New Themes
+1. Add theme variables to `:root`
+2. Create theme variant in `[data-theme="theme-name"]`
+3. Update `ThemeManager` to support the new theme
+
+## 🔍 Search System
+
+### Global Search Features
+- **Real-time Search**: Instant results as you type
+- **Multi-section Search**: Searches across all loaded content
+- **Content Types**: Searches titles, content, and code
 - **Keyboard Shortcut**: Ctrl+K to focus search
-- **Real-time Results**: Instant filtering as you type
-- **Highlighted Matches**: Search terms highlighted in results
-- **Section Organization**: Results grouped by section and topic
+- **Result Highlighting**: Search terms highlighted in results
+
+### Search Implementation
+The search system automatically loads all sections when needed and provides comprehensive results across all content types.
+
+## 🧪 Testing
+
+### Manual Testing Checklist
+- [ ] All sections load correctly
+- [ ] Navigation works on all devices
+- [ ] Search functionality works
+- [ ] Theme switching works
+- [ ] Content renders properly
+- [ ] Error handling works
+- [ ] Performance is acceptable
+
+### Browser Compatibility
+- Chrome (recommended)
+- Firefox
+- Safari
+- Edge
+
+## 🚀 Performance Optimization
+
+### Current Optimizations
+- **Lazy Loading**: Content loaded only when needed
+- **Caching**: Config and content cached in memory
+- **Minimal Dependencies**: Pure vanilla JavaScript
+- **Efficient DOM Updates**: Minimal re-renders
+
+### Further Optimization Ideas
+- **Service Worker**: For offline functionality
+- **Content Preloading**: For frequently accessed content
+- **Image Optimization**: WebP format for images
+- **Code Splitting**: If moving to a build system
 
 ## 🤝 Contributing
 
-This educational resource is designed for robotics teams, programming students, and educators.
+### Development Workflow
+1. **Fork** the repository
+2. **Create** a feature branch
+3. **Follow** the architecture patterns
+4. **Test** thoroughly
+5. **Submit** a pull request
+
+### Code Standards
+- **ES6+**: Use modern JavaScript features
+- **Class-based**: Follow the established architecture
+- **Error Handling**: Always include proper error handling
+- **Documentation**: Comment complex logic
+- **Naming**: Use descriptive, consistent naming
 
 ### Content Guidelines
-- Keep examples relevant to robotics and programming contexts
-- Include practical, real-world scenarios
-- Maintain consistent difficulty progression
-- Add interactive exercises for each major concept
-- Follow the established naming conventions
-
-### Technical Guidelines
-- Follow existing JSON structure for new content
-- Test on multiple devices and browsers
-- Ensure accessibility compliance
-- Keep dependencies minimal (pure vanilla JS)
-- Maintain the modular config structure
+- **Educational Focus**: Keep content educational and practical
+- **Robotics Context**: Include robotics examples where relevant
+- **Progressive Difficulty**: Build from simple to complex
+- **Interactive Elements**: Include exercises and examples
+- **Consistent Format**: Follow established content structure
 
 ## 📄 License
 
@@ -236,3 +488,31 @@ Perfect for:
 - Educators teaching programming with real-world context
 - Self-learners wanting comprehensive programming education
 - Competitive programming enthusiasts building problem-solving skills
+
+## 🔄 Migration Guide
+
+### From Old Architecture
+If migrating from the previous architecture:
+
+1. **Content Files**: No changes needed - same JSON structure
+2. **Configuration**: Update to new config structure if using custom sections
+3. **Custom Code**: Update to use new manager classes
+4. **Event Handlers**: Update to use new navigation system
+
+### Breaking Changes
+- Navigation system completely rewritten
+- State management centralized
+- Error handling improved
+- Performance optimizations added
+
+## 📞 Support
+
+For questions, issues, or contributions:
+1. Check existing issues on GitHub
+2. Create a new issue with detailed description
+3. Follow the contribution guidelines
+4. Test thoroughly before submitting
+
+---
+
+**Built with ❤️ for the robotics and programming education community**

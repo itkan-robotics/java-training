@@ -1,0 +1,125 @@
+{
+  "title": "WPILib Setup and Project Creation",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to WPILib",
+      "content": "WPILib (Washington Protocol Interface Library) is the official programming framework for FRC robots. It provides a comprehensive set of tools, libraries, and templates for robot programming in Java, C++, and Python."
+    },
+    {
+      "type": "rules-box",
+      "title": "What You'll Learn",
+      "items": [
+        "Install WPILib and required tools",
+        "Create a new FRC robot project",
+        "Understand the basic robot code structure",
+        "Deploy code to your robot",
+        "Use the Driver Station and Smart Dashboard"
+      ],
+      "subtitle": "In this lesson, you'll learn how to:"
+    },
+    {
+      "type": "text",
+      "title": "Required Software Installation",
+      "content": "Before you can start programming FRC robots, you need to install several pieces of software. The WPILib installer will handle most of this automatically."
+    },
+    {
+      "type": "code",
+      "title": "Installation Steps",
+      "content": "1. Download WPILib from: https://github.com/wpilibsuite/allwpilib/releases\n2. Run the installer and follow the prompts\n3. Install Visual Studio Code (if not already installed)\n4. Install the WPILib extension for VS Code\n5. Install the FRC Game Tools\n6. Install the FRC Driver Station\n\nNote: The installer will automatically install:\n- Java Development Kit (JDK)\n- Gradle build system\n- WPILib libraries\n- FRC utilities"
+    },
+    {
+      "type": "text",
+      "title": "Creating Your First Robot Project",
+      "content": "Once WPILib is installed, you can create a new robot project using the WPILib project templates. These templates provide a basic structure that you can build upon."
+    },
+    {
+      "type": "code",
+      "title": "Project Creation Steps",
+      "content": "1. Open VS Code\n2. Press Ctrl+Shift+P to open the command palette\n3. Type 'WPILib: Create a new project'\n4. Select your project type:\n   - Timed Robot (simplest)\n   - Command Robot (advanced)\n   - Command Robot (Skeleton)\n5. Choose your language (Java recommended for beginners)\n6. Enter your team number\n7. Choose a project name\n8. Select your project location"
+    },
+    {
+      "type": "text",
+      "title": "Understanding the Robot Code Structure",
+      "content": "A basic FRC robot project contains several key files that control different aspects of your robot's operation."
+    },
+    {
+      "type": "code",
+      "title": "Main Robot Class (TimedRobot)",
+      "content": "public class Robot extends TimedRobot {\n    // Robot initialization\n    @Override\n    public void robotInit() {\n        // Called once when the robot starts\n    }\n    \n    // Autonomous period\n    @Override\n    public void autonomousInit() {\n        // Called once when autonomous starts\n    }\n    \n    @Override\n    public void autonomousPeriodic() {\n        // Called repeatedly during autonomous\n    }\n    \n    // Teleoperated period\n    @Override\n    public void teleopInit() {\n        // Called once when teleop starts\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        // Called repeatedly during teleop\n    }\n    \n    // Test period\n    @Override\n    public void testInit() {\n        // Called once when test starts\n    }\n    \n    @Override\n    public void testPeriodic() {\n        // Called repeatedly during test\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Robot Modes",
+      "content": "FRC robots operate in different modes during a match. Understanding these modes is crucial for proper robot programming."
+    },
+    {
+      "type": "rules-box",
+      "title": "Robot Operation Modes",
+      "items": [
+        "<strong>Autonomous:</strong> Robot operates independently for 15 seconds",
+        "<strong>Teleoperated:</strong> Human drivers control the robot for 2 minutes 15 seconds",
+        "<strong>End Game:</strong> Special period at the end of teleop (varies by game)",
+        "<strong>Test:</strong> Development and testing mode"
+      ],
+      "subtitle": "FRC matches have several distinct periods:"
+    },
+    {
+      "type": "text",
+      "title": "Deploying Code to Your Robot",
+      "content": "Once you've written your robot code, you need to deploy it to the robot's roboRIO controller. This process compiles your code and transfers it to the robot."
+    },
+    {
+      "type": "code",
+      "title": "Deployment Steps",
+      "content": "1. Ensure your robot is powered on and connected to the same network\n2. In VS Code, press Ctrl+Shift+P\n3. Type 'WPILib: Deploy Robot Code'\n4. Wait for the deployment to complete\n5. Check the console for any errors\n\nNote: The first deployment may take longer as it downloads dependencies."
+    },
+    {
+      "type": "text",
+      "title": "Using the Driver Station",
+      "content": "The FRC Driver Station is the software used to control your robot during matches and testing. It connects to your robot and provides gamepad input."
+    },
+    {
+      "type": "code",
+      "title": "Driver Station Setup",
+      "content": "1. Open the FRC Driver Station\n2. Connect to your robot (should auto-detect)\n3. Enable the robot (red button)\n4. Select your control mode (Autonomous/Teleop/Test)\n5. Use gamepads to control your robot\n\nImportant: Always disable the robot before making changes!"
+    },
+    {
+      "type": "text",
+      "title": "Smart Dashboard",
+      "content": "Smart Dashboard is a tool for displaying robot data and creating custom dashboards. It's useful for debugging and monitoring robot performance."
+    },
+    {
+      "type": "code",
+      "title": "Basic Smart Dashboard Usage",
+      "content": "// In your robot code\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\n// Add data to the dashboard\nSmartDashboard.putNumber(\"Left Motor Speed\", leftMotor.get());\nSmartDashboard.putBoolean(\"Robot Enabled\", true);\nSmartDashboard.putString(\"Robot Mode\", \"Teleop\");\n\n// Get data from the dashboard\ndouble targetSpeed = SmartDashboard.getNumber(\"Target Speed\", 0.0);"
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "items": [
+        "<strong>Always test your code:</strong> Use simulation or a test robot before competition",
+        "<strong>Use version control:</strong> Git is essential for team collaboration",
+        "<strong>Document your code:</strong> Comments help others understand your logic",
+        "<strong>Follow naming conventions:</strong> Use clear, descriptive names",
+        "<strong>Test incrementally:</strong> Add features one at a time and test each"
+      ],
+      "subtitle": "Follow these guidelines for successful FRC programming:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Setup Practice",
+      "description": "Complete these tasks to get familiar with the WPILib development environment.",
+      "tasks": [
+        "Install WPILib and all required tools",
+        "Create a new TimedRobot project for your team",
+        "Deploy the default code to your robot (or simulator)",
+        "Connect the Driver Station and enable the robot",
+        "Add a simple Smart Dashboard output to your robot code",
+        "Test the different robot modes (Autonomous, Teleop, Test)",
+        "Create a basic telemetry output showing robot status"
+      ],
+      "code": "// Add this to your robotInit() method:\nSmartDashboard.putString(\"Robot Status\", \"Initialized\");\n\n// Add this to your teleopPeriodic() method:\nSmartDashboard.putNumber(\"Match Time\", DriverStation.getMatchTime());\nSmartDashboard.putBoolean(\"Robot Enabled\", DriverStation.isEnabled());\n\n// Add this to your autonomousPeriodic() method:\nSmartDashboard.putString(\"Mode\", \"Autonomous\");\nSmartDashboard.putNumber(\"Auto Time Remaining\", DriverStation.getMatchTime());"
+    }
+  ]
+}

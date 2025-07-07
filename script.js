@@ -1,493 +1,329 @@
-// Furo-inspired Documentation JavaScript for FRCCodeLab
+/**
+ * FRCCodeLab - Interactive Learning Platform
+ * Core Application Logic
+ * 
+ * Architecture Overview:
+ * - ConfigManager: Handles all configuration loading and management
+ * - NavigationManager: Manages sidebar navigation and URL routing
+ * - ContentManager: Handles content loading and rendering
+ * - ThemeManager: Manages theme switching and persistence
+ * - SearchManager: Handles global search functionality
+ * - EventManager: Centralizes all event handling
+ */
 
-// Global variables
-let config = null;
-let currentSection = 'homepage';
-let currentTab = null;
-let tabData = {};
-let allTabs = []; // Flattened list of all tabs for easy access
+// ============================================================================
+// GLOBAL STATE MANAGEMENT
+// ============================================================================
 
-// Initialize theme immediately
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    let theme = savedTheme || systemTheme;
-
-    // Change the default to light mode
-    if (!savedTheme) {
-        theme = 'light'; 
+class AppState {
+    constructor() {
+        this.config = null;
+        this.currentSection = 'homepage';
+        this.currentTab = null;
+        this.tabData = new Map();
+        this.allTabs = [];
+        this.theme = 'light';
+        this.isInitialized = false;
     }
 
-    document.documentElement.setAttribute('data-theme', theme);
-    const themeIcon = document.querySelector('.theme-icon');
-    const themeButton = document.querySelector('.theme-toggle');
-
-    if (themeIcon) {
-        themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+    setConfig(config) {
+        this.config = config;
     }
-    if (themeButton) {
-        themeButton.style.display = 'block';
+
+    setCurrentSection(section) {
+        this.currentSection = section;
     }
-}
 
-let lastScrollTop = 0;
-const mobileHeader = document.querySelector('.mobile-header');
-
-window.addEventListener('scroll', function() {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-  if (scrollTop < lastScrollTop) {
-    // Scrolling up
-    mobileHeader.classList.remove('visible');
-  } else {
-    // Scrolling down
-    mobileHeader.classList.add('visible');
-  }
-
-  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
-}, false);
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', async function() {
-    initializeTheme();
-    try {
-        await loadConfiguration();
-        flattenTabs();
-        await loadAllTabs();
-        await generateNavigation();
-        showDefaultTab();
-        setupEventListeners();
-    } catch (error) {
-        console.error('Error initializing application:', error);
-        showError('Failed to load application. Please refresh the page.');
+    setCurrentTab(tab) {
+        this.currentTab = tab;
     }
-});
 
-// Load the main configuration file
-async function loadConfiguration() {
-    try {
-        const response = await fetch('data/config/config.json');
-        if (!response.ok) throw new Error('Failed to load configuration');
-        config = await response.json();
-        document.title = config.title;
-    } catch (error) {
-        console.error('Error loading configuration:', error);
-        throw error;
+    addTabData(id, data) {
+        this.tabData.set(id, data);
+    }
+
+    getTabData(id) {
+        return this.tabData.get(id);
+    }
+
+    setAllTabs(tabs) {
+        this.allTabs = tabs;
+    }
+
+    setTheme(theme) {
+        this.theme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
+
+    setInitialized(value) {
+        this.isInitialized = value;
     }
 }
 
-// Flatten hierarchical tabs structure for easier processing
-function flattenTabs() {
-    allTabs = [];
-    
-    // Add homepage
-    if (config.sections.homepage) {
-        allTabs.push(config.sections.homepage);
-    }
-    
-    // Note: Other sections will be loaded dynamically when needed
-    // to avoid loading all content at startup
-}
+// Global app state instance
+const appState = new AppState();
 
-// Load all tab data files
-async function loadAllTabs() {
-    const promises = allTabs.map(async (tab) => {
-        if (tab.file) {
-            try {
-                const response = await fetch(tab.file);
-                if (!response.ok) throw new Error(`Failed to load ${tab.file}`);
-                const data = await response.json();
-                tabData[tab.id] = data;
+// ============================================================================
+// CONFIGURATION MANAGER
+// ============================================================================
+
+class ConfigManager {
+    constructor() {
+        this.configCache = new Map();
+    }
+
+    async loadMainConfig() {
+        try {
+            const response = await fetch('data/config/config.json');
+            if (!response.ok) throw new Error('Failed to load main configuration');
+            
+            const config = await response.json();
+            appState.setConfig(config);
+            return config;
             } catch (error) {
-                console.error(`Error loading tab ${tab.id}:`, error);
+            console.error('Error loading main configuration:', error);
                 throw error;
             }
         }
-    });
-    
-    await Promise.all(promises);
-}
 
-// Load section config and its content
-async function loadSectionConfig(sectionId) {
-    const section = config.sections[sectionId];
-    if (!section || !section.file) return;
+    async loadSectionConfig(sectionId) {
+        // Check cache first
+        if (this.configCache.has(sectionId)) {
+            return this.configCache.get(sectionId);
+        }
+
+        const section = appState.config.sections[sectionId];
+        if (!section || !section.file) {
+            throw new Error(`Section ${sectionId} not found or missing file`);
+        }
     
     try {
-        const response = await fetch(section.file);
+        // Add cache-busting parameter
+        const url = new URL(section.file, window.location.href);
+        url.searchParams.set('v', Date.now());
+        
+        const response = await fetch(url.toString());
         if (!response.ok) throw new Error(`Failed to load section config: ${section.file}`);
+            
         const sectionConfig = await response.json();
-        
-        // Store section config
-        config.sections[sectionId] = { ...section, ...sectionConfig };
-        
-        // Load all content files for this section
-        const contentPromises = [];
-        
-        // Load intro page if it exists
-        if (sectionConfig.intro) {
-            contentPromises.push(
-                fetch(sectionConfig.intro.file)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Failed to load ${sectionConfig.intro.file}`);
-                        return response.json();
-                    })
-                    .then(data => {
-                        tabData[sectionConfig.intro.id] = data;
-                        // Add to allTabs for navigation
-                        allTabs.push({
-                            ...sectionConfig.intro,
-                            sectionId: sectionId,
-                            sectionLabel: sectionConfig.label
-                        });
-                    })
-                    .catch(error => {
-                        console.error(`Error loading ${sectionConfig.intro.id}:`, error);
-                    })
-            );
+            const fullConfig = { ...section, ...sectionConfig };
+            
+            // Cache the config
+            this.configCache.set(sectionId, fullConfig);
+            
+            // Update the main config
+            appState.config.sections[sectionId] = fullConfig;
+            
+            return fullConfig;
+        } catch (error) {
+            console.error(`Error loading section config ${sectionId}:`, error);
+            throw error;
         }
-        
-        if (sectionConfig.groups) {
-            sectionConfig.groups.forEach(group => {
-                group.items.forEach(item => {
-                    contentPromises.push(
-                        fetch(item.file)
-                            .then(response => {
-                                if (!response.ok) throw new Error(`Failed to load ${item.file}`);
-                                return response.json();
-                            })
-                            .then(data => {
-                                tabData[item.id] = data;
-                                // Add to allTabs for navigation
-                                allTabs.push({
-                                    ...item,
-                                    sectionId: sectionId,
-                                    sectionLabel: sectionConfig.label,
-                                    groupId: group.id,
-                                    groupLabel: group.label
-                                });
-                            })
-                            .catch(error => {
-                                console.error(`Error loading ${item.id}:`, error);
-                            })
-                    );
-                });
-            });
-        }
-        
-        await Promise.all(contentPromises);
+    }
+
+    async loadContentFile(filePath) {
+        try {
+            // Add cache-busting parameter
+            const url = new URL(filePath, window.location.href);
+            url.searchParams.set('v', Date.now());
+            
+            const response = await fetch(url.toString());
+            if (!response.ok) throw new Error(`Failed to load content file: ${filePath}`);
+            return await response.json();
     } catch (error) {
-        console.error(`Error loading section ${sectionId}:`, error);
+            console.error(`Error loading content file ${filePath}:`, error);
         throw error;
     }
 }
 
-// Generate dynamic navigation sidebar based on current section
-async function generateNavigation() {
-    const navigationUl = document.getElementById('sidebar-navigation');
-    navigationUl.innerHTML = ''; // Clear existing navigation
-    
-    if (currentSection === 'homepage') {
-        // Show homepage only
-            const li = document.createElement('li');
-        li.className = 'toctree-l1 current-page';
-            
-            const a = document.createElement('a');
-            a.className = 'reference';
-        a.href = '#homepage';
-        a.textContent = 'Home';
-            a.onclick = (e) => {
-                e.preventDefault();
-            window.location.hash = '#homepage';
-            openTab(e, 'homepage');
-            };
-            
-            li.appendChild(a);
-            navigationUl.appendChild(li);
-    } else {
-        // Load section config if not already loaded
-        const section = config.sections[currentSection];
-        if (section && section.file && !section.groups) {
+    getSectionConfig(sectionId) {
+        return appState.config.sections[sectionId];
+    }
+
+    getAllSections() {
+        return Object.keys(appState.config.sections);
+    }
+
+    clearCache() {
+        this.configCache.clear();
+    }
+}
+
+// ============================================================================
+// CONTENT MANAGER
+// ============================================================================
+
+class ContentManager {
+    constructor(configManager = null) {
+        this.configManager = configManager || new ConfigManager();
+    }
+
+    async loadSectionContent(sectionId) {
+        const sectionConfig = await this.configManager.loadSectionConfig(sectionId);
+        const contentPromises = [];
+
+        // Handle standalone content files (like homepage)
+        if (sectionConfig.file && !sectionConfig.groups && !sectionConfig.intro) {
             try {
-                await loadSectionConfig(currentSection);
-            } catch (error) {
-                console.error(`Failed to load section ${currentSection}:`, error);
-                return;
-            }
-        }
-        
-        // Show current section's groups and items
-        const updatedSection = config.sections[currentSection];
-        
-        // Add intro page if it exists
-        if (updatedSection && updatedSection.intro) {
-            const introLi = document.createElement('li');
-            introLi.className = 'toctree-l1 current-page';
-            
-            const introA = document.createElement('a');
-            introA.className = 'reference';
-            introA.href = `#${updatedSection.intro.id}`;
-            introA.textContent = updatedSection.intro.label;
-            introA.onclick = (e) => {
-                e.preventDefault();
-                window.location.hash = `#${updatedSection.intro.id}`;
-                openTab(e, updatedSection.intro.id);
-            };
-            
-            introLi.appendChild(introA);
-            navigationUl.appendChild(introLi);
-        }
-        
-        if (updatedSection && updatedSection.groups) {
-            updatedSection.groups.forEach(group => {
-                // Create group header
-                const groupLi = document.createElement('li');
-                groupLi.className = 'toctree-l1 parent-tab';
-                
-                const groupA = document.createElement('a');
-                groupA.className = 'reference parent-reference';
-                groupA.href = '#';
-                groupA.innerHTML = `
-                    <span class="expand-icon expand-icon-${group.id}">▼</span>
-                    ${group.label}
-                `;
-                groupA.onclick = (e) => {
-                    e.preventDefault();
-                    toggleGroup(group.id);
+                const data = await this.configManager.loadContentFile(sectionConfig.file);
+                const tabInfo = {
+                    ...sectionConfig,
+                    ...data,
+                    sectionId,
+                    sectionLabel: sectionConfig.label,
+                    loaded: true
                 };
                 
-                groupLi.appendChild(groupA);
-                
-                // Create group items container
-                const itemsUl = document.createElement('ul');
-                itemsUl.className = `children-nav expanded`;
-                itemsUl.id = `children-${group.id}`;
-                
-                // Add group items
-                group.items.forEach(item => {
-                    const itemLi = document.createElement('li');
-                    itemLi.className = 'toctree-l2 child-tab';
-                    
-                    const itemA = document.createElement('a');
-                    itemA.className = 'reference child-reference';
-                    itemA.href = `#${item.id}`;
-                    itemA.textContent = item.label;
-                    itemA.onclick = (e) => {
-                e.preventDefault();
-                        window.location.hash = `#${item.id}`;
-                        openTab(e, item.id);
-                    };
-                    
-                    itemLi.appendChild(itemA);
-                    itemsUl.appendChild(itemLi);
-                });
-                
-                groupLi.appendChild(itemsUl);
-                navigationUl.appendChild(groupLi);
-            });
-        }
-    }
-}
-
-// Toggle group expand/collapse
-function toggleGroup(groupId) {
-    const childrenNav = document.getElementById(`children-${groupId}`);
-    const expandIcon = document.querySelector(`.expand-icon-${groupId}`);
-
-    if (childrenNav.classList.contains('expanded')) {
-        childrenNav.classList.remove('expanded');
-        childrenNav.classList.add('collapsed');
-        expandIcon.textContent = '\u25B6\uFE0E';
-    } else {
-        childrenNav.classList.add('expanded');
-        childrenNav.classList.remove('collapsed');
-        expandIcon.textContent = '▼';
-    }
-}
-
-// Show the default tab
-function showDefaultTab() {
-    let defaultTab;
-    const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
-    const urlTabId = window.location.hash ? window.location.hash.substring(1) : null;
-
-    if (urlTabId) {
-        defaultTab = allTabs.find(tab => tab.id === urlTabId);
-        if (defaultTab) {
-            localStorage.removeItem('lastOpenedTab');
-        }
-    } else if (lastOpenedTabId) {
-        defaultTab = allTabs.find(tab => tab.id === lastOpenedTabId);
-    }
-
-    if (!defaultTab) {
-        defaultTab = allTabs.find(tab => tab.default) || allTabs[0];
-    }
-
-    if (defaultTab) {
-        openTab(null, defaultTab.id);
-    }
-}
-
-// Open a specific tab
-async function openTab(event, tabId) {
-    // Store the last opened tab ID
-    localStorage.setItem('lastOpenedTab', tabId);
-
-    // Remove current-page class from all tabs
-    document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
-        li.classList.remove('current-page');
-    });
-    
-    // Remove active class from header navigation
-    document.querySelectorAll('.header-nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    // Find the target tab
-    const targetTab = allTabs.find(tab => tab.id === tabId);
-    if (targetTab) {
-        // Determine the section this tab belongs to
-        let newSection = 'homepage';
-        if (targetTab.sectionId) {
-            newSection = targetTab.sectionId;
-        }
-        
-        // Update current section if needed
-        if (currentSection !== newSection) {
-            currentSection = newSection;
-            await generateNavigation();
-        }
-        
-        // Highlight the navigation element
-        const navLinks = document.querySelectorAll('.child-reference, .reference');
-        navLinks.forEach(link => {
-            if (link.onclick && link.onclick.toString().includes(tabId)) {
-                link.closest('.toctree-l1, .toctree-l2').classList.add('current-page');
-            }
-        });
-        
-        // Update header navigation active state
-        const headerLink = document.querySelector(`.header-nav-link[href="#${newSection}"]`);
-        if (headerLink) {
-            headerLink.classList.add('active');
-        }
-    }
-    
-    // Render tab content
-    const data = tabData[tabId];
-    if (data) {
-    renderTabContent(tabId);
-    currentTab = tabId;
-    } else {
-        // Handle section navigation - show intro page or first item of the section
-        const section = config.sections[tabId];
-        if (section && section.file && !section.groups) {
-            // Load section config first
-            try {
-                await loadSectionConfig(tabId);
-                const updatedSection = config.sections[tabId];
-                if (updatedSection && updatedSection.intro) {
-                    // Show intro page if it exists
-                    openTab(event, updatedSection.intro.id);
-                    return; // Exit early since we're opening the intro tab
-                } else if (updatedSection && updatedSection.groups && updatedSection.groups.length > 0 && updatedSection.groups[0].items.length > 0) {
-                    const firstItem = updatedSection.groups[0].items[0];
-                    openTab(event, firstItem.id);
-                    return; // Exit early since we're opening a child tab
-                }
+                appState.addTabData(sectionId, tabInfo);
+                appState.allTabs.push(tabInfo);
+                return;
             } catch (error) {
-                console.error(`Failed to load section ${tabId}:`, error);
+                console.error(`Error loading standalone content for ${sectionId}:`, error);
+                throw error;
             }
-        } else if (section && section.intro) {
-            // Show intro page if it exists
-            openTab(event, section.intro.id);
-            return; // Exit early since we're opening the intro tab
-        } else if (section && section.groups && section.groups.length > 0 && section.groups[0].items.length > 0) {
-            const firstItem = section.groups[0].items[0];
-            openTab(event, firstItem.id);
-            return; // Exit early since we're opening a child tab
+        }
+
+        // Load intro content if exists
+        if (sectionConfig.intro) {
+            contentPromises.push(this.loadIntroContent(sectionConfig.intro, sectionId, sectionConfig));
+        }
+
+        // Load groups content if exists
+        if (sectionConfig.groups) {
+            contentPromises.push(...this.loadGroupsContent(sectionConfig.groups, sectionId, sectionConfig));
+        }
+
+        await Promise.all(contentPromises);
+    }
+
+    async loadIntroContent(intro, sectionId, sectionConfig) {
+        try {
+            const data = await this.configManager.loadContentFile(intro.file);
+            const tabInfo = {
+                ...intro,
+                ...data,
+                sectionId,
+                sectionLabel: sectionConfig.title || sectionConfig.label,
+                loaded: true
+            };
+            
+            appState.addTabData(intro.id, tabInfo);
+            appState.allTabs.push(tabInfo);
+        } catch (error) {
+            console.error(`Error loading intro content for ${sectionId}:`, error);
         }
     }
-    
-    // Close mobile navigation
-    document.getElementById('__navigation').checked = false;
-}
 
-// Render tab content from JSON data
-function renderTabContent(tabId) {
-    const data = tabData[tabId];
+    loadGroupsContent(groups, sectionId, sectionConfig) {
+        const promises = [];
+        
+        groups.forEach(group => {
+                group.items.forEach(item => {
+                promises.push(this.loadItemContent(item, sectionId, sectionConfig, group));
+            });
+        });
+
+        return promises;
+    }
+
+    async loadItemContent(item, sectionId, sectionConfig, group) {
+        try {
+            const data = await this.configManager.loadContentFile(item.file);
+            const tabInfo = {
+                ...item,
+                ...data,
+                sectionId,
+                sectionLabel: sectionConfig.title || sectionConfig.label,
+                groupId: group.id,
+                groupLabel: group.label,
+                loaded: true
+            };
+            
+            appState.addTabData(item.id, tabInfo);
+            appState.allTabs.push(tabInfo);
+        } catch (error) {
+            console.error(`Error loading item content ${item.id}:`, error);
+        }
+    }
+
+
+
+    async loadSingleContent(tabId) {
+        const tabData = appState.getTabData(tabId);
+        if (!tabData || !tabData.file || tabData.loaded) {
+            return tabData;
+        }
+
+        try {
+            const data = await this.configManager.loadContentFile(tabData.file);
+            const updatedTabData = { ...tabData, ...data, loaded: true, label: data.title };
+            appState.addTabData(tabId, updatedTabData);
+            return updatedTabData;
+            } catch (error) {
+            console.error(`Error loading single content ${tabId}:`, error);
+            throw error;
+        }
+    }
+
+    renderContent(tabId) {
+        const data = appState.getTabData(tabId);
     if (!data) {
         console.error(`No data found for tab: ${tabId}`);
         return;
     }
     
     const container = document.getElementById('tab-container');
+        container.innerHTML = '';
     
     const tabContent = document.createElement('div');
     tabContent.id = tabId;
     tabContent.className = 'tab-content active';
     
     const section = document.createElement('section');
-    section.id = `java-${tabId}`;
+        section.id = `content-${tabId}`;
     
     const title = document.createElement('h1');
-    title.innerHTML = `${data.title}<a class="headerlink" href="#java-${tabId}" title="Link to this heading">¶</a>`;
+        title.innerHTML = `${data.title}<a class="headerlink" href="#content-${tabId}" title="Link to this heading">¶</a>`;
     section.appendChild(title);
     
     const contentSection = document.createElement('div');
     contentSection.className = 'content-section';
     
     // Render each section
+        if (data.sections) {
     data.sections.forEach(sectionData => {
-        renderSection(contentSection, sectionData);
+                this.renderSection(contentSection, sectionData);
     });
+        }
     
     section.appendChild(contentSection);
     tabContent.appendChild(section);
-    
-    // Clear container and add new content
-    container.innerHTML = '';
     container.appendChild(tabContent);
 }
 
-// Render individual sections based on type
-function renderSection(container, sectionData) {
-    switch (sectionData.type) {
-        case 'text':
-            renderTextSection(container, sectionData);
-            break;
-        case 'list':
-            renderListSection(container, sectionData);
-            break;
-        case 'code':
-            renderCodeSection(container, sectionData);
-            break;
-        case 'rules-box':
-            renderRulesBox(container, sectionData);
-            break;
-        case 'exercise-box':
-            renderExerciseBox(container, sectionData);
-            break;
-        case 'data-types-grid':
-            renderDataTypesGrid(container, sectionData);
-            break;
-        case 'logical-operators':
-            renderLogicalOperators(container, sectionData);
-            break;
-        case 'emphasis-box':
-            renderEmphasisBox(container, sectionData);
-            break;
-        case 'link-grid':
-            renderLinkGrid(container, sectionData);
-            break;
-        default:
+    renderSection(container, sectionData) {
+        const renderers = {
+            'text': this.renderTextSection.bind(this),
+            'list': this.renderListSection.bind(this),
+            'code': this.renderCodeSection.bind(this),
+            'rules-box': this.renderRulesBox.bind(this),
+            'exercise-box': this.renderExerciseBox.bind(this),
+            'data-types-grid': this.renderDataTypesGrid.bind(this),
+            'logical-operators': this.renderLogicalOperators.bind(this),
+            'emphasis-box': this.renderRulesBox.bind(this),
+            'link-grid': this.renderLinkGrid.bind(this)
+        };
+
+        const renderer = renderers[sectionData.type];
+        if (renderer) {
+            renderer(container, sectionData);
+        } else {
             console.warn(`Unknown section type: ${sectionData.type}`);
     }
 }
 
-// Render text section
-function renderTextSection(container, data) {
+    renderTextSection(container, data) {
     if (data.title) {
         const h3 = document.createElement('h3');
         h3.textContent = data.title;
@@ -499,8 +335,7 @@ function renderTextSection(container, data) {
     container.appendChild(p);
 }
 
-// Render list section
-function renderListSection(container, data) {
+    renderListSection(container, data) {
     if (data.title) {
         const h3 = document.createElement('h3');
         h3.textContent = data.title;
@@ -516,63 +351,7 @@ function renderListSection(container, data) {
     container.appendChild(ul);
 }
 
-// Render section box
-function renderEmphasisBox(container, data) {
-    const sectionBox = document.createElement('div');
-    sectionBox.className = 'emphasis-box';
-
-    if (data.title) {
-        const h3 = document.createElement('h3');
-        h3.textContent = data.title;
-        sectionBox.appendChild(h3);
-    }
-
-    if (data.content) {
-        const p = document.createElement('p');
-        p.innerHTML = data.content;
-        sectionBox.appendChild(p);
-    }
-
-    if (data.items) {
-        const ul = document.createElement('ul');
-        data.items.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = item;
-            ul.appendChild(li);
-        });
-        sectionBox.appendChild(ul);
-    }
-
-    container.appendChild(sectionBox);
-}
-
-// Render link grid section
-function renderLinkGrid(container, data) {
-    if (data.title) {
-        const h3 = document.createElement('h3');
-        h3.textContent = data.title;
-        container.appendChild(h3);
-    }
-    
-    const linkGrid = document.createElement('div');
-    linkGrid.className = 'link-grid';
-    
-    data.links.forEach(link => {
-        const linkButton = document.createElement('button');
-        linkButton.className = 'link-grid-button';
-        linkButton.textContent = link.label;
-        linkButton.onclick = (e) => {
-            e.preventDefault();
-            openTab(e, link.id);
-        };
-        linkGrid.appendChild(linkButton);
-    });
-    
-    container.appendChild(linkGrid);
-}
-
-// Render code section
-function renderCodeSection(container, data) {
+    renderCodeSection(container, data) {
     if (data.title) {
         const h3 = document.createElement('h3');
         h3.textContent = data.title;
@@ -581,342 +360,469 @@ function renderCodeSection(container, data) {
     
     const codeBlock = document.createElement('div');
     codeBlock.className = 'code-block';
-    
     const pre = document.createElement('pre');
     const code = document.createElement('code');
     code.textContent = data.content;
     pre.appendChild(code);
     codeBlock.appendChild(pre);
-    
     container.appendChild(codeBlock);
 }
 
-// Render rules box
-function renderRulesBox(container, data) {
-    const h3 = document.createElement('h3');
-    h3.textContent = data.title;
-    container.appendChild(h3);
-    
-    const rulesBox = document.createElement('div');
-    rulesBox.className = 'rules-box';
-    
-    if (data.subtitle) {
-        const h4 = document.createElement('h4');
-        h4.textContent = data.subtitle;
-        rulesBox.appendChild(h4);
+    renderRulesBox(container, data) {
+        const rulesBox = document.createElement('div');
+        rulesBox.className = 'rules-box';
+        
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
+            rulesBox.appendChild(h3);
+        }
+        
+        if (data.subtitle) {
+            const h4 = document.createElement('h4');
+            h4.textContent = data.subtitle;
+            h4.style.marginTop = '0.5rem';
+            h4.style.marginBottom = '1rem';
+            h4.style.color = 'var(--color-foreground-secondary)';
+            h4.style.fontWeight = '500';
+            rulesBox.appendChild(h4);
+        }
+        
+        if (data.items && Array.isArray(data.items)) {
+            const itemsList = document.createElement('ul');
+            itemsList.style.margin = '0';
+            itemsList.style.paddingLeft = '1.5rem';
+            
+            data.items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = item;
+                li.style.marginBottom = '0.5rem';
+                li.style.lineHeight = '1.5';
+                itemsList.appendChild(li);
+            });
+            rulesBox.appendChild(itemsList);
+        }
+        
+        if (data.content) {
+            const content = document.createElement('div');
+            content.innerHTML = data.content;
+            content.style.marginTop = '1rem';
+            rulesBox.appendChild(content);
+        }
+        
+        container.appendChild(rulesBox);
     }
-    
-    if (data.content) {
-        const p = document.createElement('p');
-        p.innerHTML = data.content;
-        rulesBox.appendChild(p);
-    }
-    
-    if (data.rules) {
-        const ul = document.createElement('ul');
-        data.rules.forEach(rule => {
-            const li = document.createElement('li');
-            li.innerHTML = rule;
-            ul.appendChild(li);
-        });
-        rulesBox.appendChild(ul);
-    }
-    
-    container.appendChild(rulesBox);
-}
 
-// Render exercise box
-function renderExerciseBox(container, data) {
-    const h3 = document.createElement('h3');
-    h3.textContent = data.title;
-    container.appendChild(h3);
-
+    renderExerciseBox(container, data) {
     const exerciseBox = document.createElement('div');
     exerciseBox.className = 'exercise-box';
 
+    if (data.title) {
+        const h3 = document.createElement('h3');
+        h3.textContent = data.title;
+            exerciseBox.appendChild(h3);
+        }
+        
     if (data.description) {
-    const p = document.createElement('p');
-        p.innerHTML = data.description;
-    exerciseBox.appendChild(p);
+            const desc = document.createElement('p');
+            desc.textContent = data.description;
+            exerciseBox.appendChild(desc);
     }
 
     if (data.tasks) {
-        const ul = document.createElement('ul');
+            const tasksList = document.createElement('ul');
     data.tasks.forEach(task => {
         const li = document.createElement('li');
-            li.innerHTML = task;
-            ul.appendChild(li);
+                li.textContent = task;
+                tasksList.appendChild(li);
         });
-        exerciseBox.appendChild(ul);
+            exerciseBox.appendChild(tasksList);
     }
     
     if (data.code) {
-        const codeBlock = document.createElement('div');
-        codeBlock.className = 'exercise-code';
-        
+            const codeSection = document.createElement('div');
+            codeSection.className = 'exercise-code';
         const pre = document.createElement('pre');
         const code = document.createElement('code');
         code.textContent = data.code;
         pre.appendChild(code);
-        codeBlock.appendChild(pre);
+            codeSection.appendChild(pre);
+            exerciseBox.appendChild(codeSection);
+        }
         
-        exerciseBox.appendChild(codeBlock);
-      }
+        container.appendChild(exerciseBox);
+    }
 
-    if (data.answers) {
-        const answerButton = document.createElement('button');
-        answerButton.className = 'answer-toggle-btn';
-        answerButton.textContent = 'Show Answers';
-        answerButton.onclick = function() {
-            toggleAnswers(this, answerSection);
-        };
-        exerciseBox.appendChild(answerButton);
+    renderDataTypesGrid(container, data) {
+        const grid = document.createElement('div');
+        grid.className = 'data-types-grid';
+        
+        data.types.forEach(type => {
+            const typeBox = document.createElement('div');
+            typeBox.className = 'data-type';
+            
+            const name = document.createElement('h4');
+            name.textContent = type.name;
+            typeBox.appendChild(name);
+            
+            const description = document.createElement('p');
+            description.textContent = type.description;
+            typeBox.appendChild(description);
+            
+            if (type.example) {
+                const example = document.createElement('code');
+                example.textContent = type.example;
+                typeBox.appendChild(example);
+            }
+            
+            grid.appendChild(typeBox);
+        });
+        
+        container.appendChild(grid);
+    }
 
-        const answerSection = document.createElement('div');
-        answerSection.className = 'answer-section hidden';
-
-        const answerTitle = document.createElement('h5');
-        answerTitle.className = 'answer-title';
-        answerTitle.textContent = 'Answers:';
-        answerSection.appendChild(answerTitle);
-
-        data.answers.forEach((answer, index) => {
-            const answerItem = document.createElement('div');
-            answerItem.className = 'answer-item';
-
-            const taskLabel = document.createElement('div');
-            taskLabel.className = 'answer-task-label';
-            taskLabel.textContent = `Task ${index + 1}:`;
-            answerItem.appendChild(taskLabel);
-
-            const answerCode = document.createElement('div');
-            answerCode.className = 'answer-code';
-
+    renderLogicalOperators(container, data) {
+        const logicalOperatorsBox = document.createElement('div');
+        logicalOperatorsBox.className = 'logical-operators-box';
+        
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
+            logicalOperatorsBox.appendChild(h3);
+        }
+        
+        if (data.subtitle) {
+            const h4 = document.createElement('h4');
+            h4.textContent = data.subtitle;
+            logicalOperatorsBox.appendChild(h4);
+        }
+        
+        if (data.operators && Array.isArray(data.operators)) {
+            const operatorsList = document.createElement('ul');
+            data.operators.forEach(operator => {
+                const li = document.createElement('li');
+                li.innerHTML = operator;
+                operatorsList.appendChild(li);
+            });
+            logicalOperatorsBox.appendChild(operatorsList);
+        }
+        
+        if (data.examples) {
+            const examplesDiv = document.createElement('div');
+            examplesDiv.className = 'logical-operators-examples';
+            
+            const examplesTitle = document.createElement('h4');
+            examplesTitle.textContent = 'Examples:';
+            examplesDiv.appendChild(examplesTitle);
+            
+            const codeBlock = document.createElement('div');
+            codeBlock.className = 'code-block';
             const pre = document.createElement('pre');
             const code = document.createElement('code');
-            code.textContent = answer;
+            code.textContent = data.examples;
             pre.appendChild(code);
-            answerCode.appendChild(pre);
-
-            answerItem.appendChild(answerCode);
-            answerSection.appendChild(answerItem);
-        });
-
-        exerciseBox.appendChild(answerSection);
+            codeBlock.appendChild(pre);
+            examplesDiv.appendChild(codeBlock);
+            logicalOperatorsBox.appendChild(examplesDiv);
+        }
+        
+        container.appendChild(logicalOperatorsBox);
     }
 
-    container.appendChild(exerciseBox);
-}
 
-// Toggle answers visibility
-function toggleAnswers(button, answerSection) {
-    if (answerSection.classList.contains('hidden')) {
-        answerSection.classList.remove('hidden');
-        answerSection.classList.add('visible');
-        button.textContent = 'Hide Answers';
-        button.classList.add('active');
-    } else {
-        answerSection.classList.remove('visible');
-        answerSection.classList.add('hidden');
-        button.textContent = 'Show Answers';
-        button.classList.remove('active');
-    }
-}
 
-// Render data types grid
-function renderDataTypesGrid(container, data) {
-    if (data.title) {
-        const h3 = document.createElement('h3');
-        h3.textContent = data.title;
-        container.appendChild(h3);
-    }
-    
-    const grid = document.createElement('div');
-    grid.className = 'data-types-grid';
-    
-    data.types.forEach(type => {
-        const card = document.createElement('div');
-        card.className = 'data-type-card';
+    renderLinkGrid(container, data) {
+        const grid = document.createElement('div');
+        grid.className = 'link-grid';
         
-        const h4 = document.createElement('h4');
-        h4.textContent = type.name;
-        card.appendChild(h4);
-        
-        const code = document.createElement('code');
-        code.textContent = type.keyword;
-        card.appendChild(code);
-        
-        const p = document.createElement('p');
-        p.textContent = type.description;
-        card.appendChild(p);
-        
-        grid.appendChild(card);
+        data.links.forEach(link => {
+            const linkButton = document.createElement('div');
+            linkButton.className = 'link-grid-button';
+            
+            // Handle different link formats
+            if (link.url) {
+                // External link format
+                linkButton.onclick = () => {
+                    if (link.external) {
+                        window.open(link.url, '_blank', 'noopener,noreferrer');
+                    } else {
+                        window.location.href = link.url;
+                    }
+                };
+                linkButton.textContent = link.title || link.label;
+            } else if (link.id) {
+                // Internal navigation format (like homepage)
+                linkButton.onclick = () => {
+                    if (app && app.navigationManager) {
+                        app.navigationManager.navigateToTab(link.id);
+                    }
+                };
+                linkButton.textContent = link.label || link.title;
+            }
+            
+            grid.appendChild(linkButton);
     });
     
     container.appendChild(grid);
-}
-
-// Render logical operators
-function renderLogicalOperators(container, data) {
-    if (data.title) {
-    const h3 = document.createElement('h3');
-    h3.textContent = data.title;
-    container.appendChild(h3);
     }
-    
-    const table = document.createElement('table');
-    table.style.width = '100%';
-    table.style.borderCollapse = 'collapse';
-    table.style.marginTop = '1rem';
-    
-    // Create header
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    data.headers.forEach(header => {
-        const th = document.createElement('th');
-        th.textContent = header;
-        th.style.border = '1px solid var(--color-background-border)';
-        th.style.padding = '0.5rem';
-        th.style.textAlign = 'left';
-        headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-    
-    // Create body
-    const tbody = document.createElement('tbody');
-    data.operators.forEach(op => {
-        const row = document.createElement('tr');
-        
-        const td1 = document.createElement('td');
-        td1.textContent = op.operator;
-        td1.style.border = '1px solid var(--color-background-border)';
-        td1.style.padding = '0.5rem';
-        row.appendChild(td1);
-        
-        const td2 = document.createElement('td');
-        td2.textContent = op.description;
-        td2.style.border = '1px solid var(--color-background-border)';
-        td2.style.padding = '0.5rem';
-        row.appendChild(td2);
-        
-        const td3 = document.createElement('td');
-        td3.textContent = op.example;
-        td3.style.border = '1px solid var(--color-background-border)';
-        td3.style.padding = '0.5rem';
-        row.appendChild(td3);
-        
-        tbody.appendChild(row);
-    });
-    table.appendChild(tbody);
-    
-    container.appendChild(table);
 }
 
-// Setup event listeners
-function setupEventListeners() {
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey || e.metaKey) {
-            switch(e.key) {
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    navigateWithArrows('left');
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    navigateWithArrows('right');
-                    break;
-                case 'k':
-                    e.preventDefault();
-                    focusSearch();
-                    break;
-            }
+// ============================================================================
+// NAVIGATION MANAGER
+// ============================================================================
+
+class NavigationManager {
+    constructor(searchManager = null, contentManager = null) {
+        this.contentManager = contentManager || new ContentManager();
+        this.searchManager = searchManager;
+    }
+
+    async generateNavigation() {
+        const navigationUl = document.getElementById('sidebar-navigation');
+        navigationUl.innerHTML = '';
+
+        if (appState.currentSection === 'homepage') {
+            this.renderHomepageNavigation(navigationUl);
+    } else {
+            await this.renderSectionNavigation(navigationUl);
         }
-    });
-    
-    // Copy code blocks on click
-    document.addEventListener('click', function(e) {
-        if (e.target.tagName === 'CODE' && e.target.closest('.code-block')) {
-            const codeText = e.target.textContent;
-            copyToClipboard(codeText);
-            showNotification('Code copied to clipboard!');
+    }
+
+    renderHomepageNavigation(container) {
+        const li = document.createElement('li');
+        li.className = 'toctree-l1 current-page';
+        const a = document.createElement('a');
+        a.className = 'reference';
+        a.href = '#homepage';
+        a.textContent = 'Home';
+        a.onclick = (e) => {
+            e.preventDefault();
+            this.navigateToTab('homepage');
+        };
+        li.appendChild(a);
+        container.appendChild(li);
+    }
+
+    async renderSectionNavigation(container) {
+        const section = appState.config.sections[appState.currentSection];
+        if (!section) {
+            console.error(`Section ${appState.currentSection} not found in config`);
+            return;
         }
-    });
-    
-    // Global search functionality
-    const searchInput = document.getElementById('header-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            performGlobalSearch(e.target.value).catch(error => {
-                console.error('Search error:', error);
+
+        // Load section content if needed
+        if (!section.groups && !section.tiers && !section.intro) {
+            await this.contentManager.loadSectionContent(appState.currentSection);
+        } else if (section.groups || section.tiers) {
+            await this.contentManager.loadSectionContent(appState.currentSection);
+        }
+
+        const updatedSection = appState.config.sections[appState.currentSection];
+        
+        if (updatedSection.tiers) {
+            this.renderTiersNavigation(container, updatedSection.tiers);
+        } else if (updatedSection.groups) {
+            this.renderGroupsNavigation(container, updatedSection.groups);
+        } else if (updatedSection.intro) {
+            this.renderIntroNavigation(container, updatedSection.intro);
+        }
+    }
+
+
+
+    renderGroupsNavigation(container, groups) {
+        groups.forEach(group => {
+            const groupLi = document.createElement('li');
+            groupLi.className = 'toctree-l1 parent-tab';
+            
+            const groupA = document.createElement('a');
+            groupA.className = 'reference parent-reference';
+            groupA.href = '#';
+            groupA.innerHTML = `
+                <span class="expand-icon expand-icon-${group.id}">▼</span>
+                ${group.label}
+            `;
+            groupA.onclick = (e) => {
+                    e.preventDefault();
+                this.toggleGroup(group.id);
+            };
+            groupLi.appendChild(groupA);
+
+            const itemsUl = document.createElement('ul');
+            itemsUl.className = 'children-nav expanded';
+            itemsUl.id = `children-${group.id}`;
+
+            group.items.forEach(item => {
+                const itemLi = document.createElement('li');
+                itemLi.className = 'toctree-l2 child-tab';
+                const itemA = document.createElement('a');
+                itemA.className = 'reference child-reference';
+                itemA.href = `#${item.id}`;
+                itemA.textContent = item.label;
+                itemA.onclick = (e) => {
+                    e.preventDefault();
+                    this.navigateToTab(item.id);
+                };
+                itemLi.appendChild(itemA);
+                itemsUl.appendChild(itemLi);
             });
+
+            groupLi.appendChild(itemsUl);
+            container.appendChild(groupLi);
+        });
+    }
+
+    renderIntroNavigation(container, intro) {
+        const introLi = document.createElement('li');
+        introLi.className = 'toctree-l1 current-page';
+        const introA = document.createElement('a');
+        introA.className = 'reference';
+        introA.href = `#${intro.id}`;
+        introA.textContent = intro.label;
+        introA.onclick = (e) => {
+                    e.preventDefault();
+            this.navigateToTab(intro.id);
+        };
+        introLi.appendChild(introA);
+        container.appendChild(introLi);
+    }
+
+    toggleGroup(groupId) {
+        const childrenNav = document.getElementById(`children-${groupId}`);
+        const expandIcon = document.querySelector(`.expand-icon-${groupId}`);
+
+        if (childrenNav.classList.contains('expanded')) {
+            childrenNav.classList.remove('expanded');
+            childrenNav.classList.add('collapsed');
+            expandIcon.textContent = '\u25B6\uFE0E';
+        } else {
+            childrenNav.classList.add('expanded');
+            childrenNav.classList.remove('collapsed');
+            expandIcon.textContent = '▼';
+        }
+    }
+
+
+
+    async navigateToTab(tabId) {
+        // Store the last opened tab ID
+        localStorage.setItem('lastOpenedTab', tabId);
+        
+        // Clear current page classes
+        document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
+            li.classList.remove('current-page');
         });
         
-        // Close search results when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.search-container-header') && !e.target.closest('.search-results')) {
-                hideSearchResults();
+        // Clear header navigation active state
+        document.querySelectorAll('.header-nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Find the target tab
+        let targetTab = appState.allTabs.find(tab => tab.id === tabId);
+        
+        // Handle dynamic lesson loading
+        if (!targetTab) {
+            targetTab = appState.getTabData(tabId);
+            if (targetTab && targetTab.file && !targetTab.loaded) {
+                try {
+                    const updatedTabData = await this.contentManager.loadSingleContent(tabId);
+                    targetTab = updatedTabData;
+                    
+                    // Update navigation label
+                    const navLink = document.querySelector(`a[href="#${tabId}"]`);
+                    if (navLink && updatedTabData.title) {
+                        navLink.textContent = updatedTabData.title;
+                    }
+                } catch (error) {
+                    console.error(`Error loading lesson ${tabId}:`, error);
+                    this.showError('Failed to load lesson. Please refresh the page.');
+                    return;
+                }
+            }
+        }
+
+        if (targetTab) {
+            // Determine section
+            let newSection = 'homepage';
+            if (targetTab.sectionId) {
+                newSection = targetTab.sectionId;
+            } else if (appState.currentSection === 'ftc-specific') {
+                newSection = 'ftc-specific';
+            } else if (appState.currentSection === 'frc-specific') {
+                newSection = 'frc-specific';
+            }
+
+            // Update current section if needed
+            if (appState.currentSection !== newSection) {
+                appState.setCurrentSection(newSection);
+                await this.generateNavigation();
+            }
+
+            // Highlight navigation
+            this.highlightNavigation(tabId);
+            
+            // Update header navigation
+            this.updateHeaderNavigation(newSection);
+            
+            // Render content
+            this.contentManager.renderContent(tabId);
+            appState.setCurrentTab(tabId);
+        } else {
+            // Handle section navigation
+            await this.handleSectionNavigation(tabId);
+        }
+
+        // Close mobile navigation
+        document.getElementById('__navigation').checked = false;
+        
+        // Restore search results if there was an active search
+        if (this.searchManager) {
+            this.searchManager.restoreSearchResults();
+        }
+    }
+
+    async handleSectionNavigation(sectionId) {
+        const section = appState.config.sections[sectionId];
+        if (!section || !section.file) return;
+
+        try {
+            await this.contentManager.loadSectionContent(sectionId);
+            const updatedSection = appState.config.sections[sectionId];
+            
+            if (updatedSection.intro) {
+                await this.navigateToTab(updatedSection.intro.id);
+                return;
+            }
+            
+            if (updatedSection.groups && updatedSection.groups.length > 0 && updatedSection.groups[0].items.length > 0) {
+                const firstItem = updatedSection.groups[0].items[0];
+                await this.navigateToTab(firstItem.id);
+                return;
+            }
+        } catch (error) {
+            console.error(`Failed to load section ${sectionId}:`, error);
+            this.showError('Failed to load section.');
+        }
+    }
+
+    highlightNavigation(tabId) {
+        const navLinks = document.querySelectorAll('.child-reference, .reference');
+        navLinks.forEach(link => {
+            if (link.onclick && link.onclick.toString().includes(tabId)) {
+                link.closest('.toctree-l1, .toctree-l2').classList.add('current-page');
             }
         });
     }
-}
 
-// Navigate with arrow keys
-function navigateWithArrows(key) {
-    const currentIndex = allTabs.findIndex(tab => tab.id === currentTab);
-    let newIndex;
-    
-    if (key === 'left') {
-        newIndex = currentIndex > 0 ? currentIndex - 1 : allTabs.length - 1;
-    } else if (key === 'right') {
-        newIndex = currentIndex < allTabs.length - 1 ? currentIndex + 1 : 0;
+    updateHeaderNavigation(sectionId) {
+        const headerLink = document.querySelector(`.header-nav-link[href="#${sectionId}"]`);
+        if (headerLink) {
+            headerLink.classList.add('active');
+        }
     }
-    
-    if (newIndex !== undefined && allTabs[newIndex]) {
-    openTab(null, allTabs[newIndex].id);
-    }
-}
 
-// Copy text to clipboard
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        console.log('Text copied to clipboard');
-    }).catch(err => {
-        console.error('Failed to copy text: ', err);
-    });
-}
-
-// Show notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: var(--color-sidebar-background);
-        color: var(--color-sidebar-link-text);
-        padding: 1rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-in';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 2000);
-}
-
-// Show error message
-function showError(message) {
+    showError(message) {
     const errorDiv = document.createElement('div');
     errorDiv.style.cssText = `
         position: fixed;
@@ -936,183 +842,678 @@ function showError(message) {
     setTimeout(() => {
         document.body.removeChild(errorDiv);
     }, 5000);
-}
-
-// Focus search input
-function focusSearch() {
-    const searchInput = document.getElementById('header-search');
-    if (searchInput) {
-        searchInput.focus();
-        searchInput.select();
     }
 }
 
-// Perform global search across all content
-async function performGlobalSearch(query) {
-    const searchQuery = query.toLowerCase().trim();
-    
-    if (!searchQuery) {
-        hideSearchResults();
-        return;
+// ============================================================================
+// THEME MANAGER
+// ============================================================================
+
+class ThemeManager {
+    constructor() {
+        this.initializeTheme();
     }
-    
-    // Load all sections if not already loaded for comprehensive search
-    const sectionPromises = [];
-    Object.keys(config.sections).forEach(sectionId => {
-        const section = config.sections[sectionId];
-        if (section && section.file && !section.groups) {
-            sectionPromises.push(loadSectionConfig(sectionId));
+
+    initializeTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = savedTheme || 'light'; // Default to light theme
+        
+        appState.setTheme(theme);
+        this.updateThemeIcon(theme);
+    }
+
+    toggleTheme() {
+        const newTheme = appState.theme === 'light' ? 'dark' : 'light';
+        appState.setTheme(newTheme);
+        this.updateThemeIcon(newTheme);
+    }
+
+    updateThemeIcon(theme) {
+        const themeIcon = document.querySelector('.theme-icon');
+        if (themeIcon) {
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
         }
-    });
-    
-    if (sectionPromises.length > 0) {
-        await Promise.all(sectionPromises);
+    }
+}
+
+// ============================================================================
+// SEARCH MANAGER
+// ============================================================================
+
+class SearchManager {
+    constructor(contentManager = null, navigationManager = null) {
+        this.searchResults = [];
+        this.currentSearchQuery = '';
+        this.contentManager = contentManager;
+        this.navigationManager = navigationManager;
+        this.setupSearch();
+    }
+
+    setupSearch() {
+        const searchInput = document.getElementById('header-search');
+        const mobileSearchInput = document.getElementById('mobile-sidebar-search');
+        
+        console.log('Setting up search inputs:', { searchInput: !!searchInput, mobileSearchInput: !!mobileSearchInput });
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                console.log('Header search input:', e.target.value);
+                this.performSearch(e.target.value);
+                // Sync with mobile search
+                if (mobileSearchInput) {
+                    mobileSearchInput.value = e.target.value;
+                }
+            });
+        }
+        
+        if (mobileSearchInput) {
+            mobileSearchInput.addEventListener('input', (e) => {
+                console.log('Mobile search input:', e.target.value);
+                this.performSearch(e.target.value);
+                // Sync with header search
+                if (searchInput) {
+                    searchInput.value = e.target.value;
+                }
+            });
+        }
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container-header') && 
+                !e.target.closest('.mobile-sidebar-search') && 
+                !e.target.closest('.search-results')) {
+                this.hideSearchResults();
+            }
+        });
+    }
+
+    async performSearch(query) {
+        const searchQuery = query.toLowerCase().trim();
+        
+        // Store current search query
+        this.currentSearchQuery = searchQuery;
+        
+        if (!searchQuery) {
+            this.hideSearchResults();
+            this.currentSearchQuery = '';
+            return;
+        }
+        
+        console.log('Starting search for:', searchQuery);
+        
+        // Clear previous results
+        this.searchResults = [];
+        
+        try {
+            // First, search through already loaded content
+            this.searchLoadedContent(searchQuery);
+            
+            // Then load and search all sections
+            await this.loadAndSearchAllSections(searchQuery);
+            
+            console.log(`Search completed. Found ${this.searchResults.length} results.`);
+            this.displaySearchResults();
+        } catch (error) {
+            console.error('Search error:', error);
+            this.hideSearchResults();
+        }
     }
     
-    // Search through all tabs and their content
-    const searchResults = [];
+    searchLoadedContent(query) {
+        // Search through all loaded tabs
+        if (appState.allTabs) {
+            appState.allTabs.forEach(tab => {
+                const tabData = appState.getTabData(tab.id);
+                if (tabData) {
+                    this.searchInContent(tabData, tab, query);
+                }
+            });
+        }
+    }
     
-    allTabs.forEach(tab => {
-        if (tab.file && tabData[tab.id]) {
-            const data = tabData[tab.id];
-            const matches = [];
-            
-            // Search in title
-            if (data.title && data.title.toLowerCase().includes(searchQuery)) {
-                matches.push({
-                    type: 'title',
-                    text: data.title,
-                    section: tab.sectionLabel || 'Unknown',
-                    group: tab.groupLabel || 'Unknown'
-                });
-            }
-            
-            // Search in content sections
-            if (data.sections) {
-                data.sections.forEach((section, sectionIndex) => {
-                    if (section.title && section.title.toLowerCase().includes(searchQuery)) {
-                        matches.push({
-                            type: 'section',
-                            text: section.title,
-                            section: tab.sectionLabel || 'Unknown',
-                            group: tab.groupLabel || 'Unknown',
-                            tabId: tab.id
-                        });
-                    }
+    async loadAndSearchAllSections(query) {
+        const sections = appState.config.sections;
+        if (!sections) {
+            console.log('No sections found in config');
+            return;
+        }
+        
+        console.log('Available sections:', Object.keys(sections));
+        
+        for (const sectionId in sections) {
+            const section = sections[sectionId];
+            if (section && section.file) {
+                try {
+                    console.log(`Loading and searching section: ${sectionId}`);
                     
-                    if (section.content && section.content.toLowerCase().includes(searchQuery)) {
-                        // Extract a snippet around the match
-                        const content = section.content;
-                        const index = content.toLowerCase().indexOf(searchQuery);
-                        const start = Math.max(0, index - 50);
-                        const end = Math.min(content.length, index + searchQuery.length + 50);
-                        const snippet = content.substring(start, end);
-                        
-                        matches.push({
-                            type: 'content',
-                            text: snippet,
-                            section: tab.sectionLabel || 'Unknown',
-                            group: tab.groupLabel || 'Unknown',
-                            tabId: tab.id
-                        });
+                    // Load section content
+                    await this.contentManager.loadSectionContent(sectionId);
+                    
+                    const sectionConfig = appState.getSectionConfig(sectionId);
+                    if (sectionConfig) {
+                        this.searchSectionContent(sectionConfig, sectionId, query);
                     }
-                });
-            }
-            
-            if (matches.length > 0) {
-                searchResults.push({
-                    tab: tab,
-                    matches: matches
-                });
+                } catch (error) {
+                    console.error(`Error searching section ${sectionId}:`, error);
+                }
             }
         }
-    });
-    
-    displaySearchResults(searchResults, searchQuery);
-}
-
-// Display search results
-function displaySearchResults(results, query) {
-    // Remove existing results
-    hideSearchResults();
-    
-    if (results.length === 0) {
-        return;
     }
     
-    const searchContainer = document.querySelector('.search-container-header');
-    const resultsContainer = document.createElement('div');
-    resultsContainer.className = 'search-results';
-    
-    const resultsList = document.createElement('div');
-    resultsList.className = 'search-results-list';
-    
-    results.forEach(result => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'search-result-item';
+    searchSectionContent(sectionConfig, sectionId, query) {
+        // Search through groups
+        if (sectionConfig.groups) {
+            sectionConfig.groups.forEach(group => {
+                if (group.items) {
+                    group.items.forEach(item => {
+                        const tabData = appState.getTabData(item.id);
+                        if (tabData) {
+                            this.searchInContent(tabData, {
+                                id: item.id,
+                                sectionId: sectionId,
+                                sectionLabel: sectionConfig.title || sectionId,
+                                groupId: group.id,
+                                groupLabel: group.label
+                            }, query);
+                        }
+                    });
+                }
+            });
+        }
         
-        const header = document.createElement('div');
-        header.className = 'search-result-header';
-        header.innerHTML = `
-            <span class="search-result-title">${result.tab.label}</span>
-            <span class="search-result-section">${result.tab.sectionLabel || 'Unknown'}</span>
-        `;
+        // Search through intro content
+        if (sectionConfig.intro) {
+            const introData = appState.getTabData(sectionConfig.intro.id);
+            if (introData) {
+                this.searchInContent(introData, {
+                    id: sectionConfig.intro.id,
+                    sectionId: sectionId,
+                    sectionLabel: sectionConfig.title || sectionId,
+                    groupId: 'intro',
+                    groupLabel: 'Introduction'
+                }, query);
+            }
+        }
+    }
+
+    async loadAllSectionsForSearch() {
+        const sectionPromises = [];
+        const sections = appState.config.sections;
         
-        const matchesList = document.createElement('div');
-        matchesList.className = 'search-result-matches';
-        
-        result.matches.forEach(match => {
-            const matchItem = document.createElement('div');
-            matchItem.className = 'search-result-match';
-            matchItem.innerHTML = `
-                <span class="match-type">${match.type}</span>
-                <span class="match-text">${highlightText(match.text, query)}</span>
-            `;
-            matchItem.onclick = () => {
-                openTab(null, result.tab.id);
-                hideSearchResults();
-                document.getElementById('header-search').value = '';
-            };
-            matchesList.appendChild(matchItem);
+        Object.keys(sections).forEach(sectionId => {
+            const section = sections[sectionId];
+            if (section && section.file && section.groups) {
+                sectionPromises.push(this.contentManager.loadSectionContent(sectionId));
+            }
         });
         
-        resultItem.appendChild(header);
-        resultItem.appendChild(matchesList);
-        resultsList.appendChild(resultItem);
-    });
-    
-    resultsContainer.appendChild(resultsList);
-    searchContainer.appendChild(resultsContainer);
-}
+        if (sectionPromises.length > 0) {
+            await Promise.all(sectionPromises);
+        }
+    }
 
-// Hide search results
-function hideSearchResults() {
-    const existingResults = document.querySelector('.search-results');
-    if (existingResults) {
-        existingResults.remove();
+    searchInContent(data, tab, query) {
+        // Search in title
+        if (data.title && data.title.toLowerCase().includes(query)) {
+            this.searchResults.push({
+                type: 'title',
+                text: data.title,
+                section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                group: tab.groupLabel || tab.groupId || 'Unknown',
+                tabId: tab.id
+            });
+        }
+        
+        // Search in content sections
+        if (data.sections) {
+            data.sections.forEach((section, sectionIndex) => {
+                // Search in section title
+                if (section.title && section.title.toLowerCase().includes(query)) {
+                    this.searchResults.push({
+                        type: 'section',
+                        text: section.title,
+                        section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                        group: tab.groupLabel || tab.groupId || 'Unknown',
+                        tabId: tab.id
+                    });
+                }
+                
+                // Search in section content
+                if (section.content && section.content.toLowerCase().includes(query)) {
+                    const content = section.content;
+                    const index = content.toLowerCase().indexOf(query);
+                    const start = Math.max(0, index - 50);
+                    const end = Math.min(content.length, index + query.length + 50);
+                    const snippet = content.substring(start, end);
+                    
+                    this.searchResults.push({
+                        type: 'content',
+                        text: snippet,
+                        section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                        group: tab.groupLabel || tab.groupId || 'Unknown',
+                        tabId: tab.id
+                    });
+                }
+                
+                // Search in section items (for lists)
+                if (section.items && Array.isArray(section.items)) {
+                    section.items.forEach(item => {
+                        if (typeof item === 'string' && item.toLowerCase().includes(query)) {
+                            this.searchResults.push({
+                                type: 'list-item',
+                                text: item,
+                                section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                                group: tab.groupLabel || tab.groupId || 'Unknown',
+                                tabId: tab.id
+                            });
+                        }
+                    });
+                }
+                
+                // Search in code content
+                if (section.type === 'code' && section.content && section.content.toLowerCase().includes(query)) {
+                    const content = section.content;
+                    const index = content.toLowerCase().indexOf(query);
+                    const start = Math.max(0, index - 30);
+                    const end = Math.min(content.length, index + query.length + 30);
+                    const snippet = content.substring(start, end);
+                    
+                    this.searchResults.push({
+                        type: 'code',
+                        text: snippet,
+                        section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                        group: tab.groupLabel || tab.groupId || 'Unknown',
+                        tabId: tab.id
+                    });
+                }
+            });
+        }
+    }
+
+    displaySearchResults() {
+        this.hideSearchResults();
+        
+        if (this.searchResults.length === 0) {
+            console.log('No search results to display');
+            return;
+        }
+        
+        console.log(`Displaying ${this.searchResults.length} search results`);
+        
+        // Try to find the search container - check both header and mobile sidebar
+        let searchContainer = document.querySelector('.search-container-header');
+        let isMobile = false;
+        
+        if (!searchContainer) {
+            searchContainer = document.querySelector('.mobile-sidebar-search');
+            isMobile = true;
+        }
+        
+        if (!searchContainer) {
+            console.error('Search container not found');
+            return;
+        }
+        
+        const searchResultsDiv = document.createElement('div');
+        searchResultsDiv.className = 'search-results';
+        searchResultsDiv.style.cssText = `
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--color-sidebar-background);
+            border: 2px solid var(--color-background-border);
+            border-radius: 0.75rem;
+            max-height: 500px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-top: 0.5rem;
+        `;
+
+        // Add a header showing result count
+        const headerDiv = document.createElement('div');
+        headerDiv.style.cssText = `
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--color-background-border);
+            font-weight: bold;
+            color: var(--color-sidebar-link-text);
+            background-color: var(--color-sidebar-item-background--hover);
+        `;
+        headerDiv.textContent = `Found ${this.searchResults.length} result${this.searchResults.length !== 1 ? 's' : ''}`;
+        searchResultsDiv.appendChild(headerDiv);
+
+        this.searchResults.slice(0, 15).forEach((result, index) => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            resultItem.style.cssText = `
+                padding: 1rem;
+                border-bottom: 1px solid var(--color-background-border);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                position: relative;
+            `;
+            
+            // Truncate long text
+            const displayText = result.text.length > 100 ? 
+                result.text.substring(0, 100) + '...' : 
+                result.text;
+            
+            resultItem.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--color-sidebar-link-text--top-level);">
+                    ${displayText}
+                </div>
+                <div style="font-size: 0.875rem; color: var(--color-sidebar-link-text); margin-bottom: 0.25rem;">
+                    📁 ${result.section} → ${result.group}
+                </div>
+                <div style="font-size: 0.75rem; color: var(--color-sidebar-link-text); opacity: 0.7; text-transform: uppercase;">
+                    ${result.type}
+                </div>
+            `;
+            
+            resultItem.addEventListener('click', () => {
+                console.log('Navigating to:', result.tabId);
+                if (this.navigationManager) {
+                    this.navigationManager.navigateToTab(result.tabId);
+                } else {
+                    console.error('Navigation manager not available');
+                }
+                this.hideSearchResults();
+            });
+            
+            resultItem.addEventListener('mouseenter', () => {
+                resultItem.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
+                resultItem.style.transform = 'translateX(4px)';
+            });
+            
+            resultItem.addEventListener('mouseleave', () => {
+                resultItem.style.backgroundColor = '';
+                resultItem.style.transform = '';
+            });
+            
+            searchResultsDiv.appendChild(resultItem);
+        });
+
+        searchContainer.appendChild(searchResultsDiv);
+        console.log('Search results displayed successfully');
+    }
+
+        hideSearchResults() {
+        const existingResults = document.querySelector('.search-results');
+        if (existingResults) {
+            existingResults.remove();
+        }
+    }
+    
+    restoreSearchResults() {
+        // Restore search results if there's an active search
+        if (this.currentSearchQuery && this.searchResults.length > 0) {
+            // Add a small delay to ensure DOM is ready
+            setTimeout(() => {
+                this.displaySearchResults();
+            }, 100);
+        }
+        
+        // Restore search input values
+        this.restoreSearchInputs();
+    }
+    
+    restoreSearchInputs() {
+        if (this.currentSearchQuery) {
+            const searchInput = document.getElementById('header-search');
+            const mobileSearchInput = document.getElementById('mobile-sidebar-search');
+            
+            if (searchInput) {
+                searchInput.value = this.currentSearchQuery;
+            }
+            if (mobileSearchInput) {
+                mobileSearchInput.value = this.currentSearchQuery;
+            }
+        }
+    }
+    
+    // Test method to verify search is working
+    testSearch() {
+        console.log('Testing search functionality...');
+        console.log('AppState config:', appState.config);
+        console.log('AppState sections:', appState.config?.sections);
+        console.log('ContentManager available:', !!this.contentManager);
+        console.log('NavigationManager available:', !!this.navigationManager);
+        
+        // Test with a simple search
+        this.performSearch('robot');
     }
 }
 
-// Highlight matching text
-function highlightText(text, query) {
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<mark>$1</mark>');
+// ============================================================================
+// EVENT MANAGER
+// ============================================================================
+
+class EventManager {
+    constructor(navigationManager = null, themeManager = null, searchManager = null) {
+        this.navigationManager = navigationManager;
+        this.themeManager = themeManager;
+        this.searchManager = searchManager;
+        this.setupEvents();
+    }
+
+    setupEvents() {
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        this.navigateWithArrows('left');
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        this.navigateWithArrows('right');
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        this.focusSearch();
+                        break;
+                }
+            }
+        });
+        
+        // Copy code blocks on click
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'CODE' && e.target.closest('.code-block')) {
+                const codeText = e.target.textContent;
+                this.copyToClipboard(codeText);
+                this.showNotification('Code copied to clipboard!');
+            }
+        });
+    }
+
+    navigateWithArrows(key) {
+        const currentIndex = appState.allTabs.findIndex(tab => tab.id === appState.currentTab);
+        let newIndex;
+        
+        if (key === 'left') {
+            newIndex = currentIndex > 0 ? currentIndex - 1 : appState.allTabs.length - 1;
+        } else if (key === 'right') {
+            newIndex = currentIndex < appState.allTabs.length - 1 ? currentIndex + 1 : 0;
+        }
+        
+        if (newIndex !== undefined && appState.allTabs[newIndex]) {
+            this.navigationManager.navigateToTab(appState.allTabs[newIndex].id);
+        }
+    }
+
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            console.log('Text copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
+
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--color-sidebar-background);
+            color: var(--color-sidebar-link-text);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-in';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 2000);
+    }
+
+    focusSearch() {
+        const searchInput = document.getElementById('header-search');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    }
 }
 
-// Toggle theme
+// ============================================================================
+// APPLICATION INITIALIZATION
+// ============================================================================
+
+class Application {
+    constructor() {
+        this.configManager = new ConfigManager();
+        this.contentManager = new ContentManager(this.configManager);
+        this.navigationManager = new NavigationManager(null, this.contentManager);
+        this.searchManager = new SearchManager(this.contentManager, this.navigationManager);
+        this.navigationManager.searchManager = this.searchManager; // Set the reference back
+        this.themeManager = new ThemeManager();
+        this.eventManager = new EventManager(this.navigationManager, this.themeManager, this.searchManager);
+    }
+
+    async initialize() {
+        try {
+            // Clear any cached configs to ensure fresh loading
+            this.configManager.clearCache();
+            
+            // Load main configuration
+            await this.configManager.loadMainConfig();
+            
+            // Load homepage content
+            await this.contentManager.loadSectionContent('homepage');
+            
+            // Generate initial navigation
+            await this.navigationManager.generateNavigation();
+            
+            // Show default tab
+            this.showDefaultTab();
+            
+            // Mark as initialized
+            appState.setInitialized(true);
+            
+        } catch (error) {
+            console.error('Error initializing application:', error);
+            this.showError('Failed to load application. Please refresh the page.');
+        }
+
+    }
+
+    showDefaultTab() {
+        let defaultTab;
+        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
+        const urlTabId = window.location.hash ? window.location.hash.substring(1) : null;
+
+        if (urlTabId) {
+            defaultTab = appState.allTabs.find(tab => tab.id === urlTabId);
+            if (defaultTab) {
+                localStorage.removeItem('lastOpenedTab');
+            }
+        } else if (lastOpenedTabId) {
+            defaultTab = appState.allTabs.find(tab => tab.id === lastOpenedTabId);
+        }
+
+        if (!defaultTab) {
+            defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
+        }
+
+        if (defaultTab) {
+            this.navigationManager.navigateToTab(defaultTab.id);
+        }
+    }
+
+    showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f44336;
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            text-align: center;
+        `;
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+            document.body.removeChild(errorDiv);
+        }, 5000);
+    }
+}
+
+// ============================================================================
+// GLOBAL FUNCTIONS FOR HTML INTEGRATION
+// ============================================================================
+
+// Global application instance
+let app;
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', async function() {
+    app = new Application();
+    await app.initialize();
+});
+
+// Global functions for HTML onclick handlers
+function openTab(event, tabId) {
+    if (app && app.navigationManager) {
+        app.navigationManager.navigateToTab(tabId);
+    }
+}
+
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
+    if (app && app.themeManager) {
+        app.themeManager.toggleTheme();
+    }
 }
 
-// Update theme icon
-function updateThemeIcon(theme) {
-    const themeIcon = document.querySelector('.theme-icon');
-    if (themeIcon) {
-        themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+// Mobile header scroll behavior
+let lastScrollTop = 0;
+const mobileHeader = document.querySelector('.mobile-header');
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop < lastScrollTop) {
+        mobileHeader.classList.remove('visible');
+    } else {
+        mobileHeader.classList.add('visible');
     }
-} 
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+}, false); 

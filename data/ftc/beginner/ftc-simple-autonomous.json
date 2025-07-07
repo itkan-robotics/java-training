@@ -1,0 +1,89 @@
+{
+  "title": "Simple Autonomous Programming",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Autonomous",
+      "content": "Autonomous programming allows your robot to perform actions without driver input. In FTC, autonomous periods typically last 30 seconds and are crucial for scoring points at the start of matches."
+    },
+    {
+      "type": "rules-box",
+      "title": "Autonomous vs TeleOp",
+      "items": [
+        "<strong>Autonomous:</strong> Pre-programmed actions, no driver input, time-limited",
+        "<strong>TeleOp:</strong> Driver-controlled, real-time input, full match duration",
+        "<strong>Autonomous:</strong> Requires precise timing and sensor feedback",
+        "<strong>TeleOp:</strong> Focuses on responsive and intuitive controls"
+      ],
+      "subtitle": "Key differences between autonomous and teleop programming:"
+    },
+    {
+      "type": "text",
+      "title": "Basic Autonomous Structure",
+      "content": "Autonomous programs use the @Autonomous annotation and typically follow a linear sequence of actions. They can be simple timing-based or more complex with sensor feedback."
+    },
+    {
+      "type": "code",
+      "title": "Basic Autonomous Template",
+      "content": "package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.Autonomous;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.DcMotorSimple;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\n@Autonomous(name=\"Basic Autonomous\", group=\"Basic\")\npublic class BasicAutonomous extends LinearOpMode {\n    \n    // Hardware declarations\n    private DcMotor leftFront;\n    private DcMotor rightFront;\n    private DcMotor leftBack;\n    private DcMotor rightBack;\n    private DcMotor armMotor;\n    \n    // Timer for autonomous\n    private ElapsedTime runtime = new ElapsedTime();\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        initializeHardware();\n        \n        // Display status\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        // Wait for start\n        waitForStart();\n        runtime.reset();\n        \n        // Autonomous sequence\n        runAutonomousSequence();\n    }\n    \n    private void initializeHardware() {\n        // Initialize motors\n        leftFront = hardwareMap.get(DcMotor.class, \"leftFront\");\n        rightFront = hardwareMap.get(DcMotor.class, \"rightFront\");\n        leftBack = hardwareMap.get(DcMotor.class, \"leftBack\");\n        rightBack = hardwareMap.get(DcMotor.class, \"rightBack\");\n        armMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\n        \n        // Set motor directions\n        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);\n        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);\n        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);\n        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);\n        \n        // Set motor modes\n        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }\n    \n    private void runAutonomousSequence() {\n        // Step 1: Drive forward for 2 seconds\n        telemetry.addData(\"Step 1\", \"Driving forward\");\n        telemetry.update();\n        \n        driveForward(0.5);\n        sleep(2000);\n        stopDriving();\n        \n        // Step 2: Turn right for 1 second\n        telemetry.addData(\"Step 2\", \"Turning right\");\n        telemetry.update();\n        \n        turnRight(0.5);\n        sleep(1000);\n        stopDriving();\n        \n        // Step 3: Raise arm\n        telemetry.addData(\"Step 3\", \"Raising arm\");\n        telemetry.update();\n        \n        armMotor.setPower(0.5);\n        sleep(1500);\n        armMotor.setPower(0);\n        \n        // Step 4: Drive forward again\n        telemetry.addData(\"Step 4\", \"Driving forward again\");\n        telemetry.update();\n        \n        driveForward(0.3);\n        sleep(1000);\n        stopDriving();\n        \n        telemetry.addData(\"Status\", \"Autonomous complete\");\n        telemetry.update();\n    }\n    \n    // Basic movement methods\n    private void driveForward(double power) {\n        leftFront.setPower(power);\n        rightFront.setPower(power);\n        leftBack.setPower(power);\n        rightBack.setPower(power);\n    }\n    \n    private void driveBackward(double power) {\n        leftFront.setPower(-power);\n        rightFront.setPower(-power);\n        leftBack.setPower(-power);\n        rightBack.setPower(-power);\n    }\n    \n    private void turnLeft(double power) {\n        leftFront.setPower(-power);\n        rightFront.setPower(power);\n        leftBack.setPower(-power);\n        rightBack.setPower(power);\n    }\n    \n    private void turnRight(double power) {\n        leftFront.setPower(power);\n        rightFront.setPower(-power);\n        leftBack.setPower(power);\n        rightBack.setPower(-power);\n    }\n    \n    private void stopDriving() {\n        leftFront.setPower(0);\n        rightFront.setPower(0);\n        leftBack.setPower(0);\n        rightBack.setPower(0);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Timing-Based Autonomous",
+      "content": "Timing-based autonomous uses sleep() commands to control the duration of actions. This is the simplest approach but requires careful calibration."
+    },
+    {
+      "type": "code",
+      "title": "Timing-Based Example",
+      "content": "private void timingBasedAutonomous() {\n    // Drive forward for 3 seconds\n    driveForward(0.5);\n    sleep(3000);\n    stopDriving();\n    \n    // Turn 90 degrees (approximately 1.5 seconds)\n    turnRight(0.4);\n    sleep(1500);\n    stopDriving();\n    \n    // Drive forward for 2 seconds\n    driveForward(0.5);\n    sleep(2000);\n    stopDriving();\n    \n    // Lower arm for 1 second\n    armMotor.setPower(-0.3);\n    sleep(1000);\n    armMotor.setPower(0);\n    \n    // Wait a moment\n    sleep(500);\n    \n    // Raise arm for 1 second\n    armMotor.setPower(0.3);\n    sleep(1000);\n    armMotor.setPower(0);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Encoder-Based Autonomous",
+      "content": "Encoder-based autonomous uses motor encoders for precise distance control. This is more reliable than timing-based approaches."
+    },
+    {
+      "type": "code",
+      "title": "Encoder-Based Movement",
+      "content": "private void encoderBasedAutonomous() {\n    // Reset encoders\n    leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    \n    // Set target positions (example: 1000 encoder ticks = ~1 foot)\n    int targetPosition = 1000;\n    \n    leftFront.setTargetPosition(targetPosition);\n    rightFront.setTargetPosition(targetPosition);\n    leftBack.setTargetPosition(targetPosition);\n    rightBack.setTargetPosition(targetPosition);\n    \n    // Set to run to position mode\n    leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    // Set power and start moving\n    double power = 0.5;\n    leftFront.setPower(power);\n    rightFront.setPower(power);\n    leftBack.setPower(power);\n    rightBack.setPower(power);\n    \n    // Wait until motors reach target\n    while (leftFront.isBusy() && rightFront.isBusy() && \n           leftBack.isBusy() && rightBack.isBusy()) {\n        telemetry.addData(\"Left Front Position\", leftFront.getCurrentPosition());\n        telemetry.addData(\"Right Front Position\", rightFront.getCurrentPosition());\n        telemetry.addData(\"Target Position\", targetPosition);\n        telemetry.update();\n    }\n    \n    // Stop motors\n    stopDriving();\n    \n    // Reset to run without encoder mode\n    leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n}\n\n// Helper method for precise turning\nprivate void turnDegrees(double degrees, double power) {\n    // Calculate encoder ticks for turn (depends on robot geometry)\n    // This is an approximation - you'll need to calibrate for your robot\n    double ticksPerDegree = 20.0; // Adjust this value based on your robot\n    int targetTicks = (int)(degrees * ticksPerDegree);\n    \n    // Reset encoders\n    leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    \n    // Set target positions (left motors go backward, right motors go forward)\n    leftFront.setTargetPosition(-targetTicks);\n    rightFront.setTargetPosition(targetTicks);\n    leftBack.setTargetPosition(-targetTicks);\n    rightBack.setTargetPosition(targetTicks);\n    \n    // Set to run to position mode\n    leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    // Set power and start turning\n    leftFront.setPower(-power);\n    rightFront.setPower(power);\n    leftBack.setPower(-power);\n    rightBack.setPower(power);\n    \n    // Wait until motors reach target\n    while (leftFront.isBusy() && rightFront.isBusy() && \n           leftBack.isBusy() && rightBack.isBusy()) {\n        telemetry.addData(\"Turning\", \"%.1f degrees\", degrees);\n        telemetry.update();\n    }\n    \n    // Stop motors\n    stopDriving();\n    \n    // Reset to run without encoder mode\n    leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Sensor-Based Autonomous",
+      "content": "Sensor-based autonomous uses feedback from sensors to make decisions. This is the most advanced approach and provides the most reliable autonomous behavior."
+    },
+    {
+      "type": "code",
+      "title": "Sensor-Based Example",
+      "content": "// Add to your hardware declarations\nprivate ColorSensor colorSensor;\nprivate DistanceSensor distanceSensor;\n\n// Add to initializeHardware()\ncolorSensor = hardwareMap.get(ColorSensor.class, \"colorSensor\");\ndistanceSensor = hardwareMap.get(DistanceSensor.class, \"distanceSensor\");\n\nprivate void sensorBasedAutonomous() {\n    // Drive forward until we detect a line\n    driveForward(0.3);\n    \n    while (colorSensor.alpha() > 100) { // While not on line\n        telemetry.addData(\"Light Level\", colorSensor.alpha());\n        telemetry.update();\n        \n        if (!opModeIsActive()) return; // Check if autonomous is still running\n    }\n    \n    stopDriving();\n    telemetry.addData(\"Status\", \"Line detected!\");\n    telemetry.update();\n    \n    // Turn right until we're facing the right direction\n    turnRight(0.3);\n    \n    while (distanceSensor.getDistance(DistanceUnit.CM) > 20) { // While too far from wall\n        telemetry.addData(\"Distance\", distanceSensor.getDistance(DistanceUnit.CM));\n        telemetry.update();\n        \n        if (!opModeIsActive()) return;\n    }\n    \n    stopDriving();\n    telemetry.addData(\"Status\", \"Wall detected!\");\n    telemetry.update();\n    \n    // Perform final action\n    armMotor.setPower(0.5);\n    sleep(1000);\n    armMotor.setPower(0);\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Autonomous Best Practices",
+      "items": [
+        "<strong>Start simple:</strong> Begin with timing-based autonomous and add complexity gradually",
+        "<strong>Test frequently:</strong> Test each step individually before combining them",
+        "<strong>Use telemetry:</strong> Display status and sensor values for debugging",
+        "<strong>Handle errors gracefully:</strong> Check opModeIsActive() in loops",
+        "<strong>Calibrate carefully:</strong> Measure and adjust timing/encoder values",
+        "<strong>Plan for contingencies:</strong> Have backup strategies for sensor failures"
+      ],
+      "subtitle": "Follow these best practices for autonomous programming:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Autonomous Practice",
+      "description": "Create and test different types of autonomous programs. Start with simple timing-based movements and progress to more complex sensor-based behaviors.",
+      "tasks": [
+        "Create a basic timing-based autonomous that drives forward, turns, and drives again",
+        "Implement encoder-based movement for precise distance control",
+        "Add sensor feedback to your autonomous (color sensor, distance sensor)",
+        "Create an autonomous that can detect and respond to game elements",
+        "Implement a line-following autonomous using color sensors",
+        "Add mechanism control to your autonomous (arm, claw, etc.)",
+        "Test your autonomous multiple times and refine the timing/values"
+      ],
+      "code": "// Example: Complete autonomous program structure\n// @Autonomous(name=\"My Autonomous\", group=\"Practice\")\n// public class MyAutonomous extends LinearOpMode {\n//     \n//     @Override\n//     public void runOpMode() {\n//         initializeHardware();\n//         waitForStart();\n//         \n//         // Your autonomous sequence here\n//         step1();\n//         step2();\n//         step3();\n//     }\n//     \n//     private void step1() {\n//         // Drive forward\n//         driveForward(0.5);\n//         sleep(2000);\n//         stopDriving();\n//     }\n//     \n//     private void step2() {\n//         // Turn\n//         turnRight(0.4);\n//         sleep(1000);\n//         stopDriving();\n//     }\n//     \n//     private void step3() {\n//         // Mechanism action\n//         armMotor.setPower(0.5);\n//         sleep(1000);\n//         armMotor.setPower(0);\n//     }\n// }"
+    }
+  ]
+}

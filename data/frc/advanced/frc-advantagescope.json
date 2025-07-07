@@ -1,0 +1,148 @@
+{
+  "title": "AdvantageScope and Advanced Data Logging",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to AdvantageScope",
+      "content": "AdvantageScope is a powerful data logging and analysis tool for FRC robots. It allows you to record, visualize, and analyze robot data in real-time and after matches, providing insights into robot performance and helping with debugging and optimization."
+    },
+    {
+      "type": "rules-box",
+      "title": "What is AdvantageScope?",
+      "items": [
+        "<strong>Real-time Data Logging:</strong> Record all robot data during operation",
+        "<strong>Data Visualization:</strong> View data in graphs, charts, and 3D visualizations",
+        "<strong>Match Analysis:</strong> Analyze performance after matches",
+        "<strong>Network Tables Integration:</strong> Seamless integration with WPILib NetworkTables",
+        "<strong>Custom Dashboards:</strong> Create custom views for specific data",
+        "<strong>Data Export:</strong> Export data for further analysis"
+      ],
+      "subtitle": "AdvantageScope provides:"
+    },
+    {
+      "type": "text",
+      "title": "Setting Up AdvantageScope",
+      "content": "AdvantageScope requires setup on both the robot and the driver station computer."
+    },
+    {
+      "type": "list",
+      "title": "Setup Steps",
+      "items": [
+        "Download AdvantageScope from <a href='https://github.com/Mechanical-Advantage/AdvantageScope' target='_blank'>GitHub</a>",
+        "Install AdvantageScope on the driver station computer",
+        "Configure logging in your robot code",
+        "Set up NetworkTables for data transmission",
+        "Configure logging parameters and data sources"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Basic AdvantageScope Logging Setup",
+      "content": "import com.mechanicaladvantage.AdvantageScope;\nimport com.mechanicaladvantage.AdvantageScopeLogger;\nimport edu.wpi.first.networktables.NetworkTableInstance;\nimport edu.wpi.first.wpilibj.DataLogManager;\nimport edu.wpi.first.wpilibj.DriverStation;\nimport edu.wpi.first.wpilibj.TimedRobot;\n\npublic class Robot extends TimedRobot {\n  private AdvantageScopeLogger m_logger;\n  \n  @Override\n  public void robotInit() {\n    // Start data logging\n    DataLogManager.start();\n    \n    // Record metadata\n    DataLogManager.logNetworkTables(false);\n    DriverStation.startDataLog(DataLogManager.getLog());\n    \n    // Initialize AdvantageScope logger\n    m_logger = new AdvantageScopeLogger();\n    \n    // Configure logging parameters\n    m_logger.setLoggingEnabled(true);\n    m_logger.setLoggingPeriod(0.02); // 50Hz logging\n  }\n  \n  @Override\n  public void robotPeriodic() {\n    // Log data every robot packet\n    m_logger.log(\"Robot/Time\", Timer.getFPGATimestamp());\n    m_logger.log(\"Robot/Enabled\", DriverStation.isEnabled());\n    m_logger.log(\"Robot/Autonomous\", DriverStation.isAutonomous());\n    m_logger.log(\"Robot/Teleop\", DriverStation.isTeleop());\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Logging Robot Data",
+      "content": "AdvantageScope can log various types of robot data, including sensor readings, motor states, and custom variables."
+    },
+    {
+      "type": "code",
+      "title": "Comprehensive Data Logging",
+      "content": "public class ComprehensiveLoggingSubsystem extends SubsystemBase {\n  private final AdvantageScopeLogger m_logger;\n  \n  // Hardware\n  private final PWMSparkMax m_leftDrive = new PWMSparkMax(0);\n  private final PWMSparkMax m_rightDrive = new PWMSparkMax(1);\n  private final Encoder m_leftEncoder = new Encoder(0, 1);\n  private final Encoder m_rightEncoder = new Encoder(2, 3);\n  private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();\n  private final PWMSparkMax m_armMotor = new PWMSparkMax(2);\n  private final Encoder m_armEncoder = new Encoder(4, 5);\n  \n  // Control variables\n  private double m_targetArmPosition = 0.0;\n  private double m_driveSpeed = 0.0;\n  private double m_turnSpeed = 0.0;\n  \n  public ComprehensiveLoggingSubsystem() {\n    m_logger = new AdvantageScopeLogger();\n    \n    // Configure hardware\n    m_rightDrive.setInverted(true);\n    m_leftEncoder.setDistancePerPulse(1.0 / 2048.0);\n    m_rightEncoder.setDistancePerPulse(1.0 / 2048.0);\n  }\n  \n  public void setDriveSpeeds(double driveSpeed, double turnSpeed) {\n    m_driveSpeed = driveSpeed;\n    m_turnSpeed = turnSpeed;\n    \n    double leftSpeed = driveSpeed + turnSpeed;\n    double rightSpeed = driveSpeed - turnSpeed;\n    \n    m_leftDrive.set(leftSpeed);\n    m_rightDrive.set(rightSpeed);\n  }\n  \n  public void setArmTarget(double position) {\n    m_targetArmPosition = position;\n  }\n  \n  @Override\n  public void periodic() {\n    // Log drivetrain data\n    m_logger.log(\"Drivetrain/LeftMotor/AppliedOutput\", m_leftDrive.getAppliedOutput());\n    m_logger.log(\"Drivetrain/LeftMotor/OutputCurrent\", m_leftDrive.getOutputCurrent());\n    m_logger.log(\"Drivetrain/LeftMotor/BusVoltage\", m_leftDrive.getBusVoltage());\n    m_logger.log(\"Drivetrain/LeftMotor/Temperature\", m_leftDrive.getMotorTemperature());\n    \n    m_logger.log(\"Drivetrain/RightMotor/AppliedOutput\", m_rightDrive.getAppliedOutput());\n    m_logger.log(\"Drivetrain/RightMotor/OutputCurrent\", m_rightDrive.getOutputCurrent());\n    m_logger.log(\"Drivetrain/RightMotor/BusVoltage\", m_rightDrive.getBusVoltage());\n    m_logger.log(\"Drivetrain/RightMotor/Temperature\", m_rightDrive.getMotorTemperature());\n    \n    // Log encoder data\n    m_logger.log(\"Drivetrain/LeftEncoder/Position\", m_leftEncoder.getDistance());\n    m_logger.log(\"Drivetrain/LeftEncoder/Velocity\", m_leftEncoder.getRate());\n    m_logger.log(\"Drivetrain/RightEncoder/Position\", m_rightEncoder.getDistance());\n    m_logger.log(\"Drivetrain/RightEncoder/Velocity\", m_rightEncoder.getRate());\n    \n    // Log gyro data\n    m_logger.log(\"Sensors/Gyro/Angle\", m_gyro.getAngle());\n    m_logger.log(\"Sensors/Gyro/Rate\", m_gyro.getRate());\n    \n    // Log arm data\n    m_logger.log(\"Arm/Motor/AppliedOutput\", m_armMotor.getAppliedOutput());\n    m_logger.log(\"Arm/Motor/OutputCurrent\", m_armMotor.getOutputCurrent());\n    m_logger.log(\"Arm/Encoder/Position\", m_armEncoder.getDistance());\n    m_logger.log(\"Arm/Encoder/Velocity\", m_armEncoder.getRate());\n    \n    // Log control variables\n    m_logger.log(\"Control/DriveSpeed\", m_driveSpeed);\n    m_logger.log(\"Control/TurnSpeed\", m_turnSpeed);\n    m_logger.log(\"Control/ArmTarget\", m_targetArmPosition);\n    \n    // Log calculated values\n    double averageDistance = (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2.0;\n    m_logger.log(\"Calculated/AverageDistance\", averageDistance);\n    \n    double averageVelocity = (m_leftEncoder.getRate() + m_rightEncoder.getRate()) / 2.0;\n    m_logger.log(\"Calculated/AverageVelocity\", averageVelocity);\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Custom Data Logging",
+      "content": "You can log custom data types and create structured logging for complex robot systems."
+    },
+    {
+      "type": "code",
+      "title": "Custom Data Logging Example",
+      "content": "public class CustomLoggingExample {\n  private final AdvantageScopeLogger m_logger;\n  \n  // Custom data structures\n  public static class RobotState {\n    public double x, y, angle;\n    public double leftSpeed, rightSpeed;\n    public double armPosition;\n    public boolean intakeDeployed;\n    public String currentCommand;\n  }\n  \n  public static class PIDData {\n    public double setpoint, measurement, error;\n    public double pOutput, iOutput, dOutput, totalOutput;\n  }\n  \n  public CustomLoggingExample() {\n    m_logger = new AdvantageScopeLogger();\n  }\n  \n  public void logRobotState(RobotState state) {\n    // Log individual fields\n    m_logger.log(\"RobotState/X\", state.x);\n    m_logger.log(\"RobotState/Y\", state.y);\n    m_logger.log(\"RobotState/Angle\", state.angle);\n    m_logger.log(\"RobotState/LeftSpeed\", state.leftSpeed);\n    m_logger.log(\"RobotState/RightSpeed\", state.rightSpeed);\n    m_logger.log(\"RobotState/ArmPosition\", state.armPosition);\n    m_logger.log(\"RobotState/IntakeDeployed\", state.intakeDeployed);\n    m_logger.log(\"RobotState/CurrentCommand\", state.currentCommand);\n  }\n  \n  public void logPIDData(String name, PIDData data) {\n    m_logger.log(name + \"/Setpoint\", data.setpoint);\n    m_logger.log(name + \"/Measurement\", data.measurement);\n    m_logger.log(name + \"/Error\", data.error);\n    m_logger.log(name + \"/POutput\", data.pOutput);\n    m_logger.log(name + \"/IOutput\", data.iOutput);\n    m_logger.log(name + \"/DOutput\", data.dOutput);\n    m_logger.log(name + \"/TotalOutput\", data.totalOutput);\n  }\n  \n  public void logArray(String name, double[] array) {\n    for (int i = 0; i < array.length; i++) {\n      m_logger.log(name + \"/\" + i, array[i]);\n    }\n  }\n  \n  public void logMatrix(String name, double[][] matrix) {\n    for (int i = 0; i < matrix.length; i++) {\n      for (int j = 0; j < matrix[i].length; j++) {\n        m_logger.log(name + \"/\" + i + \"_\" + j, matrix[i][j]);\n      }\n    }\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Real-time Data Visualization",
+      "content": "AdvantageScope provides real-time visualization of logged data, allowing you to monitor robot performance during operation."
+    },
+    {
+      "type": "list",
+      "title": "Visualization Features",
+      "items": [
+        "<strong>Time Series Graphs:</strong> Plot data over time with multiple variables",
+        "<strong>3D Robot Visualization:</strong> View robot position and orientation in 3D",
+        "<strong>Field View:</strong> See robot movement on a field representation",
+        "<strong>Custom Dashboards:</strong> Create custom layouts for specific data",
+        "<strong>Real-time Updates:</strong> Data updates in real-time during robot operation"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Real-time Visualization Setup",
+      "content": "public class RealTimeVisualization {\n  private final AdvantageScopeLogger m_logger;\n  private final Timer m_timer;\n  \n  public RealTimeVisualization() {\n    m_logger = new AdvantageScopeLogger();\n    m_timer = new Timer();\n  }\n  \n  public void setupRealTimeLogging() {\n    // Log data at high frequency for real-time visualization\n    m_logger.setLoggingPeriod(0.01); // 100Hz for smooth visualization\n    \n    // Start timer for consistent timing\n    m_timer.start();\n  }\n  \n  public void logForVisualization(RobotState robotState, PIDData armPID, PIDData drivePID) {\n    double time = m_timer.get();\n    \n    // Log time for x-axis\n    m_logger.log(\"Time\", time);\n    \n    // Log robot pose for 3D visualization\n    m_logger.log(\"Robot3D/X\", robotState.x);\n    m_logger.log(\"Robot3D/Y\", robotState.y);\n    m_logger.log(\"Robot3D/Angle\", robotState.angle);\n    \n    // Log PID data for time series graphs\n    m_logger.log(\"ArmPID/Setpoint\", armPID.setpoint);\n    m_logger.log(\"ArmPID/Measurement\", armPID.measurement);\n    m_logger.log(\"ArmPID/Error\", armPID.error);\n    m_logger.log(\"ArmPID/Output\", armPID.totalOutput);\n    \n    m_logger.log(\"DrivePID/Setpoint\", drivePID.setpoint);\n    m_logger.log(\"DrivePID/Measurement\", drivePID.measurement);\n    m_logger.log(\"DrivePID/Error\", drivePID.error);\n    m_logger.log(\"DrivePID/Output\", drivePID.totalOutput);\n    \n    // Log motor data for performance monitoring\n    m_logger.log(\"Motors/Left/Current\", robotState.leftMotorCurrent);\n    m_logger.log(\"Motors/Right/Current\", robotState.rightMotorCurrent);\n    m_logger.log(\"Motors/Arm/Current\", robotState.armMotorCurrent);\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Post-Match Analysis",
+      "content": "After matches, AdvantageScope allows you to analyze logged data to understand robot performance and identify areas for improvement."
+    },
+    {
+      "type": "list",
+      "title": "Analysis Features",
+      "items": [
+        "<strong>Data Playback:</strong> Replay matches with synchronized data",
+        "<strong>Performance Metrics:</strong> Calculate key performance indicators",
+        "<strong>Error Analysis:</strong> Identify and analyze errors or failures",
+        "<strong>Comparison Tools:</strong> Compare different matches or robot configurations",
+        "<strong>Export Capabilities:</strong> Export data for external analysis"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Performance Analysis",
+      "content": "public class PerformanceAnalysis {\n  \n  public void analyzeMatchPerformance(List<RobotState> matchData) {\n    // Calculate performance metrics\n    double totalDistance = calculateTotalDistance(matchData);\n    double averageSpeed = calculateAverageSpeed(matchData);\n    double maxSpeed = calculateMaxSpeed(matchData);\n    double efficiency = calculateEfficiency(matchData);\n    \n    // Log analysis results\n    AdvantageScopeLogger logger = new AdvantageScopeLogger();\n    logger.log(\"Analysis/TotalDistance\", totalDistance);\n    logger.log(\"Analysis/AverageSpeed\", averageSpeed);\n    logger.log(\"Analysis/MaxSpeed\", maxSpeed);\n    logger.log(\"Analysis/Efficiency\", efficiency);\n    \n    // Identify performance issues\n    List<PerformanceIssue> issues = identifyIssues(matchData);\n    for (PerformanceIssue issue : issues) {\n      logger.log(\"Issues/\" + issue.type + \"/Time\", issue.timestamp);\n      logger.log(\"Issues/\" + issue.type + \"/Severity\", issue.severity);\n      logger.log(\"Issues/\" + issue.type + \"/Description\", issue.description);\n    }\n  }\n  \n  private double calculateTotalDistance(List<RobotState> data) {\n    double totalDistance = 0.0;\n    for (int i = 1; i < data.size(); i++) {\n      RobotState prev = data.get(i - 1);\n      RobotState curr = data.get(i);\n      \n      double dx = curr.x - prev.x;\n      double dy = curr.y - prev.y;\n      totalDistance += Math.sqrt(dx * dx + dy * dy);\n    }\n    return totalDistance;\n  }\n  \n  private double calculateAverageSpeed(List<RobotState> data) {\n    double totalSpeed = 0.0;\n    for (RobotState state : data) {\n      totalSpeed += Math.sqrt(state.leftSpeed * state.leftSpeed + state.rightSpeed * state.rightSpeed);\n    }\n    return totalSpeed / data.size();\n  }\n  \n  private double calculateMaxSpeed(List<RobotState> data) {\n    double maxSpeed = 0.0;\n    for (RobotState state : data) {\n      double speed = Math.sqrt(state.leftSpeed * state.leftSpeed + state.rightSpeed * state.rightSpeed);\n      maxSpeed = Math.max(maxSpeed, speed);\n    }\n    return maxSpeed;\n  }\n  \n  private double calculateEfficiency(List<RobotState> data) {\n    // Calculate energy efficiency based on motor currents and speeds\n    double totalEnergy = 0.0;\n    double totalWork = 0.0;\n    \n    for (RobotState state : data) {\n      // Simplified energy calculation\n      totalEnergy += Math.abs(state.leftMotorCurrent) + Math.abs(state.rightMotorCurrent);\n      totalWork += Math.abs(state.leftSpeed) + Math.abs(state.rightSpeed);\n    }\n    \n    return totalWork / totalEnergy; // Work per unit energy\n  }\n  \n  private List<PerformanceIssue> identifyIssues(List<RobotState> data) {\n    List<PerformanceIssue> issues = new ArrayList<>();\n    \n    for (int i = 0; i < data.size(); i++) {\n      RobotState state = data.get(i);\n      \n      // Check for high motor currents (potential mechanical issues)\n      if (Math.abs(state.leftMotorCurrent) > 40.0 || Math.abs(state.rightMotorCurrent) > 40.0) {\n        issues.add(new PerformanceIssue(\"HighCurrent\", i * 0.02, \"High\", \"Motor current exceeded 40A\"));\n      }\n      \n      // Check for rapid speed changes (potential control issues)\n      if (i > 0) {\n        RobotState prev = data.get(i - 1);\n        double speedChange = Math.abs(state.leftSpeed - prev.leftSpeed) + Math.abs(state.rightSpeed - prev.rightSpeed);\n        if (speedChange > 1.0) {\n          issues.add(new PerformanceIssue(\"RapidSpeedChange\", i * 0.02, \"Medium\", \"Rapid speed change detected\"));\n        }\n      }\n    }\n    \n    return issues;\n  }\n  \n  public static class PerformanceIssue {\n    public String type;\n    public double timestamp;\n    public String severity;\n    public String description;\n    \n    public PerformanceIssue(String type, double timestamp, String severity, String description) {\n      this.type = type;\n      this.timestamp = timestamp;\n      this.severity = severity;\n      this.description = description;\n    }\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Custom Dashboards",
+      "content": "AdvantageScope allows you to create custom dashboards for specific analysis needs."
+    },
+    {
+      "type": "code",
+      "title": "Custom Dashboard Example",
+      "content": "public class CustomDashboard {\n  private final AdvantageScopeLogger m_logger;\n  \n  public CustomDashboard() {\n    m_logger = new AdvantageScopeLogger();\n  }\n  \n  public void createPIDTuningDashboard(PIDData armPID, PIDData drivePID) {\n    // Create a dashboard specifically for PID tuning\n    m_logger.log(\"PIDTuning/Arm/Setpoint\", armPID.setpoint);\n    m_logger.log(\"PIDTuning/Arm/Measurement\", armPID.measurement);\n    m_logger.log(\"PIDTuning/Arm/Error\", armPID.error);\n    m_logger.log(\"PIDTuning/Arm/POutput\", armPID.pOutput);\n    m_logger.log(\"PIDTuning/Arm/IOutput\", armPID.iOutput);\n    m_logger.log(\"PIDTuning/Arm/DOutput\", armPID.dOutput);\n    m_logger.log(\"PIDTuning/Arm/TotalOutput\", armPID.totalOutput);\n    \n    m_logger.log(\"PIDTuning/Drive/Setpoint\", drivePID.setpoint);\n    m_logger.log(\"PIDTuning/Drive/Measurement\", drivePID.measurement);\n    m_logger.log(\"PIDTuning/Drive/Error\", drivePID.error);\n    m_logger.log(\"PIDTuning/Drive/POutput\", drivePID.pOutput);\n    m_logger.log(\"PIDTuning/Drive/IOutput\", drivePID.iOutput);\n    m_logger.log(\"PIDTuning/Drive/DOutput\", drivePID.dOutput);\n    m_logger.log(\"PIDTuning/Drive/TotalOutput\", drivePID.totalOutput);\n  }\n  \n  public void createAutonomousAnalysisDashboard(RobotState state, String currentCommand) {\n    // Create a dashboard for autonomous analysis\n    m_logger.log(\"AutoAnalysis/RobotX\", state.x);\n    m_logger.log(\"AutoAnalysis/RobotY\", state.y);\n    m_logger.log(\"AutoAnalysis/RobotAngle\", state.angle);\n    m_logger.log(\"AutoAnalysis/CurrentCommand\", currentCommand);\n    m_logger.log(\"AutoAnalysis/ArmPosition\", state.armPosition);\n    m_logger.log(\"AutoAnalysis/IntakeDeployed\", state.intakeDeployed);\n  }\n  \n  public void createPerformanceMonitoringDashboard(RobotState state) {\n    // Create a dashboard for performance monitoring\n    m_logger.log(\"Performance/LeftMotorCurrent\", state.leftMotorCurrent);\n    m_logger.log(\"Performance/RightMotorCurrent\", state.rightMotorCurrent);\n    m_logger.log(\"Performance/ArmMotorCurrent\", state.armMotorCurrent);\n    m_logger.log(\"Performance/LeftMotorTemp\", state.leftMotorTemp);\n    m_logger.log(\"Performance/RightMotorTemp\", state.rightMotorTemp);\n    m_logger.log(\"Performance/ArmMotorTemp\", state.armMotorTemp);\n    m_logger.log(\"Performance/BatteryVoltage\", state.batteryVoltage);\n  }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "items": [
+        "Log data at appropriate frequencies for your analysis needs",
+        "Use consistent naming conventions for logged data",
+        "Organize data hierarchically for easy navigation",
+        "Include metadata and context with your logged data",
+        "Regularly analyze logged data to identify trends and issues",
+        "Use custom dashboards for specific analysis tasks"
+      ],
+      "subtitle": "Follow these guidelines for effective AdvantageScope usage:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise",
+      "description": "Set up AdvantageScope logging and create custom dashboards for robot analysis.",
+      "tasks": [
+        "Install and configure AdvantageScope",
+        "Implement comprehensive data logging in your robot code",
+        "Create custom data structures for logging",
+        "Set up real-time visualization dashboards",
+        "Implement post-match analysis tools",
+        "Test logging and analysis with your robot"
+      ],
+      "code": "// Complete AdvantageScope example\npublic class AdvantageScopeRobot extends TimedRobot {\n  private final ComprehensiveLoggingSubsystem m_logging;\n  private final CustomLoggingExample m_customLogging;\n  private final RealTimeVisualization m_visualization;\n  private final CustomDashboard m_dashboard;\n  \n  // Robot state\n  private RobotState m_robotState;\n  private PIDData m_armPID, m_drivePID;\n  \n  public AdvantageScopeRobot() {\n    m_logging = new ComprehensiveLoggingSubsystem();\n    m_customLogging = new CustomLoggingExample();\n    m_visualization = new RealTimeVisualization();\n    m_dashboard = new CustomDashboard();\n    \n    m_robotState = new RobotState();\n    m_armPID = new PIDData();\n    m_drivePID = new PIDData();\n  }\n  \n  @Override\n  public void robotInit() {\n    // Start data logging\n    DataLogManager.start();\n    DataLogManager.logNetworkTables(false);\n    DriverStation.startDataLog(DataLogManager.getLog());\n    \n    // Setup real-time visualization\n    m_visualization.setupRealTimeLogging();\n  }\n  \n  @Override\n  public void robotPeriodic() {\n    // Update robot state\n    updateRobotState();\n    \n    // Log comprehensive data\n    m_logging.periodic();\n    \n    // Log custom data\n    m_customLogging.logRobotState(m_robotState);\n    m_customLogging.logPIDData(\"ArmPID\", m_armPID);\n    m_customLogging.logPIDData(\"DrivePID\", m_drivePID);\n    \n    // Log for real-time visualization\n    m_visualization.logForVisualization(m_robotState, m_armPID, m_drivePID);\n    \n    // Log custom dashboards\n    m_dashboard.createPIDTuningDashboard(m_armPID, m_drivePID);\n    m_dashboard.createPerformanceMonitoringDashboard(m_robotState);\n  }\n  \n  private void updateRobotState() {\n    // Update robot state with current values\n    // This would be populated with actual robot data\n    m_robotState.x = 0.0;\n    m_robotState.y = 0.0;\n    m_robotState.angle = 0.0;\n    m_robotState.leftSpeed = 0.0;\n    m_robotState.rightSpeed = 0.0;\n    m_robotState.armPosition = 0.0;\n    m_robotState.intakeDeployed = false;\n    m_robotState.currentCommand = \"None\";\n    m_robotState.leftMotorCurrent = 0.0;\n    m_robotState.rightMotorCurrent = 0.0;\n    m_robotState.armMotorCurrent = 0.0;\n    m_robotState.leftMotorTemp = 0.0;\n    m_robotState.rightMotorTemp = 0.0;\n    m_robotState.armMotorTemp = 0.0;\n    m_robotState.batteryVoltage = 12.0;\n  }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Next Steps",
+      "content": "Now that you understand AdvantageScope, you're ready to learn about advanced logging techniques and robot simulation for comprehensive testing and development."
+    }
+  ]
+}

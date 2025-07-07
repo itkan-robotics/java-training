@@ -1,0 +1,122 @@
+{
+  "title": "PedroPathing Autonomous Routines",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to PedroPathing",
+      "content": "PedroPathing is a powerful library for creating smooth, efficient autonomous paths for FTC robots. It provides trajectory generation, path following, and advanced motion control that goes beyond simple encoder-based movement."
+    },
+    {
+      "type": "rules-box",
+      "title": "Why PedroPathing?",
+      "items": [
+        "<strong>Smooth Motion:</strong> Generates smooth acceleration and deceleration curves",
+        "<strong>Path Optimization:</strong> Creates efficient paths between waypoints",
+        "<strong>Precise Control:</strong> Maintains accuracy through complex maneuvers",
+        "<strong>Time Efficiency:</strong> Optimizes paths for minimum execution time",
+        "<strong>Flexibility:</strong> Easy to modify paths and add waypoints",
+        "<strong>Competition Ready:</strong> Proven in high-level FTC competitions"
+      ],
+      "subtitle": "PedroPathing offers significant advantages over basic autonomous programming:"
+    },
+    {
+      "type": "text",
+      "title": "Basic PedroPathing Setup",
+      "content": "Setting up PedroPathing requires adding the library to your project and configuring your robot's parameters."
+    },
+    {
+      "type": "code",
+      "title": "PedroPathing Dependencies",
+      "content": "// Add to your build.gradle file\n// dependencies {\n//     implementation 'com.github.Pedro-Victor:PedroPathing:1.0.0'\n// }\n\n// Or download the JAR file and add to libs folder\n// Then add to build.gradle:\n// implementation fileTree(dir: 'libs', include: ['*.jar'])\n\n// Basic imports\nimport com.pedro.pathing.Path;\nimport com.pedro.pathing.PathBuilder;\nimport com.pedro.pathing.PathFollower;\nimport com.pedro.pathing.Trajectory;\nimport com.pedro.pathing.Waypoint;\n\n// Robot configuration\npublic class RobotConfig {\n    // Robot dimensions (in inches)\n    public static final double ROBOT_WIDTH = 18.0;\n    public static final double ROBOT_LENGTH = 18.0;\n    \n    // Drivetrain parameters\n    public static final double WHEEL_DIAMETER = 4.0; // inches\n    public static final double TICKS_PER_REVOLUTION = 537.6;\n    public static final double GEAR_RATIO = 1.0;\n    \n    // Motion parameters\n    public static final double MAX_VELOCITY = 30.0; // inches per second\n    public static final double MAX_ACCELERATION = 60.0; // inches per second squared\n    public static final double MAX_DECELERATION = 60.0; // inches per second squared\n    \n    // PID constants for path following\n    public static final double PATH_KP = 0.1;\n    public static final double PATH_KI = 0.0;\n    public static final double PATH_KD = 0.01;\n    \n    public static double getTicksPerInch() {\n        return (TICKS_PER_REVOLUTION * GEAR_RATIO) / (WHEEL_DIAMETER * Math.PI);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Creating Simple Paths",
+      "content": "PedroPathing allows you to create paths by defining waypoints. The library automatically generates smooth trajectories between these points."
+    },
+    {
+      "type": "code",
+      "title": "Basic Path Creation",
+      "content": "package org.firstinspires.ftc.teamcode.autonomous;\n\nimport com.qualcomm.robotcore.eventloop.opmode.Autonomous;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.pedro.pathing.*;\nimport org.firstinspires.ftc.teamcode.subsystems.Drivetrain;\n\n@Autonomous(name=\"Basic PedroPathing\", group=\"Advanced\")\npublic class BasicPedroPathing extends LinearOpMode {\n    \n    private Drivetrain drivetrain;\n    private PathFollower pathFollower;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize drivetrain\n        drivetrain = new Drivetrain(hardwareMap);\n        \n        // Initialize path follower\n        pathFollower = new PathFollower(drivetrain, RobotConfig.PATH_KP, RobotConfig.PATH_KI, RobotConfig.PATH_KD);\n        \n        // Create a simple path\n        Path path = new PathBuilder()\n            .addWaypoint(0, 0, 0) // Start at origin\n            .addWaypoint(24, 0, 0) // Move forward 24 inches\n            .addWaypoint(24, 24, 90) // Move right 24 inches, turn 90 degrees\n            .addWaypoint(0, 24, 180) // Move back 24 inches, turn to 180 degrees\n            .build();\n        \n        waitForStart();\n        \n        // Follow the path\n        pathFollower.followPath(path);\n        \n        // Wait for path completion\n        while (opModeIsActive() && !pathFollower.isFinished()) {\n            pathFollower.update();\n            updateTelemetry();\n            sleep(10);\n        }\n        \n        // Stop robot\n        drivetrain.stop();\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Path Progress\", \"%.1f%%\", pathFollower.getProgress() * 100);\n        telemetry.addData(\"Current Waypoint\", pathFollower.getCurrentWaypointIndex());\n        telemetry.addData(\"Robot Position\", \"(%.1f, %.1f, %.1f)\", \n            pathFollower.getCurrentX(), pathFollower.getCurrentY(), pathFollower.getCurrentHeading());\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Advanced Path Configuration",
+      "content": "PedroPathing provides extensive configuration options for creating complex and optimized paths."
+    },
+    {
+      "type": "code",
+      "title": "Advanced Path Building",
+      "content": "// Create complex paths with different constraints\nPath complexPath = new PathBuilder()\n    .setMaxVelocity(RobotConfig.MAX_VELOCITY)\n    .setMaxAcceleration(RobotConfig.MAX_ACCELERATION)\n    .setMaxDeceleration(RobotConfig.MAX_DECELERATION)\n    .setReversed(false) // Forward motion\n    .addWaypoint(0, 0, 0) // Start\n    .addWaypoint(12, 0, 0) // Move forward\n    .addWaypoint(12, 12, 45) // Diagonal movement with turn\n    .addWaypoint(24, 12, 0) // Continue forward\n    .addWaypoint(24, 24, 90) // Turn and move right\n    .addWaypoint(0, 24, 180) // Return to start area\n    .build();\n\n// Create path with speed constraints\nPath speedControlledPath = new PathBuilder()\n    .addWaypoint(0, 0, 0, 0.5) // Start at 50% speed\n    .addWaypoint(12, 0, 0, 0.8) // Accelerate to 80%\n    .addWaypoint(24, 0, 0, 1.0) // Full speed\n    .addWaypoint(36, 0, 0, 0.3) // Slow down for precision\n    .build();\n\n// Create path with different motion profiles\nPath smoothPath = new PathBuilder()\n    .setMotionProfile(MotionProfile.SMOOTH) // Smooth acceleration\n    .addWaypoint(0, 0, 0)\n    .addWaypoint(24, 0, 0)\n    .build();\n\nPath fastPath = new PathBuilder()\n    .setMotionProfile(MotionProfile.FAST) // Aggressive acceleration\n    .addWaypoint(0, 0, 0)\n    .addWaypoint(24, 0, 0)\n    .build();\n\n// Create path with custom waypoint types\nPath customPath = new PathBuilder()\n    .addWaypoint(0, 0, 0) // Regular waypoint\n    .addWaypoint(12, 0, 0, WaypointType.FAST) // Fast waypoint\n    .addWaypoint(24, 0, 0, WaypointType.PRECISE) // Precise waypoint\n    .addWaypoint(36, 0, 0, WaypointType.STOP) // Stop waypoint\n    .build();"
+    },
+    {
+      "type": "text",
+      "title": "Path Following Implementation",
+      "content": "The PathFollower class handles the complex calculations needed to follow paths accurately."
+    },
+    {
+      "type": "code",
+      "title": "Custom Path Follower",
+      "content": "package org.firstinspires.ftc.teamcode.pathing;\n\nimport com.pedro.pathing.*;\nimport org.firstinspires.ftc.teamcode.subsystems.Drivetrain;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\npublic class CustomPathFollower {\n    \n    private Drivetrain drivetrain;\n    private Path path;\n    private Trajectory trajectory;\n    \n    private int currentSegment = 0;\n    private double startTime;\n    private ElapsedTime timer;\n    \n    // PID controllers for path following\n    private PIDController xController;\n    private PIDController yController;\n    private PIDController headingController;\n    \n    // Robot position tracking\n    private double currentX, currentY, currentHeading;\n    private double targetX, targetY, targetHeading;\n    \n    public CustomPathFollower(Drivetrain drivetrain) {\n        this.drivetrain = drivetrain;\n        this.timer = new ElapsedTime();\n        \n        // Initialize PID controllers\n        xController = new PIDController(0.1, 0.0, 0.01);\n        yController = new PIDController(0.1, 0.0, 0.01);\n        headingController = new PIDController(0.05, 0.0, 0.005);\n    }\n    \n    public void followPath(Path path) {\n        this.path = path;\n        this.trajectory = path.generateTrajectory();\n        this.currentSegment = 0;\n        this.startTime = timer.seconds();\n        \n        // Reset robot position\n        currentX = 0;\n        currentY = 0;\n        currentHeading = 0;\n    }\n    \n    public void update() {\n        if (isFinished()) return;\n        \n        double currentTime = timer.seconds() - startTime;\n        \n        // Get target position from trajectory\n        TrajectoryPoint target = trajectory.getPoint(currentTime);\n        targetX = target.x;\n        targetY = target.y;\n        targetHeading = target.heading;\n        \n        // Calculate position error\n        double xError = targetX - currentX;\n        double yError = targetY - currentY;\n        double headingError = normalizeAngle(targetHeading - currentHeading);\n        \n        // Calculate PID corrections\n        double xCorrection = xController.calculate(currentX, targetX);\n        double yCorrection = yController.calculate(currentY, targetY);\n        double headingCorrection = headingController.calculate(currentHeading, targetHeading);\n        \n        // Convert to robot-relative commands\n        double forward = yCorrection;\n        double strafe = xCorrection;\n        double turn = headingCorrection;\n        \n        // Apply corrections to drivetrain\n        drivetrain.drive(forward, strafe, turn);\n        \n        // Update current position (simplified - you'd use odometry)\n        updatePosition();\n    }\n    \n    private void updatePosition() {\n        // This is a simplified position update\n        // In practice, you'd use odometry or encoders\n        // For now, we'll assume the robot follows commands perfectly\n        currentX += targetX - currentX;\n        currentY += targetY - currentY;\n        currentHeading = targetHeading;\n    }\n    \n    public boolean isFinished() {\n        return timer.seconds() - startTime >= trajectory.getDuration();\n    }\n    \n    public double getProgress() {\n        return (timer.seconds() - startTime) / trajectory.getDuration();\n    }\n    \n    public double getCurrentX() { return currentX; }\n    public double getCurrentY() { return currentY; }\n    public double getCurrentHeading() { return currentHeading; }\n    \n    private double normalizeAngle(double angle) {\n        while (angle > 180) angle -= 360;\n        while (angle < -180) angle += 360;\n        return angle;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Odometry Integration",
+      "content": "For accurate path following, you need precise position tracking. Odometry provides real-time position and heading information."
+    },
+    {
+      "type": "code",
+      "title": "Basic Odometry Implementation",
+      "content": "package org.firstinspires.ftc.teamcode.odometry;\n\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\npublic class Odometry {\n    \n    private DcMotor leftEncoder, rightEncoder, centerEncoder;\n    private ElapsedTime timer;\n    \n    // Robot position\n    private double x, y, heading;\n    \n    // Odometry constants\n    private double wheelBase; // Distance between left and right wheels\n    private double centerOffset; // Distance from center to center wheel\n    private double wheelDiameter;\n    private double ticksPerRevolution;\n    \n    // Previous encoder values\n    private int prevLeft, prevRight, prevCenter;\n    \n    public Odometry(DcMotor leftEncoder, DcMotor rightEncoder, DcMotor centerEncoder, \n                   double wheelBase, double centerOffset, double wheelDiameter, double ticksPerRevolution) {\n        this.leftEncoder = leftEncoder;\n        this.rightEncoder = rightEncoder;\n        this.centerEncoder = centerEncoder;\n        this.wheelBase = wheelBase;\n        this.centerOffset = centerOffset;\n        this.wheelDiameter = wheelDiameter;\n        this.ticksPerRevolution = ticksPerRevolution;\n        this.timer = new ElapsedTime();\n    }\n    \n    public void update() {\n        // Get current encoder values\n        int currentLeft = leftEncoder.getCurrentPosition();\n        int currentRight = rightEncoder.getCurrentPosition();\n        int currentCenter = centerEncoder.getCurrentPosition();\n        \n        // Calculate encoder deltas\n        int deltaLeft = currentLeft - prevLeft;\n        int deltaRight = currentRight - prevRight;\n        int deltaCenter = currentCenter - prevCenter;\n        \n        // Convert to distances\n        double deltaLeftDist = ticksToInches(deltaLeft);\n        double deltaRightDist = ticksToInches(deltaRight);\n        double deltaCenterDist = ticksToInches(deltaCenter);\n        \n        // Calculate robot movement\n        double deltaHeading = (deltaRightDist - deltaLeftDist) / wheelBase;\n        double deltaX = deltaCenterDist - (centerOffset * deltaHeading);\n        double deltaY = (deltaLeftDist + deltaRightDist) / 2.0;\n        \n        // Update position\n        heading += deltaHeading;\n        x += deltaX * Math.cos(heading) - deltaY * Math.sin(heading);\n        y += deltaX * Math.sin(heading) + deltaY * Math.cos(heading);\n        \n        // Update previous values\n        prevLeft = currentLeft;\n        prevRight = currentRight;\n        prevCenter = currentCenter;\n    }\n    \n    public void reset() {\n        x = 0;\n        y = 0;\n        heading = 0;\n        prevLeft = leftEncoder.getCurrentPosition();\n        prevRight = rightEncoder.getCurrentPosition();\n        prevCenter = centerEncoder.getCurrentPosition();\n    }\n    \n    private double ticksToInches(int ticks) {\n        return (ticks * wheelDiameter * Math.PI) / ticksPerRevolution;\n    }\n    \n    // Getters\n    public double getX() { return x; }\n    public double getY() { return y; }\n    public double getHeading() { return heading; }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Competition-Ready Autonomous",
+      "content": "Combining PedroPathing with proper odometry creates powerful autonomous routines for competition."
+    },
+    {
+      "type": "code",
+      "title": "Competition Autonomous Example",
+      "content": "package org.firstinspires.ftc.teamcode.autonomous;\n\nimport com.qualcomm.robotcore.eventloop.opmode.Autonomous;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.pedro.pathing.*;\nimport org.firstinspires.ftc.teamcode.subsystems.*;\nimport org.firstinspires.ftc.teamcode.odometry.Odometry;\nimport org.firstinspires.ftc.teamcode.pathing.CustomPathFollower;\n\n@Autonomous(name=\"Competition Autonomous\", group=\"Advanced\")\npublic class CompetitionAutonomous extends LinearOpMode {\n    \n    private Drivetrain drivetrain;\n    private Arm arm;\n    private Intake intake;\n    private Odometry odometry;\n    private CustomPathFollower pathFollower;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize subsystems\n        drivetrain = new Drivetrain(hardwareMap);\n        arm = new Arm(hardwareMap);\n        intake = new Intake(hardwareMap);\n        \n        // Initialize odometry\n        odometry = new Odometry(\n            hardwareMap.get(DcMotor.class, \"leftEncoder\"),\n            hardwareMap.get(DcMotor.class, \"rightEncoder\"),\n            hardwareMap.get(DcMotor.class, \"centerEncoder\"),\n            18.0, // wheelBase\n            6.0,  // centerOffset\n            2.0,  // wheelDiameter\n            537.6 // ticksPerRevolution\n        );\n        \n        // Initialize path follower\n        pathFollower = new CustomPathFollower(drivetrain);\n        \n        // Create competition path\n        Path competitionPath = createCompetitionPath();\n        \n        waitForStart();\n        \n        // Reset odometry\n        odometry.reset();\n        \n        // Execute autonomous routine\n        executeAutonomousRoutine(competitionPath);\n    }\n    \n    private Path createCompetitionPath() {\n        return new PathBuilder()\n            .setMaxVelocity(30.0)\n            .setMaxAcceleration(60.0)\n            .addWaypoint(0, 0, 0) // Start position\n            .addWaypoint(6, 0, 0) // Move to scoring position\n            .addWaypoint(6, 0, 0, WaypointType.STOP) // Stop for scoring\n            .addWaypoint(12, 0, 0) // Move to collection area\n            .addWaypoint(12, 12, 90) // Turn and move to element\n            .addWaypoint(12, 12, 90, WaypointType.STOP) // Stop for collection\n            .addWaypoint(6, 12, 180) // Return to scoring area\n            .addWaypoint(6, 0, 180) // Final scoring position\n            .build();\n    }\n    \n    private void executeAutonomousRoutine(Path path) {\n        // Start path following\n        pathFollower.followPath(path);\n        \n        while (opModeIsActive() && !pathFollower.isFinished()) {\n            // Update odometry\n            odometry.update();\n            \n            // Update path follower\n            pathFollower.update();\n            \n            // Handle special waypoints\n            handleSpecialWaypoints();\n            \n            // Update telemetry\n            updateTelemetry();\n            \n            sleep(10);\n        }\n        \n        // Stop robot\n        drivetrain.stop();\n    }\n    \n    private void handleSpecialWaypoints() {\n        // Check for scoring waypoints\n        if (pathFollower.getCurrentWaypointIndex() == 2) { // Scoring position\n            arm.setPosition(1000); // Raise arm\n            sleep(500);\n            arm.dropElement(); // Drop element\n            sleep(500);\n        }\n        \n        // Check for collection waypoints\n        if (pathFollower.getCurrentWaypointIndex() == 5) { // Collection position\n            intake.start(); // Start intake\n            sleep(1000);\n            intake.stop();\n        }\n    }\n    \n    private void updateTelemetry() {\n        telemetry.addData(\"Robot Position\", \"(%.1f, %.1f, %.1f)\", \n            odometry.getX(), odometry.getY(), odometry.getHeading());\n        telemetry.addData(\"Path Progress\", \"%.1f%%\", pathFollower.getProgress() * 100);\n        telemetry.addData(\"Current Waypoint\", pathFollower.getCurrentWaypointIndex());\n        telemetry.addData(\"Arm Position\", arm.getCurrentPosition());\n        telemetry.addData(\"Intake Status\", intake.getStatus());\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Path Optimization",
+      "content": "PedroPathing provides tools for optimizing paths for maximum efficiency and speed."
+    },
+    {
+      "type": "code",
+      "title": "Path Optimization Techniques",
+      "content": "// Optimize path for speed\nPath optimizedPath = new PathBuilder()\n    .setOptimizationLevel(OptimizationLevel.SPEED)\n    .addWaypoint(0, 0, 0)\n    .addWaypoint(24, 0, 0)\n    .addWaypoint(24, 24, 90)\n    .build();\n\n// Optimize path for smoothness\nPath smoothPath = new PathBuilder()\n    .setOptimizationLevel(OptimizationLevel.SMOOTHNESS)\n    .addWaypoint(0, 0, 0)\n    .addWaypoint(24, 0, 0)\n    .addWaypoint(24, 24, 90)\n    .build();\n\n// Optimize path for precision\nPath precisePath = new PathBuilder()\n    .setOptimizationLevel(OptimizationLevel.PRECISION)\n    .addWaypoint(0, 0, 0)\n    .addWaypoint(24, 0, 0)\n    .addWaypoint(24, 24, 90)\n    .build();\n\n// Create path with custom optimization\nPath customOptimizedPath = new PathBuilder()\n    .setMaxVelocity(40.0) // Higher speed\n    .setMaxAcceleration(80.0) // Faster acceleration\n    .setMaxDeceleration(80.0) // Faster deceleration\n    .setCornerVelocity(0.8) // Maintain 80% speed in corners\n    .addWaypoint(0, 0, 0)\n    .addWaypoint(24, 0, 0)\n    .addWaypoint(24, 24, 90)\n    .build();\n\n// Create path with different segments\nPath multiSegmentPath = new PathBuilder()\n    .addSegment(new PathBuilder()\n        .setMaxVelocity(20.0) // Slow segment\n        .addWaypoint(0, 0, 0)\n        .addWaypoint(12, 0, 0)\n        .build())\n    .addSegment(new PathBuilder()\n        .setMaxVelocity(40.0) // Fast segment\n        .addWaypoint(12, 0, 0)\n        .addWaypoint(24, 0, 0)\n        .build())\n    .build();"
+    },
+    {
+      "type": "rules-box",
+      "title": "PedroPathing Best Practices",
+      "items": [
+        "<strong>Calibrate odometry:</strong> Ensure accurate position tracking",
+        "<strong>Test paths incrementally:</strong> Start with simple paths and build complexity",
+        "<strong>Use appropriate waypoint types:</strong> Choose FAST, PRECISE, or STOP as needed",
+        "<strong>Optimize for your robot:</strong> Adjust velocity and acceleration limits",
+        "<strong>Handle special waypoints:</strong> Implement scoring and collection logic",
+        "<strong>Monitor performance:</strong> Use telemetry to track path following accuracy"
+      ],
+      "subtitle": "Follow these best practices for effective PedroPathing implementation:"
+    },
+    {
+      "type": "exercise-box",
+      "title": "PedroPathing Practice",
+      "description": "Implement PedroPathing for your robot and create complex autonomous routines.",
+      "tasks": [
+        "Set up PedroPathing in your Android Studio project",
+        "Create a basic odometry system for position tracking",
+        "Implement a simple path follower",
+        "Create and test basic paths (forward, turn, square)",
+        "Add special waypoints for scoring and collection",
+        "Optimize paths for speed and precision",
+        "Create a competition-ready autonomous routine",
+        "Test and tune your autonomous performance"
+      ],
+      "code": "// Example: Complete PedroPathing setup and usage\n// 1. Add PedroPathing to your project\n// 2. Set up odometry with three encoders\n// 3. Create a path follower class\n// 4. Build competition paths with waypoints\n// 5. Integrate with your robot's mechanisms\n// 6. Test and optimize for competition\n\n// Competition path example:\n// Path competitionPath = new PathBuilder()\n//     .setMaxVelocity(30.0)\n//     .addWaypoint(0, 0, 0)\n//     .addWaypoint(6, 0, 0, WaypointType.STOP) // Score\n//     .addWaypoint(12, 0, 0)\n//     .addWaypoint(12, 12, 90, WaypointType.STOP) // Collect\n//     .addWaypoint(6, 12, 180)\n//     .addWaypoint(6, 0, 180, WaypointType.STOP) // Final score\n//     .build();"
+    }
+  ]
+}
