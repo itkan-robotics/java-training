@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What is Road Runner?",
-      "content": "Road Runner is a powerful motion planning library designed for FTC robots. It enables precise trajectory following, advanced path planning, and smooth autonomous routines. Unlike basic drive code, Road Runner provides tools for creating complex paths and controlling your robot's movement with high accuracy.<br><br>Learn more: <a href=\"https://acmerobotics.github.io/road-runner-docs/\" target=\"_blank\">Official Road Runner Docs: Introduction</a>"
+      "content": "<p>Road Runner is a powerful motion planning library designed for FTC robots. It enables precise trajectory following, advanced path planning, and smooth autonomous routines. Unlike basic drive code, Road Runner provides tools for creating complex paths and controlling your robot's movement with high accuracy.</p><p>Learn more: <a href=\"https://acmerobotics.github.io/road-runner-docs/\" target=\"_blank\">Official Road Runner Docs: Introduction</a></p>"
     },
     {
       "type": "text",

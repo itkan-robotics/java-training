@@ -1,0 +1,109 @@
+{
+  "title": "Introduction to Pedro Pathing",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Pedro Pathing?",
+      "content": "<p>Pedro Pathing is a lightweight, FTC-specific path planning library designed specifically for FIRST Tech Challenge robots. Unlike RoadRunner (which is more complex and feature-rich) or manual pathing (which is basic but limited), Pedro Pathing strikes the perfect balance for FTC teams.</p><p><strong>Key Characteristics:</strong></p><ul><li><strong>FTC-First Design:</strong> Built specifically for FTC robots and field constraints</li><li><strong>Lightweight:</strong> Minimal computational overhead, perfect for FTC's processing limitations</li><li><strong>Easy to Learn:</strong> Simple API that's accessible to students</li><li><strong>Powerful:</strong> Supports complex path planning while remaining manageable</li></ul><p>Pedro Pathing follows a philosophy of \"simple but effective\" - it provides the tools you need for sophisticated autonomous routines without overwhelming complexity.</p>"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Why Choose Pedro Pathing?",
+      "content": "<p><strong>For FTC Teams:</strong> Pedro Pathing is designed with FTC's specific constraints in mind - limited processing power, smaller robots, and shorter autonomous periods. It provides the path planning capabilities you need without the overhead of more complex solutions.</p><p><strong>Learning Curve:</strong> Students can go from basic movement to complex autonomous routines in a matter of weeks, not months.</p>"
+    },
+    {
+      "type": "text",
+      "title": "Pedro Pathing vs. Other Solutions",
+      "content": "<p>Understanding when to use Pedro Pathing versus other path planning solutions is crucial for making the right choice for your team.</p>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Path Planning Solution Comparison",
+      "content": "<table style=\"width: 100%; border-collapse: collapse;\"><thead><tr style=\"background-color: var(--color-sidebar-background);\"><th style=\"border: 1px solid var(--color-border); padding: 8px;\">Solution</th><th style=\"border: 1px solid var(--color-border); padding: 8px;\">Complexity</th><th style=\"border: 1px solid var(--color-border); padding: 8px;\">Features</th><th style=\"border: 1px solid var(--color-border); padding: 8px;\">Best For</th></tr></thead><tbody><tr><td style=\"border: 1px solid var(--color-border); padding: 8px;\"><strong>Manual Pathing</strong></td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Low</td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Basic movement, time-based</td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Simple autonomous, learning basics</td></tr><tr><td style=\"border: 1px solid var(--color-border); padding: 8px;\"><strong>Pedro Pathing</strong></td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Medium</td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Path planning, localization, curves</td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Most FTC teams, balanced complexity</td></tr><tr><td style=\"border: 1px solid var(--color-border); padding: 8px;\"><strong>RoadRunner</strong></td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">High</td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Advanced features, tuning, optimization</td><td style=\"border: 1px solid var(--color-border); padding: 8px;\">Advanced teams, complex requirements</td></tr></tbody></table>"
+    },
+    {
+      "type": "text",
+      "title": "Basic Architecture Overview",
+      "content": "<p>Pedro Pathing is built around three core components that work together to create smooth, accurate autonomous movement:</p><p><strong>1. PathFollower:</strong> The component responsible for actually moving the robot along a path. It takes the path data and converts it into motor commands, constantly adjusting to stay on track.</p><p><strong>2. PathBuilder:</strong> The tool for creating paths. It provides methods to define waypoints, curves, and complex trajectories that the robot will follow.</p><p><strong>3. Localization:</strong> The system that tracks the robot's position on the field. It uses encoders, IMU, and other sensors to maintain accurate position data throughout autonomous.</p><p>These components work together: PathBuilder creates the path, Localization tracks position, and PathFollower executes the movement while using position data to stay on course.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Basic Pedro Pathing Architecture Example",
+      "code": "// Basic Pedro Pathing setup and usage\nimport com.pedropathing.PedroPathing;\nimport com.pedropathing.path.Path;\nimport com.pedropathing.path.PathBuilder;\nimport com.pedropathing.follower.PathFollower;\nimport com.pedropathing.localization.Localization;\n\npublic class BasicPedroExample extends LinearOpMode {\n    private PedroPathing pedro;\n    private PathFollower follower;\n    private Localization localization;\n    private PathBuilder pathBuilder;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize Pedro Pathing\n        pedro = new PedroPathing(hardwareMap);\n        \n        // Get the core components\n        follower = pedro.getPathFollower();\n        localization = pedro.getLocalization();\n        pathBuilder = pedro.getPathBuilder();\n        \n        // Initialize localization (tracks robot position)\n        localization.initialize();\n        \n        waitForStart();\n        \n        // Create a simple path\n        Path path = pathBuilder\n            .startAt(0, 0)  // Start at origin\n            .lineTo(24, 0)  // Move 24 inches forward\n            .build();\n        \n        // Follow the path\n        follower.followPath(path);\n        \n        // Pedro handles all the complex movement logic!\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Installation and Setup",
+      "content": "<p>Setting up Pedro Pathing requires adding the library to your project and configuring the basic components. The process is straightforward but requires attention to detail.</p><p><strong>Step 1: Add Pedro Pathing to Your Project</strong></p><p>Pedro Pathing is available through the FTC SDK's built-in library system. You'll need to add it to your project's dependencies.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Adding Pedro Pathing to build.gradle",
+      "code": "// In your app's build.gradle file\n// Add Pedro Pathing dependency\n\ndependencies {\n    // ... existing dependencies ...\n    \n    // Pedro Pathing library\n    implementation 'com.pedropathing:pedro-pathing:1.0.0'\n    \n    // Required for Pedro Pathing\n    implementation 'org.apache.commons:commons-math3:3.6.1'\n}"
+    },
+    {
+      "type": "text",
+      "title": "Hardware Configuration",
+      "content": "<p>Pedro Pathing needs to know about your robot's hardware configuration. This includes motor names, encoder configurations, and sensor setup.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Hardware Configuration for Pedro Pathing",
+      "code": "// Configure hardware for Pedro Pathing\npublic class PedroHardwareConfig {\n    \n    // Motor configuration\n    public static final String LEFT_FRONT_MOTOR = \"leftFront\";\n    public static final String RIGHT_FRONT_MOTOR = \"rightFront\";\n    public static final String LEFT_BACK_MOTOR = \"leftBack\";\n    public static final String RIGHT_BACK_MOTOR = \"rightBack\";\n    \n    // Encoder configuration\n    public static final String LEFT_ENCODER = \"leftEncoder\";\n    public static final String RIGHT_ENCODER = \"rightEncoder\";\n    public static final String FRONT_ENCODER = \"frontEncoder\";\n    \n    // IMU configuration\n    public static final String IMU_NAME = \"imu\";\n    \n    // Robot physical parameters\n    public static final double TRACK_WIDTH = 13.5;  // inches\n    public static final double WHEEL_DIAMETER = 3.0; // inches\n    public static final double TICKS_PER_REVOLUTION = 537.6; // for REV HD Hex Motors\n    \n    // Calculate encoder ticks per inch\n    public static final double TICKS_PER_INCH = TICKS_PER_REVOLUTION / (WHEEL_DIAMETER * Math.PI);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Basic Pedro Pathing Initialization",
+      "content": "<p>Once your hardware is configured, you can initialize Pedro Pathing in your OpMode. This setup creates the core components and prepares them for use.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Pedro Pathing Initialization",
+      "code": "// Complete Pedro Pathing initialization\npublic class PedroInitializationExample extends LinearOpMode {\n    \n    private PedroPathing pedro;\n    private PathFollower follower;\n    private Localization localization;\n    private PathBuilder pathBuilder;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware map\n        HardwareMap hardwareMap = this.hardwareMap;\n        \n        // Create Pedro Pathing instance\n        pedro = new PedroPathing(hardwareMap);\n        \n        // Configure robot parameters\n        pedro.setRobotParameters(\n            PedroHardwareConfig.TRACK_WIDTH,\n            PedroHardwareConfig.WHEEL_DIAMETER,\n            PedroHardwareConfig.TICKS_PER_REVOLUTION\n        );\n        \n        // Configure motors\n        pedro.configureMotors(\n            PedroHardwareConfig.LEFT_FRONT_MOTOR,\n            PedroHardwareConfig.RIGHT_FRONT_MOTOR,\n            PedroHardwareConfig.LEFT_BACK_MOTOR,\n            PedroHardwareConfig.RIGHT_BACK_MOTOR\n        );\n        \n        // Configure encoders for localization\n        pedro.configureEncoders(\n            PedroHardwareConfig.LEFT_ENCODER,\n            PedroHardwareConfig.RIGHT_ENCODER,\n            PedroHardwareConfig.FRONT_ENCODER\n        );\n        \n        // Configure IMU\n        pedro.configureIMU(PedroHardwareConfig.IMU_NAME);\n        \n        // Get component references\n        follower = pedro.getPathFollower();\n        localization = pedro.getLocalization();\n        pathBuilder = pedro.getPathBuilder();\n        \n        // Initialize localization\n        localization.initialize();\n        \n        telemetry.addData(\"Status\", \"Pedro Pathing Initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        // Your autonomous code goes here\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Creating Your First Path",
+      "content": "<p>Now that Pedro Pathing is set up, let's create your first path. We'll start with a simple forward movement and gradually add complexity.</p><p><strong>Basic Path Creation:</strong> The PathBuilder provides a fluent interface for creating paths. You start with a position, add waypoints, and build the final path.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Simple Forward Movement Path",
+      "code": "// Create a simple forward movement path\npublic class SimplePathExample extends LinearOpMode {\n    \n    private PedroPathing pedro;\n    private PathFollower follower;\n    private PathBuilder pathBuilder;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize Pedro Pathing (assuming setup from previous example)\n        pedro = new PedroPathing(hardwareMap);\n        // ... configuration code ...\n        \n        follower = pedro.getPathFollower();\n        pathBuilder = pedro.getPathBuilder();\n        \n        waitForStart();\n        \n        // Create a simple forward path\n        Path forwardPath = pathBuilder\n            .startAt(0, 0)      // Start at origin\n            .lineTo(24, 0)      // Move 24 inches forward\n            .build();           // Create the path\n        \n        telemetry.addData(\"Path Created\", \"Moving forward 24 inches\");\n        telemetry.update();\n        \n        // Follow the path\n        boolean pathComplete = follower.followPath(forwardPath);\n        \n        if (pathComplete) {\n            telemetry.addData(\"Status\", \"Path completed successfully!\");\n        } else {\n            telemetry.addData(\"Status\", \"Path failed or was interrupted\");\n        }\n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Adding Turns and Complex Movement",
+      "content": "<p>Once you're comfortable with basic movement, you can add turns and more complex paths. Pedro Pathing supports various movement types including straight lines, curves, and conditional paths.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Path with Turns and Curves",
+      "code": "// Create a more complex path with turns\npublic class ComplexPathExample extends LinearOpMode {\n    \n    private PedroPathing pedro;\n    private PathFollower follower;\n    private PathBuilder pathBuilder;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize Pedro Pathing\n        pedro = new PedroPathing(hardwareMap);\n        // ... configuration code ...\n        \n        follower = pedro.getPathFollower();\n        pathBuilder = pedro.getPathBuilder();\n        \n        waitForStart();\n        \n        // Create a path with multiple segments\n        Path complexPath = pathBuilder\n            .startAt(0, 0)          // Start at origin\n            .lineTo(24, 0)          // Move forward 24 inches\n            .turnTo(90)             // Turn 90 degrees\n            .lineTo(24, 24)         // Move to position (24, 24)\n            .turnTo(180)            // Turn 180 degrees\n            .lineTo(0, 24)          // Move back to y=24, x=0\n            .build();\n        \n        telemetry.addData(\"Path Created\", \"Complex path with turns\");\n        telemetry.update();\n        \n        // Follow the path with error handling\n        try {\n            boolean pathComplete = follower.followPath(complexPath);\n            \n            if (pathComplete) {\n                telemetry.addData(\"Status\", \"Complex path completed!\");\n            } else {\n                telemetry.addData(\"Status\", \"Path was interrupted\");\n            }\n        } catch (Exception e) {\n            telemetry.addData(\"Error\", \"Path following failed: \" + e.getMessage());\n        }\n        \n        telemetry.update();\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Your First Pedro Path",
+      "description": "Create a simple autonomous routine using Pedro Pathing",
+      "tasks": [
+        "Set up Pedro Pathing in a new OpMode",
+        "Create a path that moves your robot forward 12 inches",
+        "Add a 90-degree turn to the right",
+        "Move forward another 12 inches",
+        "Test the path and observe the robot's movement",
+        "Add telemetry to display the robot's current position during movement"
+      ],
+      "content": "// Starter code for your first Pedro path\npublic class MyFirstPedroPath extends LinearOpMode {\n    \n    private PedroPathing pedro;\n    private PathFollower follower;\n    private Localization localization;\n    \n    @Override\n    public void runOpMode() {\n        // TODO: Initialize Pedro Pathing\n        \n        // TODO: Create your path here\n        \n        waitForStart();\n        \n        // TODO: Follow your path\n        \n        // TODO: Add telemetry to show position\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Next Steps",
+      "content": "<p>Congratulations! You've successfully set up Pedro Pathing and created your first autonomous path. In the next lessons, you'll learn about:</p><ul><li><strong>Pedro Localization:</strong> How Pedro tracks your robot's position on the field</li><li><strong>Advanced Configuration:</strong> Fine-tuning Pedro for optimal performance</li><li><strong>Complex Path Planning:</strong> Creating sophisticated autonomous routines</li></ul><p>For more information, visit the <a href=\"https://pedropathing.com/\" target=\"_blank\">Pedro Pathing Official Site</a> and check out the <a href=\"https://pedropathing.com/docs/getting-started/quick-start\" target=\"_blank\">Quick Start Guide</a>.</p>"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": "<a href=\"#\" onclick=\"loadContent('ftc/path-planning/pedro-pathing/pedro-localization.json')\">Pedro Localization</a><a href=\"#\" onclick=\"loadContent('ftc/path-planning/pedro-pathing/pedro-advanced-configuration.json')\">Pedro Advanced Configuration</a><a href=\"#\" onclick=\"loadContent('ftc/android-studio/odometry/intro-to-odometry.json')\">Introduction to Odometry</a><a href=\"#\" onclick=\"loadContent('ftc/onbot-java/autonomous-programming/basic-autonomous-programming.json')\">Basic Autonomous Programming</a>"
+    }
+  ]
+} 

@@ -371,12 +371,18 @@ class ContentManager {
             h3.textContent = data.title;
             container.appendChild(h3);
         }
-        // Render content as HTML above the code block, if present
-        if (data.content) {
+        
+        // Determine what code to render - use content if no code property exists
+        const codeToRender = data.code || data.content;
+        
+        // Only render content as HTML above the code block if there's a code property AND content is different
+        // If there's no code property, content IS the code, so don't render it as HTML
+        if (data.code && data.content && data.content !== data.code) {
             const div = document.createElement('div');
             div.innerHTML = data.content;
             container.appendChild(div);
         }
+        
         const codeBlock = document.createElement('div');
         codeBlock.className = 'code-block';
         // Add language class if specified
@@ -389,7 +395,7 @@ class ContentManager {
         if (data.language) {
             code.className = `language-${data.language}`;
         }
-        code.textContent = data.code;
+        code.textContent = codeToRender;
         pre.appendChild(code);
         codeBlock.appendChild(pre);
         container.appendChild(codeBlock);
@@ -1070,8 +1076,10 @@ class NavigationManager {
             mainContent.style.marginLeft = `${sidebarOffset}px`;
             mainContent.style.maxWidth = `calc(100% - ${sidebarOffset}px)`;
         } else {
-            // If sidebar is not visible but we have a stored width, use it for the next time it opens
-            // This ensures the sidebar opens with the correct width immediately
+            // If sidebar is not visible, remove inline styles to let CSS handle transitions
+            mainContent.style.removeProperty('margin-left');
+            mainContent.style.removeProperty('max-width');
+            // Store the width for the next time it opens
             sidebarDrawer.dataset.storedWidth = optimalWidth;
         }
 
@@ -1184,9 +1192,9 @@ class NavigationManager {
         // Set the CSS variable to current width for smooth closing
         sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
         
-        // Reset main content with smooth transition
-        mainContent.style.marginLeft = '0';
-        mainContent.style.maxWidth = '100%';
+        // Remove inline styles from main content to let CSS handle the transition
+        mainContent.style.removeProperty('margin-left');
+        mainContent.style.removeProperty('max-width');
         
         // Clear stored width
         delete sidebarDrawer.dataset.currentWidth;
@@ -1289,16 +1297,30 @@ class NavigationManager {
                 this.highlightNavigation(tabId);
                 // Update header navigation
                 this.updateHeaderNavigation(newSection);
-                // Render content
-                this.contentManager.renderContent(tabId);
-                appState.setCurrentTab(tabId);
+                            // Render content
+            this.contentManager.renderContent(tabId);
+            appState.setCurrentTab(tabId);
+            
+            // Scroll to top of the page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 // Handle section navigation
                 await this.handleSectionNavigation(tabId);
             }
 
-            // Close mobile navigation
-            document.getElementById('__navigation').checked = false;
+            // Close mobile navigation and reset layout
+            const navCheckbox = document.getElementById('__navigation');
+            if (navCheckbox && navCheckbox.checked) {
+                // Set the CSS variable before closing to ensure smooth transition
+                const sidebarDrawer = document.querySelector('.sidebar-drawer');
+                if (sidebarDrawer) {
+                    const currentWidth = sidebarDrawer.style.width || '15em';
+                    sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
+                }
+                navCheckbox.checked = false;
+                // Reset layout immediately to ensure smooth transition
+                this.resetLayoutForHiddenSidebar();
+            }
             // Restore search results if there was an active search
             if (this.searchManager) {
                 this.searchManager.restoreSearchResults();
@@ -1358,6 +1380,9 @@ class NavigationManager {
             await this.contentManager.loadSectionContent(sectionId);
             const updatedSection = appState.config.sections[sectionId];
             
+            // Scroll to top of the page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
                     // After loading content and updating navigation, ensure sidebar is properly closed
         const navCheckbox2 = document.getElementById('__navigation');
         if (navCheckbox2 && navCheckbox2.checked) {
@@ -1365,6 +1390,8 @@ class NavigationManager {
             const currentWidth = sidebarDrawer.style.width || '15em';
             sidebarDrawer.style.setProperty('--sidebar-width', currentWidth);
             navCheckbox2.checked = false;
+            // Reset layout immediately to ensure smooth transition
+            this.resetLayoutForHiddenSidebar();
         }
 
             if (updatedSection.intro) {
@@ -2002,6 +2029,10 @@ class SidebarResizeManager {
                 const sidebarOffset = sidebarWidth + 32; // Reduced buffer for spacing
                 this.mainContent.style.marginLeft = `${sidebarOffset}px`;
                 this.mainContent.style.maxWidth = `calc(100% - ${sidebarOffset}px)`;
+            } else {
+                // If sidebar is not visible, remove inline styles to let CSS handle transitions
+                this.mainContent.style.removeProperty('margin-left');
+                this.mainContent.style.removeProperty('max-width');
             }
         }
     }
@@ -2085,6 +2116,8 @@ class EventManager {
                         // Ensure smooth transition before closing
                         this.navigationManager.ensureSmoothSidebarTransition();
                         navToggle.checked = false;
+                        // Reset layout immediately to ensure smooth transition
+                        this.navigationManager.resetLayoutForHiddenSidebar();
                     }
                 }
             });
@@ -2095,6 +2128,8 @@ class EventManager {
                         // Ensure smooth transition before closing
                         this.navigationManager.ensureSmoothSidebarTransition();
                         navToggle.checked = false;
+                        // Reset layout immediately to ensure smooth transition
+                        this.navigationManager.resetLayoutForHiddenSidebar();
                     }
                 }
             });

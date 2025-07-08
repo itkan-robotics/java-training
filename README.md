@@ -224,7 +224,8 @@ All content files follow a standardized JSON format:
     {
       "type": "code",
       "title": "Code Example",
-      "content": "public class Example {\n    // Code here\n}"
+      "content": "Code Explanation",
+      "code": "public class Example {\n    // Code here\n}"
     },
     {
       "type": "exercise-box",

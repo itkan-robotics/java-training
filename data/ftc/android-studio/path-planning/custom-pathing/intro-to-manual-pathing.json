@@ -1,0 +1,229 @@
+{
+  "title": "Introduction to Manual Pathing",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Manual Pathing?",
+      "content": "<p>Manual pathing is a fundamental approach to autonomous robot programming where you explicitly define each movement and action your robot should take. Unlike automated path planning libraries like RoadRunner, manual pathing gives you complete control over every aspect of your robot's autonomous behavior.</p><p>This approach is essential for understanding autonomous programming fundamentals and is often the first step teams take before moving to more advanced path planning solutions.</p>"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Why Learn Manual Pathing?",
+      "content": "<ul><li><strong>Complete Control:</strong> You decide exactly when and how your robot moves</li><li><strong>Understanding Fundamentals:</strong> Builds a solid foundation for advanced path planning</li><li><strong>Debugging Skills:</strong> Easier to troubleshoot when you control every step</li><li><strong>Flexibility:</strong> Can handle complex scenarios that automated solutions might struggle with</li><li><strong>Learning Tool:</strong> Essential for understanding how autonomous systems work</li></ul>"
+    },
+    {
+      "type": "text",
+      "title": "Path Planning Fundamentals",
+      "content": "<p>Before diving into code, it's important to understand the basic concepts behind path planning:</p><ul><li><strong>Discrete Commands:</strong> Break down complex movements into simple, discrete steps</li><li><strong>Sequencing:</strong> Execute commands in the correct order with proper timing</li><li><strong>State Management:</strong> Track what the robot is currently doing and what comes next</li><li><strong>Feedback Control:</strong> Use sensors to verify actions and make corrections</li></ul><p>Manual pathing implements these concepts through explicit programming rather than relying on automated algorithms.</p>"
+    },
+    {
+      "type": "text",
+      "title": "Basic Movement Command Structure",
+      "content": "<p>Let's start with a simple example of how to structure basic movement commands in an autonomous OpMode. We'll break this down into small, manageable pieces.</p><p>The key is to create separate methods for each type of movement, making your code more organized and easier to debug.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Step 1: Basic OpMode Structure",
+      "content": "First, let's set up the basic OpMode structure with hardware initialization:",
+      "code": "public class BasicManualPathing extends LinearOpMode {\n    // Hardware components\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n    private ElapsedTime runtime;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        runtime = new ElapsedTime();\n        \n        // Set motor directions\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        \n        waitForStart();\n        \n        // Your autonomous sequence will go here\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Understanding the Setup",
+      "content": "<p>Let's break down what we just created:</p><ul><li><strong>Hardware Variables:</strong> We declare our motors and timer as private variables</li><li><strong>Hardware Initialization:</strong> We get references to our motors from the hardware map</li><li><strong>Motor Directions:</strong> We set the direction for each motor (this may vary based on your robot's setup)</li><li><strong>Timer:</strong> We create an ElapsedTime object to track timing for our movements</li></ul><p>This basic structure is the foundation for all manual pathing OpModes.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Step 2: Basic Movement Methods",
+      "content": "Now let's add simple movement methods. These will be the building blocks of your autonomous routine:",
+      "code": "    // Basic movement methods\n    private void driveForward(double seconds) {\n        runtime.reset();\n        while (opModeIsActive() && runtime.seconds() < seconds) {\n            leftDrive.setPower(0.5);\n            rightDrive.setPower(0.5);\n        }\n        stop();\n    }\n    \n    private void turnRight(double seconds) {\n        runtime.reset();\n        while (opModeIsActive() && runtime.seconds() < seconds) {\n            leftDrive.setPower(0.3);\n            rightDrive.setPower(-0.3);\n        }\n        stop();\n    }\n    \n    private void stop() {\n        leftDrive.setPower(0);\n        rightDrive.setPower(0);\n    }"
+    },
+    {
+      "type": "text",
+      "title": "How Movement Methods Work",
+      "content": "<p>Let's understand each part of these movement methods:</p><ul><li><strong>Timer Reset:</strong> `runtime.reset()` starts timing from zero for each movement</li><li><strong>While Loop:</strong> The loop continues as long as the OpMode is active and we haven't reached our target time</li><li><strong>Motor Control:</strong> We set power to each motor (0.5 = 50% power, -0.3 = 30% power in reverse)</li><li><strong>Stop Method:</strong> Always call stop() to ensure motors are turned off</li></ul><p>For turning, we use different powers on each side: positive on one side, negative on the other.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Step 3: Complete Autonomous Sequence",
+      "content": "Now let's put it all together with a complete autonomous sequence:",
+      "code": "    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        runtime = new ElapsedTime();\n        \n        // Set motor directions\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        \n        waitForStart();\n        \n        // Execute autonomous sequence\n        driveForward(2.0);  // Drive forward for 2 seconds\n        turnRight(1.0);     // Turn right for 1 second\n        driveForward(1.5);  // Drive forward for 1.5 seconds\n        stop();             // Stop all motors\n    }"
+    },
+    {
+      "type": "text",
+      "title": "State Machine Implementation",
+      "content": "<p>State machines are essential for managing complex autonomous sequences. They help you organize your code by breaking down the autonomous period into distinct states or phases.</p><p>A state machine consists of:</p><ul><li><strong>States:</strong> Different phases of your autonomous program</li><li><strong>Transitions:</strong> Conditions that move from one state to the next</li><li><strong>Actions:</strong> What the robot does in each state</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 1: Define States",
+      "content": "First, let's define our states using an enum. This makes our code more readable and organized:",
+      "code": "public class StateMachinePathing extends LinearOpMode {\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n    private ElapsedTime runtime;\n    \n    // Define states as constants\n    private enum State {\n        DRIVE_FORWARD,\n        TURN_RIGHT,\n        DRIVE_TO_TARGET,\n        COMPLETE\n    }\n    \n    private State currentState = State.DRIVE_FORWARD;"
+    },
+    {
+      "type": "text",
+      "title": "Understanding States",
+      "content": "<p>Each state represents a different phase of your autonomous routine:</p><ul><li><strong>DRIVE_FORWARD:</strong> Robot drives straight ahead</li><li><strong>TURN_RIGHT:</strong> Robot turns to the right</li><li><strong>DRIVE_TO_TARGET:</strong> Robot drives to a final position</li><li><strong>COMPLETE:</strong> Autonomous routine is finished</li></ul><p>The `currentState` variable tracks which state we're currently in.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Step 2: State Machine Loop Structure",
+      "content": "Now let's create the main state machine loop that will handle state transitions:",
+      "code": "    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        runtime = new ElapsedTime();\n        \n        waitForStart();\n        \n        // Main state machine loop\n        while (opModeIsActive()) {\n            switch (currentState) {\n                case DRIVE_FORWARD:\n                    // Handle driving forward state\n                    break;\n                    \n                case TURN_RIGHT:\n                    // Handle turning right state\n                    break;\n                    \n                case DRIVE_TO_TARGET:\n                    // Handle driving to target state\n                    break;\n                    \n                case COMPLETE:\n                    // Autonomous complete\n                    break;\n            }\n            \n            // Add telemetry for debugging\n            telemetry.addData(\"Current State\", currentState);\n            telemetry.addData(\"Runtime\", runtime.seconds());\n            telemetry.update();\n        }\n    }"
+    },
+    {
+      "type": "text",
+      "title": "How the State Machine Works",
+      "content": "<p>The state machine uses a switch statement to handle each state:</p><ul><li><strong>Switch Statement:</strong> Checks the current state and executes the appropriate code</li><li><strong>State Transitions:</strong> Each state can change the `currentState` variable to move to the next state</li><li><strong>Continuous Loop:</strong> The while loop runs continuously, checking the state each time</li><li><strong>Telemetry:</strong> We display the current state and runtime for debugging</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 3: Implement Individual States",
+      "content": "Now let's implement the logic for each state. We'll start with the DRIVE_FORWARD state:",
+      "code": "                case DRIVE_FORWARD:\n                    if (runtime.seconds() < 2.0) {\n                        driveForward(0.5);\n                    } else {\n                        stop();\n                        currentState = State.TURN_RIGHT;\n                        runtime.reset();\n                    }\n                    break;"
+    },
+    {
+      "type": "text",
+      "title": "Understanding State Logic",
+      "content": "<p>Let's break down how this state works:</p><ul><li><strong>Time Check:</strong> `runtime.seconds() < 2.0` checks if we've been in this state for less than 2 seconds</li><li><strong>Action:</strong> If we're still within the time limit, we call `driveForward(0.5)`</li><li><strong>State Transition:</strong> When time is up, we stop the motors and change to the next state</li><li><strong>Timer Reset:</strong> We reset the timer for the next state</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 4: Complete State Implementations",
+      "content": "Let's implement the remaining states:",
+      "code": "                case TURN_RIGHT:\n                    if (runtime.seconds() < 1.0) {\n                        turnRight(0.3);\n                    } else {\n                        stop();\n                        currentState = State.DRIVE_TO_TARGET;\n                        runtime.reset();\n                    }\n                    break;\n                    \n                case DRIVE_TO_TARGET:\n                    if (runtime.seconds() < 1.5) {\n                        driveForward(0.4);\n                    } else {\n                        stop();\n                        currentState = State.COMPLETE;\n                    }\n                    break;\n                    \n                case COMPLETE:\n                    // Autonomous complete - do nothing\n                    break;"
+    },
+    {
+      "type": "text",
+      "title": "Encoder-Based Movement Control",
+      "content": "<p>Using encoders provides much more precise control than time-based movement. Encoders give you feedback about how far your robot has actually moved, allowing for more consistent and accurate autonomous performance.</p><p>Key benefits of encoder-based movement:</p><ul><li><strong>Precision:</strong> Move exact distances regardless of battery level or surface conditions</li><li><strong>Consistency:</strong> More reliable performance across different runs</li><li><strong>Feedback:</strong> Know exactly where your robot is positioned</li><li><strong>Correction:</strong> Can make adjustments based on actual movement</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 1: Encoder Constants Setup",
+      "content": "First, let's set up the constants needed for encoder-based movement:",
+      "code": "public class EncoderBasedPathing extends LinearOpMode {\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n    private ElapsedTime runtime;\n    \n    // Encoder constants (adjust for your robot)\n    private static final double COUNTS_PER_MOTOR_REV = 1440; // Example for REV HD Hex\n    private static final double DRIVE_GEAR_REDUCTION = 1.0;  // No external gearing\n    private static final double WHEEL_DIAMETER_MM = 90.0;    // 90mm wheels\n    private static final double COUNTS_PER_MM = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / \n                                                (WHEEL_DIAMETER_MM * Math.PI);"
+    },
+    {
+      "type": "text",
+      "title": "Understanding Encoder Constants",
+      "content": "<p>These constants are crucial for accurate encoder-based movement:</p><ul><li><strong>COUNTS_PER_MOTOR_REV:</strong> How many encoder counts per motor revolution (check your motor specs)</li><li><strong>DRIVE_GEAR_REDUCTION:</strong> Any external gearing between motor and wheel</li><li><strong>WHEEL_DIAMETER_MM:</strong> Diameter of your drive wheels in millimeters</li><li><strong>COUNTS_PER_MM:</strong> Calculated value - how many encoder counts equal 1mm of movement</li></ul><p>You'll need to adjust these values for your specific robot setup.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Step 2: Encoder Initialization",
+      "content": "Next, let's set up the encoders properly in the OpMode:",
+      "code": "    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        runtime = new ElapsedTime();\n        \n        // Set motor directions\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        \n        // Set motor modes for encoder use\n        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        \n        waitForStart();\n        \n        // Execute encoder-based movements\n        driveDistance(500, 0.5);  // Drive 500mm forward\n        turnDistance(200, 0.3);   // Turn 200mm arc\n        driveDistance(300, 0.4);  // Drive 300mm forward\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Encoder Setup Explanation",
+      "content": "<p>Key steps in encoder setup:</p><ul><li><strong>STOP_AND_RESET_ENCODER:</strong> This mode stops the motor and resets the encoder count to zero</li><li><strong>Wait for Reset:</strong> The encoders need time to reset, so we call this before starting</li><li><strong>Distance Parameters:</strong> Our movement methods now take distance in millimeters instead of time</li></ul><p>This gives us much more precise control over robot movement.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Step 3: Drive Distance Method",
+      "content": "Now let's implement the driveDistance method that uses encoders:",
+      "code": "    private void driveDistance(double distanceMM, double speed) {\n        // Calculate target encoder counts\n        int targetCounts = (int) (distanceMM * COUNTS_PER_MM);\n        \n        // Set target positions for both motors\n        leftDrive.setTargetPosition(targetCounts);\n        rightDrive.setTargetPosition(targetCounts);\n        \n        // Set to RUN_TO_POSITION mode\n        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        \n        // Start motors\n        leftDrive.setPower(Math.abs(speed));\n        rightDrive.setPower(Math.abs(speed));\n        \n        // Wait until both motors reach target\n        while (opModeIsActive() && \n               (leftDrive.isBusy() && rightDrive.isBusy())) {\n            \n            // Display encoder values for debugging\n            telemetry.addData(\"Left Target\", targetCounts);\n            telemetry.addData(\"Left Current\", leftDrive.getCurrentPosition());\n            telemetry.addData(\"Right Target\", targetCounts);\n            telemetry.addData(\"Right Current\", rightDrive.getCurrentPosition());\n            telemetry.update();\n        }\n        \n        // Stop motors\n        stop();\n        \n        // Reset to RUN_WITHOUT_ENCODER for next movement\n        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }"
+    },
+    {
+      "type": "text",
+      "title": "How Drive Distance Works",
+      "content": "<p>Let's break down this encoder-based movement method:</p><ul><li><strong>Target Calculation:</strong> Convert distance in mm to encoder counts</li><li><strong>Set Targets:</strong> Tell each motor where to stop</li><li><strong>RUN_TO_POSITION:</strong> This mode automatically stops the motor when it reaches the target</li><li><strong>Busy Check:</strong> `isBusy()` returns true while the motor is moving to its target</li><li><strong>Telemetry:</strong> Display current vs target positions for debugging</li><li><strong>Mode Reset:</strong> Switch back to RUN_WITHOUT_ENCODER for the next movement</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 4: Turn Distance Method",
+      "content": "Now let's implement turning using encoders:",
+      "code": "    private void turnDistance(double arcDistanceMM, double speed) {\n        // Calculate target encoder counts\n        int targetCounts = (int) (arcDistanceMM * COUNTS_PER_MM);\n        \n        // For turning, one wheel moves forward, one backward\n        leftDrive.setTargetPosition(targetCounts);\n        rightDrive.setTargetPosition(-targetCounts);\n        \n        // Set to RUN_TO_POSITION mode\n        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n        \n        // Start motors\n        leftDrive.setPower(Math.abs(speed));\n        rightDrive.setPower(Math.abs(speed));\n        \n        // Wait until both motors reach target\n        while (opModeIsActive() && \n               (leftDrive.isBusy() && rightDrive.isBusy())) {\n            telemetry.addData(\"Turn Progress\", \"Left: %d, Right: %d\", \n                             leftDrive.getCurrentPosition(), \n                             rightDrive.getCurrentPosition());\n            telemetry.update();\n        }\n        \n        // Stop motors\n        stop();\n        \n        // Reset to RUN_WITHOUT_ENCODER for next movement\n        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n    }"
+    },
+    {
+      "type": "text",
+      "title": "How Turn Distance Works",
+      "content": "<p>The key difference in turning is the target positions:</p><ul><li><strong>Opposite Targets:</strong> One motor gets a positive target, the other gets a negative target</li><li><strong>Arc Distance:</strong> The parameter represents the distance one wheel travels in an arc</li><li><strong>Same Speed:</strong> Both motors use the same speed but move in opposite directions</li><li><strong>Precise Turning:</strong> This gives you much more accurate turns than time-based methods</li></ul><p>You'll need to calibrate the arc distance for your specific robot's wheelbase.</p>"
+    },
+    {
+      "type": "text",
+      "title": "Timing and Synchronization",
+      "content": "<p>Proper timing and synchronization are crucial for reliable autonomous performance. You need to ensure that different robot actions happen in the correct sequence and with appropriate timing.</p><p>Key timing considerations:</p><ul><li><strong>Delays:</strong> Allow time for mechanisms to complete actions</li><li><strong>Synchronization:</strong> Coordinate multiple systems working together</li><li><strong>Timeout Protection:</strong> Prevent the robot from getting stuck</li><li><strong>State Transitions:</strong> Ensure smooth transitions between different phases</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 1: Multiple Timer Setup",
+      "content": "Let's create a more sophisticated timing system with multiple timers:",
+      "code": "public class TimedPathing extends LinearOpMode {\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n    private Servo armServo;\n    private ElapsedTime runtime;\n    private ElapsedTime stateTimer;\n    \n    private enum State {\n        DRIVE_FORWARD,\n        LOWER_ARM,\n        WAIT_FOR_ARM,\n        TURN_RIGHT,\n        COMPLETE\n    }\n    \n    private State currentState = State.DRIVE_FORWARD;"
+    },
+    {
+      "type": "text",
+      "title": "Multiple Timer Benefits",
+      "content": "<p>Using multiple timers gives us better control:</p><ul><li><strong>Runtime:</strong> Tracks total autonomous time</li><li><strong>StateTimer:</strong> Tracks time within each state</li><li><strong>Independent Timing:</strong> Each state can have its own timing requirements</li><li><strong>Better Debugging:</strong> We can see both total time and state-specific time</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Step 2: State Machine with Timing",
+      "content": "Now let's implement the state machine with proper timing control:",
+      "code": "    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        runtime = new ElapsedTime();\n        stateTimer = new ElapsedTime();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            switch (currentState) {\n                case DRIVE_FORWARD:\n                    // Handle driving forward\n                    break;\n                    \n                case LOWER_ARM:\n                    // Handle lowering arm\n                    break;\n                    \n                case WAIT_FOR_ARM:\n                    // Handle waiting for arm\n                    break;\n                    \n                case TURN_RIGHT:\n                    // Handle turning right\n                    break;\n                    \n                case COMPLETE:\n                    // Autonomous complete\n                    break;\n            }\n            \n            // Telemetry for debugging\n            telemetry.addData(\"State\", currentState);\n            telemetry.addData(\"State Timer\", \"%.1f\", stateTimer.seconds());\n            telemetry.addData(\"Total Runtime\", \"%.1f\", runtime.seconds());\n            telemetry.update();\n        }\n    }"
+    },
+    {
+      "type": "code",
+      "title": "Step 3: Implement Individual States with Timing",
+      "content": "Let's implement each state with proper timing and synchronization:",
+      "code": "                case DRIVE_FORWARD:\n                    if (stateTimer.seconds() < 2.0) {\n                        driveForward(0.5);\n                    } else {\n                        stop();\n                        currentState = State.LOWER_ARM;\n                        stateTimer.reset();\n                    }\n                    break;\n                    \n                case LOWER_ARM:\n                    // Lower the arm\n                    armServo.setPosition(0.8);\n                    currentState = State.WAIT_FOR_ARM;\n                    stateTimer.reset();\n                    break;\n                    \n                case WAIT_FOR_ARM:\n                    // Wait for arm to reach position (1 second)\n                    if (stateTimer.seconds() >= 1.0) {\n                        currentState = State.TURN_RIGHT;\n                        stateTimer.reset();\n                    }\n                    break;\n                    \n                case TURN_RIGHT:\n                    if (stateTimer.seconds() < 1.5) {\n                        turnRight(0.3);\n                    } else {\n                        stop();\n                        currentState = State.COMPLETE;\n                    }\n                    break;"
+    },
+    {
+      "type": "text",
+      "title": "Timing and Synchronization Explanation",
+      "content": "<p>This implementation shows several important timing concepts:</p><ul><li><strong>State-Specific Timing:</strong> Each state has its own timing requirements</li><li><strong>Mechanism Synchronization:</strong> We wait for the arm servo to complete its movement</li><li><strong>Timer Reset:</strong> We reset the state timer when transitioning to a new state</li><li><strong>Timeout Protection:</strong> Each state has a maximum time limit to prevent getting stuck</li><li><strong>Immediate Transitions:</strong> Some states (like LOWER_ARM) transition immediately after starting an action</li></ul>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise: Basic Manual Pathing",
+      "description": "Create a simple autonomous program that demonstrates manual pathing concepts:",
+      "tasks": [
+        "Create an OpMode that drives forward for 3 seconds",
+        "Add a right turn for 1.5 seconds",
+        "Drive forward again for 2 seconds",
+        "Add a left turn for 1 second",
+        "Drive backward for 1 second",
+        "Use telemetry to display the current movement phase"
+      ],
+      "code": "// Start with this basic structure:\npublic class PracticePathing extends LinearOpMode {\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n    private ElapsedTime runtime;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize your hardware here\n        \n        waitForStart();\n        \n        // Add your movement sequence here\n        \n    }\n    \n    // Add your movement methods here\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices and Tips",
+      "content": "<p>Here are some important best practices for manual pathing:</p><ul><li><strong>Start Simple:</strong> Begin with basic movements and gradually add complexity</li><li><strong>Use Constants:</strong> Define timing and distance values as constants for easy adjustment</li><li><strong>Add Telemetry:</strong> Always include telemetry for debugging and monitoring</li><li><strong>Test Incrementally:</strong> Test each movement individually before combining them</li><li><strong>Plan Your States:</strong> Clearly define what each state should accomplish</li><li><strong>Handle Errors:</strong> Include timeout protection and error handling</li><li><strong>Document Your Code:</strong> Add comments explaining your logic and timing</li></ul>"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "title": "FTC SDK Basics",
+          "description": "Learn the fundamentals of the FTC SDK",
+          "url": "data/ftc/onbot-java/environment-setup/ftc-sdk-basics.json"
+        },
+        {
+          "title": "Basic Motor Control",
+          "description": "Understanding motor control fundamentals",
+          "url": "data/ftc/onbot-java/motors/basic-motor-control.json"
+        },
+        {
+          "title": "Motor Encoders",
+          "description": "Working with motor encoders for precise control",
+          "url": "data/ftc/onbot-java/motors/motor-encoders.json"
+        },
+        {
+          "title": "State Machines",
+          "description": "Advanced state machine implementation",
+          "url": "data/ftc/onbot-java/obj-debugging-best-practices/state-machines.json"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "External Resources",
+      "content": "<p>For more information on manual pathing and autonomous programming, check out these resources:</p><ul><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/mecanum.html\" target=\"_blank\">gm0: Mecanum Drive Tutorial</a> - Learn about different drive systems</li><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/autonomous.html\" target=\"_blank\">gm0: Autonomous Programming</a> - Comprehensive autonomous programming guide</li><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/state-machines.html\" target=\"_blank\">gm0: State Machines</a> - Advanced state machine concepts</li><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/encoders.html\" target=\"_blank\">gm0: Encoder Tutorial</a> - Working with encoders</li><li><a href=\"https://ftc-docs.firstinspires.org/en/latest/ftc_toolbox/ftc_java_toolbox/ftc_java_toolbox.html\" target=\"_blank\">FTC Java Toolbox Documentation</a> - Official FTC SDK documentation</li></ul>"
+    }
+  ]
+}

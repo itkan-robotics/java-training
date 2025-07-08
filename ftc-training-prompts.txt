@@ -1,22 +1,26 @@
-You are writing an FTC training website for students who are new to FTC but already have prior Java programming experience. For each of the topics listed in the [SECTION PATH] folder as specified in @ftc-training-organization.txt, plan out what you would talk about within each topic. Base your plans on reputable external sources, including official FTC documentation, REV Robotics documentation, gm0.org, and any other recognized FTC learning resources.
+You are writing an FTC training website for students who are new to FTC but already have prior Java programming experience. For each of the topics listed in the [SECTION PATH] folder as specified in @ftc-training-organization.txt, , plan out what you would talk about within each topic. Base your plans on reputable external sources, including official FTC documentation, REV Robotics documentation, GoBILDA documentation, PedroPathing documentation, RoadRunner documentation, gm0.org, and any other recognized FTC learning resources.
 
 For each topic, produce a bullet-point lesson plan listing the key concepts you will cover. For each concept, briefly explain why it is important and how you will teach it. Also specify which documentation you will reference, and provide working links in proper HTML anchor tag form (for example, <a href="https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html" target="_blank">gm0: SDK Introduction</a>) so students can explore on their own.
 
 In the lesson plans, emphasize that you do not want large, monolithic code files. If a lesson might require a long code example, instead break it into multiple smaller, focused code examples to help students understand each section of the logic in more detail.
 
+Make sure the plan is something you are able to carry out with your capabilities.
+
 After you finish outlining every topic in the [SECTION PATH] folder, pause and wait for me to review before continuing. Do not rewrite or edit existing lesson files yet — only produce the lesson plans first, with links and concept breakdowns.
 
 ---
 
-Continue from the curriculum plan you built for [SECTION NAMES]. Now, rewrite the existing files in the [SECTION PATH] folder to reflect the new curriculum you planned. Incorporate the topics, explanations, and references you described. Also incorporate relevant information where appropriate in the form of HTML reference links (for example, <a href="https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html" target="_blank">gm0: SDK Introduction</a>).
+Continue from the curriculum plan you built for [SECTION NAMES]. Now, write in new files into [SECTION PATH] to follow the curriculum AS CLOSELY AS POSSIBLE. Incorporate the topics, explanations, and references you described. Also incorporate relevant information where appropriate in the form of HTML reference links (for example, <a href="https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html" target="_blank">gm0: SDK Introduction</a>).
 
-Be sure to format the lesson pages in JSON-compatible text or valid HTML, ready for use in the Cursor editor. When including code, use the appropriate code section type. If the code is too short to be meaningful, expand it to a medium-length snippet that helps students grasp the concept more thoroughly. If a large code block is truly necessary to demonstrate a complete working concept, include it, but only if absolutely required and explain why.
+Be sure to format the lesson pages in JSON-compatible text or valid HTML, ready for by @script.js managers. When including code, use the appropriate code section type. If the code is too short to be meaningful, expand it to a medium-length snippet that helps students grasp the concept more thoroughly. If a large code block is truly necessary to demonstrate a complete working concept, include it, but only if absolutely required and explain why. Additionally, if you believe you need a large code file, prefer to separate it into more manageable chunks with thorough explanation then assemble the large file at the end of the page, rather than having multiple long code blocks in one file.
 
-Once you finish rewriting ALL of the lesson files in @/motors, @/servos, and @/sensors, go back through each one and convert any markdown formatting into valid json formatting. Confirm all lesson pages have:
+Once you finish rewriting ALL of the lesson files in [SECTION PATH], go back through each one and convert any markdown formatting into valid json formatting. Confirm all lesson pages have:
 - consistent explanations
 - proper json elements
 - correct and relevant links
 - well-structured code sections
 - good logical flow
+- only use section types found in @README.md and do not hallucinate new types.
 
 Do NOT stop until ALL files for ALL folders are FULLY rewritten and CHECKED for formatting errors.
+After that, update the @ftc-specific-config.json file to reflect the new files made.

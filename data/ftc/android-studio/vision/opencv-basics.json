@@ -1,0 +1,89 @@
+{
+  "title": "OpenCV Basics",
+  "sections": [
+    {
+      "type": "text",
+      "title": "OpenCV in FTC",
+      "content": "OpenCV (Open Source Computer Vision Library) is a powerful computer vision library that provides the foundation for most advanced vision processing in FTC. The FTC SDK includes OpenCV integration, allowing you to perform sophisticated image processing operations directly in your robot code.<br><br>OpenCV provides hundreds of functions for image processing, feature detection, machine learning, and more. In FTC, you'll primarily use OpenCV through custom pipelines that extend the OpenCvPipeline class."
+    },
+    {
+      "type": "rules-box",
+      "title": "OpenCV Advantages in FTC",
+      "items": [
+        "Comprehensive image processing capabilities",
+        "Real-time performance optimization",
+        "Extensive documentation and community support",
+        "Cross-platform compatibility",
+        "Integration with other vision tools",
+        "Custom algorithm development"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Setting Up OpenCV in FTC",
+      "content": "OpenCV is already included in the FTC SDK, so no additional setup is required. To use OpenCV in your robot code, you simply need to extend the OpenCvPipeline class and implement the processFrame method.<br><br>The basic structure involves:<br>• <strong>Extending OpenCvPipeline:</strong> Create a custom pipeline class<br>• <strong>Implementing processFrame:</strong> Define your image processing logic<br>• <strong>Adding to Vision Portal:</strong> Register your pipeline with the vision system<br>• <strong>Accessing Results:</strong> Retrieve processed data for robot control"
+    },
+    {
+      "type": "code",
+      "title": "Basic OpenCV Pipeline Structure",
+      "content": "Here's the basic structure for creating an OpenCV pipeline in FTC:",
+      "code": "public class BasicOpenCvPipeline extends OpenCvPipeline {\n    // Pipeline state variables\n    private Mat processedImage;\n    private boolean isProcessing = false;\n    \n    // Results storage\n    private List<Point> detectedPoints = new ArrayList<>();\n    private double confidence = 0.0;\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        // Create output matrix\n        Mat output = input.clone();\n        \n        try {\n            // Step 1: Preprocessing\n            Mat preprocessed = preprocessImage(input);\n            \n            // Step 2: Feature detection\n            detectFeatures(preprocessed);\n            \n            // Step 3: Draw results on output\n            drawResults(output);\n            \n            // Step 4: Clean up intermediate matrices\n            preprocessed.release();\n            \n        } catch (Exception e) {\n            // Handle processing errors gracefully\n            telemetry.addData(\"Vision Error\", e.getMessage());\n        }\n        \n        return output;\n    }\n    \n    private Mat preprocessImage(Mat input) {\n        // Convert to grayscale for processing\n        Mat gray = new Mat();\n        Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);\n        \n        // Apply Gaussian blur to reduce noise\n        Mat blurred = new Mat();\n        Imgproc.GaussianBlur(gray, blurred, new Size(5, 5), 0);\n        \n        gray.release();\n        return blurred;\n    }\n    \n    private void detectFeatures(Mat image) {\n        // Your feature detection logic here\n        // This is where you'll implement specific detection algorithms\n    }\n    \n    private void drawResults(Mat output) {\n        // Draw detection results on the output image\n        for (Point point : detectedPoints) {\n            Imgproc.circle(output, point, 10, new Scalar(0, 255, 0), 2);\n        }\n    }\n    \n    // Getter methods for accessing results\n    public List<Point> getDetectedPoints() {\n        return new ArrayList<>(detectedPoints);\n    }\n    \n    public double getConfidence() {\n        return confidence;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Image Processing Fundamentals",
+      "content": "Image processing is the foundation of computer vision. Understanding basic operations helps you build more complex vision systems.<br><br><strong>Key Image Processing Operations:</strong><br>• <strong>Filtering:</strong> Smoothing, sharpening, and noise reduction<br>• <strong>Thresholding:</strong> Converting images to binary based on pixel values<br>• <strong>Morphological Operations:</strong> Erosion, dilation, opening, and closing<br>• <strong>Edge Detection:</strong> Finding boundaries and contours in images<br>• <strong>Color Space Conversion:</strong> Converting between different color representations"
+    },
+    {
+      "type": "code",
+      "title": "Basic Image Processing Operations",
+      "content": "Examples of common image processing operations in OpenCV:",
+      "code": "public class ImageProcessingPipeline extends OpenCvPipeline {\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        Mat output = input.clone();\n        \n        // 1. Gaussian Blur (Noise Reduction)\n        Mat blurred = new Mat();\n        Imgproc.GaussianBlur(input, blurred, new Size(5, 5), 0);\n        \n        // 2. Convert to HSV Color Space\n        Mat hsv = new Mat();\n        Imgproc.cvtColor(blurred, hsv, Imgproc.COLOR_RGB2HSV);\n        \n        // 3. Color Thresholding\n        Mat mask = new Mat();\n        Core.inRange(hsv, new Scalar(0, 100, 100), new Scalar(10, 255, 255), mask);\n        \n        // 4. Morphological Operations\n        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));\n        Mat morphed = new Mat();\n        Imgproc.morphologyEx(mask, morphed, Imgproc.MORPH_CLOSE, kernel);\n        \n        // 5. Find Contours\n        List<MatOfPoint> contours = new ArrayList<>();\n        Mat hierarchy = new Mat();\n        Imgproc.findContours(morphed, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);\n        \n        // 6. Draw Results\n        Imgproc.drawContours(output, contours, -1, new Scalar(0, 255, 0), 2);\n        \n        // Clean up\n        blurred.release();\n        hsv.release();\n        mask.release();\n        morphed.release();\n        hierarchy.release();\n        \n        return output;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Color Space Conversions",
+      "content": "Different color spaces are better suited for different vision tasks. Understanding color space conversions is crucial for effective color-based detection.<br><br><strong>Common Color Spaces:</strong><br>• <strong>RGB:</strong> Red, Green, Blue - standard color representation<br>• <strong>HSV:</strong> Hue, Saturation, Value - excellent for color segmentation<br>• <strong>YUV:</strong> Luminance and Chrominance - good for video processing<br>• <strong>LAB:</strong> Lightness and color channels - perceptually uniform<br>• <strong>Grayscale:</strong> Single channel intensity - good for shape analysis"
+    },
+    {
+      "type": "code",
+      "title": "Color Space Conversion Examples",
+      "content": "Examples of color space conversions and their applications:",
+      "code": "public class ColorSpacePipeline extends OpenCvPipeline {\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        Mat output = input.clone();\n        \n        // Convert to different color spaces\n        Mat hsv = new Mat();\n        Mat yuv = new Mat();\n        Mat lab = new Mat();\n        Mat gray = new Mat();\n        \n        // RGB to HSV (good for color detection)\n        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);\n        \n        // RGB to YUV (good for video processing)\n        Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2YUV);\n        \n        // RGB to LAB (perceptually uniform)\n        Imgproc.cvtColor(input, lab, Imgproc.COLOR_RGB2Lab);\n        \n        // RGB to Grayscale (good for shape analysis)\n        Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);\n        \n        // Example: Red color detection in HSV\n        Mat redMask = new Mat();\n        // Red wraps around in HSV (0-10 and 170-180)\n        Mat redMask1 = new Mat();\n        Mat redMask2 = new Mat();\n        Core.inRange(hsv, new Scalar(0, 100, 100), new Scalar(10, 255, 255), redMask1);\n        Core.inRange(hsv, new Scalar(170, 100, 100), new Scalar(180, 255, 255), redMask2);\n        Core.add(redMask1, redMask2, redMask);\n        \n        // Apply mask to original image\n        Mat redResult = new Mat();\n        Core.bitwise_and(input, input, redResult, redMask);\n        \n        // Combine with output\n        Core.addWeighted(output, 0.7, redResult, 0.3, 0, output);\n        \n        // Clean up\n        hsv.release();\n        yuv.release();\n        lab.release();\n        gray.release();\n        redMask.release();\n        redMask1.release();\n        redMask2.release();\n        redResult.release();\n        \n        return output;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Contour Detection and Analysis",
+      "content": "Contours are the boundaries of objects in images. They're essential for detecting shapes, measuring objects, and analyzing object properties.<br><br><strong>Contour Detection Process:</strong><br>1. <strong>Preprocessing:</strong> Convert to grayscale and apply filters<br>2. <strong>Thresholding:</strong> Create binary image<br>3. <strong>Morphological Operations:</strong> Clean up noise<br>4. <strong>Contour Finding:</strong> Detect object boundaries<br>5. <strong>Analysis:</strong> Measure and classify contours"
+    },
+    {
+      "type": "code",
+      "title": "Contour Detection and Analysis Example",
+      "content": "Complete example of contour detection and analysis:",
+      "code": "public class ContourDetectionPipeline extends OpenCvPipeline {\n    private List<MatOfPoint> detectedContours = new ArrayList<>();\n    private List<Rect> boundingBoxes = new ArrayList<>();\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        Mat output = input.clone();\n        \n        // Clear previous results\n        detectedContours.clear();\n        boundingBoxes.clear();\n        \n        // 1. Convert to grayscale\n        Mat gray = new Mat();\n        Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);\n        \n        // 2. Apply Gaussian blur\n        Mat blurred = new Mat();\n        Imgproc.GaussianBlur(gray, blurred, new Size(5, 5), 0);\n        \n        // 3. Apply threshold\n        Mat thresh = new Mat();\n        Imgproc.threshold(blurred, thresh, 127, 255, Imgproc.THRESH_BINARY);\n        \n        // 4. Find contours\n        List<MatOfPoint> contours = new ArrayList<>();\n        Mat hierarchy = new Mat();\n        Imgproc.findContours(thresh, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);\n        \n        // 5. Filter and analyze contours\n        for (MatOfPoint contour : contours) {\n            // Calculate contour area\n            double area = Imgproc.contourArea(contour);\n            \n            // Filter by minimum area\n            if (area > 1000) { // Minimum 1000 pixels\n                // Calculate bounding rectangle\n                Rect boundingRect = Imgproc.boundingRect(contour);\n                \n                // Calculate aspect ratio\n                double aspectRatio = (double) boundingRect.width / boundingRect.height;\n                \n                // Filter by aspect ratio (looking for roughly square objects)\n                if (aspectRatio > 0.5 && aspectRatio < 2.0) {\n                    detectedContours.add(contour);\n                    boundingBoxes.add(boundingRect);\n                    \n                    // Draw contour\n                    Imgproc.drawContours(output, contours, contours.indexOf(contour), \n                        new Scalar(0, 255, 0), 2);\n                    \n                    // Draw bounding rectangle\n                    Imgproc.rectangle(output, boundingRect, new Scalar(255, 0, 0), 2);\n                    \n                    // Add text with area\n                    Point textPoint = new Point(boundingRect.x, boundingRect.y - 10);\n                    Imgproc.putText(output, String.format(\"Area: %.0f\", area), \n                        textPoint, Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 1);\n                }\n            }\n        }\n        \n        // Clean up\n        gray.release();\n        blurred.release();\n        thresh.release();\n        hierarchy.release();\n        \n        return output;\n    }\n    \n    // Getter methods for accessing results\n    public List<MatOfPoint> getDetectedContours() {\n        return new ArrayList<>(detectedContours);\n    }\n    \n    public List<Rect> getBoundingBoxes() {\n        return new ArrayList<>(boundingBoxes);\n    }\n    \n    public int getContourCount() {\n        return detectedContours.size();\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "OpenCV Color Detection Exercise",
+      "description": "Create an OpenCV pipeline to detect multiple colors and measure their properties",
+      "tasks": [
+        "Create a pipeline that detects red, blue, and green objects",
+        "Implement contour detection for each color",
+        "Calculate and display the area and center of each detected object",
+        "Add filtering to remove noise and small objects",
+        "Test the pipeline with different lighting conditions"
+      ],
+      "content": "Build a comprehensive color detection system using OpenCV. The system should detect objects of different colors, measure their properties, and provide reliable results in various lighting conditions."
+    },
+    {
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "links": [
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/opencv.html\" target=\"_blank\">FTC OpenCV Documentation</a>",
+        "<a href=\"https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html\" target=\"_blank\">OpenCV Tutorials</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/vision.html#color-spaces\" target=\"_blank\">gm0: Color Spaces</a>",
+        "<a href=\"https://docs.opencv.org/4.x/d4/d73/tutorial_py_contours_begin.html\" target=\"_blank\">OpenCV Contour Tutorial</a>"
+      ]
+    }
+  ]
+} 

@@ -3,195 +3,70 @@
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Computer Vision in FTC",
-      "content": "Computer vision is a powerful tool that allows your robot to 'see' and understand its environment. This lesson introduces the fundamental concepts and techniques for implementing vision systems in FTC robotics."
-    },
-    {
-      "type": "rules-box",
       "title": "What is Computer Vision?",
-      "subtitle": "Computer vision enables robots to:",
-      "items": [
-        "Detect and identify objects in the environment",
-        "Measure distances and positions of objects",
-        "Navigate autonomously using visual landmarks",
-        "Make decisions based on visual information",
-        "Interact with game elements more precisely"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Vision System Components",
-      "content": "A complete vision system consists of several key components that work together to process visual information."
-    },
-    {
-      "type": "list",
-      "title": "Vision System Architecture",
-      "items": [
-        "<strong>Camera:</strong> Captures images of the environment",
-        "<strong>Image Processing:</strong> Analyzes and processes the captured images",
-        "<strong>Object Detection:</strong> Identifies specific objects or patterns",
-        "<strong>Position Estimation:</strong> Calculates object positions and distances",
-        "<strong>Decision Making:</strong> Uses visual information to control robot behavior"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "FTC Vision Hardware",
-      "content": "FTC provides several hardware options for implementing vision systems."
-    },
-    {
-      "type": "list",
-      "title": "Available Vision Hardware",
-      "items": [
-        "<strong>Built-in Camera:</strong> Integrated camera on the Control Hub",
-        "<strong>External USB Camera:</strong> Additional cameras for specific applications",
-        "<strong>Color Sensors:</strong> Simple color detection for basic vision tasks",
-        "<strong>Distance Sensors:</strong> Infrared sensors for proximity detection",
-        "<strong>IMU Sensors:</strong> Orientation sensors for navigation assistance"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Vision Processing Libraries",
-      "content": "Several libraries are available for implementing vision processing in FTC."
-    },
-    {
-      "type": "list",
-      "title": "Popular Vision Libraries",
-      "items": [
-        "<strong>OpenCV:</strong> Comprehensive computer vision library with extensive functionality",
-        "<strong>TensorFlow Lite:</strong> Machine learning framework for object detection and classification",
-        "<strong>AprilTags:</strong> Fiducial marker system for precise positioning",
-        "<strong>Vuforia:</strong> Augmented reality platform with object recognition",
-        "<strong>EasyOpenCV:</strong> Simplified OpenCV wrapper for FTC"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Basic Vision Implementation",
-      "content": "Let's start with a basic vision implementation that demonstrates the fundamental concepts."
-    },
-    {
-      "type": "code",
-      "title": "Basic Camera Setup",
-      "language": "java",
-      "content": "import org.opencv.core.*;\nimport org.opencv.imgproc.Imgproc;\nimport org.openftc.easyopencv.OpenCvCamera;\nimport org.openftc.easyopencv.OpenCvCameraFactory;\nimport org.openftc.easyopencv.OpenCvCameraRotation;\nimport org.openftc.easyopencv.OpenCvPipeline;\n\n@TeleOp(name=\"Basic Vision\", group=\"Examples\")\npublic class BasicVision extends LinearOpMode {\n    \n    private OpenCvCamera camera;\n    private BasicPipeline pipeline;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize camera\n        initCamera();\n        \n        telemetry.addData(\"Status\", \"Camera initialized\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Process vision data\n            processVision();\n            \n            telemetry.update();\n        }\n    }\n    \n    private void initCamera() {\n        // Get camera monitor view ID\n        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(\n            \"cameraMonitorViewId\", \"id\", hardwareMap.appContext.getPackageName());\n        \n        // Create camera instance\n        camera = OpenCvCameraFactory.getInstance().createWebcam(\n            hardwareMap.get(WebcamName.class, \"Webcam 1\"), cameraMonitorViewId);\n        \n        // Create pipeline\n        pipeline = new BasicPipeline();\n        camera.setPipeline(pipeline);\n        \n        // Open camera\n        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {\n            @Override\n            public void onOpened() {\n                camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);\n            }\n            \n            @Override\n            public void onError(int errorCode) {\n                telemetry.addData(\"Camera Error\", \"Error code: \" + errorCode);\n            }\n        });\n    }\n    \n    private void processVision() {\n        // Get processed data from pipeline\n        Scalar detectedColor = pipeline.getDetectedColor();\n        double objectArea = pipeline.getObjectArea();\n        \n        // Display vision data\n        telemetry.addData(\"Detected Color\", \"R:%.0f G:%.0f B:%.0f\", \n            detectedColor.val[0], detectedColor.val[1], detectedColor.val[2]);\n        telemetry.addData(\"Object Area\", \"%.0f pixels\", objectArea);\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Image Processing Pipeline",
-      "content": "The image processing pipeline is the core of any vision system. It processes raw camera images to extract useful information."
-    },
-    {
-      "type": "code",
-      "title": "Basic Image Processing Pipeline",
-      "language": "java",
-      "content": "// Basic image processing pipeline\npublic class BasicPipeline extends OpenCvPipeline {\n    \n    private Scalar detectedColor = new Scalar(0, 0, 0);\n    private double objectArea = 0;\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        // Convert to HSV color space for better color detection\n        Mat hsv = new Mat();\n        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);\n        \n        // Define color range for detection (example: red objects)\n        Scalar lowerRed = new Scalar(0, 100, 100);\n        Scalar upperRed = new Scalar(10, 255, 255);\n        \n        // Create mask for red objects\n        Mat mask = new Mat();\n        Core.inRange(hsv, lowerRed, upperRed, mask);\n        \n        // Find contours in the mask\n        List<MatOfPoint> contours = new ArrayList<>();\n        Mat hierarchy = new Mat();\n        Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);\n        \n        // Find the largest contour (assumed to be the target object)\n        double maxArea = 0;\n        MatOfPoint largestContour = null;\n        \n        for (MatOfPoint contour : contours) {\n            double area = Imgproc.contourArea(contour);\n            if (area > maxArea && area > 100) { // Minimum area threshold\n                maxArea = area;\n                largestContour = contour;\n            }\n        }\n        \n        // Process the largest contour\n        if (largestContour != null) {\n            // Calculate object properties\n            objectArea = maxArea;\n            \n            // Calculate center of the object\n            Moments moments = Imgproc.moments(largestContour);\n            if (moments.m00 != 0) {\n                double centerX = moments.m10 / moments.m00;\n                double centerY = moments.m01 / moments.m00;\n                \n                // Draw circle at center\n                Imgproc.circle(input, new Point(centerX, centerY), 5, new Scalar(0, 255, 0), -1);\n            }\n            \n            // Draw contour outline\n            Imgproc.drawContours(input, Arrays.asList(largestContour), -1, new Scalar(0, 255, 0), 2);\n        }\n        \n        // Calculate average color in the detected region\n        if (largestContour != null) {\n            Mat maskROI = new Mat();\n            mask.copyTo(maskROI);\n            \n            Scalar meanColor = Core.mean(input, maskROI);\n            detectedColor = meanColor;\n        }\n        \n        // Clean up\n        hsv.release();\n        mask.release();\n        hierarchy.release();\n        \n        return input;\n    }\n    \n    public Scalar getDetectedColor() {\n        return detectedColor;\n    }\n    \n    public double getObjectArea() {\n        return objectArea;\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Color Detection",
-      "content": "Color detection is one of the most fundamental vision tasks in FTC. It's used for identifying game elements, field markers, and other colored objects."
-    },
-    {
-      "type": "code",
-      "title": "Advanced Color Detection",
-      "language": "java",
-      "content": "// Advanced color detection with multiple color ranges\npublic class ColorDetectionPipeline extends OpenCvPipeline {\n    \n    public enum DetectedColor {\n        RED, GREEN, BLUE, YELLOW, NONE\n    }\n    \n    private DetectedColor detectedColor = DetectedColor.NONE;\n    private double confidence = 0.0;\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        Mat hsv = new Mat();\n        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);\n        \n        // Define color ranges for different colors\n        Map<DetectedColor, Scalar[]> colorRanges = new HashMap<>();\n        \n        // Red (two ranges due to HSV color wheel)\n        colorRanges.put(DetectedColor.RED, new Scalar[]{\n            new Scalar(0, 100, 100), new Scalar(10, 255, 255),   // Lower red\n            new Scalar(160, 100, 100), new Scalar(180, 255, 255) // Upper red\n        });\n        \n        // Green\n        colorRanges.put(DetectedColor.GREEN, new Scalar[]{\n            new Scalar(35, 100, 100), new Scalar(85, 255, 255)\n        });\n        \n        // Blue\n        colorRanges.put(DetectedColor.BLUE, new Scalar[]{\n            new Scalar(100, 100, 100), new Scalar(130, 255, 255)\n        });\n        \n        // Yellow\n        colorRanges.put(DetectedColor.YELLOW, new Scalar[]{\n            new Scalar(20, 100, 100), new Scalar(30, 255, 255)\n        });\n        \n        // Find the color with the most pixels\n        DetectedColor bestColor = DetectedColor.NONE;\n        double maxPixels = 0;\n        \n        for (Map.Entry<DetectedColor, Scalar[]> entry : colorRanges.entrySet()) {\n            DetectedColor color = entry.getKey();\n            Scalar[] ranges = entry.getValue();\n            \n            Mat mask = new Mat();\n            \n            if (ranges.length == 2) {\n                // Single range\n                Core.inRange(hsv, ranges[0], ranges[1], mask);\n            } else if (ranges.length == 4) {\n                // Two ranges (for red)\n                Mat mask1 = new Mat();\n                Mat mask2 = new Mat();\n                Core.inRange(hsv, ranges[0], ranges[1], mask1);\n                Core.inRange(hsv, ranges[2], ranges[3], mask2);\n                Core.add(mask1, mask2, mask);\n                mask1.release();\n                mask2.release();\n            }\n            \n            // Count white pixels\n            int pixelCount = Core.countNonZero(mask);\n            \n            if (pixelCount > maxPixels && pixelCount > 100) { // Minimum threshold\n                maxPixels = pixelCount;\n                bestColor = color;\n            }\n            \n            mask.release();\n        }\n        \n        // Update detection results\n        detectedColor = bestColor;\n        confidence = maxPixels / (input.rows() * input.cols()); // Normalize by image size\n        \n        // Draw detection results on image\n        if (detectedColor != DetectedColor.NONE) {\n            String text = detectedColor.toString() + \" (\" + String.format(\"%.1f%%\", confidence * 100) + \")\";\n            Imgproc.putText(input, text, new Point(10, 30), Imgproc.FONT_HERSHEY_SIMPLEX, 1, new Scalar(255, 255, 255), 2);\n        }\n        \n        hsv.release();\n        return input;\n    }\n    \n    public DetectedColor getDetectedColor() {\n        return detectedColor;\n    }\n    \n    public double getConfidence() {\n        return confidence;\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Object Tracking",
-      "content": "Object tracking allows your robot to follow moving objects or maintain awareness of object positions over time."
-    },
-    {
-      "type": "code",
-      "title": "Simple Object Tracking",
-      "language": "java",
-      "content": "// Simple object tracking implementation\npublic class ObjectTrackingPipeline extends OpenCvPipeline {\n    \n    private Point lastObjectCenter = null;\n    private double objectVelocity = 0.0;\n    private long lastDetectionTime = 0;\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        // Convert to HSV and detect objects (similar to previous examples)\n        Mat hsv = new Mat();\n        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);\n        \n        // Detect objects (simplified - you would use your specific detection method)\n        Point currentObjectCenter = detectObject(hsv);\n        \n        // Track object movement\n        if (currentObjectCenter != null) {\n            long currentTime = System.currentTimeMillis();\n            \n            if (lastObjectCenter != null && lastDetectionTime > 0) {\n                // Calculate velocity\n                double distance = Math.sqrt(\n                    Math.pow(currentObjectCenter.x - lastObjectCenter.x, 2) +\n                    Math.pow(currentObjectCenter.y - lastObjectCenter.y, 2)\n                );\n                \n                double timeDelta = (currentTime - lastDetectionTime) / 1000.0; // Convert to seconds\n                if (timeDelta > 0) {\n                    objectVelocity = distance / timeDelta; // pixels per second\n                }\n                \n                // Draw velocity vector\n                Imgproc.arrowedLine(input, lastObjectCenter, currentObjectCenter, \n                    new Scalar(0, 255, 0), 2);\n            }\n            \n            // Update tracking variables\n            lastObjectCenter = currentObjectCenter;\n            lastDetectionTime = currentTime;\n            \n            // Draw current position\n            Imgproc.circle(input, currentObjectCenter, 10, new Scalar(0, 255, 0), -1);\n            \n            // Display tracking information\n            String info = String.format(\"Velocity: %.1f px/s\", objectVelocity);\n            Imgproc.putText(input, info, new Point(10, 30), \n                Imgproc.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255), 2);\n        } else {\n            // Object lost\n            lastObjectCenter = null;\n            objectVelocity = 0.0;\n        }\n        \n        hsv.release();\n        return input;\n    }\n    \n    private Point detectObject(Mat hsv) {\n        // Simplified object detection - replace with your specific detection method\n        // This is just a placeholder\n        return null;\n    }\n    \n    public Point getObjectCenter() {\n        return lastObjectCenter;\n    }\n    \n    public double getObjectVelocity() {\n        return objectVelocity;\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Vision-Based Navigation",
-      "content": "Vision can be used for autonomous navigation by detecting landmarks, avoiding obstacles, and following paths."
-    },
-    {
-      "type": "list",
-      "title": "Navigation Applications",
-      "items": [
-        "<strong>Landmark Detection:</strong> Identify field markers for positioning",
-        "<strong>Path Following:</strong> Follow lines or visual paths",
-        "<strong>Obstacle Avoidance:</strong> Detect and avoid obstacles",
-        "<strong>Target Tracking:</strong> Track moving targets for autonomous pursuit",
-        "<strong>Position Estimation:</strong> Use multiple landmarks for precise positioning"
-      ]
+      "content": "Computer vision is the field of artificial intelligence that enables computers to interpret and understand visual information from the world around them. In FTC robotics, computer vision allows your robot to 'see' and make intelligent decisions based on what it observes through its camera.<br><br>Think of computer vision like human vision: just as your eyes capture light and your brain processes that information to understand what you're seeing, a robot's camera captures images and computer vision algorithms process that data to extract meaningful information."
     },
     {
       "type": "rules-box",
-      "title": "Vision Best Practices",
-      "subtitle": "Follow these guidelines for effective vision systems:",
+      "title": "Why Computer Vision Matters in FTC",
       "items": [
-        "Use appropriate lighting conditions for consistent detection",
-        "Calibrate your camera and vision algorithms regularly",
-        "Implement robust error handling for vision failures",
-        "Use multiple detection methods for redundancy",
-        "Optimize processing speed for real-time applications",
-        "Test vision systems under various conditions",
-        "Document your vision algorithms and parameters"
+        "Autonomous navigation and positioning using visual landmarks",
+        "Object detection and classification for game elements",
+        "Precise alignment and targeting for scoring mechanisms",
+        "Obstacle detection and avoidance",
+        "Team element identification and tracking",
+        "Field state analysis and strategic decision making"
       ]
     },
     {
       "type": "text",
-      "title": "Performance Optimization",
-      "content": "Vision processing can be computationally intensive. Optimizing performance is crucial for real-time robot control."
+      "title": "FTC Vision System Overview",
+      "content": "FTC provides a comprehensive vision system built around the Control Hub's integrated camera and the Expansion Hub's processing capabilities. The system is designed to be both powerful and accessible, offering multiple approaches from simple color detection to advanced machine learning.<br><br>The FTC vision ecosystem includes:<br>• <strong>Control Hub Camera:</strong> Built-in camera for image capture<br>• <strong>Vision Portal:</strong> User-friendly interface for vision processing<br>• <strong>OpenCV Integration:</strong> Advanced computer vision library<br>• <strong>TensorFlow Lite:</strong> Machine learning capabilities<br>• <strong>AprilTag Support:</strong> Fiducial marker detection"
     },
     {
-      "type": "list",
-      "title": "Optimization Techniques",
-      "items": [
-        "<strong>Image Resolution:</strong> Use lower resolution for faster processing",
-        "<strong>Region of Interest:</strong> Process only relevant image regions",
-        "<strong>Algorithm Selection:</strong> Choose efficient algorithms for your needs",
-        "<strong>Parallel Processing:</strong> Use multiple threads when possible",
-        "<strong>Memory Management:</strong> Properly release Mat objects to prevent memory leaks"
-      ]
+      "type": "code",
+      "title": "Basic Vision Pipeline Structure",
+      "content": "Every vision system follows a basic pipeline structure. Here's a simple example of how to set up a basic vision pipeline in FTC:",
+      "code": "public class BasicVisionPipeline extends OpenCvPipeline {\n    @Override\n    public Mat processFrame(Mat input) {\n        // 1. Image Capture (handled automatically)\n        // 2. Preprocessing\n        Mat processed = preprocessImage(input);\n        \n        // 3. Feature Detection\n        detectFeatures(processed);\n        \n        // 4. Analysis\n        analyzeResults();\n        \n        // 5. Output\n        return processed;\n    }\n    \n    private Mat preprocessImage(Mat input) {\n        // Convert to different color space if needed\n        Mat converted = new Mat();\n        Imgproc.cvtColor(input, converted, Imgproc.COLOR_RGB2HSV);\n        return converted;\n    }\n    \n    private void detectFeatures(Mat image) {\n        // Add your detection logic here\n        // This could be color detection, contour finding, etc.\n    }\n    \n    private void analyzeResults() {\n        // Analyze detected features and make decisions\n        // Update telemetry with results\n    }\n}"
     },
     {
-      "type": "link-grid",
-      "title": "Advanced Vision Topics",
-      "links": [
-        {
-          "label": "AprilTags",
-          "id": "apriltags"
-        },
-        {
-          "label": "TensorFlow Lite",
-          "id": "tensorflow-lite"
-        },
-        {
-          "label": "OpenCV Basics",
-          "id": "opencv-basics"
-        },
-        {
-          "label": "Vision-Based Navigation",
-          "id": "vision-based-navigation"
-        }
-      ]
+      "type": "text",
+      "title": "Vision Pipeline Architecture",
+      "content": "A vision pipeline is a series of processing stages that transform raw camera images into actionable information. Understanding this architecture is crucial for designing efficient and reliable vision systems.<br><br>The standard FTC vision pipeline consists of four main stages:<br><br><strong>1. Image Capture:</strong> The camera captures a frame from the environment<br><strong>2. Preprocessing:</strong> Image enhancement, noise reduction, and format conversion<br><strong>3. Feature Detection:</strong> Identifying relevant objects, colors, or patterns<br><strong>4. Analysis & Output:</strong> Interpreting results and providing data to the robot"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Performance Considerations",
+      "content": "Vision processing is computationally intensive and can significantly impact your robot's performance. Key considerations include:<br><br><strong>Frame Rate:</strong> Higher frame rates provide more responsive vision but require more processing power<br><strong>Resolution:</strong> Higher resolution provides more detail but increases processing time<br><strong>Processing Complexity:</strong> More complex algorithms provide better results but take longer to execute<br><strong>Memory Usage:</strong> Vision processing can consume significant memory resources<br><br>For FTC applications, aim for 10-30 FPS with reasonable resolution (640x480 or 1280x720) to balance performance and responsiveness."
+    },
+    {
+      "type": "code",
+      "title": "Performance Monitoring Example",
+      "content": "Here's how to monitor vision processing performance in your FTC code:",
+      "code": "public class PerformanceMonitoringPipeline extends OpenCvPipeline {\n    private long frameStartTime;\n    private int frameCount = 0;\n    private double averageFPS = 0;\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        frameStartTime = System.nanoTime();\n        \n        // Your vision processing here\n        Mat result = performVisionProcessing(input);\n        \n        // Calculate performance metrics\n        long processingTime = System.nanoTime() - frameStartTime;\n        frameCount++;\n        \n        // Update FPS calculation every 30 frames\n        if (frameCount % 30 == 0) {\n            averageFPS = 1.0 / (processingTime / 1_000_000_000.0);\n        }\n        \n        // Display performance metrics\n        displayPerformanceMetrics(processingTime, averageFPS);\n        \n        return result;\n    }\n    \n    private void displayPerformanceMetrics(long processingTime, double fps) {\n        telemetry.addData(\"Vision Processing Time\", \"%.2f ms\", processingTime / 1_000_000.0);\n        telemetry.addData(\"Vision FPS\", \"%.1f\", fps);\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "exercise-box",
-      "title": "Vision System Practice",
-      "description": "Complete these exercises to master vision programming:",
+      "title": "Vision System Planning Exercise",
+      "description": "Plan a vision system for a hypothetical FTC game scenario",
       "tasks": [
-        "Set up a basic camera and display live video feed",
-        "Implement color detection for multiple colors",
-        "Create an object tracking system",
-        "Develop a simple landmark detection algorithm",
-        "Build a vision-based navigation system",
-        "Optimize your vision code for performance",
-        "Test your vision system under various lighting conditions"
+        "Identify what visual information your robot needs to detect",
+        "Determine the optimal camera placement and orientation",
+        "Choose appropriate vision processing techniques (color detection, AprilTags, ML, etc.)",
+        "Estimate the required frame rate and resolution",
+        "Plan how vision data will integrate with other robot subsystems"
       ],
-      "content": "// Practice Exercise: Complete Vision System\n// Create a vision OpMode that includes:\n// - Camera initialization and configuration\n// - Color detection for game elements\n// - Object tracking and position estimation\n// - Vision-based decision making\n// - Performance monitoring and optimization\n// - Error handling for vision failures"
+      "content": "Scenario: Your robot needs to detect game elements of different colors and navigate to specific positions marked by AprilTags. The robot operates in varying lighting conditions and must respond quickly to changing field conditions."
+    },
+    {
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "links": [
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/vision.html\" target=\"_blank\">gm0: Vision Tutorial</a>",
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-overview.html\" target=\"_blank\">FTC Vision Overview</a>",
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-pipeline.html\" target=\"_blank\">FTC Vision Pipeline</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/vision.html#performance-considerations\" target=\"_blank\">gm0: Performance Considerations</a>"
+      ]
     }
   ]
-} 
+}
