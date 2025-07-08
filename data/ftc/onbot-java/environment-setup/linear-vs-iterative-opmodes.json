@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "OpMode Types in FTC",
-      "content": "FTC supports two main OpMode types: <b>LinearOpMode</b> and <b>Iterative OpMode</b>. Understanding the difference helps you choose the right structure for your code.<br><br>A <b>LinearOpMode</b> runs your code from top to bottom, like a script. An <b>Iterative OpMode</b> runs your code in a loop, giving you more control over timing and state.<br><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/opmode/types-of-opmodes.html' target='_blank'>FTC Docs: OpMode Types</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html#linear-vs-iterative' target='_blank'>gm0: OpMode Types</a>"
+      "content": "FTC supports two main OpMode types: <b>LinearOpMode</b> and <b>Iterative OpMode</b>. Understanding the difference helps you choose the right structure for your code.<br><br>A <b>LinearOpMode</b> runs your code from top to bottom, like a script. An <b>Iterative OpMode</b> runs your code in a loop, giving you more control over timing and state.<br><br>See: <a href='https://gm0.org/en/latest/docs/software/getting-started/linear-opmode-vs-opmode.html' target='_blank'>gm0: OpMode Types</a>"
     },
     {
       "type": "rules-box",
@@ -53,12 +53,12 @@
     {
       "type": "text",
       "title": "Converting Between Types",
-      "content": "You can convert a LinearOpMode to an Iterative OpMode by moving your logic into the <code>loop()</code> method and managing state with variables.<br><br>For example, if you have a sequence of actions in LinearOpMode, you can use a state variable in Iterative OpMode to step through them.<br><br>See <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html#linear-vs-iterative' target='_blank'>gm0: OpMode Types</a> for conversion tips."
+      "content": "You can convert a LinearOpMode to an Iterative OpMode by moving your logic into the <code>loop()</code> method and managing state with variables.<br><br>For example, if you have a sequence of actions in LinearOpMode, you can use a state variable in Iterative OpMode to step through them."
     },
     {
       "type": "text",
       "title": "Further Reading & Resources",
-      "content": "- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/opmode/types-of-opmodes.html' target='_blank'>FTC Docs: OpMode Types</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/opmodes.html#linear-vs-iterative' target='_blank'>gm0: OpMode Types</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode' target='_blank'>FTC SDK Example OpModes</a>"
+      "content": "- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples' target='_blank'>FTC SDK Example OpModes</a>"
     },
     {
       "type": "link-grid",

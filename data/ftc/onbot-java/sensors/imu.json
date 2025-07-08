@@ -1,103 +1,59 @@
 {
-  "title": "IMU (Inertial Measurement Unit)",
+  "title": "IMU (Inertial Measurement Unit) in FTC",
   "sections": [
     {
       "type": "text",
       "title": "What is an IMU?",
-      "content": "<p>An IMU (Inertial Measurement Unit) is a sensor that measures orientation, acceleration, and rotation. In FTC robots, IMUs are used for navigation, maintaining heading, and advanced autonomous routines.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/imu.html' target='_blank'>gm0: IMU</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors#imu' target='_blank'>REV Robotics: IMU</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "IMU Basics",
-      "subtitle": "Key characteristics:",
-      "items": [
-        "Measures orientation (heading, pitch, roll)",
-        "Detects acceleration and rotation",
-        "Used for navigation and drive control",
-        "Requires calibration for accurate readings",
-        "Data accessed through hardwareMap in code"
-      ]
+      "content": "An IMU (Inertial Measurement Unit) is a sensor that measures orientation (heading, pitch, roll) and acceleration. In FTC, the IMU is critical for tasks like navigation, turning, and field-centric control."
     },
     {
       "type": "text",
-      "title": "How IMUs Work",
-      "content": "<p>IMUs use gyroscopes and accelerometers to measure changes in orientation and movement. The sensor reports angles and acceleration values. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html#imu' target='_blank'>FTC Docs: IMU</a>.</p>"
+      "title": "Configuring and Mapping the IMU",
+      "content": "Add the IMU to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
     },
     {
       "type": "code",
-      "title": "IMU Initialization Example",
-      "language": "java",
-      "content": "// Initialize and configure the IMU\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");\nBNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\nparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\nparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\nimu.initialize(parameters);\n// Read orientation\nOrientation angles = imu.getAngularOrientation();\ntelemetry.addData(\"Heading\", angles.firstAngle);\ntelemetry.addData(\"Pitch\", angles.secondAngle);\ntelemetry.addData(\"Roll\", angles.thirdAngle);\ntelemetry.update();"
-    },
-    {
-      "type": "text",
-      "title": "Applications of IMUs",
-      "content": "<p>IMUs are used for a variety of applications in FTC robots, including navigation, maintaining heading, and advanced autonomous routines. See <a href='https://gm0.org/en/latest/docs/software/sensors/imu.html' target='_blank'>gm0: IMU</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Common Use Cases",
-      "items": [
-        "Maintaining straight driving",
-        "Turning to specific angles",
-        "Detecting robot orientation",
-        "Stabilizing mechanisms",
-        "Advanced autonomous navigation"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "IMU Safety and Best Practices",
-      "content": "<p>Proper use of IMUs ensures reliable operation and accurate data. Always calibrate the IMU before use and avoid sudden impacts. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Safety Guidelines",
-      "subtitle": "Follow these practices for safe IMU use:",
-      "items": [
-        "Calibrate IMU before each match",
-        "Secure IMU to prevent movement during operation",
-        "Avoid exposing IMU to excessive vibration or impact",
-        "Monitor IMU data for unexpected values",
-        "Document IMU configuration and calibration"
-      ]
+      "title": "Mapping the IMU in Java",
+      "content": "Here's how to map the IMU in your Op Mode:",
+      "code": "private Gyroscope imu;\n\n@Override\npublic void runOpMode() {\n    imu = hardwareMap.get(Gyroscope.class, \"imu\");\n    // Now you can use imu in your code\n}"
     },
     {
       "type": "code",
-      "title": "IMU Safety Example",
-      "language": "java",
-      "content": "// Safety check using IMU\nOrientation angles = imu.getAngularOrientation();\nif (Math.abs(angles.firstAngle) > 45) {\n    // Robot is tilted too far\n    telemetry.addData(\"Safety\", \"Robot tilt detected!\");\n    telemetry.update();\n}"
+      "title": "Reading Orientation Data",
+      "content": "You can read the robot's heading (rotation) from the IMU. The exact method depends on your IMU model. Here's a generic example:",
+      "code": "float heading = imu.getAngularOrientation().firstAngle;\ntelemetry.addData(\"Heading\", heading);\ntelemetry.update();"
     },
     {
       "type": "text",
-      "title": "Troubleshooting IMUs",
-      "content": "<p>Common IMU issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/imu.html#troubleshooting' target='_blank'>gm0: IMU Troubleshooting</a>.</p>"
+      "title": "Using IMU Data in Robot Logic",
+      "content": "IMU data is used for tasks like turning to a specific angle, maintaining orientation, or implementing field-centric drive."
     },
     {
-      "type": "list",
-      "title": "Common Issues and Solutions",
-      "items": [
-        "<b>IMU not detected:</b> Check wiring and configuration",
-        "<b>Incorrect readings:</b> Calibrate or check for interference",
-        "<b>No response:</b> Test with known movements and check code",
-        "<b>Intermittent data:</b> Secure connections and avoid loose wires",
-        "<b>Unexpected values:</b> Monitor for out-of-range or error codes"
+      "type": "code",
+      "title": "Example: Turning to a Target Angle",
+      "content": "This snippet shows how you might use IMU data to turn the robot to a specific heading (simplified):",
+      "code": "float targetAngle = 90;\nwhile (Math.abs(imu.getAngularOrientation().firstAngle - targetAngle) > 2) {\n    // Set motor powers to turn\n    // ...\n    telemetry.addData(\"Current Angle\", imu.getAngularOrientation().firstAngle);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Troubleshooting and Best Practices",
+      "content": "IMUs may require calibration and can drift over time. Always test your IMU before matches and handle exceptions in your code."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        {"label": "Intro to Sensors", "url": "#intro-to-sensors"},
+        {"label": "Touch Sensors", "url": "#touch-sensors"}
       ]
     },
     {
-      "type": "exercise-box",
-      "title": "IMU Practice",
-      "description": "Practice these exercises to master IMU use:",
-      "tasks": [
-        "Create an OpMode that displays IMU data",
-        "Test IMU response to different movements",
-        "Calibrate IMU and document the process",
-        "Implement safety checks using IMU data",
-        "Practice troubleshooting common IMU issues",
-        "Test IMU integration with autonomous code",
-        "Document IMU configuration and calibration"
-      ],
-      "content": "// Practice Exercise: IMU\n// Create an OpMode that displays IMU data\n// Include calibration and troubleshooting steps\n// Test IMU response to different conditions\n\n@TeleOp(name=\"IMU Test\", group=\"Testing\")\npublic class IMUTestOpMode extends LinearOpMode {\n    private BNO055IMU imu;\n    @Override\n    public void runOpMode() {\n        imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;\n        imu.initialize(parameters);\n        waitForStart();\n        while (opModeIsActive()) {\n            Orientation angles = imu.getAngularOrientation();\n            telemetry.addData(\"Heading\", angles.firstAngle);\n            telemetry.addData(\"Pitch\", angles.secondAngle);\n            telemetry.addData(\"Roll\", angles.thirdAngle);\n            telemetry.update();\n        }\n    }"
+      "type": "link-grid",
+      "title": "See Also",
+      "content": [
+        {"label": "FTC OpMode API: BNO055IMU", "url": "https://javadoc.io/doc/org.firstinspires.ftc/Hardware/latest/com/qualcomm/hardware/bosch/BNO055IMU.html"},
+        {"label": "FTC OpMode API: Gyroscope", "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/Gyroscope.html"}
+      ]
     }
   ]
-} 
+}

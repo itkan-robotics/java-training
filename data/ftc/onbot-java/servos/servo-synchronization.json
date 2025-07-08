@@ -1,0 +1,45 @@
+{
+  "title": "Using Multiple Servos and Synchronization",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Declaring and Initializing Multiple Servos",
+      "content": "Many FTC mechanisms require more than one servo. You can declare and initialize multiple servos in your OpMode by giving each a unique name in the hardware map."
+    },
+    {
+      "type": "code",
+      "title": "Example: Initializing Two Servos",
+      "content": "This code shows how to declare and initialize two servos in your OpMode.",
+      "code": "private Servo leftClaw;\nprivate Servo rightClaw;\n\n@Override\npublic void runOpMode() {\n    leftClaw = hardwareMap.get(Servo.class, \"leftClaw\");\n    rightClaw = hardwareMap.get(Servo.class, \"rightClaw\");\n    // ...\n}"
+    },
+    {
+      "type": "text",
+      "title": "Coordinating Servo Movements",
+      "content": "To move two servos together (e.g., for a claw), set their positions in the same loop. You can use variables or constants to keep their movement synchronized."
+    },
+    {
+      "type": "code",
+      "title": "Synchronized Claw Example",
+      "content": "This code opens and closes a claw by moving two servos in opposite directions.",
+      "code": "double openPosition = 0.8;\ndouble closedPosition = 0.2;\n\nif (gamepad1.a) {\n    leftClaw.setPosition(openPosition);\n    rightClaw.setPosition(1.0 - openPosition);\n} else if (gamepad1.b) {\n    leftClaw.setPosition(closedPosition);\n    rightClaw.setPosition(1.0 - closedPosition);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Avoiding Power Issues with Multiple Servos",
+      "content": "Moving several servos at once can cause voltage drops. Stagger movements if possible, and monitor battery voltage with telemetry."
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Multiple Servo Setups",
+      "content": "If one or more servos are not moving as expected, check hardware map names, wiring, and code logic. Use telemetry to verify servo positions."
+    },
+    {
+      "type": "list",
+      "title": "Further Reading and References",
+      "items": [
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/controlling_a_servo/Controlling-a-Servo-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Controlling a Servo (OnBot Java)</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/power-and-electronics/servo-guide/usage-tips.html\" target=\"_blank\">gm0: Servo Usage Tips</a>"
+      ]
+    }
+  ]
+}

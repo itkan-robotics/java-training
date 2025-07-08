@@ -1,87 +1,68 @@
 {
-  "title": "Gamepad Controls",
+  "title": "Gamepad Controls in FTC",
   "sections": [
     {
       "type": "text",
-      "title": "Gamepad Layout and Button Mapping",
-      "content": "Gamepads are the main interface for FTC drivers. Mapping each button, stick, and trigger to robot actions is key to effective teleop. For hardware response, see the relevant hardware pages. <br><br>See <a href=\"https://gm0.org/en/latest/docs/software/teleop/gamepad.html\" target=\"_blank\">gm0: Gamepad Reference</a> and <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/gamepad.html\" target=\"_blank\">FTC Docs: Gamepad</a>."
+      "title": "Understanding the Gamepad API",
+      "content": "FTC robots are controlled using gamepads. The <code>gamepad1</code> and <code>gamepad2</code> objects provide access to all the buttons, sticks, triggers, and dpad controls. Knowing how to use these inputs is essential for effective TeleOp programming. <br><br>For a full list of gamepad fields, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#gamepad-input\" target=\"_blank\">FTC Docs: Gamepad Input</a>."
     },
     {
       "type": "list",
-      "title": "Gamepad Input Types",
-      "items": [
-        "<strong>Joysticks:</strong> Analog, for continuous control (-1.0 to 1.0).",
-        "<strong>Buttons:</strong> Digital, for discrete actions (true/false).",
-        "<strong>Triggers:</strong> Analog, for variable control (0.0 to 1.0).",
-        "<strong>D-pad:</strong> Digital, for directional input.",
-        "<strong>Bumpers:</strong> Digital, for quick actions."
+      "title": "Gamepad Input Reference",
+      "content": [
+        "<strong>Analog:</strong> left_stick_x, left_stick_y, right_stick_x, right_stick_y, left_trigger, right_trigger",
+        "<strong>Digital:</strong> a, b, x, y, dpad_up, dpad_down, dpad_left, dpad_right, left_bumper, right_bumper, start, back"
       ]
     },
     {
       "type": "code",
-      "title": "Reading Gamepad Inputs in OpMode",
-      "content": "@TeleOp(name=\"GamepadInputExample\", group=\"Teleop\")\npublic class GamepadInputExample extends LinearOpMode {\n    @Override\n    public void runOpMode() {\n        waitForStart();\n        while (opModeIsActive()) {\n            double leftX = gamepad1.left_stick_x;\n            double leftY = gamepad1.left_stick_y;\n            boolean a = gamepad1.a;\n            double rightTrigger = gamepad1.right_trigger;\n            // Use these values to control your robot\n            telemetry.addData(\"Left Stick\", String.format(\"X: %.2f, Y: %.2f\", leftX, leftY));\n            telemetry.addData(\"A Button\", a);\n            telemetry.addData(\"Right Trigger\", rightTrigger);\n            telemetry.update();\n        }\n    }\n}"
+      "title": "Example: Reading Analog and Digital Inputs",
+      "content": "This snippet shows how to read both analog and digital inputs from gamepad1.",
+      "code": "// Analog inputs\ndouble drive = -gamepad1.left_stick_y;\ndouble turn = gamepad1.right_stick_x;\ndouble lift = gamepad1.right_trigger - gamepad1.left_trigger;\n// Digital inputs\nboolean openClaw = gamepad1.a;\nboolean closeClaw = gamepad1.b;\nboolean slowMode = gamepad1.left_bumper;"
     },
     {
       "type": "text",
-      "title": "Debouncing and Toggle Logic",
-      "content": "To prevent repeated actions from a single button press, use debouncing or toggle logic. This is especially important for toggling mechanisms or modes in teleop."
+      "title": "Debouncing and Edge Detection",
+      "content": "When using buttons to trigger actions (like toggling a mechanism), you often want to detect when a button is pressed, not just held. This is called edge detection. Without it, your code might trigger the action repeatedly while the button is held down."
     },
     {
       "type": "code",
-      "title": "Toggle Example (Debouncing)",
-      "content": "boolean lastA = false;\nboolean toggled = false;\nwhile (opModeIsActive()) {\n    if (gamepad1.a && !lastA) {\n        toggled = !toggled; // Toggle state\n    }\n    lastA = gamepad1.a;\n    // Use 'toggled' to control a mechanism\n}"
+      "title": "Example: Button Edge Detection (Toggle)",
+      "content": "boolean lastA = false;\nboolean clawOpen = false;\n// In your main loop:\nif (gamepad1.a && !lastA) {\n    clawOpen = !clawOpen; // Toggle\n}\nlastA = gamepad1.a;"
     },
     {
       "type": "text",
-      "title": "Multi-Gamepad Strategies",
-      "content": "FTC supports two gamepads. Split controls between drivers for complex robots. For example, gamepad1 for drivetrain, gamepad2 for mechanisms."
+      "title": "Mapping Controls to Multiple Subsystems",
+      "content": "Most robots have more than one mechanism. Assign different controls to each subsystem for clarity and ease of use. For example, use the left stick for driving and the right bumper for operating a lift."
     },
     {
       "type": "code",
-      "title": "Multi-Gamepad Example",
-      "content": "@TeleOp(name=\"MultiGamepadExample\", group=\"Teleop\")\npublic class MultiGamepadExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo;\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        waitForStart();\n        while (opModeIsActive()) {\n            // Drivetrain: gamepad1\n            leftDrive.setPower(-gamepad1.left_stick_y);\n            rightDrive.setPower(-gamepad1.right_stick_y);\n            // Arm: gamepad2\n            if (gamepad2.a) armServo.setPosition(0.0);\n            if (gamepad2.b) armServo.setPosition(1.0);\n        }\n    }\n}"
+      "title": "Example: Multi-Subsystem Control",
+      "content": "// Drive\ndouble leftPower = -gamepad1.left_stick_y;\ndouble rightPower = -gamepad1.right_stick_y;\nleftDrive.setPower(leftPower);\nrightDrive.setPower(rightPower);\n// Lift\nif (gamepad1.right_bumper) {\n    liftMotor.setPower(1.0);\n} else if (gamepad1.left_bumper) {\n    liftMotor.setPower(-1.0);\n} else {\n    liftMotor.setPower(0.0);\n}"
     },
     {
-      "type": "list",
-      "title": "Best Practices for Gamepad Use",
-      "items": [
-        "Map controls ergonomically for comfort and speed.",
-        "Provide feedback (telemetry, LEDs) for important actions.",
-        "Test with both drivers to ensure clarity and comfort.",
-        "Document control mappings for your team."
-      ]
-    },
-    {
-      "type": "list",
-      "title": "Troubleshooting Gamepad Issues",
-      "items": [
-        "Gamepad not detected: Check USB and gamepad mode.",
-        "Unresponsive controls: Check code and configuration.",
-        "Wrong mapping: Double-check button assignments in code."
-      ]
-    },
-    {
-      "type": "link-grid",
-      "title": "References & Further Reading",
-      "links": [
-        { "label": "gm0: Gamepad Reference", "url": "https://gm0.org/en/latest/docs/software/teleop/gamepad.html" },
-        { "label": "FTC Docs: Gamepad", "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/gamepad.html" },
-        { "label": "Basic Robot Control", "id": "basic-robot-control" },
-        { "label": "Teleop Programming", "id": "teleop-programming" }
-      ]
+      "type": "text",
+      "title": "Best Practices: Clear, Readable Control Logic",
+      "content": "Use descriptive variable names and comments to make your control logic easy to understand and debug. Group related controls together and avoid duplicating code."
     },
     {
       "type": "exercise-box",
-      "title": "Gamepad Controls Practice",
-      "description": "Practice these exercises to master gamepad controls:",
+      "title": "Practice Exercise: Gamepad Mapping",
+      "description": "Write code to control a drive train with the left stick, a lift with the bumpers, and a claw with buttons A/B. Implement a toggle for the claw using edge detection.",
       "tasks": [
-        "Write code to read all gamepad inputs and display them with telemetry.",
-        "Implement a toggle using debouncing logic.",
-        "Split controls between two gamepads.",
-        "Troubleshoot a gamepad issue and document your fix."
+        "Map drive motors, a lift motor, and a claw servo.",
+        "Read analog and digital inputs from gamepad1.",
+        "Implement edge detection for the claw toggle.",
+        "Add comments and use clear variable names."
       ],
-      "content": "// Practice: Write code to read and display all gamepad inputs\n// Add a toggle and multi-gamepad control."
+      "content": "// Example toggle for claw\nprivate boolean lastA = false;\nprivate boolean clawOpen = false;\nprivate void controlClaw() {\n    if (gamepad1.a && !lastA) {\n        clawOpen = !clawOpen;\n        clawServo.setPosition(clawOpen ? 1.0 : 0.0);\n    }\n    lastA = gamepad1.a;\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        
+      ]
     }
   ]
-} 
+}

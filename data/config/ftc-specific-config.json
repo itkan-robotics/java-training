@@ -83,6 +83,13 @@
               "duration": "25 min"
             },
             { 
+              "id": "drivebase-types", 
+              "label": "Drivebase Types", 
+              "file": "data/ftc/onbot-java/motors/drivebase-types.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            { 
               "id": "motor-encoders", 
               "label": "Motor Encoders", 
               "file": "data/ftc/onbot-java/motors/motor-encoders.json",
@@ -123,6 +130,20 @@
               "file": "data/ftc/onbot-java/servos/servo-positions.json",
               "difficulty": "beginner",
               "duration": "20 min"
+            },
+            { 
+              "id": "servo-synchronization", 
+              "label": "Using Multiple Servos and Synchronization", 
+              "file": "data/ftc/onbot-java/servos/servo-synchronization.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "gradual-movement", 
+              "label": "Advanced Servo Control: Gradual Movement", 
+              "file": "data/ftc/onbot-java/servos/gradual-movement.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
             }
           ]
         },
@@ -193,6 +214,34 @@
               "file": "data/ftc/onbot-java/teleop-programming/gamepad-controls.json",
               "difficulty": "beginner",
               "duration": "25 min"
+            },
+            {
+              "id": "subsystem-organization",
+              "label": "Subsystem Organization & Modular Code",
+              "file": "data/ftc/onbot-java/teleop-programming/subsystem-organization.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "advanced-gamepad-techniques",
+              "label": "Advanced Gamepad Techniques",
+              "file": "data/ftc/onbot-java/teleop-programming/advanced-gamepad-techniques.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "telemetry-feedback",
+              "label": "Telemetry & Feedback",
+              "file": "data/ftc/onbot-java/teleop-programming/telemetry-feedback.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            {
+              "id": "teleop-exercises",
+              "label": "TeleOp Programming Exercises",
+              "file": "data/ftc/onbot-java/teleop-programming/teleop-exercises.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
             }
           ]
         },
@@ -229,24 +278,31 @@
           "label": "OBJ Debugging & Best Practices",
           "description": "Debugging techniques and programming best practices",
           "items": [
-            { 
-              "id": "basic-debugging-techniques", 
-              "label": "Basic Debugging Techniques", 
-              "file": "data/ftc/onbot-java/obj-debugging-best-practices/basic-debugging-techniques.json",
+            {
+              "id": "basic-debugging-techniques",
+              "label": "Basic Debugging Techniques",
+              "file": "data/ftc/onbot-java/debugging-best-practices/basic-debugging-techniques.json",
               "difficulty": "intermediate",
               "duration": "25 min"
             },
-            { 
-              "id": "state-machines", 
-              "label": "State Machines", 
-              "file": "data/ftc/onbot-java/obj-debugging-best-practices/state-machines.json",
+            {
+              "id": "state-machines",
+              "label": "State Machines",
+              "file": "data/ftc/onbot-java/debugging-best-practices/state-machines.json",
               "difficulty": "intermediate",
               "duration": "35 min"
             },
-            { 
-              "id": "code-organization", 
-              "label": "Code Organization", 
-              "file": "data/ftc/onbot-java/obj-debugging-best-practices/code-organization.json",
+            {
+              "id": "code-organization",
+              "label": "Code Organization",
+              "file": "data/ftc/onbot-java/debugging-best-practices/code-organization.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "troubleshooting-common-issues",
+              "label": "Troubleshooting Common Issues",
+              "file": "data/ftc/onbot-java/debugging-best-practices/troubleshooting-common-issues.json",
               "difficulty": "intermediate",
               "duration": "30 min"
             }
@@ -616,10 +672,10 @@
   "metadata": {
     "version": "2.0.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 49,
+    "totalLessons": 50,
     "difficultyLevels": {
       "beginner": 15,
-      "intermediate": 17,
+      "intermediate": 18,
       "advanced": 17
     },
     "estimatedDuration": "24.5 hours",

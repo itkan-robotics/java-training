@@ -1,0 +1,73 @@
+{
+  "title": "Drivebase Types in FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Drivebase Types",
+      "content": "The drivebase is the foundation of your robot's movement. The most common FTC drivebases are Tank, Mecanum, and Holonomic (Omni). Each has unique movement capabilities and programming requirements. Choosing the right drivebase is crucial for your robot's strategy and performance."
+    },
+    {
+      "type": "text",
+      "title": "Tank Drive",
+      "content": "Tank drive uses two sets of wheels (left and right), each powered by one or more motors. It is simple, reliable, and easy to program. The robot moves forward/backward by powering both sides equally, and turns by powering sides in opposite directions. For more, see <a href=\"https://gm0.org/en/latest/docs/robot-design/drivetrains/tank.html\" target=\"_blank\">gm0: Tank Drive</a>."
+    },
+    {
+      "type": "code",
+      "title": "Sample Code: Tank Drive Control",
+      "content": "Each joystick controls one side of the robot.",
+      "code": "while (opModeIsActive()) {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n    telemetry.addData(\"Left Power\", leftPower);\n    telemetry.addData(\"Right Power\", rightPower);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Mecanum Drive",
+      "content": "Mecanum drive uses special wheels that allow the robot to move in any direction (omnidirectional movement), including strafing left/right. It requires four motors and more complex code, but offers high maneuverability. For more, see <a href=\"https://gm0.org/en/latest/docs/robot-design/drivetrains/mecanum.html\" target=\"_blank\">gm0: Mecanum Drive</a>."
+    },
+    {
+      "type": "code",
+      "title": "Sample Code: Mecanum Drive Control (Basic)",
+      "content": "This code lets the robot move forward/backward, strafe, and rotate using both joysticks.",
+      "code": "while (opModeIsActive()) {\n    double y = -gamepad1.left_stick_y;    // Forward/backward\n    double x = gamepad1.left_stick_x;     // Strafe left/right\n    double rx = gamepad1.right_stick_x;   // Rotate\n\n    double leftFrontPower  = y + x + rx;\n    double leftBackPower   = y - x + rx;\n    double rightFrontPower = y - x - rx;\n    double rightBackPower  = y + x - rx;\n\n    leftFront.setPower(leftFrontPower);\n    leftBack.setPower(leftBackPower);\n    rightFront.setPower(rightFrontPower);\n    rightBack.setPower(rightBackPower);\n\n    telemetry.addData(\"LF\", leftFrontPower);\n    telemetry.addData(\"LB\", leftBackPower);\n    telemetry.addData(\"RF\", rightFrontPower);\n    telemetry.addData(\"RB\", rightBackPower);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Holonomic (Omni) Drive",
+      "content": "Holonomic drivebases use omni wheels arranged in a triangle or X pattern. Like mecanum, they allow omnidirectional movement, but are less common in FTC. Programming is similar to mecanum, but the math for wheel power is different. For more, see <a href=\"https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html\" target=\"_blank\">gm0: Holonomic Drive</a>."
+    },
+    {
+      "type": "code",
+      "title": "Sample Code: 3-Wheel Holonomic Drive (120° Omni)",
+      "content": "This code is for a 3-wheel omni drive. Each wheel is 120° apart.",
+      "code": "while (opModeIsActive()) {\n    double y = -gamepad1.left_stick_y;\n    double x = gamepad1.left_stick_x;\n    double rotation = gamepad1.right_stick_x;\n\n    double wheel0 = y + rotation;\n    double wheel1 = (-0.5 * y + (Math.sqrt(3)/2) * x) + rotation;\n    double wheel2 = (-0.5 * y - (Math.sqrt(3)/2) * x) + rotation;\n\n    motor0.setPower(wheel0);\n    motor1.setPower(wheel1);\n    motor2.setPower(wheel2);\n\n    telemetry.addData(\"W0\", wheel0);\n    telemetry.addData(\"W1\", wheel1);\n    telemetry.addData(\"W2\", wheel2);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "list",
+      "title": "Drivebase Comparison Table",
+      "content": [
+        "Tank Drive: Simple, robust, easy to program, but cannot strafe.",
+        "Mecanum Drive: Omnidirectional, can strafe, more complex code and hardware.",
+        "Holonomic/Omni Drive: Omnidirectional, unique wheel arrangement, less common in FTC."
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Choose and Program a Drivebase",
+      "description": "Pick a drivebase type for your robot. Write a short code snippet to control it using gamepad input. Explain why you chose this drivebase for your robot's needs.",
+      "tasks": [
+        "Pick a drivebase type (Tank, Mecanum, or Holonomic).",
+        "Write a code snippet for basic control.",
+        "Explain your choice in 2-3 sentences."
+      ],
+      "content": "// Example: Tank Drive\nwhile (opModeIsActive()) {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Further Reading",
+      "content": [
+        {"label": "gm0: Tank Drive", "url": "https://gm0.org/en/latest/docs/robot-design/drivetrains/tank.html"},
+        {"label": "gm0: Mecanum Drive", "url": "https://gm0.org/en/latest/docs/robot-design/drivetrains/mecanum.html"},
+        {"label": "gm0: Holonomic Drive", "url": "https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html"},
+        {"label": "FTC Docs: Creating and Running an Op Mode", "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html"}
+      ]
+    }
+  ]
+}

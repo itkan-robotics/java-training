@@ -1,152 +1,42 @@
 {
-  "title": "Motor Types",
+  "title": "Motor Types in FTC",
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to Motor Types",
-      "content": "<p>FTC teams have access to various motor types, each with unique characteristics that make them suitable for different applications. Understanding motor specifications and capabilities helps teams choose the right motor for their robot's needs.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/hardware-components/motors.html' target='_blank'>gm0: Motor Comparison</a> and <a href='https://docs.revrobotics.com/duo-control/hardware/motors' target='_blank'>REV Robotics: Motor Selection</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Motor Selection Factors",
-      "subtitle": "Consider these factors when choosing motors:",
-      "items": [
-        "Speed requirements (RPM) for your application",
-        "Torque requirements for load handling",
-        "Size and weight constraints",
-        "Power consumption and efficiency",
-        "Built-in encoder availability",
-        "Cost and availability"
-      ]
+      "title": "Overview of FTC Motor Types",
+      "content": "FTC robots use a variety of DC motors, each with different capabilities. Choosing the right motor for your robot is important for performance and reliability. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode</a>."
     },
     {
       "type": "text",
-      "title": "AndyMark Neverest Motors",
-      "content": "<p>AndyMark Neverest motors are popular choices in FTC due to their reliability and variety of options. They come in different series with varying speed and torque characteristics. See <a href='https://gm0.org/en/latest/docs/hardware-components/motors.html' target='_blank'>gm0: Motor Comparison</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Neverest Motor Series",
-      "items": [
-        "<b>Neverest 20:</b> ~3000 RPM, low torque - Good for fast mechanisms",
-        "<b>Neverest 40:</b> ~1600 RPM, medium torque - Balanced performance",
-        "<b>Neverest 60:</b> ~1050 RPM, high torque - Good for heavy loads",
-        "<b>Neverest Orbital 20:</b> ~2800 RPM, planetary gearbox design"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Neverest Motor Specifications",
-      "language": "java",
-      "content": "// Neverest motor specifications and applications\n// Neverest 20 - Fast, low torque\n// Applications: Intakes, conveyors, fast mechanisms\n// RPM: ~3000\n// Torque: Low\n// Best for: Light loads, high speed requirements\n// Neverest 40 - Balanced performance\n// Applications: Drivetrains, medium-duty mechanisms\n// RPM: ~1600\n// Torque: Medium\n// Best for: General purpose, balanced speed/torque\n// Neverest 60 - High torque, low speed\n// Applications: Lifts, arms, heavy mechanisms\n// RPM: ~1050\n// Torque: High\n// Best for: Heavy loads, precise control\n// Example: Choosing motors for different applications\nDcMotor intakeMotor; // Neverest 20 for fast intake\nDcMotor driveMotor;  // Neverest 40 for drivetrain\nDcMotor liftMotor;   // Neverest 60 for lift mechanism"
+      "title": "Common FTC Motors",
+      "content": "Some common FTC motors include:<ul><li>REV HD Hex Motor</li><li>AndyMark NeveRest</li><li>Tetrix Motor</li></ul>Each motor has different speed, torque, and encoder options."
     },
     {
       "type": "text",
-      "title": "REV HD Hex Motors",
-      "content": "<p>REV HD Hex motors are high-precision motors with built-in encoders, making them excellent for applications requiring precise control and position feedback. See <a href='https://docs.revrobotics.com/duo-control/hardware/motors' target='_blank'>REV Robotics: Motor Selection</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "REV HD Hex Characteristics",
-      "items": [
-        "<b>Built-in Encoder:</b> 1440 counts per revolution for precise control",
-        "<b>High Precision:</b> Excellent for position and speed control",
-        "<b>Multiple Options:</b> Various gear ratios available",
-        "<b>Reliability:</b> Durable construction for competition use"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "REV HD Hex Motor Setup",
-      "language": "java",
-      "content": "// REV HD Hex Motor configuration\nDcMotor hdHexMotor = hardwareMap.get(DcMotor.class, \"hd_hex_motor\");\nfinal int HD_HEX_COUNTS_PER_REV = 1440;\nfinal double HD_HEX_GEAR_RATIO = 1.0; // Adjust based on your motor\nhdHexMotor.setDirection(DcMotor.Direction.FORWARD);\nhdHexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\nhdHexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\npublic void moveToPrecisePosition(int targetCounts) {\n    hdHexMotor.setTargetPosition(targetCounts);\n    hdHexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    hdHexMotor.setPower(0.5);\n    while (hdHexMotor.isBusy()) {\n        telemetry.addData(\"Current Position\", hdHexMotor.getCurrentPosition());\n        telemetry.addData(\"Target Position\", targetCounts);\n        telemetry.update();\n    }\n}"
+      "title": "Choosing the Right Motor",
+      "content": "Consider the following when choosing a motor:<ul><li>Torque: Needed for lifting or pushing heavy objects.</li><li>Speed: Needed for fast movement.</li><li>Size and weight: Must fit your robot design.</li></ul>"
     },
     {
       "type": "text",
-      "title": "GoBilda Yellow Jacket Motors",
-      "content": "<p>GoBilda Yellow Jacket motors offer a wide range of options with different gear ratios and performance characteristics, allowing teams to find the perfect motor for their specific needs. See <a href='https://gm0.org/en/latest/docs/hardware-components/motors.html' target='_blank'>gm0: Motor Comparison</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Yellow Jacket Options",
-      "items": [
-        "<b>Speed Options:</b> Various RPM ratings from 30 to 6000+",
-        "<b>Gear Ratios:</b> Multiple gear ratios for different applications",
-        "<b>Built-in Encoders:</b> Some models include encoders",
-        "<b>Modular Design:</b> Easy to integrate with GoBilda building system"
-      ]
+      "title": "Reading Motor Specifications",
+      "content": "Always check the motor's datasheet for voltage, current, speed, and torque ratings. This helps you avoid damaging your hardware and ensures your robot performs as expected."
     },
     {
       "type": "code",
-      "title": "Yellow Jacket Motor Applications",
-      "language": "java",
-      "content": "// Yellow Jacket motor selection guide\n// High-speed applications (intakes, conveyors)\n// Yellow Jacket 6000 RPM or similar\nDcMotor highSpeedMotor = hardwareMap.get(DcMotor.class, \"high_speed_motor\");\nhighSpeedMotor.setPower(0.3); // Lower power for high-speed motors\n// Medium-speed applications (drivetrains)\n// Yellow Jacket 1000-2000 RPM range\nDcMotor mediumSpeedMotor = hardwareMap.get(DcMotor.class, \"medium_speed_motor\");\nmediumSpeedMotor.setPower(0.5); // Standard power for drivetrain\n// Low-speed, high-torque applications (lifts, arms)\n// Yellow Jacket 100-500 RPM range\nDcMotor highTorqueMotor = hardwareMap.get(DcMotor.class, \"high_torque_motor\");\nhighTorqueMotor.setPower(0.7); // Higher power for heavy loads\npublic void setMotorPowerByType(DcMotor motor, String motorType, double basePower) {\n    switch (motorType) {\n        case \"high_speed\":\n            motor.setPower(basePower * 0.3); // Reduce power for high-speed motors\n            break;\n        case \"medium_speed\":\n            motor.setPower(basePower * 0.5); // Standard power\n            break;\n        case \"high_torque\":\n            motor.setPower(basePower * 0.7); // Higher power for heavy loads\n            break;\n    }\n}"
+      "title": "Programming Differences",
+      "content": "Most FTC DC motors are programmed the same way. However, some may require different initialization or settings. Always check the manufacturer's documentation.",
+      "code": "// Example: Initializing a REV HD Hex Motor\nDcMotor hdHex = hardwareMap.get(DcMotor.class, \"hd_hex_motor\");\nhdHex.setDirection(DcMotor.Direction.FORWARD);\nhdHex.setPower(0.5);"
     },
     {
-      "type": "text",
-      "title": "REV Core Hex Motors",
-      "content": "<p>REV Core Hex motors are compact motors designed for space-constrained applications while still providing good performance and reliability. See <a href='https://docs.revrobotics.com/duo-control/hardware/motors' target='_blank'>REV Robotics: Motor Selection</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Core Hex Characteristics",
-      "items": [
-        "<b>Compact Size:</b> Smaller footprint than other motors",
-        "<b>Built-in Encoder:</b> 288 counts per revolution",
-        "<b>Good Performance:</b> Reliable operation in tight spaces",
-        "<b>Easy Integration:</b> Works well with REV building system"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Core Hex Motor Configuration",
-      "language": "java",
-      "content": "// REV Core Hex Motor setup\nDcMotor coreHexMotor = hardwareMap.get(DcMotor.class, \"core_hex_motor\");\nfinal int CORE_HEX_COUNTS_PER_REV = 288;\ncoreHexMotor.setDirection(DcMotor.Direction.FORWARD);\ncoreHexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\ncoreHexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\npublic void controlCompactMechanism(double power) {\n    coreHexMotor.setPower(power);\n    if (getRuntime().seconds() > 30) {\n        coreHexMotor.setPower(power * 0.8);\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "Motor Selection Guide",
-      "content": "<p>Choosing the right motor for your application requires understanding the requirements and motor characteristics. See <a href='https://gm0.org/en/latest/docs/hardware-components/motors.html' target='_blank'>gm0: Motor Comparison</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Motor Selection Guidelines",
-      "subtitle": "Choose motors based on application:",
-      "items": [
-        "Drivetrains: Neverest 40, REV HD Hex, or Yellow Jacket 1000-2000 RPM",
-        "Lifts and Arms: Neverest 60, REV HD Hex, or Yellow Jacket 100-500 RPM",
-        "Intakes and Conveyors: Neverest 20, Yellow Jacket 3000+ RPM",
-        "Precise Mechanisms: REV HD Hex with encoders",
-        "Space-Constrained: REV Core Hex for compact applications"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Motor Selection Helper",
-      "language": "java",
-      "content": "// Motor selection helper method\npublic String recommendMotor(String application, double loadWeight, boolean needPrecision) {\n    if (needPrecision) {\n        return \"REV HD Hex Motor\";\n    }\n    switch (application) {\n        case \"drivetrain\":\n            return \"Neverest 40 or REV HD Hex\";\n        case \"lift\":\n            if (loadWeight > 10) {\n                return \"Neverest 60\";\n            } else {\n                return \"Neverest 40 or REV HD Hex\";\n            }\n        case \"intake\":\n            return \"Neverest 20 or Yellow Jacket 3000+ RPM\";\n        case \"conveyor\":\n            return \"Neverest 20 or Yellow Jacket 3000+ RPM\";\n        case \"compact\":\n            return \"REV Core Hex\";\n        default:\n            return \"Neverest 40 (general purpose)\";\n    }\n}\nString drivetrainMotor = recommendMotor(\"drivetrain\", 5.0, true);\nString liftMotor = recommendMotor(\"lift\", 15.0, false);\nString intakeMotor = recommendMotor(\"intake\", 2.0, false);"
-    },
-    {
-      "type": "text",
-      "title": "Motor Testing and Validation",
-      "content": "<p>Testing motors helps verify they meet your application requirements and operate reliably. See <a href='https://docs.revrobotics.com/duo-control/hardware/motors' target='_blank'>REV Robotics: Motor Selection</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Testing Procedures",
-      "items": [
-        "<b>Speed Testing:</b> Measure actual RPM under load",
-        "<b>Torque Testing:</b> Test lifting capacity and stall torque",
-        "<b>Encoder Testing:</b> Verify encoder accuracy and resolution",
-        "<b>Temperature Testing:</b> Monitor motor temperature during extended use",
-        "<b>Noise Testing:</b> Check for unusual sounds indicating problems"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Motor Testing OpMode",
-      "language": "java",
-      "content": "// Motor testing and validation\n@TeleOp(name=\"Motor Test\", group=\"Testing\")\npublic class MotorTestOpMode extends LinearOpMode {\n    private DcMotor testMotor;\n    private double startTime;\n    private int startPosition;\n    @Override\n    public void runOpMode() {\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testMotor.setDirection(DcMotor.Direction.FORWARD);\n        testMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        waitForStart();\n        while (opModeIsActive()) {\n            // Speed test\n            if (gamepad1.a) {\n                startSpeedTest();\n            }\n            // Torque test\n            if (gamepad1.b) {\n                startTorqueTest();\n            }\n            // Encoder test\n            if (gamepad1.x) {\n                startEncoderTest();\n            }\n            telemetry.addData(\"Motor Power\", testMotor.getPower());\n            telemetry.addData(\"Encoder Position\", testMotor.getCurrentPosition());\n            telemetry.addData(\"Battery Voltage\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n    private void startSpeedTest() {\n        startTime = getRuntime().seconds();\n        startPosition = testMotor.getCurrentPosition();\n        testMotor.setPower(0.5);\n        sleep(5000);\n        double endTime = getRuntime().seconds();\n        int endPosition = testMotor.getCurrentPosition();\n        double timeElapsed = endTime - startTime;\n        int positionChange = endPosition - startPosition;\n        double rpm = (positionChange / 1440.0) * (60.0 / timeElapsed);\n        telemetry.addData(\"Test Result\", String.format(\"RPM: %.1f\", rpm));\n        testMotor.setPower(0);\n    }\n  }"
+      "type": "exercise-box",
+      "title": "Practice: Compare Motor Specs",
+      "description": "Find the datasheets for two different FTC-legal motors. List their speed, torque, and encoder options. Discuss which would be better for a drivetrain versus an arm.",
+      "tasks": [
+        "Find datasheets for two motors.",
+        "List speed, torque, and encoder options.",
+        "Decide which is better for drivetrain and which for an arm."
+      ],
+      "content": "// Example answer\n// REV HD Hex: 6000 RPM, high torque, built-in encoder\n// AndyMark NeveRest: 6000 RPM, moderate torque, built-in encoder\n// HD Hex is better for drivetrain, NeveRest for arm."
     }
   ]
 }

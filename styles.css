@@ -1241,13 +1241,39 @@ footer {
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 0.3s ease, width 0s 0.3s, height 0s 0.3s;
-  z-index: 1;  /* Above content, below sidebar */
+  z-index: 29;  /* Below sidebar, above content */
 }
 
-.sidebar-drawer {
-  transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-  z-index: 30;
-  padding-top: calc(var(--header-height) + 0.0rem); /* Adjust 1rem as needed for spacing */
+/* Show overlay when sidebar is open */
+@media (max-width: 63em) {
+  #__navigation:checked ~ .sidebar-overlay.overlay {
+    width: 100vw;
+    height: 100vh;
+    opacity: 1;
+    transition: opacity 0.3s ease 0s, width 0s 0s, height 0s 0s;
+    pointer-events: auto;
+    z-index: 29;
+  }
+  .sidebar-drawer {
+    left: -15em;
+    position: fixed;
+    top: 0;
+    width: 15em;
+    height: 100vh;
+    z-index: 30;
+    transition: left 0.3s ease-in-out;
+  }
+  #__navigation:checked ~ .page .sidebar-drawer {
+    left: 0;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.25);
+    z-index: 30;
+  }
+  /* Do NOT shift main content on mobile overlay */
+  #__navigation:checked ~ .page .main {
+    margin-left: 0 !important;
+    max-width: 100% !important;
+    transition: none !important;
+  }
 }
 
 /* #__navigation:checked ~ .sidebar-overlay {

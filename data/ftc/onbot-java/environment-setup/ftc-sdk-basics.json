@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What is the FTC SDK?",
-      "content": "The FTC (FIRST Tech Challenge) Software Development Kit (SDK) is the foundation for programming FTC robots in Java. It provides all the libraries, APIs, and tools needed to control robot hardware, manage OpModes, and interact with sensors and gamepads.<br><br>The SDK is designed to abstract away the low-level details of hardware control, so you can focus on writing logic for your robot.<br><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/overview/index.html' target='_blank'>FTC Docs: SDK Overview</a><br>- <a href='https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html' target='_blank'>gm0: SDK Introduction</a>"
+      "content": "The FTC (FIRST Tech Challenge) Software Development Kit (SDK) is the foundation for programming FTC robots in Java. It provides all the libraries, APIs, and tools needed to control robot hardware, manage OpModes, and interact with sensors and gamepads.<br><br>The SDK abstracts away low-level hardware details, letting you focus on robot logic. <br><br>Learn more: <a href='https://ftc-docs.firstinspires.org/en/latest/ftc_sdk/overview/index.html' target='_blank'>FTC Docs: SDK Overview</a> &bull; <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a>"
     },
     {
       "type": "rules-box",
@@ -21,17 +21,17 @@
     {
       "type": "text",
       "title": "SDK Structure",
-      "content": "The SDK is organized into layers that separate hardware access from your robot logic. This makes it easier to write, debug, and maintain your code.<br><br>- <b>Hardware Layer</b>: Direct communication with motors, servos, and sensors<br>- <b>Device Layer</b>: Abstraction for consistent hardware access<br>- <b>OpMode Layer</b>: Programming framework for robot modes<br>- <b>Application Layer</b>: Your custom code<br><br>See <a href='https://gm0.org/en/latest/docs/software/getting-started/project-structure.html' target='_blank'>gm0: Project Structure</a> for more details."
+      "content": "The SDK is organized into layers that separate hardware access from your robot logic. This makes it easier to write, debug, and maintain your code.<br><br><b>Hardware Layer</b>: Direct communication with motors, servos, and sensors<br><b>Device Layer</b>: Abstraction for consistent hardware access<br><b>OpMode Layer</b>: Programming framework for robot modes<br><b>Application Layer</b>: Your custom code"
     },
     {
       "type": "text",
       "title": "Key SDK Classes",
-      "content": "The most important classes in the SDK are:<br><br>- <b>OpMode</b>: The base class for all robot programs. You extend this to create your own autonomous or teleop code. (<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/eventloop/opmode/package-summary.html' target='_blank'>FTC OpMode API</a>)<br>- <b>HardwareMap</b>: Lets you access configured hardware devices by name. (<a href='https://ftc-docs.firstinspires.org/en/latest/java/org/firstinspires/ftc/robotcore/hardware/HardwareMap.html' target='_blank'>HardwareMap API</a>)<br>- <b>DcMotor, Servo, Sensor classes</b>: Used to control motors, servos, and sensors. (<a href='https://ftc-docs.firstinspires.org/en/latest/java/com/qualcomm/robotcore/hardware/DcMotor.html' target='_blank'>DcMotor API</a>)<br><br>You will use these classes in almost every FTC program."
+      "content": "The most important classes in the SDK are:<br><br>- <b>OpMode</b>: The base class for all robot programs. You extend this to create your own autonomous or teleop code. (<a href='https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/eventloop/opmode/OpMode.html' target='_blank'>OpMode API</a>)<br>- <b>HardwareMap</b>: Lets you access configured hardware devices by name. (<a href='https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/HardwareMap.html' target='_blank'>HardwareMap API</a>)<br>- <b>DcMotor, Servo, Sensor classes</b>: Used to control motors, servos, and sensors. (<a href='https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/DcMotor.html' target='_blank'>DcMotor API</a>, <a href='https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/Servo.html' target='_blank'>Servo API</a>)<br><br>You will use these classes in almost every FTC program."
     },
     {
       "type": "text",
       "title": "How an OpMode Works",
-      "content": "An OpMode is a class that controls your robot during a match. You write your robot's logic inside an OpMode, and the Driver Station app lets you select and run it.<br><br>There are two main types: <b>LinearOpMode</b> (runs code sequentially) and <b>OpMode</b> (runs code in a loop). Most beginners start with LinearOpMode."
+      "content": "An OpMode is a class that controls your robot during a match. You write your robot's logic inside an OpMode, and the Driver Station app lets you select and run it.<br><br>There are two main types: <b>LinearOpMode</b> (runs code sequentially) and <b>OpMode</b> (runs code in a loop). Most beginners start with LinearOpMode.<br><br>See: <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html' target='_blank'>FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>"
     },
     {
       "type": "code",
@@ -42,7 +42,7 @@
     {
       "type": "text",
       "title": "Hardware Mapping Explained",
-      "content": "The <code>hardwareMap</code> object lets you access motors, servos, and sensors by the names you set in the Robot Controller app.<br><br>For example, if you named a motor 'left_drive' in your configuration, you can access it in code as shown below.<br><br>See <a href='https://gm0.org/en/latest/docs/software/tutorials/hardwaremap.html' target='_blank'>gm0: Hardware Mapping</a> for more."
+      "content": "The <code>hardwareMap</code> object lets you access motors, servos, and sensors by the names you set in the Robot Controller app.<br><br>For example, if you named a motor 'left_drive' in your configuration, you can access it in code as shown below.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html' target='_blank'>FTC Docs: Configuring Your Hardware</a> for more."
     },
     {
       "type": "code",
@@ -53,7 +53,7 @@
     {
       "type": "text",
       "title": "Using Telemetry",
-      "content": "Telemetry lets you send data to the Driver Station for debugging and monitoring. You can display motor power, sensor values, or any other information you want to see during a match.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a> and <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/telemetry.html' target='_blank'>gm0: Telemetry</a> for more."
+      "content": "Telemetry lets you send data to the Driver Station for debugging and monitoring. You can display motor power, sensor values, or any other information you want to see during a match.<br><br>See <a href='https://gm0.org/en/latest/docs/software/tutorials/using-telemetry.html' target='_blank'>gm0: Telemetry</a> for more."
     },
     {
       "type": "code",
@@ -64,7 +64,7 @@
     {
       "type": "text",
       "title": "Gamepad Input Explained",
-      "content": "The SDK provides two gamepad objects, <code>gamepad1</code> and <code>gamepad2</code>, for reading driver and operator controls. You can read joystick, button, and trigger values to control your robot.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/gamepad.html' target='_blank'>FTC Docs: Gamepad</a> for a full list of controls."
+      "content": "The SDK provides two gamepad objects, <code>gamepad1</code> and <code>gamepad2</code>, for reading driver and operator controls. You can read joystick, button, and trigger values to control your robot.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/control_hard_compon/ds_components/components/components.html#gamepads' target='_blank'>FTC Docs: Gamepad</a> for a full list of controls."
     },
     {
       "type": "code",
@@ -88,13 +88,12 @@
     {
       "type": "text",
       "title": "Further Reading & Resources",
-      "content": "- <a href='https://gm0.org/en/latest/docs/software/index.html' target='_blank'>gm0.org Software Docs</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a><br>- <a href='https://ftc-docs.firstinspires.org/' target='_blank'>FTC Docs</a><br>- <a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Resources</a>"
+      "content": "- <a href='https://gm0.org/en/latest/docs/software/index.html' target='_blank'>gm0.org Software Docs</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a><br>- <a href='https://ftc-docs.firstinspires.org/' target='_blank'>FTC Docs</a><br>- <a href='https://www.firstinspires.org/resource-library/ftc/technology-information-and-resources' target='_blank'>FIRST Technology Resources</a><br>- <a href='https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/index.html' target='_blank'>FTC SDK JavaDoc (RobotCore)</a><br>- <a href='https://javadoc.io/doc/org.firstinspires.ftc/Hardware/latest/index.html' target='_blank'>FTC SDK JavaDoc (Hardware)</a>"
     },
     {
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "SDK Installation", "id": "sdk-installation" },
         { "label": "OpMode Structure", "id": "opmode-structure" },
         { "label": "Basic Robot Control", "id": "basic-robot-control" }
       ]

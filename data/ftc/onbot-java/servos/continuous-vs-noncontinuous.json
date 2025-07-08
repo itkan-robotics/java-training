@@ -1,99 +1,48 @@
 {
-  "type": "lesson",
-  "title": "Continuous vs Noncontinuous Servos",
-  "content": [
+  "title": "Continuous vs Non-Continuous (Standard) Servos",
+  "sections": [
     {
       "type": "text",
-      "title": "Servo Types in FTC",
-      "content": "<p>FTC robots use two main types of servos: standard (noncontinuous) and continuous rotation. Each type has unique characteristics and is suited for different applications.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a> and <a href='https://docs.revrobotics.com/duo-control/programming/servo-control' target='_blank'>REV Robotics: Servo Control</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Standard (Noncontinuous) Servos",
-      "subtitle": "Key features:",
-      "items": [
-        "Move to a specific position within a limited range (usually 0° to 180°)",
-        "Hold position with feedback control",
-        "Ideal for arms, claws, and gates",
-        "Position set by value between 0.0 and 1.0"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Standard Servo Example",
-      "language": "java",
-      "content": "// Standard servo control\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\narmServo.setPosition(0.0); // Minimum position\narmServo.setPosition(0.5); // Middle position\narmServo.setPosition(1.0); // Maximum position"
-    },
-    {
-      "type": "rules-box",
-      "title": "Continuous Rotation Servos",
-      "subtitle": "Key features:",
-      "items": [
-        "Rotate continuously in either direction",
-        "Speed and direction controlled by position value (0.0 to 1.0)",
-        "No feedback for absolute position",
-        "Ideal for intakes, conveyors, and mechanisms needing full rotation"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Continuous Servo Example",
-      "language": "java",
-      "content": "// Continuous rotation servo control\nServo intakeServo = hardwareMap.get(Servo.class, \"intake_servo\");\nintakeServo.setPosition(0.0); // Full speed reverse\nintakeServo.setPosition(0.5); // Stop\nintakeServo.setPosition(1.0); // Full speed forward\n// Use gamepad to control speed\ndouble speed = gamepad1.left_stick_y;\nintakeServo.setPosition(0.5 + 0.5 * speed); // Map stick to speed"
-    },
-    {
-      "type": "text",
-      "title": "Choosing the Right Servo",
-      "content": "<p>Choose standard servos for precise position control and continuous servos for mechanisms needing full rotation. See <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a>.</p>"
+      "title": "Definition and Differences",
+      "content": "Standard (positional) servos move to a specific position and hold it, while continuous rotation servos spin like a motor. Understanding the difference is crucial for choosing the right servo for your mechanism."
     },
     {
       "type": "list",
-      "title": "Servo Selection Guide",
-      "items": [
-        "<b>Standard Servo:</b> Arms, claws, gates, latches",
-        "<b>Continuous Servo:</b> Intakes, conveyors, rotating mechanisms"
+      "title": "Comparison Table",
+      "content": [
+        "Standard Servo: Moves to a set position (0.0 to 1.0)",
+        "Continuous Servo: Rotates continuously, speed and direction set by position value (0.0 = full reverse, 0.5 = stop, 1.0 = full forward)"
       ]
+    },
+    {
+      "type": "code",
+      "title": "Controlling a Standard Servo",
+      "content": "Set the position of a standard servo using setPosition().",
+      "code": "myServo.setPosition(0.75); // Move to 75% of range (standard servo)"
+    },
+    {
+      "type": "code",
+      "title": "Controlling a Continuous Rotation Servo",
+      "content": "Set the speed and direction of a continuous rotation servo using setPosition(). 0.0 = full reverse, 0.5 = stop, 1.0 = full forward.",
+      "code": "myServo.setPosition(1.0); // Full speed forward (continuous servo)\nmyServo.setPosition(0.0); // Full speed reverse\nmyServo.setPosition(0.5); // Stop"
     },
     {
       "type": "text",
-      "title": "Servo Safety and Best Practices",
-      "content": "<p>Proper use of both types of servos ensures reliable operation and prevents damage. Always test servos before attaching to mechanisms and avoid forcing them beyond their range. See <a href='https://docs.revrobotics.com/duo-control/programming/servo-control#servo-safety' target='_blank'>REV Robotics: Servo Safety</a>.</p>"
+      "title": "When to Use Each Type",
+      "content": "Use standard servos for precise positioning (e.g., arms, claws). Use continuous rotation servos for mechanisms that need to spin freely (e.g., intake rollers)."
     },
     {
-      "type": "rules-box",
-      "title": "Servo Safety Guidelines",
-      "subtitle": "Follow these practices for safe servo use:",
+      "type": "text",
+      "title": "Troubleshooting Common Issues",
+      "content": "If your servo is not moving as expected, check the type in your hardware configuration and ensure you are using the correct control method in code."
+    },
+    {
+      "type": "list",
+      "title": "Further Reading and References",
       "items": [
-        "Never force a servo beyond its range (standard: 0.0 to 1.0)",
-        "Test servo movement before attaching to mechanisms",
-        "Use appropriate mounting hardware",
-        "Monitor servo temperature during extended use",
-        "Implement limits in code to prevent overdriving"
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/controlling_a_servo/Controlling-a-Servo-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Controlling a Servo (OnBot Java)</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/power-and-electronics/servo-guide/usage-tips.html\" target=\"_blank\">gm0: Servo Usage Tips</a>"
       ]
-    },
-    {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        { "label": "Intro to Servos", "id": "intro-to-servos" },
-        { "label": "Servo Positions", "id": "servo-positions" },
-        { "label": "Servo Types", "id": "servo-types" }
-      ]
-    },
-    {
-      "type": "exercise-box",
-      "title": "Servo Type Practice",
-      "description": "Practice these exercises to master servo selection and control:",
-      "tasks": [
-        "Create an OpMode that tests both standard and continuous servos",
-        "Test servo range and limits for each type",
-        "Implement safe position and speed limiting in code",
-        "Attach servos to different mechanisms and test",
-        "Practice troubleshooting common servo issues",
-        "Test servo operation with different loads",
-        "Document servo performance and range"
-      ],
-      "content": "// Practice Exercise: Servo Types\n// Create an OpMode that tests both standard and continuous servos\n// Include safety features and telemetry\n// Test different positions and speeds\n\n@TeleOp(name=\"Servo Type Test\", group=\"Testing\")\npublic class ServoTypeTestOpMode extends LinearOpMode {\n    private Servo standardServo, continuousServo;\n    @Override\n    public void runOpMode() {\n        standardServo = hardwareMap.get(Servo.class, \"standard_servo\");\n        continuousServo = hardwareMap.get(Servo.class, \"continuous_servo\");\n        waitForStart();\n        while (opModeIsActive()) {\n            // Standard servo control\n            if (gamepad1.a) {\n                standardServo.setPosition(1.0);\n            } else if (gamepad1.b) {\n                standardServo.setPosition(0.0);\n            } else if (gamepad1.x) {\n                standardServo.setPosition(0.5);\n            }\n            // Continuous servo control\n            double speed = gamepad1.left_stick_y;\n            continuousServo.setPosition(0.5 + 0.5 * speed);\n            telemetry.addData(\"Standard Servo Position\", standardServo.getPosition());\n            telemetry.addData(\"Continuous Servo Speed\", speed);\n            telemetry.update();\n        }\n    }"
     }
   ]
-} 
+}

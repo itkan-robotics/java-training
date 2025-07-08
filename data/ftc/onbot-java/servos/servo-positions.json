@@ -1,92 +1,45 @@
 {
-  "type": "lesson",
-  "title": "Servo Positions",
-  "content": [
+  "title": "Understanding and Using Servo Positions",
+  "sections": [
     {
       "type": "text",
-      "title": "Understanding Servo Positions",
-      "content": "<p>Servo position control is essential for precise mechanism movement in FTC robots. Servos are commanded to move to a position between 0.0 (minimum) and 1.0 (maximum), with intermediate values for partial movement.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a> and <a href='https://docs.revrobotics.com/duo-control/programming/servo-control' target='_blank'>REV Robotics: Servo Control</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Servo Position Basics",
-      "subtitle": "Key concepts:",
-      "items": [
-        "Position value ranges from 0.0 (min) to 1.0 (max)",
-        "Intermediate values allow partial movement",
-        "Position is relative to servo's physical range",
-        "Some servos may not reach full 0.0 or 1.0 due to mechanical limits",
-        "Test and calibrate positions for your mechanism"
-      ]
+      "title": "Servo Position Range and Units",
+      "content": "Servo positions in FTC are set using values from 0.0 to 1.0. 0.0 usually means one end of the servo's range (e.g., 0 degrees), and 1.0 means the other end (e.g., 180 degrees). The actual angle may vary by servo model."
     },
     {
       "type": "code",
-      "title": "Setting Servo Positions",
-      "language": "java",
-      "content": "// Set servo to specific positions\nServo armServo = hardwareMap.get(Servo.class, \"arm_servo\");\narmServo.setPosition(0.0); // Minimum\narmServo.setPosition(0.5); // Middle\narmServo.setPosition(1.0); // Maximum\n// Use gamepad to control positions\nif (gamepad1.a) {\n    armServo.setPosition(1.0);\n} else if (gamepad1.b) {\n    armServo.setPosition(0.0);\n} else if (gamepad1.x) {\n    armServo.setPosition(0.5);\n}"
+      "title": "Setting and Reading Servo Position",
+      "content": "This code shows how to set a servo to a specific position and read its current position.",
+      "code": "myServo.setPosition(0.25); // Move to 25% of range\ndouble pos = myServo.getPosition(); // Read current position\ntelemetry.addData(\"Servo Position\", pos);\ntelemetry.update();"
     },
     {
       "type": "text",
-      "title": "Calibrating Servo Positions",
-      "content": "<p>Calibration ensures that servo positions correspond to the desired physical locations. Always test and adjust position values for your specific mechanism. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/servo.html' target='_blank'>FTC Docs: Servo Programming</a>.</p>"
+      "title": "Calibrating Servo Positions for Mechanisms",
+      "content": "To ensure your mechanism moves correctly, you may need to calibrate the servo's range. Use small increments and telemetry to find the correct values for your application."
+    },
+    {
+      "type": "code",
+      "title": "Incremental Calibration Example",
+      "content": "This code lets you adjust the servo position in small steps using gamepad buttons, and see the result in telemetry.",
+      "code": "double position = 0.5;\nwhile (opModeIsActive()) {\n    if (gamepad1.dpad_up) {\n        position += 0.01;\n    } else if (gamepad1.dpad_down) {\n        position -= 0.01;\n    }\n    position = Math.max(0.0, Math.min(1.0, position));\n    myServo.setPosition(position);\n    telemetry.addData(\"Servo Position\", position);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices for Setting and Changing Positions",
+      "content": "Always use safe ranges for your specific servo and mechanism. Avoid commanding the servo to positions that could cause mechanical binding or damage. Use named constants for important positions in your code."
+    },
+    {
+      "type": "text",
+      "title": "Debugging and Telemetry for Servos",
+      "content": "Use telemetry to monitor servo positions in real time. This helps you verify that your code is working as expected and makes troubleshooting easier."
     },
     {
       "type": "list",
-      "title": "Calibration Steps",
+      "title": "Further Reading and References",
       "items": [
-        "Move servo to 0.0 and check physical position",
-        "Move servo to 1.0 and check physical position",
-        "Test intermediate positions (e.g., 0.25, 0.5, 0.75)",
-        "Adjust code values to match desired mechanism movement",
-        "Document calibrated values for future reference"
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/controlling_a_servo/Controlling-a-Servo-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Controlling a Servo (OnBot Java)</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/power-and-electronics/servo-guide/usage-tips.html\" target=\"_blank\">gm0: Servo Usage Tips</a>"
       ]
-    },
-    {
-      "type": "code",
-      "title": "Calibration Example",
-      "language": "java",
-      "content": "// Calibrate servo positions\npublic void calibrateServo(Servo servo) {\n    double[] testPositions = {0.0, 0.25, 0.5, 0.75, 1.0};\n    for (double pos : testPositions) {\n        servo.setPosition(pos);\n        sleep(1000); // Wait for movement\n        telemetry.addData(\"Position\", pos);\n        telemetry.update();\n    }\n}\n// Use in OpMode\ncalibrateServo(armServo);"
-    },
-    {
-      "type": "text",
-      "title": "Servo Position Safety",
-      "content": "<p>Always limit servo positions to the safe range (0.0 to 1.0) and avoid forcing the servo against mechanical stops. See <a href='https://docs.revrobotics.com/duo-control/programming/servo-control#servo-safety' target='_blank'>REV Robotics: Servo Safety</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Safety Guidelines",
-      "subtitle": "Follow these practices for safe servo use:",
-      "items": [
-        "Never force a servo beyond its range (0.0 to 1.0)",
-        "Test servo movement before attaching to mechanisms",
-        "Use appropriate mounting hardware",
-        "Monitor servo temperature during extended use",
-        "Implement limits in code to prevent overdriving"
-      ]
-    },
-    {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        { "label": "Intro to Servos", "id": "intro-to-servos" },
-        { "label": "Continuous vs Noncontinuous Servos", "id": "continuous-vs-noncontinuous" },
-        { "label": "Servo Types", "id": "servo-types" }
-      ]
-    },
-    {
-      "type": "exercise-box",
-      "title": "Servo Position Practice",
-      "description": "Practice these exercises to master servo position control:",
-      "tasks": [
-        "Create an OpMode that moves a servo to different positions",
-        "Test and calibrate servo range for your mechanism",
-        "Implement safe position limiting in code",
-        "Attach a servo to a mechanism and test movement",
-        "Practice troubleshooting common servo issues",
-        "Test servo operation with different loads",
-        "Document calibrated position values"
-      ],
-      "content": "// Practice Exercise: Servo Position Control\n// Create an OpMode that tests servo positions and calibration\n// Include safety features and telemetry\n// Test different positions and loads\n\n@TeleOp(name=\"Servo Position Test\", group=\"Testing\")\npublic class ServoPositionTestOpMode extends LinearOpMode {\n    private Servo testServo;\n    @Override\n    public void runOpMode() {\n        testServo = hardwareMap.get(Servo.class, \"test_servo\");\n        waitForStart();\n        while (opModeIsActive()) {\n            if (gamepad1.a) {\n                testServo.setPosition(1.0);\n            } else if (gamepad1.b) {\n                testServo.setPosition(0.0);\n            } else if (gamepad1.x) {\n                testServo.setPosition(0.5);\n            }\n            telemetry.addData(\"Servo Position\", testServo.getPosition());\n            telemetry.update();\n        }\n    }"
     }
   ]
-} 
+}

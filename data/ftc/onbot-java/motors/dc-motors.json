@@ -1,139 +1,61 @@
 {
-  "title": "DC Motors",
+  "title": "DC Motors in FTC",
   "sections": [
     {
       "type": "text",
-      "title": "Introduction to DC Motors",
-      "content": "<p>DC motors are the primary actuators in FTC robots, providing the mechanical force needed for movement, lifting, and other mechanical functions. Understanding how to properly control and configure DC motors is fundamental to successful robot programming.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/motors/dc-motors.html' target='_blank'>gm0: DC Motors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/motor-control' target='_blank'>REV Robotics: Motor Control</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "What are DC Motors?",
-      "subtitle": "Key characteristics of DC motors:",
-      "items": [
-        "Convert electrical energy into rotational motion",
-        "Speed and direction are controlled by voltage and polarity",
-        "Torque output depends on motor type and gearing",
-        "Built-in encoders provide position feedback",
-        "Can be controlled with precise power levels (-1.0 to 1.0)"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "FTC Motor Types",
-      "content": "<p>FTC allows several types of DC motors, each with unique characteristics suitable for different applications. See <a href='https://gm0.org/en/latest/docs/hardware-components/motors.html' target='_blank'>gm0: Motor Comparison</a> for a detailed comparison.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Common FTC Motors",
-      "items": [
-        "<b>AndyMark Neverest:</b> 20, 40, and 60 series with different speed/torque ratios",
-        "<b>REV HD Hex Motor:</b> High precision with built-in encoder",
-        "<b>GoBilda Yellow Jacket:</b> Various options with different gear ratios",
-        "<b>REV Core Hex Motor:</b> Compact motor for space-constrained applications"
-      ]
+      "title": "What is a DC Motor?",
+      "content": "A DC motor is a device that converts electrical energy into mechanical motion. In FTC, DC motors are used to drive wheels, arms, and other moving parts. Understanding how to control DC motors is essential for building a functional robot. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#modifying-your-op-mode-to-control-a-motor\" target=\"_blank\">FTC Docs: Modifying Your Op Mode to Control a Motor</a>."
     },
     {
       "type": "code",
-      "title": "Motor Specifications Comparison",
-      "language": "java",
-      "content": "// Neverest 20: ~3000 RPM, low torque - Good for fast movement\n// Neverest 40: ~1600 RPM, medium torque - Balanced performance\n// Neverest 60: ~1050 RPM, high torque - Good for heavy loads\n// REV HD Hex: Variable RPM, high torque - High precision control\n// GoBilda: Many options - Check datasheet for specific specs\n\n// Motor selection depends on your application:\n// - Drivetrain: Usually Neverest 40 or REV HD Hex\n// - Lifts/Arms: Usually Neverest 60 or REV HD Hex\n// - Intakes: Usually Neverest 20 or 40"
-    },
-    {
-      "type": "text",
-      "title": "Motor Configuration",
-      "content": "<p>Proper motor configuration is essential for reliable operation. This includes setting directions, modes, and power limits. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/motor.html' target='_blank'>FTC Docs: Motor Modes</a>.</p>"
+      "title": "Declaring and Initializing a DcMotor",
+      "content": "You must declare and initialize each motor in your OpMode. The name must match your robot configuration.",
+      "code": "private DcMotor leftDrive;\n\n@Override\npublic void runOpMode() {\n    leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n    // ... rest of your code ...\n}"
     },
     {
       "type": "code",
-      "title": "Basic Motor Setup",
-      "language": "java",
-      "content": "// Motor configuration in hardware\nDcMotor leftFront = hardwareMap.get(DcMotor.class, \"left_front\");\nDcMotor rightFront = hardwareMap.get(DcMotor.class, \"right_front\");\nDcMotor leftRear = hardwareMap.get(DcMotor.class, \"left_rear\");\nDcMotor rightRear = hardwareMap.get(DcMotor.class, \"right_rear\");\n\n// Set motor directions (important for proper movement)\nleftFront.setDirection(DcMotor.Direction.FORWARD);\nrightFront.setDirection(DcMotor.Direction.REVERSE);\nleftRear.setDirection(DcMotor.Direction.FORWARD);\nrightRear.setDirection(DcMotor.Direction.REVERSE);\n\n// Set motor modes\nleftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\nrightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\nleftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\nrightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);"
+      "title": "Setting Motor Power",
+      "content": "Set the power of a motor using <code>setPower()</code>. Power values range from -1.0 (full reverse) to 1.0 (full forward).",
+      "code": "leftDrive.setPower(0.5); // Half speed forward\nleftDrive.setPower(-1.0); // Full speed reverse\nleftDrive.setPower(0.0); // Stop the motor"
     },
     {
       "type": "text",
-      "title": "Motor Control Methods",
-      "content": "<p>There are several ways to control motors in FTC, each suitable for different applications. See <a href='https://docs.revrobotics.com/duo-control/programming/motor-control' target='_blank'>REV Robotics: Motor Control</a> for more details.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Control Methods",
-      "items": [
-        "<b>Power Control:</b> Direct power setting (-1.0 to 1.0)",
-        "<b>Encoder Control:</b> Position-based control using encoders",
-        "<b>Velocity Control:</b> Speed-based control with PID",
-        "<b>Run Modes:</b> Different operating modes for various needs"
-      ]
+      "title": "Controlling Motor Direction",
+      "content": "You can reverse a motor's direction in code using <code>setDirection()</code>. This is useful if your motors are mounted in opposite directions."
     },
     {
       "type": "code",
-      "title": "Motor Control Examples",
-      "language": "java",
-      "content": "// Basic power control\nmotor.setPower(0.5); // 50% forward power\nmotor.setPower(-0.3); // 30% reverse power\nmotor.setPower(0.0); // Stop\n\n// Encoder-based control\nmotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nmotor.setTargetPosition(1000);\nmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\nmotor.setPower(0.5);\n\n// Velocity control\nmotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nmotor.setPower(0.5); // Power will be regulated for consistent speed\n\n// Zero power behavior\nmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Stop immediately\nmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // Coast to stop"
+      "title": "Example: Setting Motor Direction",
+      "content": "",
+      "code": "leftDrive.setDirection(DcMotor.Direction.REVERSE);\nrightDrive.setDirection(DcMotor.Direction.FORWARD);"
     },
     {
       "type": "text",
-      "title": "Motor Safety",
-      "content": "<p>Safety is paramount when working with motors. Always implement proper safety measures to prevent damage to your robot and injury to team members. See <a href='https://docs.revrobotics.com/duo-control/programming/motor-control#motor-safety' target='_blank'>REV Robotics: Motor Safety</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Safety Guidelines",
-      "subtitle": "Follow these safety practices:",
-      "items": [
-        "Always test motors at low power first",
-        "Keep hands and loose objects away from moving parts",
-        "Use emergency stop functionality",
-        "Monitor motor temperature during extended use",
-        "Check for binding or mechanical issues",
-        "Implement power limits in your code"
-      ]
+      "title": "Safety and Best Practices",
+      "content": "Always set motor power to zero at the end of your OpMode to prevent unexpected movement. Use try/catch blocks when accessing hardware to handle errors gracefully."
     },
     {
       "type": "code",
-      "title": "Safety Implementation",
-      "language": "java",
-      "content": "// Power limiting for safety\npublic void setMotorPowerSafely(DcMotor motor, double power) {\n    // Limit power to safe range\n    power = Math.max(-1.0, Math.min(1.0, power));\n    if (getBatteryVoltage() < 11.0) {\n        power *= 0.5; // Reduce power if battery is low\n    }\n    motor.setPower(power);\n}\n// Emergency stop functionality\npublic void emergencyStop() {\n    // Stop all motors immediately\n    leftFront.setPower(0);\n    rightFront.setPower(0);\n    leftRear.setPower(0);\n    rightRear.setPower(0);\n    telemetry.addData(\"STATUS\", \"EMERGENCY STOP ACTIVATED\");\n    telemetry.update();\n}"
+      "title": "Example: Safe Motor Shutdown",
+      "content": "",
+      "code": "try {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n} catch (Exception e) {\n    telemetry.addData(\"Error\", e.getMessage());\n    telemetry.update();\n}"
     },
     {
       "type": "text",
-      "title": "Troubleshooting Motors",
-      "content": "<p>Common motor issues and their solutions help teams quickly resolve problems during competitions and practice. See <a href='https://gm0.org/en/latest/docs/software/motors/dc-motors.html#troubleshooting' target='_blank'>gm0: DC Motors Troubleshooting</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Common Issues and Solutions",
-      "items": [
-        "<b>Motor runs in wrong direction:</b> Change setDirection() or swap motor wires",
-        "<b>Motor doesn't respond:</b> Check configuration file and wiring",
-        "<b>Uneven motor speeds:</b> Calibrate power levels or check mechanical binding",
-        "<b>Motor gets hot:</b> Reduce power or check for mechanical resistance",
-        "<b>Encoder issues:</b> Check encoder cable and configuration"
-      ]
-    },
-    {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        { "label": "Basic Motor Control", "id": "basic-motor-control" },
-        { "label": "Motor Encoders", "id": "motor-encoders" },
-        { "label": "Motor Types", "id": "motor-types" }
-      ]
+      "title": "Troubleshooting Motor Issues",
+      "content": "If your motor doesn't move, check the following:<ul><li>Is the motor name in code exactly the same as in the configuration?</li><li>Is the motor plugged into the correct port?</li><li>Is the power set to a nonzero value?</li></ul>"
     },
     {
       "type": "exercise-box",
-      "title": "DC Motor Practice",
-      "description": "Practice these exercises to master motor control:",
+      "title": "Practice: Motor Initialization and Control",
+      "description": "Write code to initialize two drive motors and set their power based on a variable <code>drivePower</code>. Then, safely stop both motors at the end of the OpMode.",
       "tasks": [
-        "Create a simple OpMode that controls one motor with gamepad input",
-        "Test different motor directions and verify correct movement",
-        "Implement power limiting and safety features",
-        "Test encoder functionality and position control",
-        "Create a drivetrain with four motors",
-        "Practice troubleshooting common motor issues",
-        "Test motor behavior with different battery levels"
+        "Declare two DcMotor variables.",
+        "Initialize them in <code>runOpMode()</code>.",
+        "Set their power using <code>setPower()</code>.",
+        "Stop both motors at the end using a try/catch block."
       ],
-      "content": "// Practice Exercise: Motor Control\n// Create an OpMode that allows testing of motor functionality\n// Include safety features and telemetry display\n// Test different power levels and directions\n\n@TeleOp(name=\"Motor Test\", group=\"Testing\")\npublic class MotorTestOpMode extends LinearOpMode {\n    private DcMotor testMotor;\n    @Override\n    public void runOpMode() {\n        // Initialize motor\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testMotor.setDirection(DcMotor.Direction.FORWARD);\n        testMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n        waitForStart();\n        while (opModeIsActive()) {\n            // Control motor with gamepad\n            double power = -gamepad1.left_stick_y;\n            testMotor.setPower(power);\n            // Display telemetry\n            telemetry.addData(\"Motor Power\", power);\n            telemetry.addData(\"Battery Voltage\", \"%.1f volts\", getBatteryVoltage());\n            telemetry.update();\n        }\n    }\n}"
+      "content": "// Example code\nprivate DcMotor leftDrive, rightDrive;\n\n@Override\npublic void runOpMode() {\n    leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n    rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    double drivePower = 0.7;\n    leftDrive.setPower(drivePower);\n    rightDrive.setPower(drivePower);\n    // ... rest of your code ...\n    try {\n        leftDrive.setPower(0);\n        rightDrive.setPower(0);\n    } catch (Exception e) {\n        telemetry.addData(\"Error\", e.getMessage());\n        telemetry.update();\n    }\n}"
     }
   ]
-} 
+}

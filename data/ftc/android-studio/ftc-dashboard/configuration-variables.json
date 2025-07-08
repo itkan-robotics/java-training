@@ -25,9 +25,42 @@
     },
     {
       "type": "code",
-      "title": "Basic Configuration Example",
-      "content": "This example shows how to set up basic configuration variables:",
-      "code": "import com.acmerobotics.dashboard.config.Config;\nimport com.acmerobotics.dashboard.FtcDashboard;\n\n@Config\npublic class BasicConfigOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    \n    // Configuration variables - these will appear in the dashboard\n    public static double DRIVE_SPEED = 0.5;\n    public static double TURN_SPEED = 0.3;\n    public static int TARGET_POSITION = 1000;\n    public static boolean USE_ENCODERS = true;\n    \n    private DcMotor leftMotor, rightMotor;\n    \n    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        \n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        if (USE_ENCODERS) {\n            leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n            rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        }\n    }\n    \n    @Override\n    public void loop() {\n        // Use configuration variables in your code\n        if (gamepad1.left_stick_y > 0.1) {\n            leftMotor.setPower(DRIVE_SPEED);\n            rightMotor.setPower(DRIVE_SPEED);\n        } else if (gamepad1.left_stick_y < -0.1) {\n            leftMotor.setPower(-DRIVE_SPEED);\n            rightMotor.setPower(-DRIVE_SPEED);\n        } else if (gamepad1.right_stick_x > 0.1) {\n            leftMotor.setPower(TURN_SPEED);\n            rightMotor.setPower(-TURN_SPEED);\n        } else if (gamepad1.right_stick_x < -0.1) {\n            leftMotor.setPower(-TURN_SPEED);\n            rightMotor.setPower(TURN_SPEED);\n        } else {\n            leftMotor.setPower(0);\n            rightMotor.setPower(0);\n        }\n        \n        // Display current configuration values\n        telemetry.addData(\"Drive Speed\", DRIVE_SPEED);\n        telemetry.addData(\"Turn Speed\", TURN_SPEED);\n        telemetry.addData(\"Use Encoders\", USE_ENCODERS);\n        telemetry.update();\n    }\n}"
+      "title": "Basic Configuration Example (Step 1: Imports and Class Declaration)",
+      "content": "Start by importing the required classes and declaring your OpMode class:",
+      "code": "import com.acmerobotics.dashboard.config.Config;\nimport com.acmerobotics.dashboard.FtcDashboard;\n\n@Config\npublic class BasicConfigOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    // ..."
+    },
+    {
+      "type": "text",
+      "title": "Step 2: Configuration Variables",
+      "content": "Define your configuration variables as public static fields. These will appear in the dashboard for real-time adjustment."
+    },
+    {
+      "type": "code",
+      "title": "Configuration Variables",
+      "content": "Add these fields to your OpMode:",
+      "code": "    // Configuration variables - these will appear in the dashboard\n    public static double DRIVE_SPEED = 0.5;\n    public static double TURN_SPEED = 0.3;\n    public static int TARGET_POSITION = 1000;\n    public static boolean USE_ENCODERS = true;"
+    },
+    {
+      "type": "text",
+      "title": "Step 3: Hardware Setup and Initialization",
+      "content": "In your init() method, initialize the dashboard and hardware. Optionally, reset encoders if enabled."
+    },
+    {
+      "type": "code",
+      "title": "init() Method",
+      "content": "Add this to your class:",
+      "code": "    private DcMotor leftMotor, rightMotor;\n    \n    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        \n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        if (USE_ENCODERS) {\n            leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n            rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        }\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Step 4: Using Configuration Variables in loop()",
+      "content": "In your loop() method, use the configuration variables to control your robot and display their values."
+    },
+    {
+      "type": "code",
+      "title": "loop() Method",
+      "content": "Add this to your class:",
+      "code": "    @Override\n    public void loop() {\n        // Use configuration variables in your code\n        if (gamepad1.left_stick_y > 0.1) {\n            leftMotor.setPower(DRIVE_SPEED);\n            rightMotor.setPower(DRIVE_SPEED);\n        } else if (gamepad1.left_stick_y < -0.1) {\n            leftMotor.setPower(-DRIVE_SPEED);\n            rightMotor.setPower(-DRIVE_SPEED);\n        } else if (gamepad1.right_stick_x > 0.1) {\n            leftMotor.setPower(TURN_SPEED);\n            rightMotor.setPower(-TURN_SPEED);\n        } else if (gamepad1.right_stick_x < -0.1) {\n            leftMotor.setPower(-TURN_SPEED);\n            rightMotor.setPower(TURN_SPEED);\n        } else {\n            leftMotor.setPower(0);\n            rightMotor.setPower(0);\n        }\n        \n        // Display current configuration values\n        telemetry.addData(\"Drive Speed\", DRIVE_SPEED);\n        telemetry.addData(\"Turn Speed\", TURN_SPEED);\n        telemetry.addData(\"Use Encoders\", USE_ENCODERS);\n        telemetry.update();\n    }"
     },
     {
       "type": "text",

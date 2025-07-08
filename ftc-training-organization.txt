@@ -10,6 +10,7 @@
 │   │   ├── robot-hardware-overview.json
 │   │   ├── dc-motors.json
 │   │   ├── basic-motor-control.json
+|   |   ├── drivebase-types.json
 │   │   ├── motor-encoders.json
 │   │   ├── motor-types.json
 │   ├── servos/

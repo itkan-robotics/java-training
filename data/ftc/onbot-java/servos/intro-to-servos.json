@@ -1,113 +1,39 @@
 {
-  "type": "lesson",
-  "title": "Introduction to Servos",
-  "content": [
+  "title": "Introduction to Servos in FTC",
+  "sections": [
     {
       "type": "text",
       "title": "What is a Servo?",
-      "content": "<p>Servos are precise actuators used in FTC robots for controlled movement of arms, claws, and other mechanisms. Unlike DC motors, servos move to a specific position and hold it, making them ideal for tasks requiring accuracy.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a> and <a href='https://docs.revrobotics.com/duo-control/programming/servo-control' target='_blank'>REV Robotics: Servo Control</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Servo Basics",
-      "subtitle": "Key characteristics of servos:",
-      "items": [
-        "Move to a specific position based on input value",
-        "Hold position with feedback control",
-        "Limited range of motion (usually 180° for standard servos)",
-        "Used for arms, claws, and other precise mechanisms",
-        "Controlled by setting a position value (0.0 to 1.0)"
-      ]
+      "content": "A servo is a special type of motor designed for precise, controlled movement over a limited range. In FTC, servos are used for mechanisms like arms, claws, and sensors that need to move to specific positions and hold them. Unlike DC motors, servos are not used for continuous rotation (unless they are a special type called continuous rotation servos)."
     },
     {
       "type": "text",
-      "title": "How Servos Work",
-      "content": "<p>Servos use a feedback system to move to and hold a commanded position. The position is set by a value between 0.0 (minimum) and 1.0 (maximum). See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/servo.html' target='_blank'>FTC Docs: Servo Programming</a>.</p>"
+      "title": "Types of Servos Used in FTC",
+      "content": "FTC robots use two main types of servos: standard (positional) and continuous rotation. Standard servos move to a specific position and hold it, while continuous rotation servos spin like a motor. Choosing the right type is important for your mechanism's function."
+    },
+    {
+      "type": "text",
+      "title": "How Servos are Controlled in Code",
+      "content": "Servos are controlled in code by setting their position (for standard servos) or power (for continuous rotation servos). The position is a value between 0.0 and 1.0, representing the servo's range of motion. You must initialize the servo in your OpMode before using it."
     },
     {
       "type": "code",
-      "title": "Basic Servo Control Example",
-      "language": "java",
-      "content": "// Basic servo control\nServo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\nclawServo.setPosition(0.0); // Move to minimum position\nclawServo.setPosition(0.5); // Move to middle position\nclawServo.setPosition(1.0); // Move to maximum position\n// Use gamepad to control servo\nif (gamepad1.a) {\n    clawServo.setPosition(1.0); // Open claw\n} else if (gamepad1.b) {\n    clawServo.setPosition(0.0); // Close claw\n}"
+      "title": "Basic Servo Initialization and Use",
+      "content": "This example shows how to declare, initialize, and set the position of a standard servo in an FTC OpMode.",
+      "code": "import com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp\npublic class ServoExample extends LinearOpMode {\n    private Servo myServo;\n\n    @Override\n    public void runOpMode() {\n        myServo = hardwareMap.get(Servo.class, \"myServo\");\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        waitForStart();\n        while (opModeIsActive()) {\n            myServo.setPosition(0.5); // Move to middle position\n            telemetry.addData(\"Servo Position\", myServo.getPosition());\n            telemetry.update();\n        }\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Servo Applications in FTC",
-      "content": "<p>Servos are used for a variety of mechanisms in FTC robots, including claws, arms, and gates. Their ability to move to and hold precise positions makes them essential for many tasks. See <a href='https://gm0.org/en/latest/docs/software/servos/index.html' target='_blank'>gm0: Servos</a>.</p>"
+      "title": "Typical Uses for Servos in FTC Robots",
+      "content": "Servos are commonly used for mechanisms that require precise movement, such as claws, arms, and sensor mounts. They are essential for tasks that need repeatable, accurate positioning."
     },
     {
       "type": "list",
-      "title": "Common Servo Uses",
+      "title": "Further Reading and References",
       "items": [
-        "Claw mechanisms for grabbing game elements",
-        "Arm joints for precise movement",
-        "Gates and doors for releasing objects",
-        "Camera mounts for aiming sensors",
-        "Latches and locks for secure holding"
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/controlling_a_servo/Controlling-a-Servo-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Controlling a Servo (OnBot Java)</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/power-and-electronics/servo-guide/usage-tips.html\" target=\"_blank\">gm0: Servo Usage Tips</a>"
       ]
-    },
-    {
-      "type": "text",
-      "title": "Servo Safety and Best Practices",
-      "content": "<p>Proper use of servos ensures reliable operation and prevents damage. Always test servos at low speed and avoid forcing them beyond their range. See <a href='https://docs.revrobotics.com/duo-control/programming/servo-control#servo-safety' target='_blank'>REV Robotics: Servo Safety</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Servo Safety Guidelines",
-      "subtitle": "Follow these practices for safe servo use:",
-      "items": [
-        "Never force a servo beyond its range (0.0 to 1.0)",
-        "Test servo movement before attaching to mechanisms",
-        "Use appropriate mounting hardware",
-        "Monitor servo temperature during extended use",
-        "Implement limits in code to prevent overdriving"
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Servo Safety Implementation",
-      "language": "java",
-      "content": "// Limit servo position to safe range\npublic void setServoPositionSafely(Servo servo, double position) {\n    position = Math.max(0.0, Math.min(1.0, position));\n    servo.setPosition(position);\n}\n// Example usage\nsetServoPositionSafely(clawServo, 1.2); // Will be limited to 1.0\nsetServoPositionSafely(clawServo, -0.5); // Will be limited to 0.0"
-    },
-    {
-      "type": "text",
-      "title": "Troubleshooting Servos",
-      "content": "<p>Common servo issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/servos/index.html#troubleshooting' target='_blank'>gm0: Servo Troubleshooting</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Common Issues and Solutions",
-      "items": [
-        "<b>Servo doesn't move:</b> Check wiring and configuration",
-        "<b>Servo moves erratically:</b> Check for mechanical binding or code errors",
-        "<b>Servo overheats:</b> Reduce load or duty cycle",
-        "<b>Servo range is limited:</b> Adjust linkage or code limits",
-        "<b>Servo buzzes or chatters:</b> Check for excessive load or incorrect position commands"
-      ]
-    },
-    {
-      "type": "link-grid",
-      "title": "Related Topics",
-      "links": [
-        { "label": "Continuous vs Noncontinuous Servos", "id": "continuous-vs-noncontinuous" },
-        { "label": "Servo Positions", "id": "servo-positions" },
-        { "label": "Servo Types", "id": "servo-types" }
-      ]
-    },
-    {
-      "type": "exercise-box",
-      "title": "Servo Practice",
-      "description": "Practice these exercises to master servo control:",
-      "tasks": [
-        "Create an OpMode that moves a servo to different positions",
-        "Test servo range and limits",
-        "Implement safe position limiting in code",
-        "Attach a servo to a claw and test open/close",
-        "Practice troubleshooting common servo issues",
-        "Test servo operation with different loads",
-        "Document servo performance and range"
-      ],
-      "content": "// Practice Exercise: Servo Control\n// Create an OpMode that tests servo movement and limits\n// Include safety features and telemetry\n// Test different positions and loads\n\n@TeleOp(name=\"Servo Test\", group=\"Testing\")\npublic class ServoTestOpMode extends LinearOpMode {\n    private Servo testServo;\n    @Override\n    public void runOpMode() {\n        testServo = hardwareMap.get(Servo.class, \"test_servo\");\n        waitForStart();\n        while (opModeIsActive()) {\n            if (gamepad1.a) {\n                testServo.setPosition(1.0);\n            } else if (gamepad1.b) {\n                testServo.setPosition(0.0);\n            } else if (gamepad1.x) {\n                testServo.setPosition(0.5);\n            }\n            telemetry.addData(\"Servo Position\", testServo.getPosition());\n            telemetry.update();\n        }\n    }"
     }
   ]
-} 
+}

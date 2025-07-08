@@ -4,133 +4,51 @@
     {
       "type": "text",
       "title": "Introduction to FTC Robot Hardware",
-      "content": "<p>FTC robots are complex systems built from various hardware components that work together to create a functional autonomous and driver-controlled robot. Understanding these components and how they interact is essential for successful robot programming and troubleshooting.</p><p>For more details, see <a href='https://gm0.org/en/latest/docs/software/getting-started/hardware-map.html' target='_blank'>gm0: Hardware Map</a> and <a href='https://docs.revrobotics.com/duo-control/' target='_blank'>REV Robotics: Control System</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Core Hardware Categories",
-      "subtitle": "Every FTC robot includes these essential components:",
-      "items": [
-        "<b>Control Hub</b> - The brain of the robot, running your code",
-        "<b>Expansion Hub</b> - Additional I/O ports for more components",
-        "<b>DC Motors</b> - Primary actuators for movement and mechanisms",
-        "<b>Servos</b> - Precise position control for arms, claws, and other mechanisms",
-        "<b>Sensors</b> - Eyes and ears of the robot for environmental awareness",
-        "<b>Battery</b> - Power source for all components",
-        "<b>Gamepad Controllers</b> - Human input for teleop control"
-      ]
+      "content": "Understanding how your code connects to the robot's hardware is foundational for FTC programming. In FTC, the <code>hardwareMap</code> object is used to access and control motors, sensors, and other devices. This lesson will show you how to organize and initialize your robot's hardware in code."
     },
     {
       "type": "text",
-      "title": "Control System Architecture",
-      "content": "<p>The FTC control system is built around the Control Hub and Expansion Hub, which provide the interface between your code and the robot hardware. The <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/opmode.html' target='_blank'>FTC SDK OpMode documentation</a> explains how your code interacts with these components.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Control System Components",
-      "items": [
-        "<b>Control Hub:</b> Android-based controller with built-in WiFi, USB ports, and motor/servo controllers",
-        "<b>Expansion Hub:</b> Additional I/O module that connects to the Control Hub via RS485",
-        "<b>Driver Station:</b> Android app that runs on a phone/tablet for robot control and monitoring",
-        "<b>Robot Controller:</b> Android app that runs on the Control Hub and executes your code"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Hardware Configuration",
-      "content": "<p>The robot configuration file defines how your hardware components are connected and named. This is essential for proper communication between your code and the hardware. See <a href='https://gm0.org/en/latest/docs/software/getting-started/hardware-map.html' target='_blank'>gm0: Hardware Map</a> for a step-by-step guide.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Configuration Process",
-      "items": [
-        "<b>Configuration File:</b> Stored on the Control Hub, defines component names and types",
-        "<b>Component Names:</b> Must match the names used in your code",
-        "<b>Port Assignment:</b> Each component is assigned to specific ports on the Control Hub",
-        "<b>Configuration Tool:</b> Use the Robot Controller app to create and edit configurations"
-      ]
+      "title": "What is the hardwareMap?",
+      "content": "The <code>hardwareMap</code> is a special object provided by the FTC SDK that lets you access the physical devices configured on your robot. You use it to get references to motors, servos, and sensors by their configuration names. <br><br>For more details, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#examining-the-structure-of-your-op-mode\" target=\"_blank\">FTC Docs: Examining the Structure of Your Op Mode</a>."
     },
     {
       "type": "code",
-      "title": "Hardware Mapping in Code",
-      "language": "java",
-      "content": "// Accessing hardware components through the hardwareMap\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\nServo clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\nBNO055IMU imu = hardwareMap.get(BNO055IMU.class, \"imu\");"
-    },
-    {
-      "type": "text",
-      "title": "Power Management",
-      "content": "<p>Proper power management is crucial for reliable robot operation. The battery provides power to all components through the Control Hub. For more, see <a href='https://docs.revrobotics.com/duo-control/programming/motor-control#motor-safety' target='_blank'>REV Robotics: Motor Safety</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Power Considerations",
-      "items": [
-        "<b>Battery Voltage:</b> Monitor battery level to prevent unexpected shutdowns",
-        "<b>Current Draw:</b> Be aware of power consumption, especially with multiple motors",
-        "<b>Voltage Regulation:</b> Control Hub provides regulated power to all components",
-        "<b>Safety Features:</b> Built-in protection against overcurrent and overvoltage"
-      ]
+      "title": "Declaring Hardware Devices",
+      "content": "Declare each device as a private member variable in your OpMode class. This makes your code organized and easy to read.",
+      "code": "private DcMotor leftDrive;\nprivate DcMotor rightDrive;\nprivate Servo armServo;\nprivate DistanceSensor frontSensor;"
     },
     {
       "type": "code",
-      "title": "Battery Monitoring Example",
-      "language": "java",
-      "content": "// Monitor battery voltage during operation\nwhile (opModeIsActive()) {\n    double batteryVoltage = getBatteryVoltage();\n    telemetry.addData(\"Battery\", \"%.1f volts\", batteryVoltage);\n    if (batteryVoltage < 11.0) {\n        telemetry.addData(\"WARNING\", \"Low battery!\");\n    }\n    telemetry.update();\n}\nprivate double getBatteryVoltage() {\n    return hardwareMap.voltageSensor.iterator().next().getVoltage();\n}"
-    },
-    {
-      "type": "rules-box",
-      "title": "Hardware Best Practices",
-      "subtitle": "Follow these guidelines for reliable hardware operation:",
-      "items": [
-        "Always check battery voltage before and during operation",
-        "Use appropriate motor directions for your robot configuration",
-        "Test servos at multiple positions to ensure proper operation",
-        "Calibrate sensors and verify readings are reasonable",
-        "Secure all connections and check for loose wires",
-        "Document your hardware configuration for team reference",
-        "Have spare parts available for critical components"
-      ]
+      "title": "Initializing Hardware Devices",
+      "content": "Initialize each device in the <code>runOpMode()</code> method using <code>hardwareMap.get()</code>. The string must match the device name in your robot configuration.",
+      "code": "leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nrightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\narmServo = hardwareMap.get(Servo.class, \"arm_servo\");\nfrontSensor = hardwareMap.get(DistanceSensor.class, \"front_sensor\");"
     },
     {
       "type": "text",
-      "title": "Hardware Testing",
-      "content": "<p>Regular testing of hardware components is essential for reliable robot operation. Create a systematic approach to testing each component. See <a href='https://gm0.org/en/latest/docs/software/getting-started/hardware-map.html' target='_blank'>gm0: Hardware Map</a> for more on hardware testing.</p>"
+      "title": "Best Practices for Hardware Organization",
+      "content": "To keep your code clean and maintainable, group hardware initialization into a separate method or class. This makes it easier to debug and expand your robot's capabilities. <br><br>For more on code organization, see <a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md\" target=\"_blank\">FtcRobotController: TeamCode README</a>."
     },
     {
-      "type": "list",
-      "title": "Testing Checklist",
-      "items": [
-        "<b>Motors:</b> Test direction, speed control, and encoder functionality",
-        "<b>Servos:</b> Verify movement to all required positions",
-        "<b>Sensors:</b> Calibrate and test in various conditions",
-        "<b>Connections:</b> Check all wiring and connections",
-        "<b>Configuration:</b> Verify hardware mapping matches physical setup"
-      ]
+      "type": "code",
+      "title": "Example: Hardware Initialization Method",
+      "content": "Here's how you might separate hardware initialization into its own method:",
+      "code": "private void initHardware() {\n    leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n    rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n    frontSensor = hardwareMap.get(DistanceSensor.class, \"front_sensor\");\n}\n\n@Override\npublic void runOpMode() {\n    initHardware();\n    // ... rest of your code ...\n}"
     },
     {
-      "type": "link-grid",
-      "title": "Hardware Topics",
-      "links": [
-        { "label": "DC Motors", "id": "dc-motors" },
-        { "label": "Basic Motor Control", "id": "basic-motor-control" },
-        { "label": "Motor Encoders", "id": "motor-encoders" },
-        { "label": "Motor Types", "id": "motor-types" }
-      ]
+      "type": "text",
+      "title": "Avoiding Monolithic Code",
+      "content": "Large, single-file code is hard to maintain. Always break up your logic into small, focused methods or classes. This makes your code easier to read, debug, and expand."
     },
     {
       "type": "exercise-box",
-      "title": "Hardware Familiarization",
-      "description": "Practice these activities to become familiar with robot hardware:",
+      "title": "Practice: Organize Your Hardware",
+      "description": "Given a robot with two drive motors and a claw servo, write a method to initialize all hardware devices. Then, call this method from <code>runOpMode()</code>.",
       "tasks": [
-        "Identify all hardware components on your robot",
-        "Create a hardware configuration file for your robot",
-        "Test each motor and servo individually",
-        "Calibrate and test all sensors",
-        "Monitor battery voltage during operation",
-        "Document your robot's hardware layout",
-        "Practice troubleshooting common hardware issues"
+        "Declare member variables for two motors and one servo.",
+        "Write an <code>initHardware()</code> method to initialize them using <code>hardwareMap.get()</code>.",
+        "Call <code>initHardware()</code> at the start of <code>runOpMode()</code>."
       ],
-      "content": "// Hardware Test Exercise\n// Create a simple OpMode that tests all your robot's hardware\n// Include telemetry to display sensor values and component status\n// Test each component individually to ensure proper operation\n\n@TeleOp(name=\"Hardware Test\", group=\"Testing\")\npublic class HardwareTestOpMode extends LinearOpMode {\n    // Declare your hardware components here\n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        // Wait for start\n        waitForStart();\n        // Test each component and display results\n        while (opModeIsActive()) {\n            // Add your testing logic here\n        }\n    }\n}"
+      "content": "// Example code\nprivate DcMotor leftDrive, rightDrive;\nprivate Servo clawServo;\n\nprivate void initHardware() {\n    leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n    rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n}\n\n@Override\npublic void runOpMode() {\n    initHardware();\n    // ... rest of your code ...\n}"
     }
   ]
-} 
+}

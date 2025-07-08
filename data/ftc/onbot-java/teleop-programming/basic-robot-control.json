@@ -1,122 +1,65 @@
 {
-  "title": "Basic Robot Control",
+  "title": "Basic Robot Control in FTC TeleOp",
   "sections": [
     {
       "type": "text",
-      "title": "Mapping Gamepad Inputs to Drivetrain",
-      "content": "The core of basic robot control is connecting gamepad inputs to drivetrain movement. This allows the driver to move the robot using joysticks. For details on motor power and direction, see <a href=\"../motors/basic-motor-control.json\">Motor Control</a>."
-    },
-    {
-      "type": "list",
-      "title": "Control Schemes: Tank vs Arcade Drive",
-      "items": [
-        "<strong>Tank Drive:</strong> Each joystick controls one side of the drivetrain.",
-        "<strong>Arcade Drive:</strong> One stick for forward/backward, one for turning.",
-        "<strong>Split Arcade:</strong> Left stick for movement, right stick for turning."
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Tank Drive Example",
-      "content": "@TeleOp(name=\"TankDriveExample\", group=\"Teleop\")\npublic class TankDriveExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        waitForStart();\n        while (opModeIsActive()) {\n            leftDrive.setPower(-gamepad1.left_stick_y);\n            rightDrive.setPower(-gamepad1.right_stick_y);\n        }\n    }\n}"
-    },
-    {
-      "type": "code",
-      "title": "Arcade Drive Example",
-      "content": "@TeleOp(name=\"ArcadeDriveExample\", group=\"Teleop\")\npublic class ArcadeDriveExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        waitForStart();\n        while (opModeIsActive()) {\n            double drive = -gamepad1.left_stick_y;\n            double turn = gamepad1.right_stick_x;\n            leftDrive.setPower(drive + turn);\n            rightDrive.setPower(drive - turn);\n        }\n    }\n}"
+      "title": "Introduction to TeleOp and Robot Control",
+      "content": "In FTC, <strong>TeleOp</strong> (Tele-Operated) mode is when drivers control the robot using gamepads. Understanding how to structure your code for TeleOp is essential for building responsive, reliable robots. This lesson will guide you through the basics of setting up a TeleOp OpMode, mapping hardware, and controlling your robot in a modular, maintainable way."
     },
     {
       "type": "text",
-      "title": "Mecanum Drive Overview",
-      "content": "Mecanum drive is a type of holonomic drivetrain that allows a robot to move in any direction—forward, backward, sideways, and diagonally—without changing its orientation. This is achieved using special wheels with rollers mounted at 45-degree angles. Mecanum drive is popular in FTC for its maneuverability and flexibility on the field. <br><br>Learn more at <a href=\"https://gm0.org/en/latest/docs/common-mechanisms/drivetrains/mecanum.html\" target=\"_blank\">gm0: Mecanum Drivetrain</a>."
-    },
-    {
-      "type": "list",
-      "title": "Mecanum Drive Key Concepts",
-      "items": [
-        "<strong>Omnidirectional Movement:</strong> Move in any direction without turning.",
-        "<strong>Wheel Arrangement:</strong> Four mecanum wheels, each with angled rollers.",
-        "<strong>Vector Math:</strong> Power to each wheel is calculated using joystick X, Y, and rotation inputs.",
-        "<strong>Field-Centric Control:</strong> Advanced mode where robot moves relative to the field, not its own orientation."
-      ]
-    },
-    {
-      "type": "code",
-      "title": "Basic Mecanum Drive Example (Robot-Centric)",
-      "content": "@TeleOp(name=\"MecanumDriveExample\", group=\"Teleop\")\npublic class MecanumDriveExample extends LinearOpMode {\n    private DcMotor frontLeft, frontRight, backLeft, backRight;\n    @Override\n    public void runOpMode() {\n        frontLeft = hardwareMap.get(DcMotor.class, \"front_left\");\n        frontRight = hardwareMap.get(DcMotor.class, \"front_right\");\n        backLeft = hardwareMap.get(DcMotor.class, \"back_left\");\n        backRight = hardwareMap.get(DcMotor.class, \"back_right\");\n        waitForStart();\n        while (opModeIsActive()) {\n            double y = -gamepad1.left_stick_y; // Forward/backward\n            double x = gamepad1.left_stick_x;  // Left/right\n            double rx = gamepad1.right_stick_x; // Rotation\n            // Calculate wheel powers\n            double frontLeftPower = y + x + rx;\n            double backLeftPower = y - x + rx;\n            double frontRightPower = y - x - rx;\n            double backRightPower = y + x - rx;\n            // Normalize powers if any is outside [-1, 1]\n            double max = Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(backLeftPower), Math.max(Math.abs(frontRightPower), Math.abs(backRightPower))));\n            if (max > 1.0) {\n                frontLeftPower /= max;\n                backLeftPower /= max;\n                frontRightPower /= max;\n                backRightPower /= max;\n            }\n            frontLeft.setPower(frontLeftPower);\n            backLeft.setPower(backLeftPower);\n            frontRight.setPower(frontRightPower);\n            backRight.setPower(backRightPower);\n        }\n    }\n}"
+      "title": "OpMode Structure and Annotations",
+      "content": "Every TeleOp program in FTC is a Java class that extends <code>LinearOpMode</code> and is annotated with <code>@TeleOp</code>. This tells the robot controller that your code should appear in the TeleOp list. <br><br>Example:<br><code>@TeleOp(name = \"BasicTeleOp\")<br>public class BasicTeleOp extends LinearOpMode { ... }</code><br><br>For more on OpMode structure, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html\" target=\"_blank\">FTC Docs: OpMode Structure (Android Studio)</a>."
     },
     {
       "type": "text",
-      "title": "Field-Centric Mecanum Drive (Advanced)",
-      "content": "Field-centric control allows the robot to move relative to the field, regardless of its orientation. This requires an IMU (gyro sensor) to determine the robot's heading. For a full explanation and code, see <a href=\"https://gm0.org/en/latest/docs/software/concepts/field-centric-drive.html\" target=\"_blank\">gm0: Field-Centric Drive</a>."
+      "title": "Hardware Mapping",
+      "content": "To control your robot, you must map each hardware device (motors, servos, sensors) in your code. This is done using the <code>hardwareMap</code> object. <br><br>For example, to map a drive motor:<br><code>DcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");</code><br>Be sure the string matches the name in your robot configuration."
     },
     {
       "type": "code",
-      "title": "Field-Centric Mecanum Drive (Simplified Example)",
-      "content": "// This example assumes you have an IMU set up and returning heading in radians\ndouble y = -gamepad1.left_stick_y;\ndouble x = gamepad1.left_stick_x;\ndouble rx = gamepad1.right_stick_x;\ndouble botHeading = imu.getAngularOrientation().firstAngle; // In radians\ndouble rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);\ndouble rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);\ndouble frontLeftPower = rotY + rotX + rx;\ndouble backLeftPower = rotY - rotX + rx;\ndouble frontRightPower = rotY - rotX - rx;\ndouble backRightPower = rotY + rotX - rx;\n// Normalize and set powers as in the basic example."
-    },
-    {
-      "type": "list",
-      "title": "Mecanum Drive Troubleshooting Tips",
-      "items": [
-        "Wheels spinning but robot not moving as expected: Check wheel orientation and motor directions.",
-        "Robot moves diagonally when trying to strafe: Verify all wheels are mecanum and installed correctly.",
-        "Drivetrain is jerky: Add input smoothing and check for mechanical binding.",
-        "Field-centric mode drifts: Calibrate your IMU and check heading math."
-      ]
+      "title": "Example: Mapping and Initializing Hardware",
+      "content": "This snippet shows how to map two drive motors and set their directions.",
+      "code": "@TeleOp(name = \"BasicTeleOp\")\npublic class BasicTeleOp extends LinearOpMode {\n    private DcMotor leftDrive;\n    private DcMotor rightDrive;\n\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        leftDrive.setDirection(DcMotor.Direction.FORWARD);\n        rightDrive.setDirection(DcMotor.Direction.REVERSE);\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        waitForStart();\n        // ...\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Power Limiting and Smoothing in Teleop",
-      "content": "To prevent sudden movements and improve control, input smoothing and speed modes are often used. For the math and hardware safety, see <a href=\"../motors/motor-encoders.json\">Motor Encoders</a>."
+      "title": "The runOpMode() Method and Main Loop",
+      "content": "The <code>runOpMode()</code> method is where your TeleOp logic lives. After calling <code>waitForStart()</code>, you typically use a <code>while (opModeIsActive())</code> loop to repeatedly check gamepad input and control hardware. <br><br>Keep your main loop clean by breaking logic into small, focused methods."
     },
     {
       "type": "code",
-      "title": "Input Smoothing Example",
-      "content": "// Smoothing joystick input for gentle acceleration\ndouble smoothing = 0.2;\ndouble lastLeft = 0, lastRight = 0;\nwhile (opModeIsActive()) {\n    double targetLeft = -gamepad1.left_stick_y;\n    double targetRight = -gamepad1.right_stick_y;\n    lastLeft += (targetLeft - lastLeft) * smoothing;\n    lastRight += (targetRight - lastRight) * smoothing;\n    leftDrive.setPower(lastLeft);\n    rightDrive.setPower(lastRight);\n}"
+      "title": "Example: Main Loop for TeleOp",
+      "content": "This snippet shows a simple main loop that reads joystick values and sets motor power.",
+      "code": "@Override\npublic void runOpMode() {\n    // ... hardware mapping ...\n    waitForStart();\n    while (opModeIsActive()) {\n        double leftPower = -gamepad1.left_stick_y;\n        double rightPower = -gamepad1.right_stick_y;\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n        telemetry.addData(\"Left Power\", leftPower);\n        telemetry.addData(\"Right Power\", rightPower);\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Emergency Stop in Teleop",
-      "content": "A teleop-level emergency stop lets the driver instantly disable all mechanisms. For hardware-level stops, see the hardware pages."
-    },
-    {
-      "type": "code",
-      "title": "Emergency Stop Implementation",
-      "content": "if (gamepad1.back) {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n    // Stop other mechanisms as needed\n}"
-    },
-    {
-      "type": "list",
-      "title": "Troubleshooting Teleop Control Issues",
-      "items": [
-        "Robot moves in wrong direction: Check motor direction and mapping.",
-        "Jerky control: Add input smoothing.",
-        "Motors not responding: Check configuration and wiring.",
-        "Gamepad not detected: Check USB and gamepad mode."
-      ]
-    },
-    {
-      "type": "link-grid",
-      "title": "References & Further Reading",
-      "links": [
-        { "label": "gm0: Tank Drive", "url": "https://gm0.org/en/latest/docs/common-mechanisms/drivetrains/tank.html" },
-        { "label": "FTC Docs: Drivetrain Programming", "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/drivetrain/index.html" },
-        { "label": "Teleop Programming", "id": "teleop-programming" },
-        { "label": "Gamepad Controls", "id": "gamepad-controls" }
-      ]
+      "title": "Best Practices: Modular Code",
+      "content": "Avoid writing all your logic in one big file. Instead, break your code into small, focused methods (e.g., <code>drive()</code>, <code>updateTelemetry()</code>). This makes your code easier to read, debug, and expand as your robot gets more complex."
     },
     {
       "type": "exercise-box",
-      "title": "Basic Robot Control Practice",
-      "description": "Practice these exercises to master basic robot control:",
+      "title": "Practice Exercise: Basic Tank Drive",
+      "description": "Write a TeleOp OpMode that maps two drive motors and uses the left and right joysticks to control them. Add telemetry to display the power values. Try breaking your code into helper methods for driving and telemetry.",
       "tasks": [
-        "Write a tank drive OpMode.",
-        "Write an arcade drive OpMode.",
-        "Add input smoothing to your drive code.",
-        "Implement an emergency stop.",
-        "Troubleshoot a control issue and document your fix."
+        "Map two DcMotors for left and right drive.",
+        "Read joystick values from gamepad1.",
+        "Set motor power based on joystick input.",
+        "Add telemetry to display power values.",
+        "Refactor your code to use helper methods."
       ],
-      "content": "// Practice: Write a tank and arcade drive OpMode\n// Add input smoothing and emergency stop."
+      "content": "// Example helper method for driving\nprivate void drive() {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        {
+          "label": "Gamepad Controls",
+          "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html"
+        }
+      ]
     }
   ]
-} 
+}

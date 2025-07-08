@@ -1,0 +1,60 @@
+{
+  "title": "Telemetry and Feedback for Drivers",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Telemetry?",
+      "content": "Telemetry is a way to send real-time data from your robot to the Driver Station. It helps drivers and programmers understand what the robot is doing, debug issues, and make better decisions during a match."
+    },
+    {
+      "type": "text",
+      "title": "Sending Data to the Driver Station",
+      "content": "Use <code>telemetry.addData()</code> to add information and <code>telemetry.update()</code> to send it. You can display motor power, sensor values, warnings, and more. <br><br>For more on telemetry, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/blocks/creating_op_modes/Writing-an-Op-Mode-with-FTC-Blocks.html#inserting-telemetry-statements\" target=\"_blank\">FTC Docs: Telemetry</a>."
+    },
+    {
+      "type": "code",
+      "title": "Example: Basic Telemetry Output",
+      "content": "This snippet shows how to display motor power and a sensor value.",
+      "code": "telemetry.addData(\"Left Power\", leftDrive.getPower());\ntelemetry.addData(\"Right Power\", rightDrive.getPower());\ntelemetry.addData(\"Distance\", distanceSensor.getDistance(DistanceUnit.CM));\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Organizing Telemetry Output",
+      "content": "Group related data together and use clear labels. Only display the most important information to avoid overwhelming the driver."
+    },
+    {
+      "type": "code",
+      "title": "Example: Organized Telemetry",
+      "content": "telemetry.addData(\"Drive\", \"L: %.2f R: %.2f\", leftDrive.getPower(), rightDrive.getPower());\ntelemetry.addData(\"Arm Position\", armMotor.getCurrentPosition());\ntelemetry.addData(\"Claw\", clawServo.getPosition() > 0.5 ? \"Open\" : \"Closed\");\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Using Telemetry for Debugging",
+      "content": "If something isn't working, use telemetry to check variable values, sensor readings, and hardware states. This helps you quickly find and fix bugs."
+    },
+    {
+      "type": "text",
+      "title": "In-Match Feedback for Drivers",
+      "content": "Telemetry can help drivers make better decisions during a match. For example, display warnings if a mechanism is stuck or show the current mode (e.g., slow mode enabled)."
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise: Telemetry Feedback",
+      "description": "Add telemetry to your TeleOp OpMode to display drive power, arm position, and claw state. Organize your output and add a warning if the arm is at its limit.",
+      "tasks": [
+        "Display drive motor power and arm position.",
+        "Show whether the claw is open or closed.",
+        "Add a warning if the arm is at its upper or lower limit.",
+        "Organize your telemetry for clarity."
+      ],
+      "content": "// Example: Arm limit warning\nif (armMotor.getCurrentPosition() > ARM_UPPER_LIMIT) {\n    telemetry.addData(\"Warning\", \"Arm at upper limit!\");\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        
+      ]
+    }
+  ]
+}

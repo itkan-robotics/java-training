@@ -355,9 +355,10 @@ class ContentManager {
         h3.textContent = data.title;
         container.appendChild(h3);
     }
-    
     const ul = document.createElement('ul');
-    data.items.forEach(item => {
+    // Defensive: support both 'items' and 'content', and ensure it's an array
+    let items = Array.isArray(data.items) ? data.items : (Array.isArray(data.content) ? data.content : []);
+    items.forEach(item => {
         const li = document.createElement('li');
         li.innerHTML = item;
         ul.appendChild(li);
@@ -464,13 +465,35 @@ class ContentManager {
         
         if (data.description) {
             const desc = document.createElement('p');
-            desc.textContent = data.description;
+            desc.innerHTML = data.description;
             exerciseBox.appendChild(desc);
         }
 
-        if (data.content && typeof data.content === 'string') {
+        // if (data.content && typeof data.content === 'string') {
+        //     const contentP = document.createElement('p');
+        //     contentP.textContent = data.content;
+        //     exerciseBox.appendChild(contentP);
+        // }
+
+        // if (data.code) {
+        //     const codeSection = document.createElement('div');
+        //     codeSection.className = 'exercise-code';
+        //     const pre = document.createElement('pre');
+        //     const code = document.createElement('code');
+        //     code.innerText = data.code;
+        //     pre.appendChild(code);
+        //     codeSection.appendChild(pre);
+        //     exerciseBox.appendChild(codeSection);
+        // }
+
+        // Determine what code to render - use content if no code property exists
+        const codeToRender = data.code || data.content;
+        
+        // Only render content as HTML above the code block if there's a code property AND content is different
+        // If there's no code property, content IS the code, so don't render it as HTML
+        if (data.code && data.content && data.content !== data.code && typeof data.content === 'string') {
             const contentP = document.createElement('p');
-            contentP.textContent = data.content;
+            contentP.innerHTML = data.content;
             exerciseBox.appendChild(contentP);
         }
 
@@ -478,22 +501,20 @@ class ContentManager {
             const tasksList = document.createElement('ul');
             data.tasks.forEach(task => {
                 const li = document.createElement('li');
-                li.textContent = task;
+                li.innerHTML = task;
                 tasksList.appendChild(li);
             });
             exerciseBox.appendChild(tasksList);
         }
 
-        if (data.code) {
-            const codeSection = document.createElement('div');
-            codeSection.className = 'exercise-code';
-            const pre = document.createElement('pre');
-            const code = document.createElement('code');
-            code.innerText = data.code;
-            pre.appendChild(code);
-            codeSection.appendChild(pre);
-            exerciseBox.appendChild(codeSection);
-        }
+        const codeSection = document.createElement('div');
+        codeSection.className = 'exercise-code';
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.textContent = codeToRender;
+        pre.appendChild(code);
+        codeSection.appendChild(pre);
+        exerciseBox.appendChild(codeSection);
 
         // Show/hide answers button and section
         if (data.answers && Array.isArray(data.answers) && data.answers.length > 0) {
@@ -635,8 +656,8 @@ class ContentManager {
         const grid = document.createElement('div');
         grid.className = 'link-grid';
         
-        // Handle both 'links' and 'items' properties for backward compatibility
-        const links = data.links || data.items || [];
+        // Handle 'links', 'items', or 'content' properties for compatibility
+        const links = data.links || data.items || data.content || [];
         
         if (!Array.isArray(links)) {
             console.warn('Link grid data is not an array:', links);
@@ -1548,8 +1569,8 @@ class SearchManager {
             });
         }
         
-        // Close search results when clicking outside
-        document.addEventListener('click', (e) => {
+        // Close search results when clicking outside (use mousedown for better timing)
+        document.addEventListener('mousedown', (e) => {
             if (!e.target.closest('.search-container-header') && 
                 !e.target.closest('.mobile-sidebar-search') && 
                 !e.target.closest('.search-results')) {
@@ -1802,6 +1823,11 @@ class SearchManager {
             margin-top: 0.5rem;
         `;
 
+        // Prevent mousedown inside the dropdown from closing it
+        searchResultsDiv.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+        });
+
         // Add a header showing result count
         const headerDiv = document.createElement('div');
         headerDiv.style.cssText = `
@@ -1877,15 +1903,17 @@ class SearchManager {
     }
     
     restoreSearchResults() {
-        // Restore search results if there's an active search
-        if (this.currentSearchQuery && this.searchResults.length > 0) {
-            // Add a small delay to ensure DOM is ready
+        // Only show dropdown if search input is focused
+        const searchInput = document.getElementById('header-search');
+        const mobileSearchInput = document.getElementById('mobile-sidebar-search');
+        const isFocused = (searchInput && document.activeElement === searchInput) ||
+                          (mobileSearchInput && document.activeElement === mobileSearchInput);
+
+        if (isFocused && this.currentSearchQuery && this.searchResults.length > 0) {
             setTimeout(() => {
                 this.displaySearchResults();
             }, 100);
         }
-        
-        // Restore search input values
         this.restoreSearchInputs();
     }
     
@@ -2152,6 +2180,13 @@ class EventManager {
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
+            // Section-based navigation with Ctrl+Arrow or Ctrl+<, Ctrl+>
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === '>' || e.key === '<')) {
+                e.preventDefault();
+                this.navigateSectionTabs(e.key === 'ArrowRight' || e.key === '>' ? 'next' : 'prev');
+                return;
+            }
+            // Legacy: global tab navigation with just arrows
             this.navigateWithArrows(e.key);
         });
 
@@ -2244,6 +2279,58 @@ class EventManager {
         if (searchInput) {
             searchInput.focus();
             searchInput.select();
+        }
+    }
+
+    /**
+     * Navigate to next/previous tab within the current section config, wrapping around.
+     * @param {'next'|'prev'} direction
+     */
+    navigateSectionTabs(direction) {
+        // Find the current section config
+        const sectionId = appState.currentSection;
+        const config = appState.config && appState.config.sections && appState.config.sections[sectionId];
+        if (!config) return;
+
+        // Build ordered list of tab IDs in this section
+        const tabOrder = [];
+        // Add intro if present
+        if (config.intro && config.intro.id) tabOrder.push(config.intro.id);
+        // Add groups/children/items recursively
+        function addItemsFromGroups(groups) {
+            if (!Array.isArray(groups)) return;
+            groups.forEach(group => {
+                if (Array.isArray(group.items)) {
+                    group.items.forEach(item => tabOrder.push(item.id));
+                }
+                if (Array.isArray(group.children)) {
+                    addItemsFromGroups(group.children);
+                }
+            });
+        }
+        if (Array.isArray(config.groups)) addItemsFromGroups(config.groups);
+        if (Array.isArray(config.children)) addItemsFromGroups(config.children);
+        // Add top-level items if present
+        if (Array.isArray(config.items)) {
+            config.items.forEach(item => tabOrder.push(item.id));
+        }
+
+        if (tabOrder.length === 0) return;
+        const currentTab = appState.currentTab;
+        let idx = tabOrder.indexOf(currentTab);
+        if (idx === -1) {
+            // If not found, default to first
+            idx = 0;
+        }
+        let newIdx;
+        if (direction === 'next') {
+            newIdx = (idx + 1) % tabOrder.length;
+        } else {
+            newIdx = (idx - 1 + tabOrder.length) % tabOrder.length;
+        }
+        const newTabId = tabOrder[newIdx];
+        if (newTabId && this.navigationManager) {
+            this.navigationManager.navigateToTab(newTabId);
         }
     }
 }

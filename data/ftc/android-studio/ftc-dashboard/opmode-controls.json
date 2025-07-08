@@ -25,9 +25,64 @@
     },
     {
       "type": "code",
-      "title": "Basic OpMode Control Setup",
-      "content": "To enable OpMode controls in the dashboard, you need to register your OpMode with the dashboard and optionally add custom control buttons:",
-      "code": "import com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.telemetry.TelemetryPacket;\nimport com.acmerobotics.dashboard.config.Config;\n\n@Config\npublic class ControllableOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private TelemetryPacket packet;\n    \n    // Configuration variables for control\n    public static double DRIVE_SPEED = 0.5;\n    public static boolean ENABLE_SAFETY = true;\n    public static String CONTROL_MODE = \"MANUAL\";\n    \n    private DcMotor leftMotor, rightMotor;\n    private boolean isRunning = false;\n    \n    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        packet = new TelemetryPacket();\n        \n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Register this OpMode with the dashboard\n        dashboard.registerOpMode(this);\n        \n        // Send initial status\n        packet.put(\"Status\", \"Initialized\");\n        packet.put(\"Control Mode\", CONTROL_MODE);\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    @Override\n    public void start() {\n        isRunning = true;\n        \n        // Send start status\n        packet.put(\"Status\", \"Running\");\n        packet.put(\"Start Time\", getRuntime());\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    @Override\n    public void loop() {\n        // Check if OpMode is still running\n        if (!isRunning) {\n            return;\n        }\n        \n        // Handle different control modes\n        switch (CONTROL_MODE) {\n            case \"MANUAL\":\n                manualControl();\n                break;\n            case \"AUTO\":\n                autonomousControl();\n                break;\n            case \"TEST\":\n                testControl();\n                break;\n        }\n        \n        // Send status update\n        packet.put(\"Status\", \"Running\");\n        packet.put(\"Runtime\", getRuntime());\n        packet.put(\"Control Mode\", CONTROL_MODE);\n        packet.put(\"Drive Speed\", DRIVE_SPEED);\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    @Override\n    public void stop() {\n        isRunning = false;\n        \n        // Stop all motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        // Send stop status\n        packet.put(\"Status\", \"Stopped\");\n        packet.put(\"Total Runtime\", getRuntime());\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    private void manualControl() {\n        // Manual control using gamepad\n        double leftPower = gamepad1.left_stick_y * DRIVE_SPEED;\n        double rightPower = gamepad1.right_stick_y * DRIVE_SPEED;\n        \n        if (ENABLE_SAFETY) {\n            leftPower = Math.max(-0.8, Math.min(0.8, leftPower));\n            rightPower = Math.max(-0.8, Math.min(0.8, rightPower));\n        }\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    private void autonomousControl() {\n        // Simple autonomous behavior\n        double time = getRuntime();\n        double power = Math.sin(time) * DRIVE_SPEED;\n        \n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n    }\n    \n    private void testControl() {\n        // Test mode - alternating motor power\n        double time = getRuntime();\n        \n        if ((int)(time * 2) % 2 == 0) {\n            leftMotor.setPower(DRIVE_SPEED);\n            rightMotor.setPower(0);\n        } else {\n            leftMotor.setPower(0);\n            rightMotor.setPower(DRIVE_SPEED);\n        }\n    }\n}"
+      "title": "Basic OpMode Control Setup (Step 1: Imports and Class Declaration)",
+      "content": "Start by importing the required classes and declaring your OpMode class:",
+      "code": "import com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.telemetry.TelemetryPacket;\nimport com.acmerobotics.dashboard.config.Config;\n\n@Config\npublic class ControllableOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private TelemetryPacket packet;\n    // ..."
+    },
+    {
+      "type": "text",
+      "title": "Step 2: Configuration Variables and Hardware Setup",
+      "content": "Define configuration variables for control and set up your hardware (motors, etc.)."
+    },
+    {
+      "type": "code",
+      "title": "Configuration Variables and Hardware Setup",
+      "content": "Add these fields to your OpMode:",
+      "code": "    // Configuration variables for control\n    public static double DRIVE_SPEED = 0.5;\n    public static boolean ENABLE_SAFETY = true;\n    public static String CONTROL_MODE = \"MANUAL\";\n    \n    private DcMotor leftMotor, rightMotor;\n    private boolean isRunning = false;"
+    },
+    {
+      "type": "text",
+      "title": "Step 3: Initialization and Dashboard Registration",
+      "content": "In your init() method, initialize the dashboard, hardware, and register the OpMode with the dashboard."
+    },
+    {
+      "type": "code",
+      "title": "init() Method",
+      "content": "Add this to your class:",
+      "code": "    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        packet = new TelemetryPacket();\n        \n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Register this OpMode with the dashboard\n        dashboard.registerOpMode(this);\n        \n        // Send initial status\n        packet.put(\"Status\", \"Initialized\");\n        packet.put(\"Control Mode\", CONTROL_MODE);\n        dashboard.sendTelemetryPacket(packet);\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Step 4: Start and Stop Methods",
+      "content": "Implement the start() and stop() methods to handle OpMode lifecycle events."
+    },
+    {
+      "type": "code",
+      "title": "start() and stop() Methods",
+      "content": "Add these methods to your class:",
+      "code": "    @Override\n    public void start() {\n        isRunning = true;\n        \n        // Send start status\n        packet.put(\"Status\", \"Running\");\n        packet.put(\"Start Time\", getRuntime());\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    @Override\n    public void stop() {\n        isRunning = false;\n        \n        // Stop all motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n        \n        // Send stop status\n        packet.put(\"Status\", \"Stopped\");\n        packet.put(\"Total Runtime\", getRuntime());\n        dashboard.sendTelemetryPacket(packet);\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Step 5: Main Loop and Control Modes",
+      "content": "In your loop() method, handle different control modes (manual, auto, test) and send status updates."
+    },
+    {
+      "type": "code",
+      "title": "loop() Method and Control Mode Handling",
+      "content": "Add this to your class:",
+      "code": "    @Override\n    public void loop() {\n        // Check if OpMode is still running\n        if (!isRunning) {\n            return;\n        }\n        \n        // Handle different control modes\n        switch (CONTROL_MODE) {\n            case \"MANUAL\":\n                manualControl();\n                break;\n            case \"AUTO\":\n                autonomousControl();\n                break;\n            case \"TEST\":\n                testControl();\n                break;\n        }\n        \n        // Send status update\n        packet.put(\"Status\", \"Running\");\n        packet.put(\"Runtime\", getRuntime());\n        packet.put(\"Control Mode\", CONTROL_MODE);\n        packet.put(\"Drive Speed\", DRIVE_SPEED);\n        dashboard.sendTelemetryPacket(packet);\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Step 6: Manual, Autonomous, and Test Control Methods",
+      "content": "Implement the manualControl(), autonomousControl(), and testControl() methods for different robot behaviors."
+    },
+    {
+      "type": "code",
+      "title": "Control Methods",
+      "content": "Add these methods to your class:",
+      "code": "    private void manualControl() {\n        // Manual control using gamepad\n        double leftPower = gamepad1.left_stick_y * DRIVE_SPEED;\n        double rightPower = gamepad1.right_stick_y * DRIVE_SPEED;\n        \n        if (ENABLE_SAFETY) {\n            leftPower = Math.max(-0.8, Math.min(0.8, leftPower));\n            rightPower = Math.max(-0.8, Math.min(0.8, rightPower));\n        }\n        \n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    private void autonomousControl() {\n        // Simple autonomous behavior\n        double time = getRuntime();\n        double power = Math.sin(time) * DRIVE_SPEED;\n        \n        leftMotor.setPower(power);\n        rightMotor.setPower(power);\n    }\n    \n    private void testControl() {\n        // Test mode - alternating motor power\n        double time = getRuntime();\n        \n        if ((int)(time * 2) % 2 == 0) {\n            leftMotor.setPower(DRIVE_SPEED);\n            rightMotor.setPower(0);\n        } else {\n            leftMotor.setPower(0);\n            rightMotor.setPower(DRIVE_SPEED);\n        }\n    }"
     },
     {
       "type": "text",

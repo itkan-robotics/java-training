@@ -1,101 +1,52 @@
 {
-  "title": "Touch Sensors",
+  "title": "Touch Sensors in FTC",
   "sections": [
     {
       "type": "text",
       "title": "What is a Touch Sensor?",
-      "content": "<p>Touch sensors are simple digital sensors that detect physical contact or pressure. They are often used as limit switches or for detecting when a mechanism has reached a certain position.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/touch.html' target='_blank'>gm0: Touch Sensors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors#touch-sensor' target='_blank'>REV Robotics: Touch Sensor</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Touch Sensor Basics",
-      "subtitle": "Key characteristics:",
-      "items": [
-        "Detects physical contact or pressure",
-        "Digital (on/off) output",
-        "Used as limit switches or for safety",
-        "Simple to wire and program",
-        "Reliable for detecting end of travel"
-      ]
+      "content": "A touch sensor is a simple digital sensor that detects physical contact. In FTC, touch sensors are often used as limit switches or to detect when a mechanism has reached a certain position. Understanding how to use touch sensors is important for building safe and reliable robots."
     },
     {
       "type": "text",
-      "title": "How Touch Sensors Work",
-      "content": "<p>Touch sensors act as switches that close (on) or open (off) when pressed. They are read as boolean values in code. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html#touch-sensor' target='_blank'>FTC Docs: Touch Sensor</a>.</p>"
+      "title": "Configuring a Touch Sensor in the Hardware Map",
+      "content": "Before you can use a touch sensor in your code, you must add it to your robot's hardware configuration. Assign it a clear, descriptive name. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a> for more details."
     },
     {
       "type": "code",
-      "title": "Touch Sensor Example",
-      "language": "java",
-      "content": "// Initialize and read a touch sensor\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\nboolean isPressed = touchSensor.isPressed();\ntelemetry.addData(\"Touch Pressed\", isPressed);\ntelemetry.update();"
-    },
-    {
-      "type": "text",
-      "title": "Applications of Touch Sensors",
-      "content": "<p>Touch sensors are used for a variety of applications in FTC robots, including safety, mechanism control, and autonomous routines. See <a href='https://gm0.org/en/latest/docs/software/sensors/touch.html' target='_blank'>gm0: Touch Sensors</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Common Use Cases",
-      "items": [
-        "Limit switches for arms and lifts",
-        "Detecting end of travel for mechanisms",
-        "Safety interlocks to prevent overtravel",
-        "Triggering autonomous actions",
-        "Detecting game element contact"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Touch Sensor Safety and Best Practices",
-      "content": "<p>Proper use of touch sensors ensures reliable operation and prevents damage to mechanisms. Always test and secure sensors before use. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Safety Guidelines",
-      "subtitle": "Follow these practices for safe touch sensor use:",
-      "items": [
-        "Secure sensors to prevent movement during operation",
-        "Avoid excessive force on the sensor",
-        "Test sensor response before competition",
-        "Monitor sensor data for unexpected values",
-        "Document sensor configuration and mounting"
-      ]
+      "title": "Mapping a Touch Sensor in Java",
+      "content": "Here's how to map a touch sensor in your Op Mode:",
+      "code": "private DigitalChannel digitalTouch;\n\n@Override\npublic void runOpMode() {\n    digitalTouch = hardwareMap.get(DigitalChannel.class, \"digitalTouch\");\n    digitalTouch.setMode(DigitalChannel.Mode.INPUT);\n    // Now you can use digitalTouch in your code\n}"
     },
     {
       "type": "code",
-      "title": "Touch Sensor Safety Example",
-      "language": "java",
-      "content": "// Safety check using a touch sensor\nif (touchSensor.isPressed()) {\n    // Stop motor or mechanism\n    motor.setPower(0);\n    telemetry.addData(\"Safety\", \"Touch sensor activated!\");\n    telemetry.update();\n}"
+      "title": "Reading the Touch Sensor State",
+      "content": "You can check if the touch sensor is pressed using the following code:",
+      "code": "if (!digitalTouch.getState()) {\n    telemetry.addData(\"Touch Sensor\", \"PRESSED\");\n} else {\n    telemetry.addData(\"Touch Sensor\", \"NOT PRESSED\");\n}\ntelemetry.update();"
     },
     {
       "type": "text",
-      "title": "Troubleshooting Touch Sensors",
-      "content": "<p>Common touch sensor issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/touch.html#troubleshooting' target='_blank'>gm0: Touch Sensor Troubleshooting</a>.</p>"
+      "title": "Practical Applications and Safety",
+      "content": "Touch sensors are commonly used as limit switches to prevent mechanisms from moving too far and causing damage. Always test your sensors and include safety checks in your code."
     },
     {
-      "type": "list",
-      "title": "Common Issues and Solutions",
-      "items": [
-        "<b>Sensor not detected:</b> Check wiring and configuration",
-        "<b>False triggers:</b> Secure sensor and avoid mechanical vibration",
-        "<b>No response:</b> Test with manual press and check code",
-        "<b>Intermittent data:</b> Check for loose connections",
-        "<b>Unexpected values:</b> Monitor for stuck or damaged sensor"
+      "type": "emphasis-box",
+      "title": "Troubleshooting Tips",
+      "content": "If your touch sensor is not responding, check your wiring, hardware configuration, and make sure you are using the correct name in your code."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        {"label": "Intro to Sensors", "url": "#intro-to-sensors"},
+        {"label": "Distance Sensors", "url": "#distance-sensors"}
       ]
     },
     {
-      "type": "exercise-box",
-      "title": "Touch Sensor Practice",
-      "description": "Practice these exercises to master touch sensor use:",
-      "tasks": [
-        "Create an OpMode that displays touch sensor state",
-        "Test sensor response to different conditions",
-        "Implement safety checks using touch sensors",
-        "Practice troubleshooting common touch sensor issues",
-        "Document sensor configuration and mounting"
-      ],
-      "content": "// Practice Exercise: Touch Sensor\n// Create an OpMode that displays touch sensor state\n// Include safety features and troubleshooting\n\n@TeleOp(name=\"Touch Sensor Test\", group=\"Testing\")\npublic class TouchSensorTestOpMode extends LinearOpMode {\n    private TouchSensor touchSensor;\n    @Override\n    public void runOpMode() {\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Touch Pressed\", touchSensor.isPressed());\n            telemetry.update();\n        }\n    }"
+      "type": "link-grid",
+      "title": "See Also",
+      "content": [
+        {"label": "FTC OpMode API: DigitalChannel", "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/DigitalChannel.html"}
+      ]
     }
   ]
-} 
+}

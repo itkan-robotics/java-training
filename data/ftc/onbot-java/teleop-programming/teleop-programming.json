@@ -1,111 +1,69 @@
 {
-  "title": "Teleop Programming (Overview)",
+  "title": "TeleOp Programming Concepts",
   "sections": [
     {
       "type": "text",
-      "title": "What is Teleop Programming?",
-      "content": "Teleop programming is the process of writing code that allows human drivers to control the robot during the teleoperated period of an FTC match. Teleop is all about mapping gamepad inputs to robot actions, enabling drivers to respond to the dynamic flow of a match. <br><br>For more, see <a href=\"https://gm0.org/en/latest/docs/software/teleop/index.html\" target=\"_blank\">gm0: TeleOp Programming</a> and <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/opmodes/index.html\" target=\"_blank\">FTC Docs: OpModes</a>."
-    },
-    {
-      "type": "list",
-      "title": "Teleop vs Autonomous",
-      "items": [
-        "<strong>Teleop:</strong> Human-controlled, real-time, responsive to game situations.",
-        "<strong>Autonomous:</strong> Pre-programmed, runs without human input, executes predetermined sequences.",
-        "<strong>Teleop Duration:</strong> Typically 2 minutes in FTC matches.",
-        "<strong>Autonomous Duration:</strong> Typically 30 seconds in FTC matches.",
-        "<strong>Teleop Focus:</strong> Driver skill, control system design, and adaptability.",
-        "<strong>Autonomous Focus:</strong> Programming precision and reliability."
-      ]
+      "title": "Overview of TeleOp Programming",
+      "content": "TeleOp programming is the process of writing code that allows drivers to control the robot in real time using gamepads. In this lesson, you'll learn how to read gamepad input, map controls to robot actions, and use telemetry for feedback."
     },
     {
       "type": "text",
-      "title": "Teleop OpMode Structure",
-      "content": "A well-structured Teleop OpMode organizes code for multiple mechanisms and clear driver control. Hardware initialization (motors, servos) should be referenced from hardware pages. See <a href=\"#basic-robot-control\">Basic Robot Control</a> for code details."
+      "title": "Gamepad Input Handling",
+      "content": "The <code>gamepad1</code> and <code>gamepad2</code> objects provide access to all the buttons, sticks, and triggers on the controllers. Reading these values lets you control motors, servos, and other mechanisms."
     },
     {
       "type": "code",
-      "title": "Teleop OpMode Skeleton",
-      "content": "@TeleOp(name=\"MyTeleop\", group=\"Teleop\")\npublic class MyTeleop extends LinearOpMode {\n    // Declare hardware (motors, servos)\n    private DcMotor leftDrive, rightDrive;\n    private Servo armServo;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        \n        waitForStart();\n        while (opModeIsActive()) {\n            // Map gamepad inputs to robot actions\n            // Example: Tank drive\n            leftDrive.setPower(-gamepad1.left_stick_y);\n            rightDrive.setPower(-gamepad1.right_stick_y);\n            // Example: Arm control\n            if (gamepad1.a) armServo.setPosition(0.0);\n            if (gamepad1.b) armServo.setPosition(1.0);\n            telemetry.update();\n        }\n    }\n}"
+      "title": "Example: Reading Gamepad Input",
+      "content": "This snippet shows how to read joystick and button values from gamepad1.",
+      "code": "double drive = -gamepad1.left_stick_y; // Forward/backward\ndouble turn = gamepad1.right_stick_x;   // Turning\nboolean aPressed = gamepad1.a;          // Button A\nif (aPressed) {\n    // Do something when A is pressed\n}" 
     },
     {
       "type": "text",
-      "title": "Control System Design Principles",
-      "content": "Effective teleop control systems are designed with the driver in mind. Good mapping of gamepad inputs to robot actions is essential. For hardware details, see the <a href=\"../motors/basic-motor-control.json\">Motor Control</a> and <a href=\"../servos/intro-to-servos.json\">Servo Control</a> pages. <br><br>See <a href=\"https://gm0.org/en/latest/docs/software/teleop/control-schemes.html\" target=\"_blank\">gm0: Control Schemes</a>."
-    },
-    {
-      "type": "list",
-      "title": "Control Design Principles",
-      "items": [
-        "<strong>Intuitive Mapping:</strong> Controls should feel natural and predictable.",
-        "<strong>Ergonomic Layout:</strong> Frequently used controls should be easily accessible.",
-        "<strong>Consistent Behavior:</strong> Similar actions should have similar controls.",
-        "<strong>Feedback Systems:</strong> Drivers need clear feedback about robot state.",
-        "<strong>Safety Features:</strong> Emergency stops and failsafes are essential."
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Driver Training and Optimization",
-      "content": "Driver skill is as important as code. Practice, feedback, and ergonomic design help drivers perform at their best. For hardware configuration, see the relevant hardware pages."
-    },
-    {
-      "type": "list",
-      "title": "Driver Training Tips",
-      "items": [
-        "<strong>Practice:</strong> Regular practice improves driver performance.",
-        "<strong>Feedback:</strong> Use telemetry to provide real-time feedback.",
-        "<strong>Ergonomics:</strong> Arrange controls for comfort and efficiency.",
-        "<strong>Simulate Matches:</strong> Practice under competition-like conditions."
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Safety and Best Practices",
-      "content": "Teleop safety includes disabling mechanisms during faults and providing emergency stop options. For power limits and hardware-level stops, see the hardware pages."
+      "title": "Mapping Gamepad Inputs to Robot Actions",
+      "content": "You can use gamepad input to control motors, servos, and other mechanisms. For example, you might use the left stick for driving and a button to control a claw. <br><br>It's best to keep each control mapping in its own method for clarity."
     },
     {
       "type": "code",
-      "title": "Teleop Emergency Stop Example",
-      "content": "// Emergency stop disables all mechanisms\nif (gamepad1.back) {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n    armServo.setPosition(0.5); // Safe position\n    // Add additional mechanism stops as needed\n}"
+      "title": "Example: Mapping Controls to Drive and Servo",
+      "content": "// Drive control\ndouble leftPower = -gamepad1.left_stick_y;\ndouble rightPower = -gamepad1.right_stick_y;\nleftDrive.setPower(leftPower);\nrightDrive.setPower(rightPower);\n// Claw control\nif (gamepad1.a) {\n    clawServo.setPosition(1.0); // Open\n} else if (gamepad1.b) {\n    clawServo.setPosition(0.0); // Close\n}"
     },
     {
       "type": "text",
-      "title": "Troubleshooting Teleop Issues",
-      "content": "Teleop-specific issues include control confusion, mode switching errors, and driver mistakes. Hardware failures are covered in hardware troubleshooting pages."
+      "title": "Telemetry for Debugging and Feedback",
+      "content": "Telemetry lets you send data from your robot to the Driver Station for real-time feedback. Use <code>telemetry.addData()</code> to add information and <code>telemetry.update()</code> to send it. This is essential for debugging and for providing drivers with useful information during a match. <br><br>For more on telemetry, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/blocks/creating_op_modes/Writing-an-Op-Mode-with-FTC-Blocks.html#inserting-telemetry-statements\" target=\"_blank\">FTC Docs: Telemetry</a>."
     },
     {
-      "type": "list",
-      "title": "Common Teleop Issues",
-      "items": [
-        "Controls do not respond as expected: Check mapping and code logic.",
-        "Mode switching confusion: Use clear indicators and feedback.",
-        "Driver presses wrong button: Use ergonomic and consistent mapping.",
-        "Robot does not stop: Implement and test emergency stop logic."
-      ]
+      "type": "code",
+      "title": "Example: Using Telemetry",
+      "content": "telemetry.addData(\"Left Power\", leftPower);\ntelemetry.addData(\"Right Power\", rightPower);\ntelemetry.addData(\"Claw Position\", clawServo.getPosition());\ntelemetry.update();"
     },
     {
-      "type": "link-grid",
-      "title": "References & Further Reading",
-      "links": [
-        { "label": "gm0: TeleOp Programming", "url": "https://gm0.org/en/latest/docs/software/teleop/index.html" },
-        { "label": "FTC Docs: OpModes", "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/opmodes/index.html" },
-        { "label": "gm0: Control Schemes", "url": "https://gm0.org/en/latest/docs/software/teleop/control-schemes.html" },
-        { "label": "Basic Robot Control", "id": "basic-robot-control" },
-        { "label": "Gamepad Controls", "id": "gamepad-controls" }
-      ]
+      "type": "text",
+      "title": "Best Practices: Modular Code",
+      "content": "Keep your code organized by writing small, focused methods for each subsystem or control. This makes your code easier to read, debug, and expand."
     },
     {
       "type": "exercise-box",
-      "title": "Teleop Programming Practice",
-      "description": "Practice these exercises to master teleop programming:",
+      "title": "Practice Exercise: Custom TeleOp Controls",
+      "description": "Write a TeleOp OpMode that uses the left stick to drive, the right stick to turn, and buttons A/B to open/close a claw. Add telemetry to display all relevant values. Refactor your code to use helper methods for each subsystem.",
       "tasks": [
-        "Write a Teleop OpMode that maps gamepad controls to multiple mechanisms.",
-        "Implement an emergency stop feature.",
-        "Design a control scheme and test with your driver.",
-        "Troubleshoot a teleop issue and document your solution."
+        "Map drive motors and a claw servo.",
+        "Read joystick and button values from gamepad1.",
+        "Set motor and servo power based on input.",
+        "Add telemetry for all controls.",
+        "Refactor code into helper methods."
       ],
-      "content": "// Practice: Write a Teleop OpMode with at least two mechanisms\n// Add an emergency stop and test with your team."
+      "content": "// Example helper method for claw\nprivate void controlClaw() {\n    if (gamepad1.a) {\n        clawServo.setPosition(1.0);\n    } else if (gamepad1.b) {\n        clawServo.setPosition(0.0);\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        {
+          "label": "Gamepad Controls",
+          "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#gamepad-input"
+        } 
+      ]
     }
   ]
-} 
+}

@@ -1,103 +1,58 @@
 {
-  "title": "Distance Sensors",
+  "title": "Distance Sensors in FTC",
   "sections": [
     {
       "type": "text",
       "title": "What is a Distance Sensor?",
-      "content": "<p>Distance sensors measure the distance to objects using infrared or ultrasonic technology. They are used for obstacle detection, alignment, and autonomous navigation in FTC robots.</p><p>For more, see <a href='https://gm0.org/en/latest/docs/software/sensors/distance.html' target='_blank'>gm0: Distance Sensors</a> and <a href='https://docs.revrobotics.com/duo-control/programming/sensors#distance-sensor' target='_blank'>REV Robotics: Distance Sensor</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Distance Sensor Basics",
-      "subtitle": "Key characteristics:",
-      "items": [
-        "Measure distance to objects using light or sound",
-        "Provide analog or digital output",
-        "Used for obstacle avoidance and alignment",
-        "Require calibration for accurate readings",
-        "Data accessed through hardwareMap in code"
-      ]
+      "content": "A distance sensor measures how far away an object is from the sensor. In FTC, distance sensors are used for tasks like obstacle avoidance, alignment, and detecting game elements."
     },
     {
       "type": "text",
-      "title": "How Distance Sensors Work",
-      "content": "<p>Distance sensors emit a signal (infrared or ultrasonic) and measure the time it takes to reflect back. The sensor calculates distance based on this time. See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/ftc_sdk/sensors.html#distance-sensor' target='_blank'>FTC Docs: Distance Sensor</a>.</p>"
+      "title": "Configuring and Mapping a Distance Sensor",
+      "content": "Add the distance sensor to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
     },
     {
       "type": "code",
-      "title": "Distance Sensor Example",
-      "language": "java",
-      "content": "// Initialize and read a distance sensor\nDistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\ndouble distance = distanceSensor.getDistance(DistanceUnit.CM);\ntelemetry.addData(\"Distance (cm)\", distance);\ntelemetry.update();"
-    },
-    {
-      "type": "text",
-      "title": "Applications of Distance Sensors",
-      "content": "<p>Distance sensors are used for a variety of applications in FTC robots, including obstacle avoidance, alignment, and autonomous routines. See <a href='https://gm0.org/en/latest/docs/software/sensors/distance.html' target='_blank'>gm0: Distance Sensors</a>.</p>"
-    },
-    {
-      "type": "list",
-      "title": "Common Use Cases",
-      "items": [
-        "Obstacle avoidance in autonomous mode",
-        "Aligning with field elements",
-        "Measuring distance to game elements",
-        "Detecting walls or barriers",
-        "Maintaining distance from other robots"
-      ]
-    },
-    {
-      "type": "text",
-      "title": "Distance Sensor Safety and Best Practices",
-      "content": "<p>Proper use of distance sensors ensures reliable operation and accurate data. Always test and calibrate sensors before use. See <a href='https://docs.revrobotics.com/duo-control/programming/sensors#sensor-safety' target='_blank'>REV Robotics: Sensor Safety</a>.</p>"
-    },
-    {
-      "type": "rules-box",
-      "title": "Safety Guidelines",
-      "subtitle": "Follow these practices for safe distance sensor use:",
-      "items": [
-        "Secure sensors to prevent movement during operation",
-        "Avoid exposing sensors to excessive force or debris",
-        "Calibrate sensors for accurate readings",
-        "Monitor sensor data for unexpected values",
-        "Document sensor configuration and calibration"
-      ]
+      "title": "Mapping a Distance Sensor in Java",
+      "content": "Here's how to map a distance sensor in your Op Mode:",
+      "code": "private DistanceSensor sensorColorRange;\n\n@Override\npublic void runOpMode() {\n    sensorColorRange = hardwareMap.get(DistanceSensor.class, \"sensorColorRange\");\n    // Now you can use sensorColorRange in your code\n}"
     },
     {
       "type": "code",
-      "title": "Distance Sensor Safety Example",
-      "language": "java",
-      "content": "// Safety check using a distance sensor\ndouble distance = distanceSensor.getDistance(DistanceUnit.CM);\nif (distance < 5.0) {\n    // Stop motor or mechanism\n    motor.setPower(0);\n    telemetry.addData(\"Safety\", \"Object too close!\");\n    telemetry.update();\n}"
+      "title": "Reading Distance Values and Handling Units",
+      "content": "You can read the distance in centimeters and handle out-of-range values as follows:",
+      "code": "double distance = sensorColorRange.getDistance(DistanceUnit.CM);\nif (Double.isNaN(distance)) {\n    telemetry.addData(\"Distance\", \"Out of range\");\n} else {\n    telemetry.addData(\"Distance (cm)\", distance);\n}\ntelemetry.update();"
     },
     {
       "type": "text",
-      "title": "Troubleshooting Distance Sensors",
-      "content": "<p>Common distance sensor issues and their solutions help teams quickly resolve problems. See <a href='https://gm0.org/en/latest/docs/software/sensors/distance.html#troubleshooting' target='_blank'>gm0: Distance Sensor Troubleshooting</a>.</p>"
+      "title": "Using Distance Data in Robot Logic",
+      "content": "Distance sensors can be used for obstacle avoidance, alignment, and more. For example, you can stop your robot if an object is detected within a certain range."
     },
     {
-      "type": "list",
-      "title": "Common Issues and Solutions",
-      "items": [
-        "<b>Sensor not detected:</b> Check wiring and configuration",
-        "<b>Incorrect readings:</b> Calibrate or check for interference",
-        "<b>No response:</b> Test with known distances and check code",
-        "<b>Intermittent data:</b> Secure connections and avoid loose wires",
-        "<b>Unexpected values:</b> Monitor for out-of-range or error codes"
+      "type": "code",
+      "title": "Example: Obstacle Avoidance Logic",
+      "content": "This snippet shows how to use a distance sensor to stop the robot if an object is too close:",
+      "code": "if (sensorColorRange.getDistance(DistanceUnit.CM) < 10) {\n    // Stop motors\n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    telemetry.addData(\"Status\", \"Obstacle detected!\");\n}\ntelemetry.update();"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Troubleshooting and Best Practices",
+      "content": "If your sensor returns 'NaN', the target may be out of range. Make sure your sensor is properly connected and configured. For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/blocks/using_sensors/Using-Sensors-%28Blocks%29.html\" target=\"_blank\">FTC Docs: Using Sensors (Blocks) – Distance Example</a>."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        {"label": "Intro to Sensors", "url": "#intro-to-sensors"},
+        {"label": "Color Sensors", "url": "#color-sensors"}
       ]
     },
     {
-      "type": "exercise-box",
-      "title": "Distance Sensor Practice",
-      "description": "Practice these exercises to master distance sensor use:",
-      "tasks": [
-        "Create an OpMode that displays distance sensor data",
-        "Test sensor response to different objects and distances",
-        "Calibrate sensors and document the process",
-        "Implement safety checks using distance sensors",
-        "Practice troubleshooting common distance sensor issues",
-        "Test sensor integration with autonomous code",
-        "Document sensor configuration and calibration"
-      ],
-      "content": "// Practice Exercise: Distance Sensor\n// Create an OpMode that displays distance sensor data\n// Include calibration and troubleshooting steps\n// Test sensor response to different conditions\n\n@TeleOp(name=\"Distance Sensor Test\", group=\"Testing\")\npublic class DistanceSensorTestOpMode extends LinearOpMode {\n    private DistanceSensor distanceSensor;\n    @Override\n    public void runOpMode() {\n        distanceSensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Distance (cm)\", distanceSensor.getDistance(DistanceUnit.CM));\n            telemetry.update();\n        }\n    }"
+      "type": "link-grid",
+      "title": "See Also",
+      "content": [
+        {"label": "FTC OpMode API: DistanceSensor", "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/DistanceSensor.html"}
+      ]
     }
   ]
-} 
+}

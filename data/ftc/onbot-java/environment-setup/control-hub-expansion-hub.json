@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What are the Control Hub & Expansion Hub?",
-      "content": "The Control Hub and Expansion Hub are the main hardware modules for FTC robots. The Control Hub is the robot's brain and WiFi access point; the Expansion Hub adds more ports for motors, servos, and sensors.\n\nThe Control Hub runs your robot code and connects to the Driver Station via WiFi. The Expansion Hub is used when you need more hardware ports than the Control Hub provides.\n\n- <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/index.html' target='_blank'>FTC Docs: Hardware Setup</a>\n- <a href='https://gm0.org/en/latest/docs/hardware/expansion-hub.html' target='_blank'>gm0: Control Hub & Expansion Hub</a>"
+      "content": "The Control Hub and Expansion Hub are the main hardware modules for FTC robots. The Control Hub is the robot's brain and WiFi access point; the Expansion Hub adds more ports for motors, servos, and sensors.<br><br>The Control Hub runs your robot code and connects to the Driver Station via WiFi. The Expansion Hub is used when you need more hardware ports than the Control Hub provides.<br><br>See: <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/index.html' target='_blank'>FTC Docs: Hardware Setup</a>"
     },
     {
       "type": "rules-box",
@@ -20,7 +20,7 @@
     {
       "type": "text",
       "title": "Wiring and Connections",
-      "content": "Connect the Control Hub to the Expansion Hub using the RS485 cable. Power both hubs from the robot battery.\n\nMotors, servos, and sensors are plugged into the appropriate ports on either hub.\n\nSee <a href='https://gm0.org/en/latest/docs/hardware/expansion-hub.html#connecting-multiple-hubs' target='_blank'>gm0: Connecting Multiple Hubs</a> for diagrams and best practices."
+      "content": "Connect the Control Hub to the Expansion Hub using the RS485 cable. Power both hubs from the robot battery.<br><br>Motors, servos, and sensors are plugged into the appropriate ports on either hub.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/configuring_dual_hubs/configuring-dual-hubs.html' target='_blank'>FTC Docs: Adding an Expansion Hub</a> for diagrams and best practices."
     },
     {
       "type": "code",
@@ -31,7 +31,7 @@
     {
       "type": "text",
       "title": "Configuring Hardware in the Driver Station",
-      "content": "You must configure your robot's hardware in the Driver Station app. Assign names to each device (motor, servo, sensor) so you can access them in code.\n\n- <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html' target='_blank'>FTC Docs: Configuring Hardware</a>\n- <a href='https://gm0.org/en/latest/docs/software/getting-started/configuration.html' target='_blank'>gm0: Configuration</a>"
+      "content": "You must configure your robot's hardware in the Driver Station app. Assign names to each device (motor, servo, sensor) so you can access them in code.<br><br>See: <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html' target='_blank'>FTC Docs: Configuring Hardware</a>"
     },
     {
       "type": "rules-box",
@@ -47,12 +47,7 @@
     {
       "type": "text",
       "title": "Troubleshooting",
-      "content": "If you have connection issues:\n<ul>\n<li>Check RS485 cable is secure.</li>\n<li>Ensure both hubs are powered.</li>\n<li>Verify device names in configuration match your code.</li>\n<li>Check for firmware updates.</li>\n</ul>\nSee <a href='https://ftc-docs.firstinspires.org/en/latest/troubleshooting/index.html' target='_blank'>FTC Docs: Troubleshooting</a> for more help."
-    },
-    {
-      "type": "text",
-      "title": "Further Reading & Resources",
-      "content": "- <a href='https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/index.html' target='_blank'>FTC Docs: Hardware Setup</a>\n- <a href='https://gm0.org/en/latest/docs/hardware/expansion-hub.html' target='_blank'>gm0: Control Hub & Expansion Hub</a>\n- <a href='https://gm0.org/en/latest/docs/software/getting-started/configuration.html' target='_blank'>gm0: Configuration</a>"
+      "content": "If you have connection issues:<ul><li>Check RS485 cable is secure.</li><li>Ensure both hubs are powered.</li><li>Verify device names in configuration match your code.</li><li>Check for firmware updates.</li></ul>See <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/Troubleshooting' target='_blank'>FTC Docs: Troubleshooting</a> for more help."
     },
     {
       "type": "exercise-box",

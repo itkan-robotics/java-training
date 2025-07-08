@@ -25,9 +25,31 @@
     },
     {
       "type": "code",
-      "title": "Basic Dashboard Telemetry Setup",
-      "content": "To use dashboard telemetry, you need to set up MultipleTelemetry and use the dashboard's telemetry methods:",
-      "code": "import com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.telemetry.MultipleTelemetry;\nimport com.acmerobotics.dashboard.telemetry.TelemetryPacket;\n\npublic class BasicTelemetryOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private MultipleTelemetry telemetry;\n    private TelemetryPacket packet;\n    \n    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());\n        packet = new TelemetryPacket();\n    }\n    \n    @Override\n    public void loop() {\n        // Basic telemetry (shows in both Driver Station and Dashboard)\n        telemetry.addData(\"Loop Time\", \"%.2f seconds\", getRuntime());\n        telemetry.addData(\"Battery Voltage\", \"%.2f V\", getBatteryVoltage());\n        \n        // Dashboard-specific telemetry (only shows in Dashboard)\n        packet.put(\"Loop Time\", getRuntime());\n        packet.put(\"Battery Voltage\", getBatteryVoltage());\n        \n        telemetry.update();\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.get(\"Expansion Hub 2\").getVoltage();\n    }\n}"
+      "title": "Basic Dashboard Telemetry Setup (Step 1: Imports and Class Setup)",
+      "content": "Start by importing the required classes and setting up your OpMode class:",
+      "code": "import com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.telemetry.MultipleTelemetry;\nimport com.acmerobotics.dashboard.telemetry.TelemetryPacket;\n\npublic class BasicTelemetryOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private MultipleTelemetry telemetry;\n    private TelemetryPacket packet;\n    // ..."
+    },
+    {
+      "type": "text",
+      "title": "Step 2: Initialization",
+      "content": "In your init() method, initialize the dashboard, MultipleTelemetry, and TelemetryPacket."
+    },
+    {
+      "type": "code",
+      "title": "init() Method",
+      "content": "Add this to your class:",
+      "code": "    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());\n        packet = new TelemetryPacket();\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Step 3: Sending Telemetry and Plot Data",
+      "content": "In your loop() method, send both standard telemetry and dashboard-specific telemetry for plotting."
+    },
+    {
+      "type": "code",
+      "title": "loop() Method",
+      "content": "Add this to your class:",
+      "code": "    @Override\n    public void loop() {\n        // Basic telemetry (shows in both Driver Station and Dashboard)\n        telemetry.addData(\"Loop Time\", \"%.2f seconds\", getRuntime());\n        telemetry.addData(\"Battery Voltage\", \"%.2f V\", getBatteryVoltage());\n        \n        // Dashboard-specific telemetry (only shows in Dashboard)\n        packet.put(\"Loop Time\", getRuntime());\n        packet.put(\"Battery Voltage\", getBatteryVoltage());\n        \n        telemetry.update();\n        dashboard.sendTelemetryPacket(packet);\n    }\n    \n    private double getBatteryVoltage() {\n        return hardwareMap.voltageSensor.get(\"Expansion Hub 2\").getVoltage();\n    }"
     },
     {
       "type": "text",

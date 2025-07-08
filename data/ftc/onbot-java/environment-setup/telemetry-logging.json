@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What is Telemetry?",
-      "content": "Telemetry lets you send data from your robot to the Driver Station for real-time monitoring and debugging. It is essential for understanding what your robot is doing during a match and for troubleshooting issues.<br><br>Telemetry can display sensor values, motor power, program state, and more.<br><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/telemetry.html' target='_blank'>gm0: Telemetry</a>"
+      "content": "Telemetry lets you send data from your robot to the Driver Station for real-time monitoring and debugging. It is essential for understanding what your robot is doing during a match and for troubleshooting issues.<br><br>Telemetry can display sensor values, motor power, program state, and more."
     },
     {
       "type": "rules-box",
@@ -31,7 +31,7 @@
     {
       "type": "text",
       "title": "Advanced Telemetry Techniques",
-      "content": "You can group telemetry data, use <code>telemetry.log()</code> for persistent messages, and display sensor values.<br><br>Telemetry can also be used in Iterative OpModes and for debugging autonomous routines.<br><br>See <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a> for more advanced usage."
+      "content": "You can group telemetry data, use <code>telemetry.log()</code> for persistent messages, and display sensor values.<br><br>Telemetry can also be used in Iterative OpModes and for debugging autonomous routines."
     },
     {
       "type": "code",
@@ -49,11 +49,6 @@
         "Limit the amount of data to avoid clutter.",
         "Use telemetry for debugging and driver feedback."
       ]
-    },
-    {
-      "type": "text",
-      "title": "Further Reading & Resources",
-      "content": "- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html' target='_blank'>FTC Docs: Telemetry</a><br>- <a href='https://gm0.org/en/latest/docs/software/advanced-concepts/telemetry.html' target='_blank'>gm0: Telemetry</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode' target='_blank'>FTC SDK Example OpModes</a>"
     },
     {
       "type": "exercise-box",

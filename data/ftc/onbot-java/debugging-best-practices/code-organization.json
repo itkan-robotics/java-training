@@ -1,0 +1,70 @@
+{
+  "title": "Organizing Your FTC Code for Debuggability and Growth",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Why Code Organization Matters",
+      "content": "Good code organization makes your programs easier to debug, maintain, and expand. In FTC, it's especially important to avoid large, monolithic files. Instead, break your code into small, focused classes and methods."
+    },
+    {
+      "type": "text",
+      "title": "Breaking Up Large Files: Modular OpModes and Helper Classes",
+      "content": "Instead of putting all your logic in one file, split your code into multiple classes. For example, you can have a class for hardware mapping, another for drive logic, and another for sensor utilities. This makes it easier to test and debug each part separately."
+    },
+    {
+      "type": "code",
+      "title": "Example: Hardware Class",
+      "content": "A separate class for hardware mapping keeps your OpMode clean:",
+      "code": "public class RobotHardware {\n    public DcMotor leftMotor, rightMotor;\n    public void init(HardwareMap hwMap) {\n        leftMotor = hwMap.get(DcMotor.class, \"left_drive\");\n        rightMotor = hwMap.get(DcMotor.class, \"right_drive\");\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Using the Hardware Class in Your OpMode",
+      "content": "Your OpMode can now focus on logic, not setup:",
+      "code": "@TeleOp\npublic class ModularOpMode extends LinearOpMode {\n    private RobotHardware robot = new RobotHardware();\n    @Override\n    public void runOpMode() {\n        robot.init(hardwareMap);\n        waitForStart();\n        while (opModeIsActive()) {\n            robot.leftMotor.setPower(0.5);\n            robot.rightMotor.setPower(0.5);\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Naming Conventions and File Structure",
+      "content": "Use clear, descriptive names for your classes, methods, and variables. Organize your files so that related code is grouped together. This helps you and your teammates find and fix bugs faster."
+    },
+    {
+      "type": "list",
+      "title": "Tips for Good Code Organization",
+      "content": [
+        "Keep each file focused on one purpose (e.g., hardware, drive logic, sensors).",
+        "Use consistent naming conventions.",
+        "Document your code with comments and JavaDoc.",
+        "Avoid duplicating code—use helper methods or classes instead.",
+        "Review and refactor your code regularly."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Documenting Your Code",
+      "content": "Comments and documentation help you remember your logic and make it easier for others to help debug. Use JavaDoc for methods and classes, and add inline comments for tricky logic."
+    },
+    {
+      "type": "code",
+      "title": "JavaDoc Example",
+      "content": "Here's how to document a method with JavaDoc:",
+      "code": "/**\n * Sets the power for both drive motors.\n * @param power The power level (-1.0 to 1.0)\n */\npublic void setDrivePower(double power) {\n    leftMotor.setPower(power);\n    rightMotor.setPower(power);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Using Version Control for Debugging",
+      "content": "Version control lets you track changes and revert to working code. While OnBot Java doesn't have built-in Git, you can still keep backups and use comments to mark changes. For more on version control in FTC, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/index.html\" target=\"_blank\">FTC Docs: Programming Resources</a>."
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Refactor a Monolithic OpMode",
+      "description": "Take a long OpMode file and break it into at least two classes (e.g., hardware and logic). Add comments and JavaDoc to your methods. Test that your code still works.",
+      "tasks": [
+        "Identify sections of code that can be moved to helper classes.",
+        "Refactor the code and update your OpMode to use the new classes.",
+        "Add JavaDoc and comments to explain your logic."
+      ],
+      "content": "// Try refactoring and documenting your code!"
+    }
+  ]
+}
