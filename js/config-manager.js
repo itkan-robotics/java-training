@@ -10,7 +10,7 @@ class ConfigManager {
 
     async loadMainConfig() {
         try {
-            const response = await fetch('data/config/config.json');
+            const response = await fetch('/data/config/config.json');
             if (!response.ok) throw new Error('Failed to load main configuration');
             
             const config = await response.json();
@@ -34,8 +34,10 @@ class ConfigManager {
         }
     
         try {
+            // Ensure path is absolute from root
+            const absolutePath = section.file.startsWith('/') ? section.file : `/${section.file}`;
             // Add cache-busting parameter
-            const url = new URL(section.file, window.location.href);
+            const url = new URL(absolutePath, window.location.origin);
             url.searchParams.set('v', Date.now());
             
             const response = await fetch(url.toString());
@@ -59,8 +61,10 @@ class ConfigManager {
 
     async loadContentFile(filePath) {
         try {
+            // Ensure path is absolute from root
+            const absolutePath = filePath.startsWith('/') ? filePath : `/${filePath}`;
             // Add cache-busting parameter
-            const url = new URL(filePath, window.location.href);
+            const url = new URL(absolutePath, window.location.origin);
             url.searchParams.set('v', Date.now());
             
             const response = await fetch(url.toString());
