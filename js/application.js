@@ -50,61 +50,41 @@ class Application {
         }
     }
 
-    async showAppropriateTab() {
-        // Priority order: URL hash > saved state > default tab
-        const urlTabId = window.location.hash ? window.location.hash.substring(1) : null;
-        const savedState = appState.restoreState();
+    showDefaultTab() {
+        let defaultTab;
+        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
         
-        let targetTab = null;
-        let targetSection = null;
-
-        // Check URL hash first
-        if (urlTabId) {
-            targetTab = appState.allTabs.find(tab => tab.id === urlTabId);
-            if (targetTab) {
-                console.log('Navigating to URL hash tab:', urlTabId);
-                await this.navigationManager.navigateToTab(urlTabId);
+        // Parse URL to determine section and tab
+        const urlData = this.navigationManager.parseCurrentUrl();
+        
+        if (urlData.tabId) {
+            // URL contains specific tab
+            defaultTab = appState.allTabs.find(tab => tab.id === urlData.tabId);
+            if (defaultTab) {
+                localStorage.removeItem('lastOpenedTab');
+                this.navigationManager.navigateToTab(urlData.tabId);
                 return;
             }
+        } else if (urlData.sectionId && urlData.sectionId !== 'homepage') {
+            // URL contains section but no specific tab
+            this.navigationManager.navigateToTab(urlData.sectionId);
+            return;
         }
 
-        // Check saved state
-        if (savedState && savedState.currentTab) {
-            targetTab = appState.allTabs.find(tab => tab.id === savedState.currentTab);
-            targetSection = savedState.currentSection;
-            
-            if (targetTab) {
-                console.log('Navigating to saved tab:', savedState.currentTab);
-                await this.navigationManager.navigateToTab(savedState.currentTab);
-                return;
-            } else if (targetSection && targetSection !== 'homepage') {
-                console.log('Navigating to saved section:', targetSection);
-                await this.navigationManager.handleSectionNavigation(targetSection);
-                return;
-            }
+        // Fallback to stored tab or default
+        if (lastOpenedTabId) {
+            defaultTab = appState.allTabs.find(tab => tab.id === lastOpenedTabId);
         }
 
-        // Fallback to default tab
-        const defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
+        if (!defaultTab) {
+            defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
+        }
+
         if (defaultTab) {
-            console.log('Navigating to default tab:', defaultTab.id);
-            await this.navigationManager.navigateToTab(defaultTab.id);
-        }
-    }
-
-    restoreUIState() {
-        // Restore scroll position
-        appState.restoreScrollPosition();
-        
-        // Restore sidebar state
-        appState.restoreSidebarState();
-        
-        // Restore search query
-        appState.restoreSearchQuery();
-        
-        // Restore theme (already handled in AppState constructor)
-        if (appState.theme) {
-            this.themeManager.setTheme(appState.theme);
+            this.navigationManager.navigateToTab(defaultTab.id);
+        } else {
+            // Navigate to homepage if no default tab found
+            this.navigationManager.navigateToTab('homepage');
         }
     }
 
