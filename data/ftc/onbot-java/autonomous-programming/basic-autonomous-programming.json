@@ -29,11 +29,6 @@
       "code": "@Autonomous(name=\"HardwareMapExample\")\npublic class HardwareMapExample extends LinearOpMode {\n    private DcMotor leftDrive;\n\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        telemetry.addData(\"Status\", \"Hardware mapped\");\n        telemetry.update();\n        waitForStart();\n        leftDrive.setPower(0.5);\n        sleep(1000); // Run for 1 second\n        leftDrive.setPower(0);\n    }\n}"
     },
     {
-      "type": "text",
-      "title": "Best Practices for Modular Code",
-      "content": "Avoid writing large, monolithic code files. Instead, break your code into small, focused methods for each task (e.g., initializeHardware, driveForward, stopMotors). This makes your code easier to read, debug, and reuse.\n\nExample modularization:\n<ul>\n  <li>Initialization: Set up all hardware and variables</li>\n  <li>Movement: Write separate methods for each movement or action</li>\n  <li>Sensor Logic: Isolate sensor reading and decision-making</li>\n</ul>"
-    },
-    {
       "type": "exercise-box",
       "title": "Practice Exercise: Your First Autonomous OpMode",
       "description": "Write an autonomous OpMode that drives a motor for 2 seconds, then stops. Use telemetry to display status before, during, and after movement.",

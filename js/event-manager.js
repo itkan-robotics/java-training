@@ -196,10 +196,19 @@ class EventManager {
     }
 
     focusSearch() {
-        const searchInput = document.getElementById('header-search');
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.select();
+        // Check if we're on mobile (sidebar is visible/checked)
+        const navToggle = document.getElementById('__navigation');
+        const mobileSearchInput = document.getElementById('mobile-sidebar-search');
+        const headerSearchInput = document.getElementById('header-search');
+        
+        if (navToggle && navToggle.checked && mobileSearchInput) {
+            // On mobile with sidebar open, focus mobile search
+            mobileSearchInput.focus();
+            mobileSearchInput.select();
+        } else if (headerSearchInput) {
+            // Otherwise focus header search
+            headerSearchInput.focus();
+            headerSearchInput.select();
         }
     }
 

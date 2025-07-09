@@ -9,7 +9,7 @@
     {
       "type": "text",
       "title": "Configuring and Mapping a Color Sensor",
-      "content": "Add the color sensor to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
+      "content": "Add the color sensor to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below."
     },
     {
       "type": "code",

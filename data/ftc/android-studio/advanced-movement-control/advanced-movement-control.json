@@ -26,11 +26,6 @@
       "type": "text",
       "title": "Recommended Prerequisites",
       "content": "<ul><li>Comfort with Java programming and object-oriented concepts.</li><li>Basic experience with the FTC SDK in <strong>Android Studio</strong>.</li><li>Familiarity with robot hardware (motors, sensors, servos).</li></ul>"
-    },
-    {
-      "type": "emphasis-box",
-      "title": "Reference: FTC Android Studio Programming",
-      "content": "For a refresher on setting up and programming with Android Studio, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/android_studio/creating_op_modes/Creating-and-Running-an-Op-Mode-(Android-Studio).html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (Android Studio)</a>."
     }
   ]
 }

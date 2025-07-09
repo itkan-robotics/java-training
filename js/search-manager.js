@@ -55,7 +55,7 @@ class SearchManager {
         // Close search results when clicking outside
         document.addEventListener('mousedown', (e) => {
             if (!e.target.closest('.search-container-header') && 
-                !e.target.closest('.mobile-sidebar-search') && 
+                !e.target.closest('.mobile-sidebar-search-container') && 
                 !e.target.closest('.search-results')) {
                 this.hideResults();
             }
@@ -68,8 +68,9 @@ class SearchManager {
             clearTimeout(this.searchTimeout);
         }
         
-        // Store current query
+        // Store current query and save to app state
         this.currentSearchQuery = query;
+        appState.setSearchQuery(query);
         
         if (!query.trim()) {
             this.hideResults();
@@ -91,9 +92,13 @@ class SearchManager {
         const searchContainer = this.getSearchContainer();
         if (!searchContainer) return;
         
+        // Check if this is the mobile sidebar search
+        const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
+        
         const loadingDiv = document.createElement('div');
         loadingDiv.className = 'search-results';
-        loadingDiv.style.cssText = `
+        
+        const baseStyles = `
             position: absolute;
             top: 100%;
             left: 0;
@@ -108,6 +113,16 @@ class SearchManager {
             text-align: center;
             color: var(--color-sidebar-link-text);
         `;
+        
+        const mobileStyles = `
+            max-height: 60vh;
+        `;
+        
+        const desktopStyles = `
+            max-height: 200px;
+        `;
+        
+        loadingDiv.style.cssText = baseStyles + (isMobileSearch ? mobileStyles : desktopStyles);
         loadingDiv.textContent = 'Searching...';
         
         searchContainer.appendChild(loadingDiv);
@@ -381,11 +396,24 @@ class SearchManager {
         this.hideResults();
         
         const searchContainer = this.getSearchContainer();
-        if (!searchContainer) return;
+        if (!searchContainer) {
+            console.error('No search container found');
+            return;
+        }
+        
+        // Check if this is the mobile sidebar search
+        const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
+        console.log('Showing search results:', { 
+            isMobileSearch, 
+            searchContainer: searchContainer.className,
+            resultsCount: this.searchResults.length 
+        });
         
         const resultsDiv = document.createElement('div');
         resultsDiv.className = 'search-results';
-        resultsDiv.style.cssText = `
+        
+        // Adjust positioning and styling for mobile sidebar
+        const baseStyles = `
             position: absolute;
             top: 100%;
             left: 0;
@@ -393,12 +421,22 @@ class SearchManager {
             background-color: var(--color-sidebar-background);
             border: 2px solid var(--color-background-border);
             border-radius: 0.75rem;
-            max-height: 500px;
-            overflow-y: auto;
             z-index: 1000;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             margin-top: 0.5rem;
         `;
+        
+        const mobileStyles = `
+            max-height: 60vh;
+            overflow-y: auto;
+        `;
+        
+        const desktopStyles = `
+            max-height: 500px;
+            overflow-y: auto;
+        `;
+        
+        resultsDiv.style.cssText = baseStyles + (isMobileSearch ? mobileStyles : desktopStyles);
         
         // Header
         const header = document.createElement('div');
@@ -508,7 +546,7 @@ class SearchManager {
 
     getSearchContainer() {
         return document.querySelector('.search-container-header') || 
-               document.querySelector('.mobile-sidebar-search');
+               document.querySelector('.mobile-sidebar-search-container');
     }
 
     hideResults() {
@@ -524,9 +562,13 @@ class SearchManager {
         const searchContainer = this.getSearchContainer();
         if (!searchContainer) return;
         
+        // Check if this is the mobile sidebar search
+        const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
+        
         const errorDiv = document.createElement('div');
         errorDiv.className = 'search-results';
-        errorDiv.style.cssText = `
+        
+        const baseStyles = `
             position: absolute;
             top: 100%;
             left: 0;
@@ -541,6 +583,16 @@ class SearchManager {
             padding: 1rem;
             text-align: center;
         `;
+        
+        const mobileStyles = `
+            max-height: 60vh;
+        `;
+        
+        const desktopStyles = `
+            max-height: 200px;
+        `;
+        
+        errorDiv.style.cssText = baseStyles + (isMobileSearch ? mobileStyles : desktopStyles);
         errorDiv.textContent = message;
         
         searchContainer.appendChild(errorDiv);

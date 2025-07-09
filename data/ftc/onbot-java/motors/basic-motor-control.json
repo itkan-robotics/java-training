@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Setting Motor Power with Gamepad Input",
-      "content": "To control your robot in real time, you need to set motor power based on gamepad input. The FTC SDK provides <code>gamepad1</code> and <code>gamepad2</code> objects for reading controller input. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#modifying-your-op-mode-to-control-a-motor\" target=\"_blank\">FTC Docs: Modifying Your Op Mode to Control a Motor</a>."
+      "content": "To control your robot in real time, you need to set motor power based on gamepad input. The FTC SDK provides <code>gamepad1</code> and <code>gamepad2</code> objects for reading controller input. To initialize the gamepad when connected to the Drver Station, you need to press the button combinations as requested by the Driver Station."
     },
     {
       "type": "code",
@@ -26,18 +26,7 @@
     {
       "type": "text",
       "title": "Using Loops for Continuous Control",
-      "content": "The <code>while(opModeIsActive())</code> loop lets you continuously update motor power based on gamepad input. Place all real-time control logic inside this loop."
-    },
-    {
-      "type": "text",
-      "title": "Best Practices: Modular Code",
-      "content": "Avoid putting all your logic in one big loop. Break up your code into small methods, such as <code>readGamepad()</code> and <code>updateMotors()</code>, to make it easier to read and debug."
-    },
-    {
-      "type": "code",
-      "title": "Example: Modular Motor Control",
-      "content": "",
-      "code": "private void readGamepad() {\n    leftPower = -gamepad1.left_stick_y;\n    rightPower = -gamepad1.right_stick_y;\n}\n\nprivate void updateMotors() {\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\nwhile (opModeIsActive()) {\n    readGamepad();\n    updateMotors();\n    telemetry.addData(\"Left Power\", leftPower);\n    telemetry.addData(\"Right Power\", rightPower);\n    telemetry.update();\n}"
+      "content": "When using a <code>LinearOpMode</code>, the <code>while(opModeIsActive())</code> loop lets you continuously update motor power based on gamepad input. Place all real-time control logic inside this loop."
     },
     {
       "type": "exercise-box",
@@ -48,7 +37,24 @@
         "Set left and right motor power.",
         "Display both values with telemetry."
       ],
-      "content": "// Example code\nwhile (opModeIsActive()) {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n    telemetry.addData(\"Left Power\", leftPower);\n    telemetry.addData(\"Right Power\", rightPower);\n    telemetry.update();\n}"
+      "answers": [
+        {
+          "task": "Read left and right joystick Y values",
+          "content": "// Read joystick Y values from gamepad1\n// The negative sign inverts the joystick so forward = positive\ndouble leftPower = -gamepad1.left_stick_y;\ndouble rightPower = -gamepad1.right_stick_y;\n\n// Note: Joystick values range from -1.0 to 1.0\n// -1.0 = full forward (after negation)\n// 0.0 = center position\n// 1.0 = full backward (after negation)\n\n// You can also add deadzone to prevent drift:\n// if (Math.abs(leftPower) < 0.1) leftPower = 0;\n// if (Math.abs(rightPower) < 0.1) rightPower = 0;"
+        },
+        {
+          "task": "Set left and right motor power",
+          "content": "// Set motor power using the joystick values\nleftDrive.setPower(leftPower);\nrightDrive.setPower(rightPower);\n\n// The setPower() method accepts values from -1.0 to 1.0\n// Positive values = forward rotation\n// Negative values = reverse rotation\n// 0.0 = stop\n\n// You can also scale the power for finer control:\n// leftDrive.setPower(leftPower * 0.8); // 80% of joystick value\n// rightDrive.setPower(rightPower * 0.8);\n\n// Or add power limiting for safety:\n// leftDrive.setPower(Math.max(-0.8, Math.min(0.8, leftPower)));\n// rightDrive.setPower(Math.max(-0.8, Math.min(0.8, rightPower)));"
+        },
+        {
+          "task": "Display both values with telemetry",
+          "content": "// Display joystick and motor values on Driver Station\ntelemetry.addData(\"Left Joystick Y\", leftPower);\ntelemetry.addData(\"Right Joystick Y\", rightPower);\ntelemetry.addData(\"Left Motor Power\", leftDrive.getPower());\ntelemetry.addData(\"Right Motor Power\", rightDrive.getPower());\ntelemetry.addData(\"Status\", \"Tank Drive Active\");\ntelemetry.update();\n\n// Note: getPower() returns the actual power being sent to the motor\n// This may differ from the joystick value if you applied scaling or limiting\n\n// You can also format the values for better readability:\n// telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n// telemetry.addData(\"Right Power\", \"%.2f\", rightPower);"
+        },
+        {
+          "task": "Combine all tasks into one complete tank drive loop",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n@TeleOp(name = \"TankDriveExample\")\npublic class TankDriveExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n\n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        \n        // Show initialization status\n        telemetry.addData(\"Status\", \"Tank Drive Ready\");\n        telemetry.addData(\"Instructions\", \"Use left and right sticks to drive\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Task 1: Read left and right joystick Y values\n            double leftPower = -gamepad1.left_stick_y;\n            double rightPower = -gamepad1.right_stick_y;\n            \n            // Optional: Add deadzone to prevent drift\n            if (Math.abs(leftPower) < 0.1) leftPower = 0;\n            if (Math.abs(rightPower) < 0.1) rightPower = 0;\n            \n            // Task 2: Set left and right motor power\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            \n            // Task 3: Display both values with telemetry\n            telemetry.addData(\"Left Joystick\", \"%.2f\", leftPower);\n            telemetry.addData(\"Right Joystick\", \"%.2f\", rightPower);\n            telemetry.addData(\"Left Motor\", \"%.2f\", leftDrive.getPower());\n            telemetry.addData(\"Right Motor\", \"%.2f\", rightDrive.getPower());\n            telemetry.addData(\"Status\", \"Tank Drive Running\");\n            telemetry.update();\n        }\n        \n        // Stop motors when OpMode ends\n        leftDrive.setPower(0);\n        rightDrive.setPower(0);\n    }\n}"
+        }
+      ]
     }
   ]
 }

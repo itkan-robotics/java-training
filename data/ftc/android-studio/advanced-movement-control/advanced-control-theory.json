@@ -41,11 +41,6 @@
       "type": "text",
       "title": "Practical FTC Example: Why Feedback Matters",
       "content": "<p>Without feedback, your robot's movements will vary from run to run. With feedback and control theory, you can make your robot drive straight, turn accurately, and move arms to precise positions—no matter the battery level or field conditions.</p>"
-    },
-    {
-      "type": "emphasis-box",
-      "title": "Reference: FTC Android Studio Op Modes",
-      "content": "See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/android_studio/creating_op_modes/Creating-and-Running-an-Op-Mode-(Android-Studio).html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (Android Studio)</a> for more on integrating sensors and feedback in your code."
     }
   ]
 }

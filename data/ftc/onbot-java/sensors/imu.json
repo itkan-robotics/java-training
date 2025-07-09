@@ -1,5 +1,5 @@
 {
-  "title": "IMU (Inertial Measurement Unit) in FTC",
+  "title": "IMU (Inertial Measurement Unit)",
   "sections": [
     {
       "type": "text",
@@ -8,14 +8,25 @@
     },
     {
       "type": "text",
-      "title": "Configuring and Mapping the IMU",
-      "content": "Add the IMU to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
+      "title": "REV Hub IMU vs. External IMU: Key Differences",
+      "content": "FTC robots can use two main types of IMUs: the built-in IMU inside the REV Control/Expansion Hub, and external IMUs such as the Bosch BNO055 module. Both provide orientation data, but they differ in how you initialize and access them in code.<br><br><b>REV Hub IMU:</b> This IMU is built into the REV Control and Expansion Hubs. It is accessed using the <code>BNO055IMU</code> class, and requires explicit initialization with parameters.<br><br><b>External IMU (e.g., Bosch BNO055):</b> This is a separate sensor module connected to the I2C port. It is also accessed using the <code>BNO055IMU</code> class, but you must ensure the correct I2C address and port are set in your hardware configuration. <br><br><strong>Note:</strong> You MUST use a port other than port 0 on the Control Hub to wire your external IMU into to avoid conflicts with the REV Internal IMU. Additionally, both types must be added to your robot's hardware configuration and given a clear name (commonly <code>imu</code>)."
     },
     {
       "type": "code",
-      "title": "Mapping the IMU in Java",
-      "content": "Here's how to map the IMU in your Op Mode:",
-      "code": "private Gyroscope imu;\n\n@Override\npublic void runOpMode() {\n    imu = hardwareMap.get(Gyroscope.class, \"imu\");\n    // Now you can use imu in your code\n}"
+      "title": "Initializing the REV Hub IMU (Built-in)",
+      "content": "To use the built-in IMU, map it as a <code>BNO055IMU</code> and initialize it with parameters:",
+      "code": "import com.qualcomm.hardware.bosch.BNO055IMU;\n\nprivate BNO055IMU imu;\n\n@Override\npublic void runOpMode() {\n    imu = hardwareMap.get(BNO055IMU.class, \"imu\");\n    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n    parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n    imu.initialize(parameters);\n    // Now you can use imu in your code\n}"
+    },
+    {
+      "type": "code",
+      "title": "Initializing an External BNO055 IMU (I2C)",
+      "content": "For an external BNO055 IMU, the code is almost identical, but make sure your hardware configuration matches the I2C port and address. Initialization is the same:",
+      "code": "import com.qualcomm.hardware.bosch.BNO055IMU;\n\nprivate BNO055IMU imu;\n\n@Override\npublic void runOpMode() {\n    imu = hardwareMap.get(BNO055IMU.class, \"imu\"); // Name must match your config\n    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();\n    parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;\n    imu.initialize(parameters);\n    // Now you can use imu in your code\n}"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Summary: Initialization Differences",
+      "content": "Both the REV Hub IMU and external BNO055 IMU use the <code>BNO055IMU</code> class and require initialization with parameters. The main difference is in the hardware setup: the built-in IMU is part of the hub, while the external IMU connects via I2C and may require setting the correct I2C address in the configuration. Always check your hardware configuration for the correct device name and port."
     },
     {
       "type": "code",

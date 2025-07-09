@@ -32,8 +32,14 @@ class Application {
             // Initialize sidebar resize functionality
             this.sidebarResizeManager.initialize();
             
-            // Show default tab
-            this.showDefaultTab();
+            // Set up navigation persistence after navigation manager is ready
+            appState.setupNavigationPersistence();
+            
+            // Show appropriate tab based on saved state or defaults
+            await this.showAppropriateTab();
+            
+            // Restore UI state after navigation
+            this.restoreUIState();
             
             // Mark as initialized
             appState.setInitialized(true);
@@ -44,26 +50,61 @@ class Application {
         }
     }
 
-    showDefaultTab() {
-        let defaultTab;
-        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
+    async showAppropriateTab() {
+        // Priority order: URL hash > saved state > default tab
         const urlTabId = window.location.hash ? window.location.hash.substring(1) : null;
+        const savedState = appState.restoreState();
+        
+        let targetTab = null;
+        let targetSection = null;
 
+        // Check URL hash first
         if (urlTabId) {
-            defaultTab = appState.allTabs.find(tab => tab.id === urlTabId);
-            if (defaultTab) {
-                localStorage.removeItem('lastOpenedTab');
+            targetTab = appState.allTabs.find(tab => tab.id === urlTabId);
+            if (targetTab) {
+                console.log('Navigating to URL hash tab:', urlTabId);
+                await this.navigationManager.navigateToTab(urlTabId);
+                return;
             }
-        } else if (lastOpenedTabId) {
-            defaultTab = appState.allTabs.find(tab => tab.id === lastOpenedTabId);
         }
 
-        if (!defaultTab) {
-            defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
+        // Check saved state
+        if (savedState && savedState.currentTab) {
+            targetTab = appState.allTabs.find(tab => tab.id === savedState.currentTab);
+            targetSection = savedState.currentSection;
+            
+            if (targetTab) {
+                console.log('Navigating to saved tab:', savedState.currentTab);
+                await this.navigationManager.navigateToTab(savedState.currentTab);
+                return;
+            } else if (targetSection && targetSection !== 'homepage') {
+                console.log('Navigating to saved section:', targetSection);
+                await this.navigationManager.handleSectionNavigation(targetSection);
+                return;
+            }
         }
 
+        // Fallback to default tab
+        const defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
         if (defaultTab) {
-            this.navigationManager.navigateToTab(defaultTab.id);
+            console.log('Navigating to default tab:', defaultTab.id);
+            await this.navigationManager.navigateToTab(defaultTab.id);
+        }
+    }
+
+    restoreUIState() {
+        // Restore scroll position
+        appState.restoreScrollPosition();
+        
+        // Restore sidebar state
+        appState.restoreSidebarState();
+        
+        // Restore search query
+        appState.restoreSearchQuery();
+        
+        // Restore theme (already handled in AppState constructor)
+        if (appState.theme) {
+            this.themeManager.setTheme(appState.theme);
         }
     }
 

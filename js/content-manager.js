@@ -173,7 +173,8 @@ class ContentManager {
             'logical-operators': this.renderLogicalOperators.bind(this),
             'emphasis-box': this.renderRulesBox.bind(this),
             'link-grid': this.renderLinkGrid.bind(this),
-            'section': this.renderSectionTypeSection.bind(this)
+            'section': this.renderSectionTypeSection.bind(this),
+            'table': this.renderTableSection.bind(this)
         };
 
         const renderer = renderers[sectionData.type];
@@ -316,9 +317,6 @@ class ContentManager {
             exerciseBox.appendChild(desc);
         }
 
-        // Determine what code to render - use content if no code property exists
-        const codeToRender = data.code || data.content;
-        
         // Only render content as HTML above the code block if there's a code property AND content is different
         // If there's no code property, content IS the code, so don't render it as HTML
         if (data.code && data.content && data.content !== data.code && typeof data.content === 'string') {
@@ -337,14 +335,26 @@ class ContentManager {
             exerciseBox.appendChild(tasksList);
         }
 
-        const codeSection = document.createElement('div');
-        codeSection.className = 'exercise-code';
-        const pre = document.createElement('pre');
-        const code = document.createElement('code');
-        code.textContent = codeToRender;
-        pre.appendChild(code);
-        codeSection.appendChild(pre);
-        exerciseBox.appendChild(codeSection);
+        // Only render code section if there's actual code or content to display
+        const codeToRender = data.code || data.content;
+        if (codeToRender && codeToRender.trim() !== '') {
+            const codeBlock = document.createElement('div');
+            codeBlock.className = 'code-block';
+            // Add language class if specified
+            if (data.language) {
+                codeBlock.classList.add(`language-${data.language}`);
+            }
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            // Set language class on code element for syntax highlighting
+            if (data.language) {
+                code.className = `language-${data.language}`;
+            }
+            code.textContent = codeToRender;
+            pre.appendChild(code);
+            codeBlock.appendChild(pre);
+            exerciseBox.appendChild(codeBlock);
+        }
 
         // Show/hide answers button and section
         if (data.answers && Array.isArray(data.answers) && data.answers.length > 0) {
@@ -357,7 +367,7 @@ class ContentManager {
             answerSection.className = 'answer-section hidden';
 
             // Add answers
-            data.answers.forEach(answer => {
+            data.answers.forEach((answer, index) => {
                 const answerItem = document.createElement('div');
                 answerItem.className = 'answer-item';
 
@@ -369,14 +379,22 @@ class ContentManager {
                 }
 
                 if (answer.content) {
-                    const codeDiv = document.createElement('div');
-                    codeDiv.className = 'answer-code';
+                    const codeBlock = document.createElement('div');
+                    codeBlock.className = 'code-block';
+                    // Add language class if specified
+                    if (answer.language) {
+                        codeBlock.classList.add(`language-${answer.language}`);
+                    }
                     const pre = document.createElement('pre');
                     const code = document.createElement('code');
-                    code.innerText = answer.content;
+                    // Set language class on code element for syntax highlighting
+                    if (answer.language) {
+                        code.className = `language-${answer.language}`;
+                    }
+                    code.textContent = answer.content;
                     pre.appendChild(code);
-                    codeDiv.appendChild(pre);
-                    answerItem.appendChild(codeDiv);
+                    codeBlock.appendChild(pre);
+                    answerItem.appendChild(codeBlock);
                 }
 
                 answerSection.appendChild(answerItem);
@@ -384,15 +402,18 @@ class ContentManager {
 
             toggleBtn.addEventListener('click', () => {
                 answersVisible = !answersVisible;
-                if (answersVisible) {
+                
+                if (!answersVisible) {
+                    // Show answers
                     answerSection.classList.remove('hidden');
                     answerSection.classList.add('visible');
-                    toggleBtn.textContent = 'Hide Answers';
+                    toggleBtn.textContent = 'Show Answers';
                     toggleBtn.classList.add('active');
                 } else {
+                    // Hide answers
                     answerSection.classList.remove('visible');
                     answerSection.classList.add('hidden');
-                    toggleBtn.textContent = 'Show Answers';
+                    toggleBtn.textContent = 'Hide Answers';
                     toggleBtn.classList.remove('active');
                 }
             });
@@ -481,6 +502,12 @@ class ContentManager {
     }
 
     renderLinkGrid(container, data) {
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
+            container.appendChild(h3);
+        }
+        
         const grid = document.createElement('div');
         grid.className = 'link-grid';
         
@@ -509,7 +536,10 @@ class ContentManager {
                     linkButton.textContent = textContent;
                     
                     linkButton.onclick = () => {
-                        if (anchor.target === '_blank') {
+                        // Always open external links in new tab
+                        if (anchor.href && (anchor.href.startsWith('http') || anchor.href.startsWith('https'))) {
+                            window.open(anchor.href, '_blank', 'noopener,noreferrer');
+                        } else if (anchor.target === '_blank') {
                             window.open(anchor.href, '_blank', 'noopener,noreferrer');
                         } else {
                             window.location.href = anchor.href;
@@ -522,7 +552,8 @@ class ContentManager {
             } else if (link.url) {
                 // External link format
                 linkButton.onclick = () => {
-                    if (link.external) {
+                    // Always open external URLs in new tab
+                    if (link.url.startsWith('http') || link.url.startsWith('https') || link.external) {
                         window.open(link.url, '_blank', 'noopener,noreferrer');
                     } else {
                         window.location.href = link.url;
@@ -559,6 +590,57 @@ class ContentManager {
             container.appendChild(div);
         }
         // Optionally, support nested sections in the future
+    }
+
+    renderTableSection(container, data) {
+        if (data.title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = data.title;
+            container.appendChild(h3);
+        }
+        
+        const tableContainer = document.createElement('div');
+        tableContainer.className = 'table-container';
+        
+        const table = document.createElement('table');
+        table.className = 'content-table';
+        
+        // Create table header
+        if (data.headers && Array.isArray(data.headers)) {
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            data.headers.forEach(header => {
+                const th = document.createElement('th');
+                th.innerHTML = header;
+                headerRow.appendChild(th);
+            });
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+        }
+        
+        // Create table body
+        if (data.rows && Array.isArray(data.rows)) {
+            const tbody = document.createElement('tbody');
+            
+            data.rows.forEach(row => {
+                const tr = document.createElement('tr');
+                
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.innerHTML = cell;
+                    tr.appendChild(td);
+                });
+                
+                tbody.appendChild(tr);
+            });
+            
+            table.appendChild(tbody);
+        }
+        
+        tableContainer.appendChild(table);
+        container.appendChild(tableContainer);
     }
 }
 

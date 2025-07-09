@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Persistence Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button.danger {
+            background: #dc3545;
+        }
+        .test-button.danger:hover {
+            background: #c82333;
+        }
+        .test-button.success {
+            background: #28a745;
+        }
+        .test-button.success:hover {
+            background: #218838;
+        }
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page Persistence System Test</h1>
+    
+    <div class="test-section">
+        <h2>State Management</h2>
+        <button class="test-button" onclick="viewCurrentState()">View Current State</button>
+        <button class="test-button" onclick="viewSavedState()">View Saved State</button>
+        <button class="test-button" onclick="getPersistenceStats()">Get Persistence Stats</button>
+        <div id="state-output" class="output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Navigation Tests</h2>
+        <button class="test-button" onclick="navigateToHomepage()">Navigate to Homepage</button>
+        <button class="test-button" onclick="navigateToSection('java')">Navigate to Java Section</button>
+        <button class="test-button" onclick="navigateToSection('ftc')">Navigate to FTC Section</button>
+        <div id="navigation-output" class="output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>UI State Tests</h2>
+        <button class="test-button" onclick="setScrollPosition(500)">Set Scroll to 500px</button>
+        <button class="test-button" onclick="setScrollPosition(1000)">Set Scroll to 1000px</button>
+        <button class="test-button" onclick="toggleSidebar()">Toggle Sidebar</button>
+        <button class="test-button" onclick="setSearchQuery('test query')">Set Search Query</button>
+        <div id="ui-output" class="output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Persistence Tests</h2>
+        <button class="test-button success" onclick="testPersistence()">Test Persistence</button>
+        <button class="test-button" onclick="saveState()">Save State</button>
+        <button class="test-button" onclick="restoreState()">Restore State</button>
+        <button class="test-button danger" onclick="clearSavedState()">Clear Saved State</button>
+        <div id="persistence-output" class="output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Use the buttons above to test different aspects of the persistence system</li>
+            <li>Navigate to different pages and refresh the browser to test automatic restoration</li>
+            <li>Check the browser console for detailed logs</li>
+            <li>Use the "Test Persistence" button to verify the system works correctly</li>
+        </ol>
+        
+        <div class="status info">
+            <strong>Note:</strong> This test page requires the main application to be loaded. 
+            Make sure you're testing this on the actual application page, not this standalone test file.
+        </div>
+    </div>
+
+    <script>
+        function logOutput(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+            }
+            console.log(message);
+        }
+
+        function viewCurrentState() {
+            if (window.SwyftNavUtils) {
+                const state = window.SwyftNavUtils.viewCurrentState();
+                logOutput('state-output', JSON.stringify(state, null, 2));
+            } else {
+                logOutput('state-output', 'SwyftNavUtils not available. Make sure you\'re on the main application page.');
+            }
+        }
+
+        function viewSavedState() {
+            if (window.SwyftNavUtils) {
+                const state = window.SwyftNavUtils.viewSavedState();
+                logOutput('state-output', state ? JSON.stringify(state, null, 2) : 'No saved state found');
+            } else {
+                logOutput('state-output', 'SwyftNavUtils not available. Make sure you\'re on the main application page.');
+            }
+        }
+
+        function getPersistenceStats() {
+            if (window.SwyftNavUtils) {
+                const stats = window.SwyftNavUtils.getPersistenceStats();
+                logOutput('state-output', JSON.stringify(stats, null, 2));
+            } else {
+                logOutput('state-output', 'SwyftNavUtils not available. Make sure you\'re on the main application page.');
+            }
+        }
+
+        function navigateToHomepage() {
+            if (window.navigationManager) {
+                window.navigationManager.navigateToTab('homepage');
+                logOutput('navigation-output', 'Navigated to homepage');
+            } else {
+                logOutput('navigation-output', 'Navigation manager not available');
+            }
+        }
+
+        function navigateToSection(sectionId) {
+            if (window.navigationManager) {
+                window.navigationManager.handleSectionNavigation(sectionId);
+                logOutput('navigation-output', `Navigated to section: ${sectionId}`);
+            } else {
+                logOutput('navigation-output', 'Navigation manager not available');
+            }
+        }
+
+        function setScrollPosition(position) {
+            if (window.SwyftNavUtils) {
+                window.SwyftNavUtils.setScrollAndSave(position);
+                logOutput('ui-output', `Scroll position set to ${position}px`);
+            } else {
+                logOutput('ui-output', 'SwyftNavUtils not available');
+            }
+        }
+
+        function toggleSidebar() {
+            if (window.SwyftNavUtils) {
+                window.SwyftNavUtils.toggleSidebarAndSave();
+                logOutput('ui-output', 'Sidebar toggled');
+            } else {
+                logOutput('ui-output', 'SwyftNavUtils not available');
+            }
+        }
+
+        function setSearchQuery(query) {
+            if (window.SwyftNavUtils) {
+                window.SwyftNavUtils.setSearchAndSave(query);
+                logOutput('ui-output', `Search query set to: "${query}"`);
+            } else {
+                logOutput('ui-output', 'SwyftNavUtils not available');
+            }
+        }
+
+        function testPersistence() {
+            if (window.SwyftNavUtils) {
+                const result = window.SwyftNavUtils.testPersistence();
+                logOutput('persistence-output', JSON.stringify(result, null, 2));
+            } else {
+                logOutput('persistence-output', 'SwyftNavUtils not available');
+            }
+        }
+
+        function saveState() {
+            if (window.appState) {
+                window.appState.saveState();
+                logOutput('persistence-output', 'State saved successfully');
+            } else {
+                logOutput('persistence-output', 'AppState not available');
+            }
+        }
+
+        function restoreState() {
+            if (window.appState) {
+                const state = window.appState.restoreState();
+                logOutput('persistence-output', state ? 'State restored successfully' : 'No state to restore');
+            } else {
+                logOutput('persistence-output', 'AppState not available');
+            }
+        }
+
+        function clearSavedState() {
+            if (window.SwyftNavUtils) {
+                window.SwyftNavUtils.clearSavedState();
+                logOutput('persistence-output', 'Saved state cleared');
+            } else {
+                logOutput('persistence-output', 'SwyftNavUtils not available');
+            }
+        }
+
+        // Auto-check if we're on the main application page
+        window.addEventListener('load', () => {
+            if (window.appState && window.SwyftNavUtils) {
+                document.querySelector('.status.info').innerHTML = 
+                    '<strong>Success:</strong> Page persistence system is loaded and ready for testing.';
+                document.querySelector('.status.info').className = 'status success';
+            } else {
+                document.querySelector('.status.info').innerHTML = 
+                    '<strong>Error:</strong> Page persistence system not found. Make sure you\'re on the main application page.';
+                document.querySelector('.status.info').className = 'status error';
+            }
+        });
+    </script>
+</body>
+</html> 

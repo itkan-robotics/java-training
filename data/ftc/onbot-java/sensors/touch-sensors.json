@@ -9,7 +9,7 @@
     {
       "type": "text",
       "title": "Configuring a Touch Sensor in the Hardware Map",
-      "content": "Before you can use a touch sensor in your code, you must add it to your robot's hardware configuration. Assign it a clear, descriptive name. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a> for more details."
+      "content": "Before you can use a touch sensor in your code, you must add it to your robot's hardware configuration. Assign it a clear, descriptive name."
     },
     {
       "type": "code",

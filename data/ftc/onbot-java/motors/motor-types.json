@@ -4,12 +4,12 @@
     {
       "type": "text",
       "title": "Overview of FTC Motor Types",
-      "content": "FTC robots use a variety of DC motors, each with different capabilities. Choosing the right motor for your robot is important for performance and reliability. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode</a>."
+      "content": "FTC robots use a variety of DC motors, each with different capabilities. Choosing the right motor for your robot is important for performance and reliability."
     },
     {
       "type": "text",
       "title": "Common FTC Motors",
-      "content": "Some common FTC motors include:<ul><li>REV HD Hex Motor</li><li>AndyMark NeveRest</li><li>Tetrix Motor</li></ul>Each motor has different speed, torque, and encoder options."
+      "content": "Some common FTC motors include:<ul><li><a href='https://www.revrobotics.com/rev-41-1301/' target='_blank'>REV HD Hex Motor</a></li><li><a href='https://andymark.com/collections/neverest' target='_blank'>AndyMark NeveRest</a></li><li><a href='https://www.pitsco.com/search?q=tetrix+dc+gear+motor' target='_blank'>Tetrix Motor</a></li><li><a href='https://www.gobilda.com/yellow-jacket-planetary-gear-motors' target='_blank'>GoBilda Yellow Jacket Motor</a></li></ul>Each motor has different speed, torque, and encoder options."
     },
     {
       "type": "text",
@@ -22,21 +22,14 @@
       "content": "Always check the motor's datasheet for voltage, current, speed, and torque ratings. This helps you avoid damaging your hardware and ensures your robot performs as expected."
     },
     {
-      "type": "code",
+      "type": "trext",
       "title": "Programming Differences",
-      "content": "Most FTC DC motors are programmed the same way. However, some may require different initialization or settings. Always check the manufacturer's documentation.",
-      "code": "// Example: Initializing a REV HD Hex Motor\nDcMotor hdHex = hardwareMap.get(DcMotor.class, \"hd_hex_motor\");\nhdHex.setDirection(DcMotor.Direction.FORWARD);\nhdHex.setPower(0.5);"
+      "content": "Most FTC DC motors are programmed the same way. However, some may require different initialization when configuring the motor in the Driver Station or different settings. Always check the manufacturer's documentation."
     },
     {
       "type": "exercise-box",
       "title": "Practice: Compare Motor Specs",
-      "description": "Find the datasheets for two different FTC-legal motors. List their speed, torque, and encoder options. Discuss which would be better for a drivetrain versus an arm.",
-      "tasks": [
-        "Find datasheets for two motors.",
-        "List speed, torque, and encoder options.",
-        "Decide which is better for drivetrain and which for an arm."
-      ],
-      "content": "// Example answer\n// REV HD Hex: 6000 RPM, high torque, built-in encoder\n// AndyMark NeveRest: 6000 RPM, moderate torque, built-in encoder\n// HD Hex is better for drivetrain, NeveRest for arm."
+      "description": "Find the datasheets for two different FTC-legal motors. List their speed, torque, and encoder options. Discuss which would be better for a drivetrain versus an arm."
     }
   ]
 }

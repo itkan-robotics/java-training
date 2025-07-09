@@ -502,8 +502,6 @@ class NavigationManager {
 
     async navigateToTab(tabId) {
         try {
-            // Store the last opened tab ID
-            localStorage.setItem('lastOpenedTab', tabId);
             // Update the URL hash for direct linking and browser navigation
             if (window.location.hash !== `#${tabId}`) {
                 window.location.hash = `#${tabId}`;

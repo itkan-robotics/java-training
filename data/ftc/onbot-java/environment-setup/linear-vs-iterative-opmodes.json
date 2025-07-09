@@ -53,7 +53,7 @@
     {
       "type": "text",
       "title": "Converting Between Types",
-      "content": "You can convert a LinearOpMode to an Iterative OpMode by moving your logic into the <code>loop()</code> method and managing state with variables.<br><br>For example, if you have a sequence of actions in LinearOpMode, you can use a state variable in Iterative OpMode to step through them."
+      "content": "You can convert a LinearOpMode to an Iterative OpMode by moving your logic into the <code>loop()</code> method and managing state with variables. For example, if you have a sequence of actions in LinearOpMode, you can use a state variable in Iterative OpMode to step through them."
     },
     {
       "type": "text",
@@ -77,7 +77,20 @@
         "Convert it to an Iterative OpMode.",
         "Compare the structure and behavior of both types."
       ],
-      "content": "// Practice: Write both Linear and Iterative OpModes for the same robot behavior."
+      "answers": [
+        {
+          "task": "Write a LinearOpMode that drives a motor",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n@TeleOp(name = \"LinearMotorControl\")\npublic class LinearMotorControl extends LinearOpMode {\n    private DcMotor driveMotor;\n\n    @Override\n    public void runOpMode() {\n        // Initialize hardware\n        driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n        \n        // Show initialization status\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        \n        // Wait for game to start\n        waitForStart();\n        \n        // Main loop - runs sequentially\n        while (opModeIsActive()) {\n            // Read gamepad input\n            double power = -gamepad1.left_stick_y;\n            \n            // Drive motor\n            driveMotor.setPower(power);\n            \n            // Show telemetry\n            telemetry.addData(\"Motor Power\", power);\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}"
+        },
+        {
+          "task": "Convert it to an Iterative OpMode",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.OpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n@TeleOp(name = \"IterativeMotorControl\")\npublic class IterativeMotorControl extends OpMode {\n    private DcMotor driveMotor;\n\n    @Override\n    public void init() {\n        // Initialize hardware - called once at start\n        driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n        \n        // Show initialization status\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n    }\n\n    @Override\n    public void loop() {\n        // Main loop - called repeatedly\n        // Read gamepad input\n        double power = -gamepad1.left_stick_y;\n        \n        // Drive motor\n        driveMotor.setPower(power);\n        \n        // Show telemetry\n        telemetry.addData(\"Motor Power\", power);\n        telemetry.addData(\"Status\", \"Running\");\n        telemetry.update();\n    }\n}"
+        },
+        {
+          "task": "Compare the structure and behavior of both types",
+          "content": "// Key Differences:\n//\n// LINEAR OPMODE:\n// - Extends LinearOpMode\n// - All code in runOpMode() method\n// - Runs sequentially like a script\n// - Can use waitForStart() and sleep()\n// - Good for beginners and simple routines\n//\n// ITERATIVE OPMODE:\n// - Extends OpMode\n// - Separate init() and loop() methods\n// - init() runs once, loop() runs repeatedly\n// - More control over timing and state\n// - Better for advanced TeleOp and state machines\n//\n// Both achieve the same result but with different structures!"
+        }
+      ]
     }
   ]
 } 

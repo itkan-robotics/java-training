@@ -7,42 +7,50 @@
       "content": "Standard (positional) servos move to a specific position and hold it, while continuous rotation servos spin like a motor. Understanding the difference is crucial for choosing the right servo for your mechanism."
     },
     {
-      "type": "list",
-      "title": "Comparison Table",
-      "content": [
-        "Standard Servo: Moves to a set position (0.0 to 1.0)",
-        "Continuous Servo: Rotates continuously, speed and direction set by position value (0.0 = full reverse, 0.5 = stop, 1.0 = full forward)"
+      "type": "table",
+      "title": "Standard vs Continuous Rotation Servos: Side-by-Side Comparison",
+      "headers": [
+        "Feature",
+        "Standard (Positional) Servo",
+        "Continuous Rotation Servo"
+      ],
+      "rows": [
+        [
+          "Movement Type",
+          "Moves to a specific position and holds it",
+          "Rotates continuously like a motor"
+        ],
+        [
+          "Control Method",
+          "<code>setPosition(position)</code> (0.0 = one end, 1.0 = other end)",
+          "<code>setPosition(position)</code> (0.0 = full reverse, 0.5 = stop, 1.0 = full forward)"
+        ],
+        [
+          "Typical Use Cases",
+          "Arms, claws, mechanisms needing precise angles",
+          "Intake rollers, spinners, mechanisms needing continuous rotation"
+        ],
+        [
+          "Example Code",
+          "<pre>myServo.setPosition(0.75); // Move to 75% of range</pre>",
+          "<pre>myServo.setPosition(1.0); // Full speed forward\nmyServo.setPosition(0.0); // Full speed reverse\nmyServo.setPosition(0.5); // Stop</pre>"
+        ],
+        [
+          "HardwareMap Configuration",
+          "Configured as 'Servo' in the Driver Station",
+          "Configured as 'CRServo' in the Driver Station"
+        ]
       ]
-    },
-    {
-      "type": "code",
-      "title": "Controlling a Standard Servo",
-      "content": "Set the position of a standard servo using setPosition().",
-      "code": "myServo.setPosition(0.75); // Move to 75% of range (standard servo)"
-    },
-    {
-      "type": "code",
-      "title": "Controlling a Continuous Rotation Servo",
-      "content": "Set the speed and direction of a continuous rotation servo using setPosition(). 0.0 = full reverse, 0.5 = stop, 1.0 = full forward.",
-      "code": "myServo.setPosition(1.0); // Full speed forward (continuous servo)\nmyServo.setPosition(0.0); // Full speed reverse\nmyServo.setPosition(0.5); // Stop"
     },
     {
       "type": "text",
       "title": "When to Use Each Type",
-      "content": "Use standard servos for precise positioning (e.g., arms, claws). Use continuous rotation servos for mechanisms that need to spin freely (e.g., intake rollers)."
+      "content": "Use <b>standard servos</b> for precise positioning tasks, such as moving arms or claws to specific angles. Use <b>continuous rotation servos</b> for mechanisms that need to spin freely, such as intake rollers or spinners."
     },
     {
       "type": "text",
       "title": "Troubleshooting Common Issues",
       "content": "If your servo is not moving as expected, check the type in your hardware configuration and ensure you are using the correct control method in code."
-    },
-    {
-      "type": "list",
-      "title": "Further Reading and References",
-      "items": [
-        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/controlling_a_servo/Controlling-a-Servo-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Controlling a Servo (OnBot Java)</a>",
-        "<a href=\"https://gm0.org/en/latest/docs/power-and-electronics/servo-guide/usage-tips.html\" target=\"_blank\">gm0: Servo Usage Tips</a>"
-      ]
     }
   ]
 }

@@ -9,7 +9,7 @@
     {
       "type": "text",
       "title": "Configuring and Mapping a Distance Sensor",
-      "content": "Add the distance sensor to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
+      "content": "Add the distance sensor to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below."
     },
     {
       "type": "code",
@@ -37,7 +37,7 @@
     {
       "type": "emphasis-box",
       "title": "Troubleshooting and Best Practices",
-      "content": "If your sensor returns 'NaN', the target may be out of range. Make sure your sensor is properly connected and configured. For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/blocks/using_sensors/Using-Sensors-%28Blocks%29.html\" target=\"_blank\">FTC Docs: Using Sensors (Blocks) – Distance Example</a>."
+      "content": "If your sensor returns 'NaN', the target may be out of range. Make sure your sensor is properly connected and configured."
     },
     {
       "type": "link-grid",

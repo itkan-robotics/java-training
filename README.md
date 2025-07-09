@@ -233,6 +233,16 @@ All content files follow a standardized JSON format:
       "code": "public class Example {\n    // Code here\n}"
     },
     {
+      "type": "table",
+      "title": "Comparison Table",
+      "headers": ["Feature", "Option A", "Option B"],
+      "rows": [
+        ["Speed", "Fast", "Slow"],
+        ["Memory", "Low", "High"],
+        ["Complexity", "Simple", "Complex"]
+      ]
+    },
+    {
       "type": "exercise-box",
       "title": "Practice Exercise",
       "description": "Exercise description",
@@ -257,6 +267,7 @@ All content files follow a standardized JSON format:
 - `data-types-grid`: Interactive data type comparisons
 - `logical-operators`: Operator reference tables
 - `link-grid`: Navigation to related topics
+- `table`: Structured data tables with headers and rows
 
 ## 🔧 Development Guidelines
 

@@ -125,25 +125,11 @@
               "duration": "25 min"
             },
             { 
-              "id": "servo-positions", 
-              "label": "Servo Positions", 
-              "file": "data/ftc/onbot-java/servos/servo-positions.json",
-              "difficulty": "beginner",
-              "duration": "20 min"
-            },
-            { 
-              "id": "servo-synchronization", 
-              "label": "Using Multiple Servos and Synchronization", 
-              "file": "data/ftc/onbot-java/servos/servo-synchronization.json",
+              "id": "advanced-servo-control", 
+              "label": "Advanced Servo Control", 
+              "file": "data/ftc/onbot-java/servos/advanced-servo-control.json",
               "difficulty": "intermediate",
-              "duration": "25 min"
-            },
-            { 
-              "id": "gradual-movement", 
-              "label": "Advanced Servo Control: Gradual Movement", 
-              "file": "data/ftc/onbot-java/servos/gradual-movement.json",
-              "difficulty": "intermediate",
-              "duration": "25 min"
+              "duration": "35 min"
             }
           ]
         },
@@ -186,6 +172,13 @@
               "file": "data/ftc/onbot-java/sensors/imu.json",
               "difficulty": "intermediate",
               "duration": "35 min"
+            },
+            { 
+              "id": "sensor-practice-exercises", 
+              "label": "Sensor Practice Exercises", 
+              "file": "data/ftc/onbot-java/sensors/sensor-practice-exercises.json",
+              "difficulty": "intermediate",
+              "duration": "60 min"
             }
           ]
         },
@@ -194,13 +187,6 @@
           "label": "TeleOp Programming",
           "description": "Creating driver-controlled robot programs",
           "items": [
-            { 
-              "id": "basic-robot-control", 
-              "label": "Basic Robot Control", 
-              "file": "data/ftc/onbot-java/teleop-programming/basic-robot-control.json",
-              "difficulty": "beginner",
-              "duration": "25 min"
-            },
             { 
               "id": "teleop-programming", 
               "label": "TeleOp Programming", 

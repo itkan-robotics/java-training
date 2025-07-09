@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What is the FTC SDK?",
-      "content": "The FTC (FIRST Tech Challenge) Software Development Kit (SDK) is the foundation for programming FTC robots in Java. It provides all the libraries, APIs, and tools needed to control robot hardware, manage OpModes, and interact with sensors and gamepads.<br><br>The SDK abstracts away low-level hardware details, letting you focus on robot logic. <br><br>Learn more: <a href='https://ftc-docs.firstinspires.org/en/latest/ftc_sdk/overview/index.html' target='_blank'>FTC Docs: SDK Overview</a> &bull; <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a>"
+      "content": "The FTC (FIRST Tech Challenge) <a href='https://www.geeksforgeeks.org/software-engineering/what-is-software-development-kit-sdk/' target='_blank'>Software Development Kit</a> (SDK)</a> is the foundation for programming FTC robots in Java. It provides all the libraries, APIs, and tools needed to control robot hardware, manage OpModes, and interact with sensors and gamepads.<br><br>The SDK abstracts away low-level hardware details, letting you focus on robot logic. <br><br>Learn more: <a href='https://ftc-docs.firstinspires.org/en/latest/ftc_sdk/overview/index.html' target='_blank'>FTC Docs: SDK Overview</a> &bull; <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController' target='_blank'>FTC SDK GitHub</a>"
     },
     {
       "type": "rules-box",
@@ -108,7 +108,28 @@
         "Read gamepad input to control a servo",
         "Practice using hardwareMap for different components"
       ],
-      "content": "// Practice: Control a motor with the left stick and display its power with telemetry."
+      "answers": [
+        {
+          "task": "Create an OpMode that initializes a motor and drives it with constant power",
+          "content": "// Initialize motor in runOpMode()\nDcMotor testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n\n// Drive motor with constant power\nwhile (opModeIsActive()) {\n    testMotor.setPower(0.5); // 50% power\n}"
+        },
+        {
+          "task": "Display the motor's current power on the Driver Station",
+          "content": "// Add telemetry to show motor power\nwhile (opModeIsActive()) {\n    telemetry.addData(\"Motor Power\", testMotor.getPower());\n    telemetry.update();\n    testMotor.setPower(0.5);\n}"
+        },
+        {
+          "task": "Use gamepad buttons to control a servo position",
+          "content": "// Initialize servo\nServo testServo = hardwareMap.get(Servo.class, \"test_servo\");\n\n// Control servo with gamepad\nwhile (opModeIsActive()) {\n    if (gamepad1.a) {\n        testServo.setPosition(0.0); // Close position\n    } else if (gamepad1.b) {\n        testServo.setPosition(1.0); // Open position\n    }\n}"
+        },
+        {
+          "task": "Initialize multiple different hardware components using hardwareMap",
+          "content": "// Practice with different hardware types\nDcMotor motor1 = hardwareMap.get(DcMotor.class, \"motor1\");\nServo servo1 = hardwareMap.get(Servo.class, \"servo1\");\nColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\nTouchSensor touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");"
+        },
+        {
+          "task": "Combine all tasks into one working OpMode",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\nimport com.qualcomm.robotcore.hardware.ColorSensor;\nimport com.qualcomm.robotcore.hardware.TouchSensor;\n\n@TeleOp(name = \"PracticeOpMode\")\npublic class PracticeOpMode extends LinearOpMode {\n    private DcMotor testMotor;\n    private Servo testServo;\n    private ColorSensor colorSensor;\n    private TouchSensor touchSensor;\n\n    @Override\n    public void runOpMode() {\n        // Initialize all hardware components\n        testMotor = hardwareMap.get(DcMotor.class, \"test_motor\");\n        testServo = hardwareMap.get(Servo.class, \"test_servo\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        touchSensor = hardwareMap.get(TouchSensor.class, \"touch_sensor\");\n\n        // Wait for start\n        waitForStart();\n\n        while (opModeIsActive()) {\n            // Drive motor with left stick\n            double motorPower = -gamepad1.left_stick_y;\n            testMotor.setPower(motorPower);\n\n            // Control servo with buttons\n            if (gamepad1.a) {\n                testServo.setPosition(0.0);\n            } else if (gamepad1.b) {\n                testServo.setPosition(1.0);\n            }\n\n            // Display telemetry\n            telemetry.addData(\"Motor Power\", motorPower);\n            telemetry.addData(\"Servo Position\", testServo.getPosition());\n            telemetry.addData(\"Touch Sensor\", touchSensor.isPressed());\n            telemetry.addData(\"Color Sensor Red\", colorSensor.red());\n            telemetry.update();\n        }\n    }\n}"
+        }
+      ]
     }
   ]
 } 
