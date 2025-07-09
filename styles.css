@@ -187,6 +187,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--color-background-primary) !important;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+  max-width: 100vw; /* Ensure body doesn't exceed viewport width */
 }
 
 /* Major containers already handled by consolidated rule above */
@@ -208,6 +210,8 @@ body {
 .page {
   display: flex;
   min-height: 100%;
+  overflow-x: hidden; /* Prevent horizontal overflow at page level */
+  max-width: 100vw; /* Ensure page doesn't exceed viewport width */
 }
 
 /* Mobile header */
@@ -812,7 +816,8 @@ body {
   margin-left: 0; /* Start with full-width content */
   transition: margin-left 0.3s ease, max-width 0.3s ease; /* Smooth transition for content */
   padding-top: calc(var(--header-height)); /* Adjust 1rem as needed for spacing */
-
+  overflow-x: hidden; /* Prevent horizontal overflow */
+  max-width: 100%;
 }
 
 /* .content {
@@ -827,14 +832,17 @@ body {
   flex-direction: column;
   justify-content: space-between;
   width: 100%; /* Allow content to take full width */
-  max-width: 80%; /* Set a maximum width */
+  max-width: 90%; /* Increase maximum width for better content display */
   margin: 0 auto; /* Center the content horizontally */
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 
 .article-container {
   color: var(--color-foreground-primary);
   overflow-wrap: break-word;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* Additional section background */
@@ -1005,11 +1013,18 @@ code {
   margin: 0;
   padding: 1.5rem;
   overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 
 .code-block code {
   color: var(--color-code-foreground);
   background: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 /* Lists */
@@ -1135,12 +1150,20 @@ ul li > p:last-child {
 .exercise-code pre {
   margin: 0;
   padding: 1rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 
 .exercise-code code {
   font-size: 0.85rem;
   line-height: 1.5;
   color: var(--color-code-foreground);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 
@@ -1312,6 +1335,7 @@ footer {
     margin-left: auto;
     margin-right: auto;
     padding: 0 1em;
+    max-width: 95%; /* Allow more width on smaller screens */
   }
 }
 
@@ -1432,6 +1456,18 @@ footer {
   .content {
     overflow-x: auto;
     width: 100%;
+    max-width: 98%; /* Use almost full width on very small screens */
+    padding: 0 0.5em;
+  }
+  
+  .code-block pre {
+    padding: 1rem 0.75rem; /* Reduce padding on small screens */
+    font-size: 0.8rem; /* Slightly smaller font for code on small screens */
+  }
+  
+  .exercise-code pre {
+    padding: 0.75rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -1791,11 +1827,19 @@ footer {
 .answer-code pre {
     margin: 0;
     padding: 1rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .answer-code code {
     font-size: 0.85rem;
     line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 /* Dark theme adjustments for answers */

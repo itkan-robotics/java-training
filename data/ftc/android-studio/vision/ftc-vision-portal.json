@@ -24,9 +24,14 @@
       "content": "Vision Portal is accessed through the FTC Driver Station app. To get started:<br><br><strong>1. Connect to Robot:</strong> Ensure your Driver Station is connected to the Control Hub<br><strong>2. Access Vision Portal:</strong> In the Driver Station, tap the 'Vision Portal' button<br><strong>3. Create New Pipeline:</strong> Start with a blank pipeline or use a template<br><strong>4. Configure Camera:</strong> Set up camera parameters and calibration<br><strong>5. Add Processors:</strong> Drag and drop processors to build your pipeline<br><strong>6. Test and Tune:</strong> Use live preview to test and optimize your pipeline"
     },
     {
+      "type": "text",
+      "title": "Vision Portal OpMode Structure",
+      "content": "Let's start by defining the OpMode class and the vision processor variables. For more on Vision Portal, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-portal.html\" target=\"_blank\">FTC Vision Portal Documentation</a>."
+    },
+    {
       "type": "code",
-      "title": "Vision Portal Integration in Robot Code",
-      "content": "Once you've created a pipeline in Vision Portal, you can integrate it into your robot code:",
+      "title": "Class Definition and Variables",
+      "content": "We define the OpMode class and declare variables for Vision Portal and processors.",
       "code": "public class VisionPortalOpMode extends LinearOpMode {\n    private VisionPortal visionPortal;\n    private AprilTagProcessor aprilTagProcessor;\n    private ColorBlobProcessor colorBlobProcessor;\n    \n    @Override\n    public void runOpMode() {\n        // Initialize vision processors\n        aprilTagProcessor = new AprilTagProcessor.Builder()\n            .setTagLibrary(AprilTagLibrary.getCurrentGameTagLibrary())\n            .build();\n            \n        colorBlobProcessor = new ColorBlobProcessor.Builder()\n            .setColor(Color.RED)\n            .setColorSpace(ColorSpace.HSV)\n            .build();\n        \n        // Build Vision Portal with processors\n        visionPortal = new VisionPortal.Builder()\n            .setCamera(hardwareMap.get(WebcamName.class, \"Webcam 1\"))\n            .addProcessor(aprilTagProcessor)\n            .addProcessor(colorBlobProcessor)\n            .setCameraResolution(new Size(640, 480))\n            .setStreamFormat(VisionPortal.StreamFormat.YUY2)\n            .enableLiveView(true)\n            .enableCameraMonitoring(true)\n            .build();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Access processor results\n            List<AprilTagDetection> aprilTagDetections = aprilTagProcessor.getDetections();\n            List<Recognition> colorDetections = colorBlobProcessor.getRecognitions();\n            \n            // Process results and control robot\n            processVisionResults(aprilTagDetections, colorDetections);\n            \n            telemetry.update();\n        }\n    }\n    \n    private void processVisionResults(List<AprilTagDetection> tags, List<Recognition> colors) {\n        // Your vision-based control logic here\n        if (!tags.isEmpty()) {\n            AprilTagDetection tag = tags.get(0);\n            telemetry.addData(\"AprilTag ID\", tag.id);\n            telemetry.addData(\"Tag Position\", \"X: %.2f, Y: %.2f\", tag.ftcPose.x, tag.ftcPose.y);\n        }\n        \n        if (!colors.isEmpty()) {\n            Recognition color = colors.get(0);\n            telemetry.addData(\"Color Detected\", color.getLabel());\n            telemetry.addData(\"Confidence\", \"%.2f\", color.getConfidence());\n        }\n    }\n}"
     },
     {
@@ -40,16 +45,93 @@
       "content": "Vision Portal includes several powerful built-in processors designed specifically for FTC applications:<br><br><strong>AprilTag Processor:</strong> Detects and tracks AprilTag fiducial markers for precise positioning<br><strong>Color Blob Processor:</strong> Identifies regions of specific colors in the image<br><strong>Object Detection Processor:</strong> Uses machine learning models to detect objects<br><strong>Contour Processor:</strong> Finds and analyzes shapes and contours<br><strong>Template Matching Processor:</strong> Locates specific patterns or templates in images<br><strong>Custom Color Thresholding:</strong> Advanced color detection with multiple thresholds"
     },
     {
-      "type": "code",
-      "title": "AprilTag Processor Configuration",
-      "content": "Here's how to configure an AprilTag processor in your robot code:",
-      "code": "// Configure AprilTag processor with specific settings\nAprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder()\n    .setTagLibrary(AprilTagLibrary.getCurrentGameTagLibrary())\n    .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)\n    .setTagModel(AprilTagProcessor.TagModel.TAG_36h11)\n    .setSingleTagFamilySmoothingWindow(3)\n    .setMultiTagFamilySmoothingWindow(1)\n    .setPoseSolver(new SingleTagPoseSolver(\n        new Size(6, 6), // Tag size in inches\n        578.272,       // Focal length X\n        578.272,       // Focal length Y\n        402.145,       // Principal point X\n        221.506        // Principal point Y\n    ))\n    .build();\n\n// Add processor to Vision Portal\nvisionPortal = new VisionPortal.Builder()\n    .setCamera(hardwareMap.get(WebcamName.class, \"Webcam 1\"))\n    .addProcessor(aprilTagProcessor)\n    .setCameraResolution(new Size(640, 480))\n    .build();\n\n// Access detection results\nList<AprilTagDetection> detections = aprilTagProcessor.getDetections();\nfor (AprilTagDetection detection : detections) {\n    if (detection.metadata != null) {\n        telemetry.addData(\"Tag ID\", detection.id);\n        telemetry.addData(\"Tag Name\", detection.metadata.name);\n        telemetry.addData(\"Tag Position\", \n            \"X: %.2f, Y: %.2f, Z: %.2f\", \n            detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z);\n        telemetry.addData(\"Tag Rotation\", \n            \"Roll: %.2f, Pitch: %.2f, Yaw: %.2f\", \n            detection.ftcPose.roll, detection.ftcPose.pitch, detection.ftcPose.yaw);\n    }\n}"
+      "type": "text",
+      "title": "AprilTag Processor Setup",
+      "content": "Let's configure an AprilTag processor with specific settings for precise positioning. For more on AprilTags, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html\" target=\"_blank\">FTC AprilTag Documentation</a>."
     },
     {
       "type": "code",
-      "title": "Color Blob Processor Example",
-      "content": "Example of configuring a color blob processor for detecting specific colors:",
-      "code": "// Configure color blob processor for red detection\nColorBlobProcessor redBlobProcessor = new ColorBlobProcessor.Builder()\n    .setColor(Color.RED)\n    .setColorSpace(ColorSpace.HSV)\n    .setMinArea(500) // Minimum blob area in pixels\n    .setMaxArea(10000) // Maximum blob area in pixels\n    .setMinCircularity(0.3) // Minimum circularity (0-1)\n    .setMaxCircularity(1.0) // Maximum circularity (0-1)\n    .build();\n\n// Configure color blob processor for blue detection\nColorBlobProcessor blueBlobProcessor = new ColorBlobProcessor.Builder()\n    .setColor(Color.BLUE)\n    .setColorSpace(ColorSpace.HSV)\n    .setMinArea(500)\n    .setMaxArea(10000)\n    .build();\n\n// Add both processors to Vision Portal\nvisionPortal = new VisionPortal.Builder()\n    .setCamera(hardwareMap.get(WebcamName.class, \"Webcam 1\"))\n    .addProcessor(redBlobProcessor)\n    .addProcessor(blueBlobProcessor)\n    .build();\n\n// Process color detection results\nList<Recognition> redDetections = redBlobProcessor.getRecognitions();\nList<Recognition> blueDetections = blueBlobProcessor.getRecognitions();\n\nfor (Recognition red : redDetections) {\n    telemetry.addData(\"Red Blob\", \"Area: %.0f, Center: (%.0f, %.0f)\", \n        red.getArea(), red.getLeft(), red.getTop());\n}\n\nfor (Recognition blue : blueDetections) {\n    telemetry.addData(\"Blue Blob\", \"Area: %.0f, Center: (%.0f, %.0f)\", \n        blue.getArea(), blue.getLeft(), blue.getTop());\n}"
+      "title": "AprilTag Processor Builder",
+      "content": "Configure the AprilTag processor with tag library, family, and smoothing settings.",
+      "code": "// Configure AprilTag processor with specific settings\nAprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder()\n    .setTagLibrary(AprilTagLibrary.getCurrentGameTagLibrary())\n    .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)\n    .setTagModel(AprilTagProcessor.TagModel.TAG_36h11)\n    .setSingleTagFamilySmoothingWindow(3)\n    .setMultiTagFamilySmoothingWindow(1)\n    // ..."
+    },
+    {
+      "type": "text",
+      "title": "Pose Solver Configuration",
+      "content": "The pose solver calculates the 3D position and orientation of detected AprilTags. For more on pose estimation, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html#pose-estimation\" target=\"_blank\">FTC AprilTag Pose Estimation</a>."
+    },
+    {
+      "type": "code",
+      "title": "Pose Solver Setup",
+      "content": "Configure the pose solver with camera calibration parameters.",
+      "code": "    .setPoseSolver(new SingleTagPoseSolver(\n        new Size(6, 6), // Tag size in inches\n        578.272,       // Focal length X\n        578.272,       // Focal length Y\n        402.145,       // Principal point X\n        221.506        // Principal point Y\n    ))\n    .build();"
+    },
+    {
+      "type": "text",
+      "title": "Adding Processor to Vision Portal",
+      "content": "Add the configured AprilTag processor to the Vision Portal. For more on Vision Portal setup, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-portal.html\" target=\"_blank\">FTC Vision Portal Documentation</a>."
+    },
+    {
+      "type": "code",
+      "title": "Vision Portal Integration",
+      "content": "Add the processor to Vision Portal and set camera resolution.",
+      "code": "// Add processor to Vision Portal\nvisionPortal = new VisionPortal.Builder()\n    .setCamera(hardwareMap.get(WebcamName.class, \"Webcam 1\"))\n    .addProcessor(aprilTagProcessor)\n    .setCameraResolution(new Size(640, 480))\n    .build();"
+    },
+    {
+      "type": "text",
+      "title": "Accessing AprilTag Detection Results",
+      "content": "Retrieve and process the detection results from the AprilTag processor. For more on accessing results, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html#accessing-detection-results\" target=\"_blank\">FTC AprilTag: Accessing Results</a>."
+    },
+    {
+      "type": "code",
+      "title": "Processing Detection Results",
+      "content": "Access detection results and display tag information on telemetry.",
+      "code": "// Access detection results\nList<AprilTagDetection> detections = aprilTagProcessor.getDetections();\nfor (AprilTagDetection detection : detections) {\n    if (detection.metadata != null) {\n        telemetry.addData(\"Tag ID\", detection.id);\n        telemetry.addData(\"Tag Name\", detection.metadata.name);\n        telemetry.addData(\"Tag Position\", \n            \"X: %.2f, Y: %.2f, Z: %.2f\", \n            detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z);\n        telemetry.addData(\"Tag Rotation\", \n            \"Roll: %.2f, Pitch: %.2f, Yaw: %.2f\", \n            detection.ftcPose.roll, detection.ftcPose.pitch, detection.ftcPose.yaw);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Color Blob Processor Setup",
+      "content": "Let's configure color blob processors for detecting specific colors. For more on color detection, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-portal.html#color-blob-processor\" target=\"_blank\">FTC Color Blob Processor</a>."
+    },
+    {
+      "type": "code",
+      "title": "Red Color Blob Processor",
+      "content": "Configure a color blob processor specifically for detecting red objects with area and circularity constraints.",
+      "code": "// Configure color blob processor for red detection\nColorBlobProcessor redBlobProcessor = new ColorBlobProcessor.Builder()\n    .setColor(Color.RED)\n    .setColorSpace(ColorSpace.HSV)\n    .setMinArea(500) // Minimum blob area in pixels\n    .setMaxArea(10000) // Maximum blob area in pixels\n    .setMinCircularity(0.3) // Minimum circularity (0-1)\n    .setMaxCircularity(1.0) // Maximum circularity (0-1)\n    .build();"
+    },
+    {
+      "type": "text",
+      "title": "Blue Color Blob Processor",
+      "content": "Configure a second color blob processor for detecting blue objects with similar constraints.",
+      "code": "Configure a second color blob processor for detecting blue objects with similar constraints."
+    },
+    {
+      "type": "code",
+      "title": "Blue Color Blob Processor",
+      "content": "Configure a color blob processor for blue detection with area constraints.",
+      "code": "// Configure color blob processor for blue detection\nColorBlobProcessor blueBlobProcessor = new ColorBlobProcessor.Builder()\n    .setColor(Color.BLUE)\n    .setColorSpace(ColorSpace.HSV)\n    .setMinArea(500)\n    .setMaxArea(10000)\n    .build();"
+    },
+    {
+      "type": "text",
+      "title": "Adding Processors to Vision Portal",
+      "content": "Add both color blob processors to the Vision Portal. For more on multiple processors, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-portal.html#multiple-processors\" target=\"_blank\">FTC Multiple Processors</a>."
+    },
+    {
+      "type": "code",
+      "title": "Vision Portal with Multiple Processors",
+      "content": "Add both red and blue processors to the Vision Portal configuration.",
+      "code": "// Add both processors to Vision Portal\nvisionPortal = new VisionPortal.Builder()\n    .setCamera(hardwareMap.get(WebcamName.class, \"Webcam 1\"))\n    .addProcessor(redBlobProcessor)\n    .addProcessor(blueBlobProcessor)\n    .build();"
+    },
+    {
+      "type": "text",
+      "title": "Processing Color Detection Results",
+      "content": "Retrieve and process the results from both color blob processors. For more on processing results, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-portal.html#accessing-processor-results\" target=\"_blank\">FTC Vision Portal: Accessing Results</a>."
+    },
+    {
+      "type": "code",
+      "title": "Accessing Color Detection Results",
+      "content": "Get detection results from both processors and display them on telemetry.",
+      "code": "// Process color detection results\nList<Recognition> redDetections = redBlobProcessor.getRecognitions();\nList<Recognition> blueDetections = blueBlobProcessor.getRecognitions();\n\nfor (Recognition red : redDetections) {\n    telemetry.addData(\"Red Blob\", \"Area: %.0f, Center: (%.0f, %.0f)\", \n        red.getArea(), red.getLeft(), red.getTop());\n}\n\nfor (Recognition blue : blueDetections) {\n    telemetry.addData(\"Blue Blob\", \"Area: %.0f, Center: (%.0f, %.0f)\", \n        blue.getArea(), blue.getLeft(), blue.getTop());\n}"
     },
     {
       "type": "text",
@@ -80,4 +162,4 @@
       ]
     }
   ]
-} 
+}

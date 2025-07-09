@@ -24,15 +24,53 @@
       "content": "FTC provides a comprehensive vision system built around the Control Hub's integrated camera and the Expansion Hub's processing capabilities. The system is designed to be both powerful and accessible, offering multiple approaches from simple color detection to advanced machine learning.<br><br>The FTC vision ecosystem includes:<br>• <strong>Control Hub Camera:</strong> Built-in camera for image capture<br>• <strong>Vision Portal:</strong> User-friendly interface for vision processing<br>• <strong>OpenCV Integration:</strong> Advanced computer vision library<br>• <strong>TensorFlow Lite:</strong> Machine learning capabilities<br>• <strong>AprilTag Support:</strong> Fiducial marker detection"
     },
     {
-      "type": "code",
-      "title": "Basic Vision Pipeline Structure",
-      "content": "Every vision system follows a basic pipeline structure. Here's a simple example of how to set up a basic vision pipeline in FTC:",
-      "code": "public class BasicVisionPipeline extends OpenCvPipeline {\n    @Override\n    public Mat processFrame(Mat input) {\n        // 1. Image Capture (handled automatically)\n        // 2. Preprocessing\n        Mat processed = preprocessImage(input);\n        \n        // 3. Feature Detection\n        detectFeatures(processed);\n        \n        // 4. Analysis\n        analyzeResults();\n        \n        // 5. Output\n        return processed;\n    }\n    \n    private Mat preprocessImage(Mat input) {\n        // Convert to different color space if needed\n        Mat converted = new Mat();\n        Imgproc.cvtColor(input, converted, Imgproc.COLOR_RGB2HSV);\n        return converted;\n    }\n    \n    private void detectFeatures(Mat image) {\n        // Add your detection logic here\n        // This could be color detection, contour finding, etc.\n    }\n    \n    private void analyzeResults() {\n        // Analyze detected features and make decisions\n        // Update telemetry with results\n    }\n}"
-    },
-    {
       "type": "text",
       "title": "Vision Pipeline Architecture",
       "content": "A vision pipeline is a series of processing stages that transform raw camera images into actionable information. Understanding this architecture is crucial for designing efficient and reliable vision systems.<br><br>The standard FTC vision pipeline consists of four main stages:<br><br><strong>1. Image Capture:</strong> The camera captures a frame from the environment<br><strong>2. Preprocessing:</strong> Image enhancement, noise reduction, and format conversion<br><strong>3. Feature Detection:</strong> Identifying relevant objects, colors, or patterns<br><strong>4. Analysis & Output:</strong> Interpreting results and providing data to the robot"
+    },
+    {
+      "type": "text",
+      "title": "Vision Pipeline Class Structure",
+      "content": "Let's start by defining the basic structure of a vision pipeline class in FTC. For more on OpenCvPipeline, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/opencv.html#opencv-pipeline\" target=\"_blank\">FTC OpenCV Pipeline Docs</a>."
+    },
+    {
+      "type": "code",
+      "title": "Class Definition and processFrame Method",
+      "content": "We define a class that extends OpenCvPipeline and override the processFrame method, which is called for each camera frame.",
+      "code": "public class BasicVisionPipeline extends OpenCvPipeline {\n    @Override\n    public Mat processFrame(Mat input) {\n        // This method is called for every camera frame\n        // We'll add processing steps below\n        return input; // For now, just return the input image\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Preprocessing Stage",
+      "content": "The first step in most vision pipelines is preprocessing, such as converting the image to a different color space. Learn more about color spaces in OpenCV: <a href=\"https://docs.opencv.org/4.x/df/d9d/tutorial_py_colorspaces.html\" target=\"_blank\">OpenCV Color Spaces</a>."
+    },
+    {
+      "type": "code",
+      "title": "Preprocessing Method",
+      "content": "Here's how to convert the input image from RGB to HSV, which is often useful for color detection.",
+      "code": "private Mat preprocessImage(Mat input) {\n    // Convert to HSV color space for better color segmentation\n    Mat converted = new Mat();\n    Imgproc.cvtColor(input, converted, Imgproc.COLOR_RGB2HSV);\n    return converted;\n}"
+    },
+    {
+      "type": "text",
+      "title": "Feature Detection Stage",
+      "content": "After preprocessing, you can detect features such as colors, shapes, or contours. For more on feature detection, see <a href=\"https://docs.opencv.org/4.x/d4/d73/tutorial_py_contours_begin.html\" target=\"_blank\">OpenCV Contour Detection</a>."
+    },
+    {
+      "type": "code",
+      "title": "Feature Detection Method",
+      "content": "This method is where you would add your detection logic, such as finding colored regions or contours.",
+      "code": "private void detectFeatures(Mat image) {\n    // Add your detection logic here\n    // For example, use Imgproc.findContours for shape detection\n}"
+    },
+    {
+      "type": "text",
+      "title": "Analysis and Output",
+      "content": "Finally, analyze the detected features and output results to telemetry or other subsystems. For more on integrating vision with robot logic, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/vision-pipeline.html#using-vision-results\" target=\"_blank\">FTC Vision Pipeline: Using Results</a>."
+    },
+    {
+      "type": "code",
+      "title": "Analysis Method",
+      "content": "Analyze the results and update telemetry.",
+      "code": "private void analyzeResults() {\n    // Analyze detected features and make decisions\n    // Update telemetry with results\n}"
     },
     {
       "type": "emphasis-box",
@@ -40,10 +78,37 @@
       "content": "Vision processing is computationally intensive and can significantly impact your robot's performance. Key considerations include:<br><br><strong>Frame Rate:</strong> Higher frame rates provide more responsive vision but require more processing power<br><strong>Resolution:</strong> Higher resolution provides more detail but increases processing time<br><strong>Processing Complexity:</strong> More complex algorithms provide better results but take longer to execute<br><strong>Memory Usage:</strong> Vision processing can consume significant memory resources<br><br>For FTC applications, aim for 10-30 FPS with reasonable resolution (640x480 or 1280x720) to balance performance and responsiveness."
     },
     {
+      "type": "text",
+      "title": "Performance Monitoring Pipeline Structure",
+      "content": "Monitoring the performance of your vision pipeline is important for ensuring your robot responds quickly. Let's break down how to do this. For more on performance, see <a href=\"https://gm0.org/en/latest/docs/software/tutorials/vision.html#performance-considerations\" target=\"_blank\">gm0: Vision Performance</a>."
+    },
+    {
       "type": "code",
-      "title": "Performance Monitoring Example",
-      "content": "Here's how to monitor vision processing performance in your FTC code:",
-      "code": "public class PerformanceMonitoringPipeline extends OpenCvPipeline {\n    private long frameStartTime;\n    private int frameCount = 0;\n    private double averageFPS = 0;\n    \n    @Override\n    public Mat processFrame(Mat input) {\n        frameStartTime = System.nanoTime();\n        \n        // Your vision processing here\n        Mat result = performVisionProcessing(input);\n        \n        // Calculate performance metrics\n        long processingTime = System.nanoTime() - frameStartTime;\n        frameCount++;\n        \n        // Update FPS calculation every 30 frames\n        if (frameCount % 30 == 0) {\n            averageFPS = 1.0 / (processingTime / 1_000_000_000.0);\n        }\n        \n        // Display performance metrics\n        displayPerformanceMetrics(processingTime, averageFPS);\n        \n        return result;\n    }\n    \n    private void displayPerformanceMetrics(long processingTime, double fps) {\n        telemetry.addData(\"Vision Processing Time\", \"%.2f ms\", processingTime / 1_000_000.0);\n        telemetry.addData(\"Vision FPS\", \"%.1f\", fps);\n        telemetry.update();\n    }\n}"
+      "title": "Class Definition and Variables",
+      "content": "We start by defining the pipeline class and variables to track frame timing and FPS.",
+      "code": "public class PerformanceMonitoringPipeline extends OpenCvPipeline {\n    private long frameStartTime;\n    private int frameCount = 0;\n    private double averageFPS = 0;\n    // ..."
+    },
+    {
+      "type": "text",
+      "title": "processFrame Method",
+      "content": "The processFrame method records the start time, processes the frame, and calculates performance metrics. For more on processFrame, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/vision/opencv.html#opencv-pipeline\" target=\"_blank\">FTC OpenCV Pipeline Docs</a>."
+    },
+    {
+      "type": "code",
+      "title": "processFrame Implementation",
+      "content": "This method processes the frame and updates FPS every 30 frames.",
+      "code": "    @Override\n    public Mat processFrame(Mat input) {\n        frameStartTime = System.nanoTime();\n        // Your vision processing here\n        Mat result = performVisionProcessing(input);\n        // Calculate performance metrics\n        long processingTime = System.nanoTime() - frameStartTime;\n        frameCount++;\n        // Update FPS calculation every 30 frames\n        if (frameCount % 30 == 0) {\n            averageFPS = 1.0 / (processingTime / 1_000_000_000.0);\n        }\n        // Display performance metrics\n        displayPerformanceMetrics(processingTime, averageFPS);\n        return result;\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Displaying Performance Metrics",
+      "content": "The displayPerformanceMetrics method shows the processing time and FPS on telemetry. Learn more about telemetry: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/driver_station/telemetry.html\" target=\"_blank\">FTC Telemetry Docs</a>."
+    },
+    {
+      "type": "code",
+      "title": "displayPerformanceMetrics Method",
+      "content": "This method updates telemetry with the latest performance data.",
+      "code": "    private void displayPerformanceMetrics(long processingTime, double fps) {\n        telemetry.addData(\"Vision Processing Time\", \"%.2f ms\", processingTime / 1_000_000.0);\n        telemetry.addData(\"Vision FPS\", \"%.1f\", fps);\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "exercise-box",

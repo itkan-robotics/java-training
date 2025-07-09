@@ -1,17 +1,18 @@
-# Java Training Platform - Interactive Learning for Robotics & Programming
+# SwyftNav - FIRST Programming Made Easy
 
-A comprehensive, interactive web-based learning platform for Java programming, robotics development, and competitive coding. Designed for FTC (FIRST Tech Challenge), FRC (FIRST Robotics Competition) teams, and programming enthusiasts.
+A comprehensive, interactive web-based learning platform for programming fundamentals, robotics development, and competitive coding. Designed for FTC (FIRST Tech Challenge), FRC (FIRST Robotics Competition) teams, and programming enthusiasts.
 
 ## 🎯 Features
 
-- **Multi-Section Learning**: Four comprehensive training tracks
-- **Interactive Navigation**: Hierarchical content with collapsible groups
+- **Multi-Section Learning**: Five comprehensive training tracks
+- **Interactive Navigation**: Hierarchical content with collapsible groups and tier-based organization
 - **Robotics-Focused**: Real-world examples from FTC and FRC competitions
 - **Competitive Coding**: Complete curriculum from beginner to LeetCode master
 - **Modern UI**: Professional theme with dark/light mode toggle
 - **Mobile Responsive**: Works seamlessly on all devices
 - **Search Functionality**: Global search across all content with Ctrl+K shortcut
 - **Exercise System**: Interactive practice problems with show/hide answers
+- **Modular Architecture**: Clean, maintainable codebase with separation of concerns
 
 ## 🏗 Architecture Overview
 
@@ -27,7 +28,8 @@ Application
 ├── NavigationManager (Navigation & Routing)
 ├── ThemeManager (Theme Switching)
 ├── SearchManager (Global Search)
-└── EventManager (Event Handling)
+├── EventManager (Event Handling)
+└── SidebarResizeManager (UI Responsiveness)
 ```
 
 ### Key Design Principles
@@ -38,6 +40,7 @@ Application
 4. **Error Handling**: Comprehensive error handling throughout
 5. **Caching**: Config and content caching for performance
 6. **Modularity**: Easy to extend and maintain
+7. **Progressive Enhancement**: Works without JavaScript for basic functionality
 
 ## 📚 Training Sections
 
@@ -58,12 +61,12 @@ Application
 - **Intermediate Tier**: Android Studio intro, OnBot vs Android Studio, Git & version control, command-based programming, PedroPathing
 - **Advanced Tier**: Advanced command-based programming, advanced PedroPathing, computer vision
 
-### 🏆 FRC-Specific Training
+### 🏁 FRC-Specific Training
 **Professional FRC robotics development**
 - **FRC Basics**: WPILib framework, motor control, commands & subsystems
 - **Advanced Features**: Command-based programming, PID control systems
 
-### 🧮 Competitive Coding Training
+### 🏆 Competitive Coding Training
 **From beginner to LeetCode master**
 - **Phase 1: Foundation**: Problem-solving framework, time complexity, Big O notation
 - **Phase 2: Data Structures**: Arrays, linked lists, trees, graphs, heaps, hash tables
@@ -76,8 +79,8 @@ Application
 ### Local Development
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/java-training.git
-cd java-training
+git clone https://github.com/YOUR_USERNAME/swyftnav.git
+cd swyftnav
 
 # Start local server (choose one):
 
@@ -116,14 +119,26 @@ Then visit: `http://localhost:8000/`
 - **Styling**: Custom CSS with CSS Grid and Flexbox
 - **Theme**: Furo documentation theme adaptation
 - **Icons**: Custom SVG icons and emoji
+- **No Build Process**: Pure vanilla JavaScript for simplicity
 
 ## 📁 Project Structure
 
 ```
-java-training/
+swyftnav/
 ├── index.html                          # Main application entry point
 ├── styles.css                          # Main stylesheet with theme system
-├── script.js                           # Core application logic (modular architecture)
+├── js/                                 # Modular JavaScript architecture
+│   ├── app-state.js                    # Global state management
+│   ├── config-manager.js               # Configuration loading & caching
+│   ├── content-manager.js              # Content loading & rendering
+│   ├── navigation-manager.js           # Navigation & routing
+│   ├── theme-manager.js                # Theme switching
+│   ├── search-manager.js               # Global search functionality
+│   ├── sidebar-resize-manager.js       # UI responsiveness
+│   ├── event-manager.js                # Event handling
+│   ├── application.js                  # Main application coordination
+│   ├── global-functions.js             # HTML integration functions
+│   └── main.js                         # Module loading documentation
 ├── data/                               # Content organization
 │   ├── config/                         # Configuration files
 │   │   ├── config.json                 # Main navigation configuration
@@ -133,33 +148,23 @@ java-training/
 │   │   ├── frc-specific-config.json    # FRC section config
 │   │   └── competitive-training-config.json # Competitive section config
 │   ├── java/                           # Java training content
-│   │   ├── java-intro.json             # Java introduction
-│   │   ├── java-printing.json          # Printing and output
-│   │   ├── java-variables.json         # Variables and data types
-│   │   └── ...                         # Additional Java topics
+│   │   ├── java-basics/                # Basic Java concepts
+│   │   ├── java-loops/                 # Loop structures
+│   │   ├── java-oop/                   # Object-oriented programming
+│   │   └── java-programming-logic/     # Programming logic
 │   ├── ftc/                            # FTC training content
-│   │   ├── beginner/                   # Beginner tier lessons
-│   │   │   ├── ftc-onbot-setup.json
-│   │   │   ├── ftc-basic-drivetrain.json
-│   │   │   └── ...
-│   │   ├── intermediate/               # Intermediate tier lessons
-│   │   │   ├── ftc-android-studio-intro.json
-│   │   │   ├── ftc-command-based.json
-│   │   │   └── ...
-│   │   └── advanced/                   # Advanced tier lessons
-│   │       ├── ftc-advanced-command-based.json
-│   │       ├── ftc-advanced-computer-vision.json
-│   │       └── ...
+│   │   ├── onbot-java/                 # OnBot Java development
+│   │   └── android-studio/             # Android Studio development
 │   ├── frc/                            # FRC training content
-│   │   ├── frc-intro.json              # FRC introduction
-│   │   ├── frc-wpilib.json             # WPILib framework
-│   │   ├── frc-motors.json             # Motor control
-│   │   └── ...                         # Additional FRC topics
+│   │   ├── beginner/                   # Beginner FRC concepts
+│   │   ├── intermediate/               # Intermediate FRC concepts
+│   │   └── advanced/                   # Advanced FRC concepts
 │   └── comp/                           # Competitive coding content
-│       ├── comp-intro.json             # Competitive coding introduction
-│       ├── comp-problem-solving.json   # Problem-solving framework
-│       ├── comp-arrays-strings.json    # Arrays and strings
-│       └── ...                         # Additional competitive topics
+│       ├── foundation/                 # Problem-solving foundation
+│       ├── data-structures/            # Data structures
+│       ├── algorithms/                 # Core algorithms
+│       ├── strategies/                 # Problem-solving strategies
+│       └── advanced/                   # Advanced techniques
 ├── media/                              # Images and icons
 └── README.md                           # This file
 ```
@@ -419,6 +424,8 @@ The search system automatically loads all sections when needed and provides comp
 - [ ] Content renders properly
 - [ ] Error handling works
 - [ ] Performance is acceptable
+- [ ] Sidebar resizing works
+- [ ] State persistence works
 
 ### Browser Compatibility
 - Chrome (recommended)
@@ -433,6 +440,7 @@ The search system automatically loads all sections when needed and provides comp
 - **Caching**: Config and content cached in memory
 - **Minimal Dependencies**: Pure vanilla JavaScript
 - **Efficient DOM Updates**: Minimal re-renders
+- **State Persistence**: Local storage for user preferences
 
 ### Further Optimization Ideas
 - **Service Worker**: For offline functionality
@@ -462,10 +470,6 @@ The search system automatically loads all sections when needed and provides comp
 - **Progressive Difficulty**: Build from simple to complex
 - **Interactive Elements**: Include exercises and examples
 - **Consistent Format**: Follow established content structure
-
-## 📄 License
-
-This educational resource is provided under the MIT License. Free to use, modify, and distribute for educational purposes.
 
 ## 🎓 Educational Context
 
@@ -505,6 +509,7 @@ If migrating from the previous architecture:
 - State management centralized
 - Error handling improved
 - Performance optimizations added
+- Modular JavaScript architecture implemented
 
 ## 📞 Support
 
@@ -514,6 +519,24 @@ For questions, issues, or contributions:
 3. Follow the contribution guidelines
 4. Test thoroughly before submitting
 
----
+## 📄 License & AI Content Disclosure
 
-**Built with ❤️ for the robotics and programming education community**
+### AI-Generated Content
+This project contains content that was generated or assisted by artificial intelligence (AI) systems. The educational content, code examples, and documentation were created with the assistance of AI tools. While AI was used in the creation process, the final content has been reviewed and curated for educational purposes.
+
+### Copyright & Usage
+- **Educational Use**: This content is provided for educational purposes only
+- **No Warranty**: The content is provided "as is" without any warranties
+- **Fair Use**: Users may use this content for personal learning and educational purposes
+- **Attribution**: When using or referencing this content, please attribute to "SwyftNav"
+
+### Legal Notice
+This project does not claim copyright over AI-generated content. The content is intended for educational use and should be used in accordance with fair use principles. Users are responsible for ensuring their use complies with applicable laws and regulations.
+
+### Contributing
+When contributing to this project, please ensure that any new content you add is either:
+1. Your original work
+2. Properly licensed content
+3. Content you have the right to use and distribute
+
+For questions about licensing or usage, please contact the project maintainers.

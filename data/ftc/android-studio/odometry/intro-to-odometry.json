@@ -3,70 +3,52 @@
   "sections": [
     {
       "type": "text",
-      "title": "What is Odometry and Why It Matters",
-      "content": "<p>Odometry is the process of tracking a robot's position and orientation using sensor data. Unlike time-based movement, which relies on timing and motor power, odometry provides real-time feedback about where your robot actually is on the field.</p><p><strong>Why odometry matters:</strong></p><ul><li>Enables precise autonomous navigation without relying solely on time-based movements</li><li>Provides feedback for path correction and error recovery</li><li>Allows for complex autonomous routines that require accurate positioning</li><li>Essential for advanced robotics applications like path planning and localization</li></ul><p>Reference: <a href=\"https://gm0.org/en/latest/docs/software/tutorials/odometry.html\" target=\"_blank\">gm0: Odometry Tutorial</a></p>"
+      "title": "What is Odometry?",
+      "content": "Odometry is the process of tracking a robot’s position and orientation on the field using sensors, typically wheel encoders. In FTC, odometry is essential for enabling your robot to navigate autonomously and perform tasks with precision."
     },
     {
       "type": "text",
-      "title": "Coordinate Systems and Robot Positioning",
-      "content": "<p>Understanding coordinate systems is fundamental to odometry. There are two main coordinate systems you need to know:</p><p><strong>Field Coordinate System:</strong></p><ul><li>Fixed reference frame for the entire field</li><li>Origin typically at a corner or center of the field</li><li>X-axis and Y-axis define the field plane</li><li>Used for absolute positioning and path planning</li></ul><p><strong>Robot Coordinate System:</strong></p><ul><li>Relative to the robot's current position</li><li>Origin at the robot's center or a specific point</li><li>Changes as the robot moves and rotates</li><li>Used for local movement calculations</li></ul><p><strong>Robot Pose Components:</strong></p><ul><li><strong>X:</strong> Position along the field's X-axis</li><li><strong>Y:</strong> Position along the field's Y-axis</li><li><strong>Heading (θ):</strong> Robot's orientation angle</li></ul><p>Reference: <a href=\"https://docs.revrobotics.com/duo-control/duo-control-programming/odometry\" target=\"_blank\">REV: Odometry Documentation</a></p>"
+      "title": "Why Odometry Matters in FTC",
+      "content": "With odometry, your robot can follow complex paths, score game elements, and return to specific locations during autonomous periods. It is a foundational concept for advanced autonomous routines in FTC."
     },
     {
       "type": "text",
-      "title": "Sensor Types for Odometry",
-      "content": "<p>Different sensors provide different types of information for odometry calculations:</p><p><strong>Encoders:</strong></p><ul><li><strong>Motor Encoders:</strong> Built into motors, track wheel rotation</li><li><strong>Dead Wheel Encoders:</strong> Unpowered wheels with encoders for precise tracking</li><li>Provide distance and velocity information</li><li>Essential for tracking linear movement</li></ul><p><strong>IMU (Inertial Measurement Unit):</strong></p><ul><li>Measures angular velocity and acceleration</li><li>Provides heading information (yaw angle)</li><li>Helps correct for drift in encoder-based systems</li><li>Available in most FTC control systems</li></ul><p><strong>Camera-based Positioning:</strong></p><ul><li>Uses AprilTags or other visual markers</li><li>Provides absolute position references</li><li>Can correct accumulated odometry errors</li><li>More complex to implement but very accurate</li></ul><p>Reference: <a href=\"https://www.gobilda.com/odometry/\" target=\"_blank\">GoBILDA: Odometry Systems</a></p>"
+      "title": "Basic Principles of Odometry",
+      "content": "Odometry systems use encoders attached to wheels to measure how far the robot has traveled. By analyzing the movement of these wheels, the robot can estimate its position (X, Y) and heading (angle) on the field. Most FTC robots use either drive encoders or dedicated 'dead wheels' for this purpose. <br><br>For more on the theory, see <a href=\"https://gm0.org/en/latest/docs/software/concepts/odometry.html\" target=\"_blank\">gm0: Odometry</a>."
     },
     {
-      "type": "code",
-      "title": "Basic Odometry Mathematics",
-      "content": "<p>Let's break down the basic mathematics behind odometry:</p><ul><li><strong>Distance from Encoder Ticks:</strong> Distance = (Encoder Ticks / Ticks per Revolution) × Wheel Circumference</li><li><strong>Heading from IMU:</strong> Heading = IMU.getYaw() (in degrees or radians)</li><li><strong>Basic Position Update:</strong> New X = Current X + (Distance × cos(heading)), New Y = Current Y + (Distance × sin(heading))</li></ul>",
-      "code": "// Basic odometry setup and calculations\npublic class BasicOdometry {\n    private DcMotor leftEncoder;\n    private DcMotor rightEncoder;\n    private IMU imu;\n    \n    // Robot pose variables\n    private double x = 0.0;\n    private double y = 0.0;\n    private double heading = 0.0;\n    \n    // Wheel specifications\n    private static final double WHEEL_DIAMETER_MM = 35.0;\n    private static final double WHEEL_CIRCUMFERENCE_MM = WHEEL_DIAMETER_MM * Math.PI;\n    private static final double TICKS_PER_REVOLUTION = 537.6; // REV HD Hex Motor\n    private static final double MM_PER_TICK = WHEEL_CIRCUMFERENCE_MM / TICKS_PER_REVOLUTION;\n    \n    public BasicOdometry(DcMotor leftEncoder, DcMotor rightEncoder, IMU imu) {\n        this.leftEncoder = leftEncoder;\n        this.rightEncoder = rightEncoder;\n        this.imu = imu;\n        \n        // Reset encoders\n        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    }\n    \n    // Convert encoder ticks to distance in millimeters\n    public double ticksToDistance(int ticks) {\n        return ticks * MM_PER_TICK;\n    }\n    \n    // Get current heading from IMU\n    public double getHeading() {\n        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);\n    }\n    \n    // Basic position update using left and right encoder\n    public void updatePosition() {\n        // Get encoder values\n        int leftTicks = leftEncoder.getCurrentPosition();\n        int rightTicks = rightEncoder.getCurrentPosition();\n        \n        // Convert to distances\n        double leftDistance = ticksToDistance(leftTicks);\n        double rightDistance = ticksToDistance(rightTicks);\n        \n        // Calculate average distance and heading change\n        double averageDistance = (leftDistance + rightDistance) / 2.0;\n        double headingChange = (rightDistance - leftDistance) / 200.0; // Simplified\n        \n        // Update heading\n        heading = getHeading();\n        \n        // Update position (simplified calculation)\n        double headingRadians = Math.toRadians(heading);\n        x += averageDistance * Math.cos(headingRadians);\n        y += averageDistance * Math.sin(headingRadians);\n    }\n    \n    // Get current robot pose\n    public double getX() { return x; }\n    public double getY() { return y; }\n    public double getHeadingDegrees() { return heading; }\n}"
+      "type": "text",
+      "title": "Common Odometry Setups in FTC",
+      "content": "There are several ways to set up odometry on an FTC robot:<ul><li><strong>Drive Encoder Odometry:</strong> Uses the encoders built into the drive motors. Simple, but can be inaccurate due to wheel slippage.</li><li><strong>Dead Wheel Odometry:</strong> Uses unpowered wheels with encoders for more accurate tracking.</li><li><strong>Two-Wheel vs. Three-Wheel:</strong> Two-wheel setups can track position but not always heading; three-wheel setups can track both position and orientation.</li></ul>"
     },
     {
-      "type": "list",
-      "title": "Odometry vs. Other Navigation Methods",
-      "items": [
-        "<strong>Odometry vs. Time-based Movement:</strong> Time-based is simple but inaccurate; odometry is more complex but provides real-time feedback and correction.",
-        "<strong>Odometry vs. Vision-based Navigation:</strong> Vision uses cameras and AprilTags for absolute positioning; odometry uses encoders and IMU for relative positioning.",
-        "<strong>Hybrid Approaches:</strong> Use odometry for continuous tracking, vision to correct errors, and combine sensors for maximum accuracy.",
-        "Reference: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/autonomous/opmodes.html\" target=\"_blank\">FTC: Autonomous Programming</a>"
+      "type": "text",
+      "title": "Limitations and Sources of Error",
+      "content": "Odometry is not perfect. Errors can come from wheel slippage, misalignment, or sensor noise. Understanding these limitations helps you design more robust autonomous routines and troubleshoot issues during competition."
+    },
+    {
+      "type": "link-grid",
+      "title": "Further Reading",
+      "content": [
+        {
+          "label": "gm0: Odometry (Theory)",
+          "url": "https://gm0.org/en/latest/docs/software/concepts/odometry.html"
+        },
+        {
+          "label": "gm0: Kinematics (Related Concepts)",
+          "url": "https://gm0.org/en/latest/docs/software/concepts/kinematics.html"
+        }
       ]
     },
     {
       "type": "exercise-box",
-      "title": "Practice Exercise: Basic Odometry Setup",
-      "description": "Create a simple odometry system using your robot's drive encoders and IMU.",
+      "title": "Practice Exercise",
+      "description": "Think of a scenario in an FTC match where knowing your robot’s position is critical. How would odometry help? Sketch a simple diagram of a robot and label where you might place odometry wheels.",
       "tasks": [
-        "Set up encoder reading for your left and right drive motors",
-        "Initialize the IMU and get heading readings",
-        "Create a basic position tracking system",
-        "Test by driving your robot in a square pattern",
-        "Display the robot's position and heading using telemetry",
-        "Challenge: Try to drive your robot to specific coordinates on the field using your odometry system."
+        "Describe a game scenario where odometry is useful.",
+        "Draw a robot and show possible odometry wheel placements."
       ],
-      "content": "// See code example in 'Basic Odometry Mathematics' section above."
-    },
-    {
-      "type": "list",
-      "title": "Key Takeaways",
-      "items": [
-        "Odometry provides real-time position and orientation tracking",
-        "Coordinate systems (field vs. robot) are essential for understanding positioning",
-        "Encoders provide distance data, IMU provides heading data",
-        "Basic mathematics combines sensor data to track robot pose",
-        "Odometry is more accurate than time-based movement but more complex",
-        "Different navigation methods have different use cases"
-      ]
-    },
-    {
-      "type": "link-grid",
-      "title": "Next Steps: Related Topics",
-      "content": "Explore these related topics for further learning.",
-      "links": [
-        {"id": "dead-wheel-encoders", "label": "Dead Wheel Encoders"},
-        {"id": "three-wheel-odometry", "label": "Three Wheel Odometry"},
-        {"id": "gobilda-pinpoint", "label": "GoBILDA Pinpoint"}
-      ]
+      "content": "// No code required for this exercise."
     }
   ]
-} 
+}

@@ -24,48 +24,27 @@
       "content": "Traditional telemetry provides basic text output, but FTCDashboard transforms this into a comprehensive monitoring and control system. It's particularly valuable for debugging autonomous programs, tuning PID controllers, visualizing robot movement, and providing real-time feedback during testing and competition."
     },
     {
-      "type": "code",
-      "title": "Basic FTCDashboard Setup (Step 1: Gradle Dependency)",
-      "content": "Add the FTCDashboard library to your build.gradle file:",
-      "code": "dependencies {\n    implementation 'com.acmerobotics.dashboard:dashboard:0.4.12'\n}"
-    },
-    {
       "type": "text",
-      "title": "Step 2: Import Required Classes",
-      "content": "Import the necessary classes in your OpMode file."
+      "title": "Installation and Setup",
+      "content": "FTCDashboard is installed as a Gradle dependency in your Android Studio project. The library automatically sets up a web server on your robot that can be accessed from any device on the same network."
     },
     {
       "type": "code",
-      "title": "Import Statements",
+      "title": "Step 1: Add Gradle Dependency",
+      "content": "Add the FTCDashboard library to your app-level build.gradle file:",
+      "code": "dependencies {\n    // Other dependencies...\n    implementation 'com.acmerobotics.dashboard:dashboard:0.4.17'\n}\n\n// Make sure you have the correct repositories\nrepositories {\n    google()\n    mavenCentral()\n    maven { url = \"https://maven.brott.dev/\" }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Step 2: Import Required Classes",
       "content": "Add these imports at the top of your OpMode:",
       "code": "import com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.config.Config;\nimport com.acmerobotics.dashboard.telemetry.MultipleTelemetry;"
     },
     {
-      "type": "text",
-      "title": "Step 3: OpMode Class Declaration and Dashboard Initialization",
-      "content": "Declare your OpMode class and initialize the dashboard and MultipleTelemetry in the init() method."
-    },
-    {
       "type": "code",
-      "title": "OpMode Class and init() Method",
-      "content": "Add this to your OpMode:",
-      "code": "@Config\npublic class BasicDashboardOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private MultipleTelemetry telemetry;\n    \n    @Override\n    public void init() {\n        // Initialize the dashboard\n        dashboard = FtcDashboard.getInstance();\n        \n        // Create multiple telemetry to send to both Driver Station and Dashboard\n        telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());\n        \n        // Send initial telemetry\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n    }"
-    },
-    {
-      "type": "text",
-      "title": "Step 4: Sending Telemetry in loop()",
-      "content": "In your loop() method, send telemetry data to both the Driver Station and Dashboard."
-    },
-    {
-      "type": "code",
-      "title": "loop() Method",
-      "content": "Add this to your class:",
-      "code": "    @Override\n    public void loop() {\n        // Your robot control code here\n        \n        // Send telemetry to both Driver Station and Dashboard\n        telemetry.addData(\"Loop Time\", \"%.2f seconds\", getRuntime());\n        telemetry.update();\n    }"
-    },
-    {
-      "type": "text",
-      "title": "Installation and Setup",
-      "content": "FTCDashboard is installed as a Gradle dependency in your Android Studio project. The library automatically sets up a web server on your robot that can be accessed from any device on the same network."
+      "title": "Step 3: Basic OpMode Setup",
+      "content": "Create a basic OpMode that initializes the dashboard:",
+      "code": "@Config\npublic class BasicDashboardOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private MultipleTelemetry telemetry;\n    \n    @Override\n    public void init() {\n        // Initialize the dashboard\n        dashboard = FtcDashboard.getInstance();\n        \n        // Create multiple telemetry to send to both Driver Station and Dashboard\n        telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());\n        \n        // Send initial telemetry\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n    }\n    \n    @Override\n    public void loop() {\n        // Your robot control code here\n        \n        // Send telemetry to both Driver Station and Dashboard\n        telemetry.addData(\"Loop Time\", \"%.2f seconds\", getRuntime());\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "rules-box",
@@ -77,12 +56,6 @@
         "Initialize FtcDashboard in your init() method",
         "Use MultipleTelemetry to send data to both Driver Station and Dashboard"
       ]
-    },
-    {
-      "type": "code",
-      "title": "Gradle Dependency Configuration",
-      "content": "Add this dependency to your app-level build.gradle file:",
-              "code": "dependencies {\n    // Other dependencies...\n    implementation 'com.acmerobotics.dashboard:dashboard:0.4.12'\n}\n\n// Make sure you have the correct repositories\nrepositories {\n    google()\n    mavenCentral()\n    maven { url = \"https://maven.brott.dev/\" }\n}"
     },
     {
       "type": "text",
@@ -121,7 +94,7 @@
       "type": "code",
       "title": "Network Configuration Example",
       "content": "Here's how to configure network settings and handle connection issues:",
-              "code": "// In your OpMode, you can check dashboard connection status\npublic class NetworkAwareOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    \n    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        \n        // Check if dashboard is connected\n        if (dashboard.getWebServer().isStarted()) {\n            telemetry.addData(\"Dashboard\", \"Running on port 8080\");\n            telemetry.addData(\"Access URL\", \"http://\" + getLocalIpAddress() + \":8080\");\n        } else {\n            telemetry.addData(\"Dashboard\", \"Failed to start\");\n        }\n        telemetry.update();\n    }\n    \n    private String getLocalIpAddress() {\n        try {\n            // Get the robot's IP address\n            return InetAddress.getLocalHost().getHostAddress();\n        } catch (Exception e) {\n            return \"Unknown\";\n        }\n    }\n}"
+      "code": "// In your OpMode, you can check dashboard connection status\npublic class NetworkAwareOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    \n    @Override\n    public void init() {\n        dashboard = FtcDashboard.getInstance();\n        \n        // Check if dashboard is connected\n        if (dashboard.getWebServer().isStarted()) {\n            telemetry.addData(\"Dashboard\", \"Running on port 8080\");\n            telemetry.addData(\"Access URL\", \"http://\" + getLocalIpAddress() + \":8080\");\n        } else {\n            telemetry.addData(\"Dashboard\", \"Failed to start\");\n        }\n        telemetry.update();\n    }\n    \n    private String getLocalIpAddress() {\n        try {\n            // Get the robot's IP address\n            return InetAddress.getLocalHost().getHostAddress();\n        } catch (Exception e) {\n            return \"Unknown\";\n        }\n    }\n}"
     },
     {
       "type": "exercise-box",

@@ -1,57 +1,36 @@
 {
-  "type": "lesson",
-  "title": "Installing the FTC SDK and Dependencies",
+  "title": "Installing the Android SDK for FTC Development",
   "sections": [
     {
-      "type": "section",
-      "title": "What is the FTC SDK?",
-      "content": "<p>The FTC SDK (Software Development Kit) is the foundation for all FTC Java programming. It provides the libraries, templates, and tools needed to write code for your robot. Keeping your SDK up-to-date ensures you have the latest features and bug fixes.</p><p>Learn more: <a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController\" target=\"_blank\">FTC GitHub: FtcRobotController</a></p>"
+      "type": "text",
+      "title": "What is the Android SDK?",
+      "content": "The Android Software Development Kit (SDK) provides the libraries and tools needed to build, test, and run Android apps—including FTC robot code. Without the SDK, Android Studio cannot compile or deploy your code to the Robot Controller. <br><br>Learn more: <a href=\"https://developer.android.com/studio\" target=\"_blank\">Android Studio Official Site</a>"
     },
     {
-      "type": "section",
-      "title": "Cloning the SDK Repository",
-      "content": "<ol><li>Open a terminal or GitHub Desktop.</li><li>Clone the repository:<br><pre><code>git clone https://github.com/FIRST-Tech-Challenge/FtcRobotController.git</code></pre></li><li>Alternatively, download the ZIP from GitHub and extract it.</li></ol><p>See: <a href=\"https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html\" target=\"_blank\">gm0: SDK Introduction</a></p>"
+      "type": "text",
+      "title": "Why Do FTC Teams Need the SDK?",
+      "content": "FTC robots run on Android devices, so your code must be built using the Android SDK. The SDK ensures your code is compatible with the Robot Controller app and the Android operating system."
     },
     {
-      "type": "section",
-      "title": "Installing Required Dependencies",
-      "content": "<ul><li>Install the Java JDK (version 8 or higher). <a href=\"https://adoptium.net/\" target=\"_blank\">Download here</a></li><li>Let Android Studio handle Gradle and Android SDK installation during project setup.</li><li>Ensure your system meets the requirements: Windows 10/11, macOS 10.14+, or Linux; 8GB+ RAM; 10GB+ free storage.</li></ul><p>Reference: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio/installation/index.html\" target=\"_blank\">FTC Docs: Android Studio Installation</a></p>"
+      "type": "text",
+      "title": "Installing the SDK via Android Studio",
+      "content": "When you first install Android Studio, it will prompt you to install the Android SDK. Always use the recommended settings. If you skipped this step, you can install the SDK later using the SDK Manager.<br><br>To open the SDK Manager: <ul><li>Go to <b>Tools > SDK Manager</b> in Android Studio.</li><li>Ensure you have the correct SDK version for FTC (usually API 25 or higher, but check the FTC Docs for the latest recommendation).</li></ul>"
     },
     {
-      "type": "section",
-      "title": "Updating the SDK",
-      "content": "<ol><li>To get the latest features and bug fixes, regularly update your SDK:</li><li>Open a terminal in your SDK folder.</li><li>Run:<br><pre><code>git pull origin master</code></pre></li><li>If you have a fork, add the upstream remote and pull updates:<br><pre><code>git remote add upstream https://github.com/FIRST-Tech-Challenge/FtcRobotController.git<br>git pull upstream master</code></pre></li><li>Resolve any merge conflicts as needed.</li></ol><p>See: <a href=\"https://gm0.org/en/latest/docs/software/advanced/updating-sdk.html\" target=\"_blank\">gm0: Updating the SDK</a></p>"
-    },
-    {
-      "type": "section",
-      "title": "Verifying the Installation",
-      "content": "<ol><li>Open the <code>FtcRobotController</code> project in Android Studio.</li><li>Build the project (Build > Make Project).</li><li>Connect your robot controller device and deploy the default example OpMode.</li><li>If the app runs and you see the OpMode on the Driver Station, your setup is complete!</li></ol><p>Troubleshooting: If you encounter errors, check Gradle sync, device connection, and SDK versions. More help: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio/connecting/index.html\" target=\"_blank\">FTC Docs: Connecting Devices</a></p>"
-    },
-    {
-      "type": "section",
-      "title": "Troubleshooting Common Issues",
-      "content": "<ul><li><b>Gradle Sync Issues:</b> Check your internet connection and let Android Studio install missing components.</li><li><b>Device Not Found:</b> Ensure USB Debugging is enabled and drivers are installed.</li><li><b>Build Errors:</b> Try Build > Clean Project, then Build > Rebuild Project.</li></ul>"
-    },
-    {
-      "type": "section",
-      "title": "Best Practices and Safety",
-      "content": "<ul><li>Always use the latest stable FTC SDK release.</li><li>Write your code in the <code>TeamCode</code> module; do not modify SDK core files.</li><li>Back up your code regularly using Git or another version control system.</li></ul>"
-    },
-    {
-      "type": "section",
-      "title": "Explore More",
-      "content": "<ul><li><a href=\"https://ftc-docs.firstinspires.org/\" target=\"_blank\">FTC Docs: Software Setup</a></li><li><a href=\"https://gm0.org/en/latest/docs/software/tutorials/android-studio.html\" target=\"_blank\">gm0: Android Studio Setup</a></li><li><a href=\"https://docs.revrobotics.com/duo-control/programming/ftc-sdk\" target=\"_blank\">REV Robotics: Programming with the FTC SDK</a></li></ul>"
+      "type": "text",
+      "title": "Managing SDK Tools and Updates",
+      "content": "The SDK Manager also lets you update or install additional tools. Only update the SDK if your team is sure it will not break FTC compatibility. <br><br>For more information, see <a href=\"https://developer.android.com/studio/intro/update\" target=\"_blank\">Android Studio: Update the IDE and SDK Tools</a>."
     },
     {
       "type": "exercise-box",
-      "title": "Practice: SDK Installation",
+      "title": "Practice Exercise",
+      "description": "Check your Android Studio installation and verify the SDK is installed.",
       "tasks": [
-        "Clone the FTC SDK repository using Git",
-        "Open the project in Android Studio and let Gradle sync",
-        "Build and deploy the default OpMode to your robot controller",
-        "Update your SDK by pulling from the upstream repository",
-        "Troubleshoot a Gradle sync or device connection issue"
-      ]
+        "Open Android Studio and launch the SDK Manager.",
+        "Verify that the recommended SDK version for FTC is installed.",
+        "If needed, install or update the SDK."
+      ],
+      "content": "If you are unsure which SDK version to use, consult the FTC Docs or ask your mentor."
     }
   ]
-} 
+}

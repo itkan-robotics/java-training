@@ -24,8 +24,13 @@
     {
       "type": "code",
       "title": "Debugger Configuration Setup",
-      "content": "To configure debugging for your FTC project, you need to set up the debug configuration in Android Studio. This involves configuring the device connection and ensuring proper permissions.",
+      "content": "To configure debugging for your FTC project, you need to set up the debug configuration in Android Studio. This involves configuring the device connection and ensuring proper permissions. Start by adding debug logging to your OpMode:",
       "code": "// In your OpMode class, add debug logging\npublic class MyDebugOpMode extends OpMode {\n    private static final String TAG = \"MyDebugOpMode\";\n    \n    @Override\n    public void init() {\n        // Enable debug logging\n        Log.d(TAG, \"Initializing OpMode\");\n        \n        // Initialize hardware with debug info\n        try {\n            initializeHardware();\n            Log.d(TAG, \"Hardware initialized successfully\");\n        } catch (Exception e) {\n            Log.e(TAG, \"Hardware initialization failed\", e);\n            telemetry.addData(\"Error\", \"Hardware init failed: \" + e.getMessage());\n        }\n    }\n    \n    private void initializeHardware() {\n        // Your hardware initialization code here\n        // Add breakpoints in this method to debug hardware setup\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Setting Up Debug Logging",
+      "content": "Debug logging is the foundation of advanced debugging. By adding strategic log statements throughout your code, you can track program execution and identify where issues occur. The TAG constant helps organize log messages, and different log levels (d for debug, e for error) provide appropriate detail."
     },
     {
       "type": "text",

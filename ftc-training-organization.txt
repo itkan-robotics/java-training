@@ -63,16 +63,15 @@
 │   │   ├── pedro-localization.json
 │   │   └── pedro-advanced-configuration.json
 │   └── custom-pathing/
-│       ├── intro-to-manual-pathing.json
-│       ├── motion-profiling-basics.json
-│       └── dead-wheel-odometry.json
-│   ├── autonomous-programming/
-│   │   ├── command-based-programming.json
-│   │   ├── async-programming.json
-│   │   ├── multithreading.json
-│   │   ├── custom-sensors.json
-│   │   ├── custom-sensor-integration.json
-│   │   └── custom-libraries.json
+│   |   ├── intro-to-manual-pathing.json
+│   |   ├── motion-profiling-basics.json
+│   |   └── dead-wheel-odometry.json
+│   ├── solverslib/
+|   |   │   ├── intro-to-command-system.json
+|   |   │   ├── solverslib-subsystem-design.json
+|   |   │   ├── solverslib-commands-and-scheduler.json
+|   |   │   ├── solverslib-command-groups.json
+|   |   │   └── solverslib-advanced-patterns.json
 │   ├── vision/
 │   │   ├── vision-introduction.json
 │   │   ├── ftc-vision-portal.json
@@ -90,9 +89,9 @@
 │   │   ├── unit-testing.json
 │   │   └── debugging-strategies.json
 │   ├── ftcdashboard/
-│       ├── intro-to-ftcdashboard.json
-│       ├── telemetry-and-plotting.json
-│       ├── field-view-visualization.json
-│       ├── configuration-variables.json
-│       ├── opmode-controls.json
-│       └── camera-streaming.json
+│   |   ├── intro-to-ftcdashboard.json
+│   |   ├── telemetry-and-plotting.json
+│   |   ├── field-view-visualization.json
+│   |   ├── configuration-variables.json
+│   |   ├── opmode-controls.json
+│   |   └── camera-streaming.json

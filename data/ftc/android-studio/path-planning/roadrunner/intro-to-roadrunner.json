@@ -4,32 +4,33 @@
     {
       "type": "text",
       "title": "What is Road Runner?",
-      "content": "<p>Road Runner is a powerful motion planning library designed for FTC robots. It enables precise trajectory following, advanced path planning, and smooth autonomous routines. Unlike basic drive code, Road Runner provides tools for creating complex paths and controlling your robot's movement with high accuracy.</p><p>Learn more: <a href=\"https://acmerobotics.github.io/road-runner-docs/\" target=\"_blank\">Official Road Runner Docs: Introduction</a></p>"
+      "content": "Road Runner is an advanced motion planning library designed for FTC robots. It allows your robot to follow complex paths and trajectories with high accuracy, making it possible to execute sophisticated autonomous routines. Road Runner is especially useful for teams looking to go beyond simple drive commands and achieve precise, repeatable movement."
     },
     {
       "type": "text",
-      "title": "Why Use Road Runner in FTC?",
-      "content": "FTC autonomous challenges often require robots to move precisely and efficiently. Road Runner helps teams:<ul><li>Follow complex paths</li><li>Handle localization (knowing where the robot is)</li><li>Chain multiple movements together</li><li>Reduce errors from wheel slip and drift</li></ul>Compared to other libraries, Road Runner is tailored for FTC hardware and field layouts.<br><br>See: <a href=\"https://gm0.org/en/latest/docs/software/advanced/roadrunner/index.html\" target=\"_blank\">gm0: Road Runner Overview</a>"
+      "title": "Why Use Road Runner?",
+      "content": "While the standard FTC SDK provides basic movement capabilities, Road Runner enables advanced features like trajectory following, motion profiling, and smooth path planning. This is crucial for competitive teams aiming for consistent autonomous performance."
     },
     {
       "type": "text",
-      "title": "Basic Concepts: Trajectories, Localization, and Path Following",
-      "content": "<strong>Trajectories</strong> are pre-planned paths for your robot to follow. <strong>Localization</strong> is how the robot keeps track of its position. <strong>Path following</strong> is the process of making the robot move along a trajectory as accurately as possible.<br><br>For a quick overview: <a href=\"https://acmerobotics.github.io/road-runner-docs/quickstart/overview/\" target=\"_blank\">Road Runner Quickstart Overview</a>"
+      "title": "How Road Runner Integrates with FTC Projects",
+      "content": "Road Runner is designed to work alongside the FTC SDK. The easiest way to get started is to use the official quickstart project, which comes with Road Runner, FTC Dashboard, and tuning utilities pre-installed. You can also add Road Runner to your existing project by updating your Gradle files and copying over the necessary code."
     },
     {
-      "type": "code",
-      "title": "Simple Trajectory Example",
-      "content": "// Example: Creating a simple forward trajectory\nTrajectory trajectory = drive.trajectoryBuilder(new Pose2d())\n    .forward(24)\n    .build();\n\n// Following the trajectory\ndrive.followTrajectory(trajectory);"
+      "type": "list",
+      "title": "Getting Started with Road Runner",
+      "content": [
+        "Download the <a href=\"https://github.com/acmerobotics/road-runner-quickstart\" target=\"_blank\">Road Runner Quickstart</a> project or clone it using Git.",
+        "Open the project in Android Studio.",
+        "Familiarize yourself with the folder structure, especially the <code>TeamCode</code> directory.",
+        "If adding to an existing project, follow the <a href=\"https://rr.brott.dev/docs/v1-0/installation/\" target=\"_blank\">official installation guide</a> to update your Gradle files and copy over the required files.",
+        "Once set up, proceed to the tuning process to calibrate Road Runner for your robot."
+      ]
     },
     {
-      "type": "text",
-      "title": "How Road Runner Integrates with FTC SDK",
-      "content": "Road Runner works alongside the FTC SDK. You initialize Road Runner in your OpMode, set up your drive class, and use its methods to build and follow trajectories.<br><br>Step-by-step guide: <a href=\"https://gm0.org/en/latest/docs/software/advanced/roadrunner/quickstart.html\" target=\"_blank\">gm0: Road Runner Quickstart</a>"
-    },
-    {
-      "type": "code",
-      "title": "Initialization Example",
-      "content": "// In your OpMode\nSampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);\n\n// Build and follow a trajectory\nTrajectory traj = drive.trajectoryBuilder(new Pose2d())\n    .lineTo(new Vector2d(30, 30))\n    .build();\ndrive.followTrajectory(traj);"
+      "type": "emphasis-box",
+      "title": "Reference",
+      "content": "For more details, see the <a href=\"https://rr.brott.dev/docs/v1-0/installation/\" target=\"_blank\">Road Runner Installation Guide</a>."
     }
   ]
-} 
+}

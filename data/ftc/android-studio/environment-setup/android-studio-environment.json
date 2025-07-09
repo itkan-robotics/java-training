@@ -1,57 +1,46 @@
 {
-  "type": "lesson",
-  "title": "Setting Up Android Studio for FTC",
+  "title": "Setting Up the Android Studio Environment for FTC",
   "sections": [
     {
-      "type": "section",
-      "title": "What is Android Studio and Why Use It?",
-      "content": "<p>Android Studio is the official Integrated Development Environment (IDE) for FTC Java programming. It provides advanced tools for writing, debugging, and deploying robot code, making it the preferred choice for professional and competition-level development. Compared to OnBot Java, Android Studio offers better project management, version control, and debugging capabilities.</p><ul><li>Professional workflow for teams</li><li>Advanced code analysis and refactoring</li><li>Integrated Git version control</li><li>Powerful debugging and troubleshooting tools</li></ul><p>Learn more: <a href=\"https://gm0.org/en/latest/docs/software/getting-started/android-studio.html\" target=\"_blank\">gm0: Android Studio Setup</a> | <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio/installation/index.html\" target=\"_blank\">FTC Docs: Android Studio Installation</a></p>"
+      "type": "text",
+      "title": "What is Android Studio?",
+      "content": "Android Studio is the official integrated development environment (IDE) for Android app development. FTC teams use it to write, test, and deploy robot code in Java. It provides advanced tools for editing, debugging, and managing your robot code, making it the preferred choice for teams with prior Java experience. <br><br>Learn more: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html\" target=\"_blank\">FTC Docs: Android Studio Programming Tutorial</a>"
     },
     {
-      "type": "section",
+      "type": "text",
+      "title": "Why Use Android Studio for FTC?",
+      "content": "Android Studio offers powerful features such as code completion, refactoring, integrated version control, and advanced debugging. These tools help teams write robust, maintainable code and collaborate effectively. Android Studio is recommended for advanced users with Java experience, as it provides more flexibility and control than OnBot Java or Blocks."
+    },
+    {
+      "type": "text",
+      "title": "System Requirements",
+      "content": "Before installing Android Studio, ensure your computer meets the minimum requirements. Android Studio requires a modern processor, at least 8GB of RAM (16GB recommended), and several gigabytes of free disk space. For the latest requirements, see the <a href=\"https://developer.android.com/studio\" target=\"_blank\">Android Studio Official Site</a>."
+    },
+    {
+      "type": "text",
       "title": "Installing Android Studio",
-      "content": "<ol><li>Download Android Studio from the <a href=\"https://developer.android.com/studio/install\" target=\"_blank\">official website</a>.</li><li>Run the installer and follow the setup wizard for your operating system.</li><li>Install the required Android SDK components when prompted.</li><li>Launch Android Studio and complete the initial configuration.</li></ol><p><b>Troubleshooting:</b> If you encounter issues, check your system requirements and consult the <a href=\"https://developer.android.com/studio/install\" target=\"_blank\">official install guide</a>.</p>"
+      "content": "1. Download the installer from the <a href=\"https://developer.android.com/studio\" target=\"_blank\">Android Studio website</a>.<br>2. Run the installer and follow the setup wizard.<br>3. During installation, select the default options unless your team has specific requirements.<br>4. After installation, launch Android Studio to complete the initial setup."
     },
     {
-      "type": "section",
-      "title": "Configuring the FTC SDK in Android Studio",
-      "content": "<ol><li>Clone or download the <a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController\" target=\"_blank\">FTC SDK repository</a>.</li><li>Open the <code>FtcRobotController</code> project in Android Studio.</li><li>Let Gradle sync and install any missing dependencies.</li><li>Explore the folder structure to understand where to place your code.</li></ol><p>See: <a href=\"https://gm0.org/en/latest/docs/software/getting-started/ftc-sdk.html\" target=\"_blank\">gm0: SDK Introduction</a></p>"
+      "type": "text",
+      "title": "Downloading and Setting Up the FTC SDK Project",
+      "content": "FTC teams use a special project called the FTC SDK. You can download it from the official <a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController\" target=\"_blank\">FTC GitHub repository</a>. <br><br>To set up the project:<ul><li>Clone or download the repository to your computer.</li><li>Open Android Studio and select 'Open an existing project'.</li><li>Navigate to the folder where you saved the FTC SDK and open it.</li></ul>"
     },
     {
-      "type": "section",
-      "title": "Connecting to the Robot Controller",
-      "content": "<ul><li>Connect your Control Hub or Android phone via USB or Wi-Fi ADB.</li><li>Enable <b>Developer Options</b> and <b>USB Debugging</b> on your device.</li><li>Click the <b>Run</b> button in Android Studio to deploy your code.</li></ul><p>Troubleshooting: If the device is not detected, check drivers and USB settings. More help: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio/connecting/index.html\" target=\"_blank\">FTC Docs: Connecting Devices</a></p>"
-    },
-    {
-      "type": "section",
-      "title": "Project Structure and Best Practices",
-      "content": "<p>Organize your FTC project for clarity and maintainability. Use logical packages for teleop, autonomous, hardware, and subsystems. Place OpModes in the appropriate folders and keep utility code separate.</p><pre><code>// Example FTC project structure\nTeamCode/\n├── src/main/java/org/firstinspires/ftc/teamcode/\n│   ├── teleop/\n│   │   └── BasicTeleOp.java\n│   ├── autonomous/\n│   │   └── BasicAutonomous.java\n│   ├── hardware/\n│   │   └── RobotHardware.java\n│   └── utils/\n│       └── MathUtils.java\n├── build.gradle\n└── AndroidManifest.xml\n</code></pre><p>See: <a href=\"https://gm0.org/en/latest/docs/software/advanced/android-studio-project-structure.html\" target=\"_blank\">gm0: Project Structure</a></p>"
-    },
-    {
-      "type": "section",
-      "title": "Sample Hardware Abstraction Class",
-      "content": "<pre><code class=\"language-java\">// RobotHardware.java\npublic class RobotHardware {\n    public DcMotor leftFront, rightFront, leftRear, rightRear;\n    public Servo armServo;\n    private HardwareMap hardwareMap;\n    public RobotHardware(HardwareMap hardwareMap) {\n        this.hardwareMap = hardwareMap;\n        leftFront = hardwareMap.get(DcMotor.class, \"left_front\");\n        rightFront = hardwareMap.get(DcMotor.class, \"right_front\");\n        leftRear = hardwareMap.get(DcMotor.class, \"left_rear\");\n        rightRear = hardwareMap.get(DcMotor.class, \"right_rear\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n    }\n}\n</code></pre>"
-    },
-    {
-      "type": "section",
-      "title": "Debugging and Troubleshooting",
-      "content": "<ul><li>Set breakpoints in your code to pause execution and inspect variables.</li><li>Use the <b>Logcat</b> window to view logs and error messages.</li><li>Check the <b>Call Stack</b> to trace execution flow.</li></ul><pre><code class=\"language-java\">// Example: Adding debug info in an OpMode\ntelemetry.addData(\"Status\", \"Initialized\");\ntelemetry.update();\n</code></pre>"
-    },
-    {
-      "type": "section",
-      "title": "Explore More",
-      "content": "<ul><li><a href=\"https://developer.android.com/studio\" target=\"_blank\">Android Studio Official Documentation</a></li><li><a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController\" target=\"_blank\">FTC GitHub: FtcRobotController</a></li><li><a href=\"https://gm0.org/en/latest/docs/software/android_studio/index.html\" target=\"_blank\">gm0: Android Studio Guide</a></li></ul>"
+      "type": "text",
+      "title": "Overview of the FTC Project Structure",
+      "content": "The FTC SDK project contains two main modules: <b>FtcRobotController</b> (the SDK code) and <b>TeamCode</b> (where you write your own code). Always add your OpModes and custom classes in the TeamCode module. <br><br>For a detailed walkthrough, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html\" target=\"_blank\">FTC Docs: Android Studio Programming Tutorial</a>."
     },
     {
       "type": "exercise-box",
-      "title": "Practice: Android Studio Setup",
+      "title": "Practice Exercise",
+      "description": "Set up Android Studio and open the FTC SDK project on your computer.",
       "tasks": [
-        "Install Android Studio and open the FTC SDK project",
-        "Create a new OpMode in the teleop folder",
-        "Set up a hardware abstraction class",
-        "Deploy code to your robot controller device",
-        "Use breakpoints and Logcat to debug a simple OpMode"
-      ]
+        "Download and install Android Studio.",
+        "Clone or download the FTC SDK from GitHub.",
+        "Open the project in Android Studio and explore the TeamCode module."
+      ],
+      "content": "If you run into issues, check the FTC Docs or ask a mentor for help."
     }
   ]
-} 
+}

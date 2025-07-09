@@ -1,41 +1,43 @@
 {
-  "title": "Road Runner Trajectories",
+  "title": "Trajectories in Road Runner",
   "sections": [
     {
       "type": "text",
       "title": "What is a Trajectory?",
-      "content": "A trajectory is a planned path that your robot will follow during autonomous. Road Runner lets you define these paths with high precision, including straight lines, curves, and complex chains of movement.<br><br>More info: <a href=\"https://acmerobotics.github.io/road-runner-docs/trajectories/overview/\" target=\"_blank\">Road Runner Docs: Trajectories</a>"
+      "content": "A trajectory is a planned path that your robot follows, defined by a series of positions and headings. Trajectories allow for smooth, precise, and repeatable movement, which is essential for advanced autonomous routines."
+    },
+    {
+      "type": "text",
+      "title": "Why Use Trajectories?",
+      "content": "Using trajectories lets your robot move along complex paths, not just straight lines or simple turns. This is especially useful for tasks like navigating around obstacles or following game-specific routes."
     },
     {
       "type": "code",
       "title": "Building a Simple Trajectory",
-      "content": "// Build a trajectory that moves forward 36 inches\nTrajectory trajectory = drive.trajectoryBuilder(new Pose2d())\n    .forward(36)\n    .build();\n\n// Follow the trajectory\ndrive.followTrajectory(trajectory);"
-    },
-    {
-      "type": "text",
-      "title": "Chaining Trajectories and Using Splines",
-      "content": "You can chain multiple trajectories together for complex routines. Splines allow for smooth, curved paths.<br><br>Example of chaining and splines:<br><br>See: <a href=\"https://acmerobotics.github.io/road-runner-docs/trajectories/trajectory-builder/\" target=\"_blank\">Road Runner Docs: Trajectory Builder</a>"
+      "content": "Here's how you can define a simple straight-line trajectory using Road Runner:",
+      "code": "// Define the starting pose\nPose2d startPose = new Pose2d(0, 0, 0);\n\n// Create a trajectory builder\nTrajectory trajectory = drive.trajectoryBuilder(startPose)\n    .forward(24) // Move forward 24 inches\n    .build();"
     },
     {
       "type": "code",
-      "title": "Chaining and Splines Example",
-      "content": "// Start at (0,0) heading 0\nTrajectory traj1 = drive.trajectoryBuilder(new Pose2d())\n    .splineTo(new Vector2d(24, 24), Math.toRadians(45))\n    .build();\n\nTrajectory traj2 = drive.trajectoryBuilder(traj1.end())\n    .forward(12)\n    .build();\n\ndrive.followTrajectory(traj1);\ndrive.followTrajectory(traj2);"
+      "title": "Following a Trajectory",
+      "content": "Once you've built a trajectory, you can command your robot to follow it:",
+      "code": "// Follow the trajectory\ndrive.followTrajectory(trajectory);"
     },
     {
       "type": "text",
-      "title": "Best Practices for Trajectory Design",
-      "content": "- Break up your autonomous into small, reusable methods.<br>- Avoid writing all code in a single large file.<br>- Test each trajectory separately before combining.<br><br>Best practices: <a href=\"https://gm0.org/en/latest/docs/software/advanced/roadrunner/trajectories.html#best-practices\" target=\"_blank\">gm0: Trajectory Best Practices</a>"
+      "title": "Using TrajectoryBuilder for Custom Paths",
+      "content": "The <code>TrajectoryBuilder</code> class lets you create more complex paths, including curves and turns. You can chain together different movement commands to build the exact path you need."
     },
     {
-      "type": "exercise-box",
-      "title": "Practice: Create and Chain Trajectories",
-      "description": "Write code to build two trajectories: one that moves forward 24 inches, then another that turns 90 degrees and moves forward 12 inches. Chain them together and follow both.",
-      "tasks": [
-        "Build the first trajectory to move forward 24 inches.",
-        "Build the second trajectory to turn 90 degrees and move forward 12 inches.",
-        "Chain and follow both trajectories."
-      ],
-      "content": "// Your code here"
+      "type": "code",
+      "title": "Chaining Multiple Trajectories",
+      "content": "You can sequence multiple trajectories for more advanced routines. For example:",
+      "code": "// First trajectory\nTrajectory traj1 = drive.trajectoryBuilder(startPose)\n    .forward(24)\n    .build();\n\n// Second trajectory, starting from the end of the first\nTrajectory traj2 = drive.trajectoryBuilder(traj1.end())\n    .strafeLeft(12)\n    .build();\n\n// Follow both trajectories\ndrive.followTrajectory(traj1);\ndrive.followTrajectory(traj2);"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Reference",
+      "content": "See the <a href=\"https://rr.brott.dev/docs/v1-0/tuning/\" target=\"_blank\">Road Runner Tuning Guide</a> and <a href=\"https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/\" target=\"_blank\">Building a CENTERSTAGE Autonomous</a> for more details."
     }
   ]
-} 
+}

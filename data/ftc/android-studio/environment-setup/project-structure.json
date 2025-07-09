@@ -1,51 +1,37 @@
 {
-  "type": "lesson",
-  "title": "FTC Android Studio Project Structure",
+  "title": "Understanding the FTC Android Studio Project Structure",
   "sections": [
     {
-      "type": "section",
-      "title": "What is Project Structure and Why Does It Matter?",
-      "content": "<p>Project structure refers to how your files and folders are organized in your FTC Android Studio project. A clear structure helps you find code quickly, avoid mistakes, and collaborate with teammates. Good organization is essential for scaling your codebase as your robot and team grow.</p>"
+      "type": "text",
+      "title": "High-Level Project Layout",
+      "content": "The FTC SDK project is organized into modules and directories to separate your code from the official SDK. This structure helps you keep your code organized and makes it easier to update the SDK in the future. <br><br>For a visual overview, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html\" target=\"_blank\">FTC Docs: Android Studio Programming Tutorial</a>."
     },
     {
-      "type": "section",
-      "title": "Key Folders and Files in an FTC Project",
-      "content": "<ul><li><b>TeamCode/</b>: Your team's code goes here (OpModes, hardware, utilities).</li><li><b>FtcRobotController/</b>: The main SDK code (do not modify).</li><li><b>build.gradle</b>: Project build configuration.</li><li><b>AndroidManifest.xml</b>: App and OpMode registration.</li></ul>"
+      "type": "text",
+      "title": "Key Files and Directories",
+      "content": "- <b>FtcRobotController</b>: Contains the official SDK code. Do not modify files here.<br>- <b>TeamCode</b>: This is where you write your own OpModes and custom classes.<br>- <b>build.gradle</b>: The build configuration file for each module.<br>- <b>AndroidManifest.xml</b>: Declares app permissions and components.<br>- <b>libs/</b>: Place any third-party libraries here if needed."
     },
     {
-      "type": "section",
-      "title": "Where to Put Your Code (OpModes, Hardware, Utilities)",
-      "content": "<ul><li><b>teleop/</b>: Driver-controlled OpModes</li><li><b>autonomous/</b>: Autonomous OpModes</li><li><b>hardware/</b>: Hardware abstraction classes</li><li><b>utils/</b>: Utility/helper classes</li></ul>"
+      "type": "text",
+      "title": "Where to Write Your Code (TeamCode vs. FtcRobotController)",
+      "content": "Always write your OpModes and custom code in the <b>TeamCode</b> module. This keeps your code separate from the SDK, making it easier to update the SDK and avoid conflicts. <br><br>To create a new OpMode, add a new Java class in <b>TeamCode/src/main/java/org/firstinspires/ftc/teamcode</b>."
     },
     {
-      "type": "section",
-      "title": "Example Directory Layout",
-      "content": "<pre><code>// Typical FTC project structure\nTeamCode/\n├── src/main/java/org/firstinspires/ftc/teamcode/\n│   ├── teleop/\n│   │   └── BasicTeleOp.java\n│   ├── autonomous/\n│   │   └── BasicAutonomous.java\n│   ├── hardware/\n│   │   └── RobotHardware.java\n│   └── utils/\n│       └── MathUtils.java\n├── build.gradle\n└── AndroidManifest.xml\n</code></pre>"
-    },
-    {
-      "type": "section",
-      "title": "Best Practices for Organization",
-      "content": "<ul><li>Never modify SDK files outside TeamCode.</li><li>Use clear, descriptive names for files and folders.</li><li>Group related code together (e.g., all drivetrain code in one folder).</li><li>Keep OpModes short—move logic to hardware and subsystem classes.</li></ul>"
-    },
-    {
-      "type": "section",
-      "title": "Troubleshooting Common Structure Issues",
-      "content": "<ul><li><b>OpMode not showing up?</b> Check the package and class annotations.</li><li><b>Build errors?</b> Make sure files are in the correct folders and named properly.</li><li><b>Accidentally edited SDK files?</b> Restore from a clean SDK copy or Git.</li></ul>"
-    },
-    {
-      "type": "section",
-      "title": "Explore More",
-      "content": "<ul><li><a href=\"https://gm0.org/en/latest/docs/software/advanced/android-studio-project-structure.html\" target=\"_blank\">gm0: Project Structure</a></li><li><a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio/structure/index.html\" target=\"_blank\">FTC Docs: Project Structure</a></li></ul>"
+      "type": "text",
+      "title": "Gradle and Build System Basics",
+      "content": "Gradle is the build system used by Android Studio. It compiles your code, manages dependencies, and packages your app for deployment. Most of the time, you won't need to edit Gradle files directly, but understanding the basics can help you troubleshoot build errors. <br><br>Learn more: <a href=\"https://docs.gradle.org/current/userguide/userguide.html\" target=\"_blank\">Gradle User Guide</a>"
     },
     {
       "type": "exercise-box",
-      "title": "Practice: Project Structure",
+      "title": "Practice Exercise",
+      "description": "Explore the FTC SDK project structure in Android Studio.",
       "tasks": [
-        "Create a new OpMode in the correct folder.",
-        "Refactor an existing file into a better-named package.",
-        "Draw a diagram of your team's project structure.",
-        "Check that all OpModes are in TeamCode and not the SDK folders."
-      ]
+        "Open the FTC SDK project in Android Studio.",
+        "Locate the TeamCode and FtcRobotController modules.",
+        "Find the build.gradle and AndroidManifest.xml files.",
+        "Create a new Java class in TeamCode/src/main/java/org/firstinspires/ftc/teamcode."
+      ],
+      "content": "If you are unsure where to add your code, ask a mentor or refer to the FTC Docs."
     }
   ]
-} 
+}

@@ -429,34 +429,6 @@
           ]
         },
         {
-          "id": "android-studio-path-planning-custom-pathing",
-          "label": "Custom Pathing",
-          "description": "Manual path planning and odometry for precise autonomous control",
-          "items": [
-            {
-              "id": "intro-to-manual-pathing",
-              "label": "Introduction to Manual Pathing",
-              "file": "data/ftc/android-studio/path-planning/custom-pathing/intro-to-manual-pathing.json",
-              "difficulty": "intermediate",
-              "duration": "45 min"
-            },
-            {
-              "id": "motion-profiling-basics",
-              "label": "Motion Profiling Basics",
-              "file": "data/ftc/android-studio/path-planning/custom-pathing/motion-profiling-basics.json",
-              "difficulty": "advanced",
-              "duration": "60 min"
-            },
-            {
-              "id": "dead-wheel-odometry",
-              "label": "Dead Wheel Odometry",
-              "file": "data/ftc/android-studio/path-planning/custom-pathing/dead-wheel-odometry.json",
-              "difficulty": "advanced",
-              "duration": "75 min"
-            }
-          ]
-        },
-        {
           "id": "android-studio-path-planning-roadrunner",
           "label": "Road Runner Path Planning",
           "description": "Motion planning and trajectory following with Road Runner",
@@ -479,6 +451,13 @@
               "id": "roadrunner-advanced-tuning",
               "label": "Advanced Road Runner Tuning",
               "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-advanced-tuning.json",
+              "difficulty": "advanced",
+              "duration": "50 min"
+            },
+            {
+              "id": "roadrunner-actions",
+              "label": "Road Runner Actions & Autonomous Routines",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-actions.json",
               "difficulty": "advanced",
               "duration": "50 min"
             }
@@ -509,6 +488,55 @@
               "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-advanced-configuration.json",
               "difficulty": "advanced",
               "duration": "60 min"
+            },
+            {
+              "id": "pedro-autonomous-routines",
+              "label": "Building Pedro Pathing Autonomous Routines",
+              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-autonomous-routines.json",
+              "difficulty": "advanced",
+              "duration": "55 min"
+            }
+          ]
+        },
+        {
+          "id": "android-studio-solverslib",
+          "label": "SolversLib Command-Based Programming",
+          "description": "Advanced command-based programming using SolversLib framework",
+          "items": [
+            {
+              "id": "intro-to-command-system",
+              "label": "Introduction to Command-Based Programming",
+              "file": "data/ftc/android-studio/solverslib/intro-to-command-system.json",
+              "difficulty": "intermediate",
+              "duration": "45 min"
+            },
+            {
+              "id": "solverslib-subsystem-design",
+              "label": "Subsystem Design with SolversLib",
+              "file": "data/ftc/android-studio/solverslib/solverslib-subsystem-design.json",
+              "difficulty": "intermediate",
+              "duration": "50 min"
+            },
+            {
+              "id": "solverslib-commands-and-scheduler",
+              "label": "Commands and Scheduler Implementation",
+              "file": "data/ftc/android-studio/solverslib/solverslib-commands-and-scheduler.json",
+              "difficulty": "intermediate",
+              "duration": "55 min"
+            },
+            {
+              "id": "solverslib-command-groups",
+              "label": "Command Groups and Sequencing",
+              "file": "data/ftc/android-studio/solverslib/solverslib-command-groups.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "solverslib-advanced-patterns",
+              "label": "Advanced Command-Based Patterns",
+              "file": "data/ftc/android-studio/solverslib/solverslib-advanced-patterns.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
             }
           ]
         },
@@ -563,6 +591,13 @@
               "id": "vision-based-navigation", 
               "label": "Vision-Based Navigation", 
               "file": "data/ftc/android-studio/vision/vision-based-navigation.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
+            },
+            { 
+              "id": "machine-learning-integration", 
+              "label": "Machine Learning Integration", 
+              "file": "data/ftc/android-studio/vision/machine-learning-integration.json",
               "difficulty": "advanced",
               "duration": "75 min"
             }
@@ -670,16 +705,16 @@
     }
   ],
   "metadata": {
-    "version": "2.0.0",
+    "version": "2.1.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 50,
+    "totalLessons": 53,
     "difficultyLevels": {
       "beginner": 15,
-      "intermediate": 18,
-      "advanced": 17
+      "intermediate": 22,
+      "advanced": 16
     },
-    "estimatedDuration": "24.5 hours",
+    "estimatedDuration": "27.5 hours",
     "prerequisites": ["java-training"],
-    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop", "control-theory", "path-planning", "odometry", "motion-profiling", "computer-vision", "machine-learning", "dashboard", "telemetry", "visualization"]
+    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop", "control-theory", "path-planning", "odometry", "motion-profiling", "computer-vision", "machine-learning", "dashboard", "telemetry", "visualization", "command-based-programming", "solverslib"]
   }
 } 

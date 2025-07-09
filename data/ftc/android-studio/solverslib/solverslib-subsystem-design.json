@@ -1,0 +1,78 @@
+{
+  "title": "Subsystem Design with SolversLib",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Subsystem Fundamentals",
+      "content": "<p>Subsystems are the foundation of command-based programming. They represent logical groupings of related hardware that work together to perform specific robot functions. A well-designed subsystem provides a clean, abstract interface that hides the complexity of the underlying hardware from commands.</p><p>Think of subsystems as the \"what\" of your robot - they define what the robot can do, while commands define when and how to do it. This separation of concerns makes your code more maintainable and easier to understand.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Basic Subsystem Structure",
+      "content": "<p>Every subsystem extends the SubsystemBase class and provides methods that commands can use:</p>",
+      "code": "package org.firstinspires.ftc.teamcode.subsystems;\n\nimport com.seattlesolvers.solverslib.subsystems.SubsystemBase;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.HardwareMap;\n\npublic class DriveSubsystem extends SubsystemBase {\n    private final DcMotor leftMotor;\n    private final DcMotor rightMotor;\n    \n    public DriveSubsystem(HardwareMap hardwareMap) {\n        // Initialize hardware\n        leftMotor = hardwareMap.get(DcMotor.class, \"leftMotor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"rightMotor\");\n        \n        // Configure motors\n        leftMotor.setDirection(DcMotor.Direction.FORWARD);\n        rightMotor.setDirection(DcMotor.Direction.REVERSE);\n    }\n    \n    public void drive(double leftPower, double rightPower) {\n        leftMotor.setPower(leftPower);\n        rightMotor.setPower(rightPower);\n    }\n    \n    public void stop() {\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n    \n    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {\n        leftMotor.setZeroPowerBehavior(behavior);\n        rightMotor.setZeroPowerBehavior(behavior);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Hardware Abstraction and Encapsulation",
+      "content": "<p>One of the key benefits of subsystems is that they encapsulate hardware complexity. Commands don't need to know about specific motor names, wiring configurations, or hardware quirks - they just call simple methods like <code>drive(leftPower, rightPower)</code>.</p><p>This abstraction makes your code more portable and easier to maintain. If you change your robot's hardware configuration, you only need to update the subsystem, not every command that uses it.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Good vs Poor Subsystem Design",
+      "content": "<p>Compare these two approaches to see the difference good subsystem design makes:</p>",
+      "code": "// POOR: Commands directly access hardware\npublic class BadDriveCommand extends CommandBase {\n    private DcMotor leftMotor;\n    private DcMotor rightMotor;\n    \n    public BadDriveCommand(HardwareMap hardwareMap) {\n        leftMotor = hardwareMap.get(DcMotor.class, \"leftMotor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"rightMotor\");\n    }\n    \n    @Override\n    public void execute() {\n        leftMotor.setPower(0.5);\n        rightMotor.setPower(0.5);\n    }\n}\n\n// GOOD: Commands use subsystem abstraction\npublic class GoodDriveCommand extends CommandBase {\n    private final DriveSubsystem driveSubsystem;\n    \n    public GoodDriveCommand(DriveSubsystem driveSubsystem) {\n        this.driveSubsystem = driveSubsystem;\n        addRequirements(driveSubsystem);\n    }\n    \n    @Override\n    public void execute() {\n        driveSubsystem.drive(0.5, 0.5);\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Subsystem with State Management",
+      "content": "<p>Subsystems can maintain state and provide methods to query that state:</p>",
+      "code": "public class ArmSubsystem extends SubsystemBase {\n    private final Servo armServo;\n    private final DcMotor armMotor;\n    private double currentPosition;\n    private boolean isExtended;\n    \n    public ArmSubsystem(HardwareMap hardwareMap) {\n        armServo = hardwareMap.get(Servo.class, \"armServo\");\n        armMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\n        currentPosition = 0.0;\n        isExtended = false;\n    }\n    \n    public void setArmPosition(double position) {\n        armServo.setPosition(position);\n        currentPosition = position;\n        isExtended = position > 0.5;\n    }\n    \n    public void extendArm() {\n        setArmPosition(1.0);\n    }\n    \n    public void retractArm() {\n        setArmPosition(0.0);\n    }\n    \n    public double getCurrentPosition() {\n        return currentPosition;\n    }\n    \n    public boolean isExtended() {\n        return isExtended;\n    }\n    \n    public void stop() {\n        armMotor.setPower(0);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Default Commands and State Management",
+      "content": "<p>Subsystems can have default commands that run when no other command requires the subsystem. This is useful for maintaining safe states or providing default behaviors. For example, a drive subsystem might have a default command that stops the robot when no driving command is active.</p><p>Default commands are set using the <code>setDefaultCommand()</code> method and are automatically managed by the scheduler.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Setting Default Commands",
+      "content": "<p>Here's how to set up a default command for a subsystem:</p>",
+      "code": "public class RobotContainer {\n    private final DriveSubsystem driveSubsystem;\n    private final StopDriveCommand stopDriveCommand;\n    \n    public RobotContainer() {\n        // Initialize subsystems\n        driveSubsystem = new DriveSubsystem(hardwareMap);\n        \n        // Create default commands\n        stopDriveCommand = new StopDriveCommand(driveSubsystem);\n        \n        // Set default commands\n        driveSubsystem.setDefaultCommand(stopDriveCommand);\n    }\n}\n\n// Default command that stops the drive\npublic class StopDriveCommand extends CommandBase {\n    private final DriveSubsystem driveSubsystem;\n    \n    public StopDriveCommand(DriveSubsystem driveSubsystem) {\n        this.driveSubsystem = driveSubsystem;\n        addRequirements(driveSubsystem);\n    }\n    \n    @Override\n    public void execute() {\n        // This command runs by default to keep the robot stopped\n        driveSubsystem.stop();\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Default commands typically run forever\n        return false;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Subsystem Communication and Dependencies",
+      "content": "<p>Sometimes subsystems need to communicate with each other. For example, an intake subsystem might need to know if the shooter subsystem is ready before feeding balls. There are several ways to handle this:</p><ul><li><strong>Direct References</strong>: One subsystem holds a reference to another (use sparingly)</li><li><strong>Shared State</strong>: Use a shared state object or robot container</li><li><strong>Commands as Mediators</strong>: Let commands coordinate between subsystems</li><li><strong>Event System</strong>: Use events to communicate between subsystems</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Subsystem Communication Example",
+      "content": "<p>Here's an example of how subsystems can communicate safely:</p>",
+      "code": "public class IntakeSubsystem extends SubsystemBase {\n    private final DcMotor intakeMotor;\n    private final ShooterSubsystem shooterSubsystem;\n    \n    public IntakeSubsystem(HardwareMap hardwareMap, ShooterSubsystem shooterSubsystem) {\n        intakeMotor = hardwareMap.get(DcMotor.class, \"intakeMotor\");\n        this.shooterSubsystem = shooterSubsystem;\n    }\n    \n    public void feedToShooter() {\n        if (shooterSubsystem.isReady()) {\n            intakeMotor.setPower(0.8);\n        } else {\n            // Don't feed if shooter isn't ready\n            intakeMotor.setPower(0);\n        }\n    }\n    \n    public void stop() {\n        intakeMotor.setPower(0);\n    }\n}\n\npublic class ShooterSubsystem extends SubsystemBase {\n    private final DcMotor shooterMotor;\n    private boolean isReady;\n    \n    public ShooterSubsystem(HardwareMap hardwareMap) {\n        shooterMotor = hardwareMap.get(DcMotor.class, \"shooterMotor\");\n        isReady = false;\n    }\n    \n    public void spinUp() {\n        shooterMotor.setPower(1.0);\n        // Simulate spin-up time\n        new Timer().schedule(new TimerTask() {\n            @Override\n            public void run() {\n                isReady = true;\n            }\n        }, 2000);\n    }\n    \n    public boolean isReady() {\n        return isReady;\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Design a Subsystem",
+      "description": "Create a subsystem for a robot mechanism of your choice",
+      "tasks": [
+        "Design a subsystem for an elevator/lift mechanism",
+        "Include methods for moving up, down, and stopping",
+        "Add state tracking (current position, isMoving, etc.)",
+        "Create a default command that stops the elevator",
+        "Write a simple command that uses your subsystem"
+      ],
+      "content": "// Start with this basic structure\npublic class ElevatorSubsystem extends SubsystemBase {\n    private final DcMotor elevatorMotor;\n    private final TouchSensor limitSwitch;\n    \n    public ElevatorSubsystem(HardwareMap hardwareMap) {\n        elevatorMotor = hardwareMap.get(DcMotor.class, \"elevatorMotor\");\n        limitSwitch = hardwareMap.get(TouchSensor.class, \"limitSwitch\");\n    }\n    \n    // Add methods for:\n    // - Moving up and down\n    // - Stopping\n    // - Getting current state\n    // - Checking if at limits\n}"
+    },
+    {
+      "type": "text",
+      "title": "Subsystem Design Best Practices",
+      "content": "<p>Follow these guidelines when designing subsystems:</p><ul><li><strong>Single Responsibility</strong>: Each subsystem should have one clear purpose</li><li><strong>Encapsulation</strong>: Hide hardware details behind clean interfaces</li><li><strong>State Management</strong>: Track relevant state and provide methods to query it</li><li><strong>Safety First</strong>: Include safety checks and default behaviors</li><li><strong>Consistent Naming</strong>: Use clear, descriptive method names</li><li><strong>Documentation</strong>: Comment complex logic and hardware-specific details</li></ul>"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Key Takeaways",
+      "content": "<ul><li>Subsystems group related hardware and provide clean interfaces</li><li>Good subsystem design hides hardware complexity from commands</li><li>Subsystems can maintain state and provide default behaviors</li><li>Use default commands for safety and predictable behavior</li><li>Subsystem communication should be carefully designed to avoid tight coupling</li><li>Follow single responsibility principle and encapsulate hardware details</li></ul>"
+    }
+  ]
+} 
