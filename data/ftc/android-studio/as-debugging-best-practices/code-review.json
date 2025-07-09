@@ -1,0 +1,152 @@
+{
+  "title": "Code Review",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Code Review",
+      "content": "Code review is a systematic process of examining code to find bugs, improve quality, and ensure consistency. For FTC teams, code reviews help catch issues early and improve team collaboration. This lesson covers how to conduct effective code reviews for robot programming."
+    },
+    {
+      "type": "rules-box",
+      "title": "Why Code Review Matters for FTC",
+      "items": [
+        "Catches bugs before they reach the robot during competition",
+        "Improves code quality and maintainability",
+        "Helps team members learn from each other",
+        "Ensures safety and performance standards are met",
+        "Maintains consistent coding standards across the team"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Code Review Process for FTC Teams",
+      "content": "Establishing a systematic code review process helps ensure all code changes are properly examined. A good review process includes checklists, feedback guidelines, and clear communication."
+    },
+    {
+      "type": "code",
+      "title": "Code Review Checklist - Review Categories",
+      "content": "Implement a comprehensive code review checklist for FTC projects. This class provides a framework for systematic code reviews. The checklist is organized into categories to ensure thorough coverage:",
+      "code": "// Code Review Checklist for FTC Projects\n// This class provides a framework for systematic code reviews\n\npublic class CodeReviewChecklist {\n    \n    /**\n     * Main review categories for FTC code\n     */\n    public static class ReviewCategories {\n        public static final String FUNCTIONALITY = \"Functionality\";\n        public static final String SAFETY = \"Safety\";\n        public static final String PERFORMANCE = \"Performance\";\n        public static final String STYLE = \"Code Style\";\n        public static final String DOCUMENTATION = \"Documentation\";\n    }\n    \n    /**\n     * Comprehensive checklist for FTC code reviews\n     */\n    public static class FTCCodeReviewChecklist {\n        \n        // Functionality checks\n        public static final String[] FUNCTIONALITY_CHECKS = {\n            \"Does the code do what it's supposed to do?\",\n            \"Are all edge cases handled?\",\n            \"Does the code handle hardware failures gracefully?\",\n            \"Are there any infinite loops or deadlocks?\",\n            \"Does the autonomous sequence complete successfully?\",\n            \"Are gamepad controls intuitive and responsive?\",\n            \"Does the robot stop when it should?\"\n        };\n        \n        // Safety checks\n        public static final String[] SAFETY_CHECKS = {\n            \"Are there safety timeouts for all operations?\",\n            \"Does the robot stop if sensors detect obstacles?\",\n            \"Are motor powers limited to safe values?\",\n            \"Is there emergency stop functionality?\",\n            \"Does the code prevent the robot from damaging itself?\",\n            \"Are there checks for hardware initialization failures?\",\n            \"Does the robot have a safe default state?\"\n        };"
+    },
+    {
+      "type": "text",
+      "title": "Understanding Review Categories",
+      "content": "The review categories help organize the code review process. Functionality checks ensure the code works correctly, safety checks prevent robot damage, performance checks maintain smooth operation, style checks improve readability, and documentation checks ensure maintainability."
+    },
+    {
+      "type": "code",
+      "title": "Code Review Checklist - Performance and Style Checks",
+      "content": "Add performance and style check categories to the checklist. These categories focus on code efficiency and maintainability:",
+      "code": "        // Performance checks\n        public static final String[] PERFORMANCE_CHECKS = {\n            \"Does the main loop run at acceptable speed (50Hz)?\",\n            \"Are there any memory leaks or excessive object creation?\",\n            \"Are sensor readings optimized (not read too frequently)?\",\n            \"Are complex calculations broken into smaller pieces?\",\n            \"Is telemetry updated at reasonable intervals?\",\n            \"Are there any blocking operations in the main loop?\",\n            \"Is the code efficient for the target hardware?\"\n        };\n        \n        // Code style checks\n        public static final String[] STYLE_CHECKS = {\n            \"Are variable and method names descriptive?\",\n            \"Is the code properly indented and formatted?\",\n            \"Are there consistent naming conventions?\",\n            \"Is the code organized into logical methods?\",\n            \"Are magic numbers replaced with named constants?\",\n            \"Is the code readable and well-structured?\",\n            \"Are there appropriate comments for complex logic?\"\n        };\n        \n        // Documentation checks\n        public static final String[] DOCUMENTATION_CHECKS = {\n            \"Is there JavaDoc for public methods?\",\n            \"Are complex algorithms explained with comments?\",\n            \"Is there a README file for the project?\",\n            \"Are hardware configurations documented?\",\n            \"Are there comments explaining robot behavior?\",\n            \"Is the code self-documenting where possible?\",\n            \"Are there inline comments for non-obvious code?\"\n        };\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Performance and Style Considerations",
+      "content": "Performance checks ensure your robot operates smoothly and efficiently. Style checks improve code readability and maintainability, making it easier for team members to understand and modify the code. Documentation checks ensure that complex logic is properly explained for future reference."
+    },
+    {
+      "type": "text",
+      "title": "Example of Well-Reviewed OpMode",
+      "content": "Let's look at an example of a well-reviewed OpMode that follows the checklist. This example demonstrates proper code organization, safety measures, and documentation."
+    },
+    {
+      "type": "code",
+      "title": "Reviewed OpMode - Constants and Hardware Components",
+      "content": "Example of a well-reviewed OpMode that follows the checklist. This class demonstrates proper organization and safety practices:",
+      "code": "    /**\n     * Example of a well-reviewed OpMode that follows the checklist\n     */\n    public static class ReviewedOpMode extends OpMode {\n        \n        // Constants - no magic numbers\n        private static final double MAX_DRIVE_SPEED = 0.8;\n        private static final double MAX_TURN_SPEED = 0.6;\n        private static final double DEADZONE_THRESHOLD = 0.1;\n        private static final double SAFETY_DISTANCE_CM = 10.0;\n        private static final long TELEMETRY_UPDATE_INTERVAL_MS = 100;\n        \n        // Hardware components - clearly named\n        private DcMotor leftDriveMotor, rightDriveMotor;\n        private Servo armServo, clawServo;\n        private ColorSensor gameElementDetector;\n        private DistanceSensor proximitySensor;\n        \n        // State variables - descriptive names\n        private boolean isEmergencyStopActive = false;\n        private long lastTelemetryUpdate = 0;\n        private double currentArmPosition = 0.5;\n        private boolean isClawOpen = false;"
+    },
+    {
+      "type": "code",
+      "title": "Reviewed OpMode - Initialization Methods",
+      "content": "Add initialization methods with proper error handling and documentation:",
+      "code": "        /**\n         * Initializes the OpMode and all hardware components.\n         * Includes safety checks and error handling.\n         */\n        @Override\n        public void init() {\n            try {\n                initializeHardware();\n                configureHardware();\n                resetRobotState();\n                displayInitializationStatus();\n            } catch (Exception e) {\n                handleInitializationError(e);\n            }\n        }\n        \n        /**\n         * Main control loop with safety and performance considerations.\n         * Runs at approximately 50Hz for smooth robot control.\n         */\n        @Override\n        public void loop() {\n            // Check for emergency stop first\n            if (isEmergencyStopActive) {\n                stopAllMotors();\n                return;\n            }\n            \n            // Process input with safety checks\n            processDriverInput();\n            \n            // Update robot state\n            updateRobotState();\n            \n            // Apply safety checks\n            applySafetyChecks();\n            \n            // Update telemetry periodically for performance\n            updateTelemetryIfNeeded();\n        }"
+    },
+    {
+      "type": "code",
+      "title": "Reviewed OpMode - Hardware Initialization and Configuration",
+      "content": "Add hardware initialization and configuration methods with proper error handling:",
+      "code": "        /**\n         * Initializes all hardware components with error handling.\n         * Throws exception if critical hardware is missing.\n         */\n        private void initializeHardware() throws Exception {\n            // Initialize drive motors\n            leftDriveMotor = hardwareMap.get(DcMotor.class, \"left_drive\");\n            rightDriveMotor = hardwareMap.get(DcMotor.class, \"right_drive\");\n            \n            // Initialize servos\n            armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n            clawServo = hardwareMap.get(Servo.class, \"claw_servo\");\n            \n            // Initialize sensors\n            gameElementDetector = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n            proximitySensor = hardwareMap.get(DistanceSensor.class, \"distance_sensor\");\n            \n            // Verify critical hardware is available\n            if (leftDriveMotor == null || rightDriveMotor == null) {\n                throw new Exception(\"Critical drive motors not found\");\n            }\n        }\n        \n        /**\n         * Configures hardware settings for safe operation.\n         */\n        private void configureHardware() {\n            // Configure drive motors for safety\n            leftDriveMotor.setDirection(DcMotor.Direction.FORWARD);\n            rightDriveMotor.setDirection(DcMotor.Direction.REVERSE);\n            leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n            rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);\n            \n            // Set initial servo positions\n            if (armServo != null) armServo.setPosition(currentArmPosition);\n            if (clawServo != null) clawServo.setPosition(isClawOpen ? 1.0 : 0.0);\n        }"
+    },
+    {
+      "type": "text",
+      "title": "Common FTC-Specific Code Issues",
+      "content": "FTC code has specific patterns and common issues that reviewers should look for. Understanding these patterns helps identify potential problems before they cause issues during competition."
+    },
+    {
+      "type": "code",
+      "title": "Common Issues - Deadzone and Timeout Examples",
+      "content": "Examples of common FTC code issues and how to fix them. This section covers deadzone and timeout problems:",
+      "code": "// Common FTC Code Issues and Solutions\n\npublic class CommonIssuesExamples {\n    \n    /**\n     * ISSUE 1: No deadzone on gamepad input\n     * PROBLEM: Controller drift causes unwanted movement\n     * SOLUTION: Apply deadzone to prevent drift\n     */\n    public static class DeadzoneExample {\n        // BAD - No deadzone\n        public void badGamepadProcessing() {\n            double forward = gamepad1.left_stick_y;\n            double turn = gamepad1.right_stick_x;\n            // This can cause unwanted movement from controller drift\n        }\n        \n        // GOOD - With deadzone\n        public void goodGamepadProcessing() {\n            double forward = applyDeadzone(gamepad1.left_stick_y);\n            double turn = applyDeadzone(gamepad1.right_stick_x);\n            // Prevents unwanted movement from controller drift\n        }\n        \n        private double applyDeadzone(double input) {\n            return Math.abs(input) < 0.1 ? 0.0 : input;\n        }\n    }\n    \n    /**\n     * ISSUE 2: No safety timeouts\n     * PROBLEM: Robot can get stuck in operations\n     * SOLUTION: Add timeouts for all operations\n     */\n    public static class TimeoutExample {\n        private double operationStartTime;\n        private static final double OPERATION_TIMEOUT = 5.0; // 5 seconds\n        \n        // BAD - No timeout\n        public void badOperation() {\n            while (!isOperationComplete()) {\n                // Robot can get stuck here forever\n                performOperation();\n            }\n        }\n        \n        // GOOD - With timeout\n        public void goodOperation() {\n            operationStartTime = getRuntime();\n            while (!isOperationComplete() && !isTimeoutReached()) {\n                performOperation();\n            }\n            \n            if (isTimeoutReached()) {\n                handleTimeout();\n            }\n        }\n        \n        private boolean isTimeoutReached() {\n            return getRuntime() - operationStartTime > OPERATION_TIMEOUT;\n        }\n        \n        private void handleTimeout() {\n            // Stop operation and notify driver\n            stopOperation();\n            telemetry.addData(\"Warning\", \"Operation timed out\");\n        }\n    }"
+    },
+    {
+      "type": "code",
+      "title": "Common Issues - Hardware Failure and Telemetry Examples",
+      "content": "Add examples for hardware failure handling and telemetry optimization:",
+      "code": "    /**\n     * ISSUE 3: No hardware failure handling\n     * PROBLEM: Code crashes if hardware is missing or fails\n     * SOLUTION: Check for null and handle exceptions\n     */\n    public static class HardwareFailureExample {\n        private DcMotor driveMotor;\n        \n        // BAD - No null check\n        public void badHardwareAccess() {\n            driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n            driveMotor.setPower(0.5); // Crashes if motor is null\n        }\n        \n        // GOOD - With null check\n        public void goodHardwareAccess() {\n            driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n            if (driveMotor != null) {\n                driveMotor.setPower(0.5);\n            } else {\n                telemetry.addData(\"ERROR\", \"Drive motor not found\");\n            }\n        }\n    }\n    \n    /**\n     * ISSUE 4: Inefficient telemetry updates\n     * PROBLEM: Too much telemetry slows down the main loop\n     * SOLUTION: Update telemetry periodically\n     */\n    public static class TelemetryExample {\n        private long lastTelemetryUpdate = 0;\n        private static final long TELEMETRY_INTERVAL = 100; // 100ms\n        \n        // BAD - Updates every loop\n        public void badTelemetryUpdate() {\n            telemetry.addData(\"Runtime\", getRuntime());\n            telemetry.addData(\"Motor Power\", motor.getPower());\n            telemetry.addData(\"Sensor Value\", sensor.getValue());\n            // This runs every 20ms, which is excessive\n        }\n        \n        // GOOD - Updates periodically\n        public void goodTelemetryUpdate() {\n            long currentTime = System.currentTimeMillis();\n            if (currentTime - lastTelemetryUpdate > TELEMETRY_INTERVAL) {\n                telemetry.addData(\"Runtime\", getRuntime());\n                telemetry.addData(\"Motor Power\", motor.getPower());\n                telemetry.addData(\"Sensor Value\", sensor.getValue());\n                lastTelemetryUpdate = currentTime;\n            }\n        }\n    }"
+    },
+    {
+      "type": "text",
+      "title": "Performance and Safety Review Criteria",
+      "content": "Performance and safety are critical for FTC robots. Reviewers must ensure code meets performance requirements and includes proper safety measures."
+    },
+    {
+      "type": "rules-box",
+      "title": "Performance Review Criteria",
+      "items": [
+        "Main loop runs at 50Hz (20ms per loop) or faster",
+        "No blocking operations in the main loop",
+        "Telemetry updates are limited to reasonable frequency",
+        "Memory usage is optimized (no excessive object creation)",
+        "Sensor readings are not performed too frequently",
+        "Complex calculations are broken into smaller pieces"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Review Criteria",
+      "items": [
+        "All operations have timeout limits",
+        "Emergency stop functionality is implemented",
+        "Motor powers are limited to safe values",
+        "Proximity sensors are used to prevent collisions",
+        "Hardware failures are handled gracefully",
+        "Robot has a safe default state when stopped"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Collaborative Development Workflows",
+      "content": "Effective collaboration requires clear workflows, communication, and conflict resolution strategies. Teams need to work together efficiently while maintaining code quality."
+    },
+    {
+      "type": "code",
+      "title": "Git Workflow for Team Collaboration",
+      "content": "Implement a collaborative Git workflow for FTC teams. This example shows how to structure your project with version control in mind:",
+      "code": "// Git Workflow for FTC Team Collaboration\n\n/*\n * BRANCHING STRATEGY FOR FTC TEAMS\n * \n * Main Branch Structure:\n * - main: Production-ready code for competition\n * - development: Integration branch for testing\n * - feature/*: Individual feature branches\n * - hotfix/*: Emergency fixes for competition\n * \n * Workflow:\n * 1. Create feature branch from development\n * 2. Develop and test feature\n * 3. Create pull request to development\n * 4. Code review and testing\n * 5. Merge to development\n * 6. Integration testing\n * 7. Merge to main for competition\n * \n * Example Commands:\n * \n * # Start new feature\n * git checkout development\n * git pull origin development\n * git checkout -b feature/autonomous-collector\n * \n * # Develop feature\n * # ... make changes ...\n * git add .\n * git commit -m \"Add autonomous collector functionality\"\n * git push origin feature/autonomous-collector\n * \n * # Create pull request (on GitHub/GitLab)\n * # Review and merge to development\n * \n * # Prepare for competition\n * git checkout main\n * git merge development\n * git tag -a v1.0 -m \"Competition version 1.0\"\n * git push origin main --tags\n */"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Code Review Exercise",
+      "description": "Practice conducting code reviews by reviewing a sample OpMode and identifying issues using the checklist provided in this lesson.",
+      "tasks": [
+        "Review the provided sample OpMode using the checklist",
+        "Identify at least 5 issues in the code",
+        "Suggest specific improvements for each issue",
+        "Write a code review report with findings",
+        "Implement fixes for the identified issues",
+        "Conduct a follow-up review of the improved code"
+      ],
+      "content": "// Sample OpMode for code review exercise\npublic class CodeReviewExerciseOpMode extends OpMode {\n    // TODO: This OpMode has several issues that need to be identified\n    // TODO: Use the checklist to find problems\n    // TODO: Suggest improvements\n    // TODO: Implement fixes\n    \n    private DcMotor left, right;\n    private Servo arm;\n    private ColorSensor sensor;\n    \n    @Override\n    public void init() {\n        left = hardwareMap.get(DcMotor.class, \"left\");\n        right = hardwareMap.get(DcMotor.class, \"right\");\n        arm = hardwareMap.get(Servo.class, \"arm\");\n        sensor = hardwareMap.get(ColorSensor.class, \"sensor\");\n    }\n    \n    @Override\n    public void loop() {\n        // TODO: Identify issues in this code\n        // TODO: Apply fixes based on review findings\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "links": [
+        "<a href=\"https://google.github.io/eng-practices/review/\" target=\"_blank\">Google Code Review Guidelines</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/common-mistakes.html\" target=\"_blank\">gm0: Common Mistakes</a>",
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/safety/safety.html\" target=\"_blank\">FTC Safety Documentation</a>",
+        "<a href=\"https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell\" target=\"_blank\">Git Branching</a>"
+      ]
+    }
+  ]
+} 

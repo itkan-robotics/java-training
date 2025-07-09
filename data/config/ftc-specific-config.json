@@ -1,98 +1,720 @@
 {
-  "title": "FTC Curriculum",
+  "title": "FTC Training Curriculum",
+  "description": "Comprehensive FIRST Tech Challenge programming training for robotics teams",
   "intro": {
     "id": "ftc-curriculum-intro",
     "label": "FTC Curriculum Overview",
-    "file": "data/ftc/ftc-curriculum-intro.json"
+    "file": "data/ftc/ftc-curriculum-intro.json",
+    "type": "overview"
   },
   "groups": [
     {
-      "id": "ftc-beginner",
-      "label": "Beginner",
-      "items": [
+      "id": "onbot-java-parent",
+      "label": "OnBot Java Development",
+      "description": "Learn FTC programming using OnBot Java development environment",
+      "icon": "💻",
+      "children": [
         {
-          "id": "ftc-onbot-setup",
-          "label": "OnBot Java Setup",
-          "file": "data/ftc/beginner/ftc-onbot-setup.json"
+          "id": "onbot-java-environment-setup",
+          "label": "Environment Setup",
+          "description": "Setting up your FTC development environment",
+          "items": [
+            { 
+              "id": "ftc-sdk-basics", 
+              "label": "FTC SDK Basics", 
+              "file": "data/ftc/onbot-java/environment-setup/ftc-sdk-basics.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "opmode-structure", 
+              "label": "OpMode Structure", 
+              "file": "data/ftc/onbot-java/environment-setup/opmode-structure.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "linear-vs-iterative-opmodes", 
+              "label": "Linear vs Iterative OpModes", 
+              "file": "data/ftc/onbot-java/environment-setup/linear-vs-iterative-opmodes.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "telemetry-logging", 
+              "label": "Telemetry Logging", 
+              "file": "data/ftc/onbot-java/environment-setup/telemetry-logging.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "control-hub-expansion-hub", 
+              "label": "Control Hub & Expansion Hub", 
+              "file": "data/ftc/onbot-java/environment-setup/control-hub-expansion-hub.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            }
+          ]
         },
         {
-          "id": "ftc-basic-drivetrain",
-          "label": "Basic Drivetrain",
-          "file": "data/ftc/beginner/ftc-basic-drivetrain.json"
+          "id": "onbot-java-motors",
+          "label": "Motor Control",
+          "description": "Understanding and controlling DC motors",
+          "items": [
+            { 
+              "id": "robot-hardware-overview", 
+              "label": "Robot Hardware Overview", 
+              "file": "data/ftc/onbot-java/motors/robot-hardware-overview.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "dc-motors", 
+              "label": "DC Motors", 
+              "file": "data/ftc/onbot-java/motors/dc-motors.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "basic-motor-control", 
+              "label": "Basic Motor Control", 
+              "file": "data/ftc/onbot-java/motors/basic-motor-control.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "drivebase-types", 
+              "label": "Drivebase Types", 
+              "file": "data/ftc/onbot-java/motors/drivebase-types.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            { 
+              "id": "motor-encoders", 
+              "label": "Motor Encoders", 
+              "file": "data/ftc/onbot-java/motors/motor-encoders.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "motor-types", 
+              "label": "Motor Types", 
+              "file": "data/ftc/onbot-java/motors/motor-types.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            }
+          ]
         },
         {
-          "id": "ftc-gamepad-control",
-          "label": "Gamepad Control",
-          "file": "data/ftc/beginner/ftc-gamepad-control.json"
+          "id": "onbot-java-servos",
+          "label": "Servo Control",
+          "description": "Working with servo motors for precise positioning",
+          "items": [
+            { 
+              "id": "intro-to-servos", 
+              "label": "Introduction to Servos", 
+              "file": "data/ftc/onbot-java/servos/intro-to-servos.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "continuous-vs-noncontinuous", 
+              "label": "Continuous vs Non-Continuous Servos", 
+              "file": "data/ftc/onbot-java/servos/continuous-vs-noncontinuous.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "servo-positions", 
+              "label": "Servo Positions", 
+              "file": "data/ftc/onbot-java/servos/servo-positions.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "servo-synchronization", 
+              "label": "Using Multiple Servos and Synchronization", 
+              "file": "data/ftc/onbot-java/servos/servo-synchronization.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "gradual-movement", 
+              "label": "Advanced Servo Control: Gradual Movement", 
+              "file": "data/ftc/onbot-java/servos/gradual-movement.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            }
+          ]
         },
         {
-          "id": "ftc-basic-sensors",
-          "label": "Basic Sensors",
-          "file": "data/ftc/beginner/ftc-basic-sensors.json"
+          "id": "onbot-java-sensors",
+          "label": "Sensors",
+          "description": "Using various sensors for robot feedback",
+          "items": [
+            { 
+              "id": "sensors-overview", 
+              "label": "Sensors Overview", 
+              "file": "data/ftc/onbot-java/sensors/sensors.json",
+              "difficulty": "beginner",
+              "duration": "15 min"
+            },
+            { 
+              "id": "touch-sensors", 
+              "label": "Touch Sensors", 
+              "file": "data/ftc/onbot-java/sensors/touch-sensors.json",
+              "difficulty": "beginner",
+              "duration": "20 min"
+            },
+            { 
+              "id": "distance-sensors", 
+              "label": "Distance Sensors", 
+              "file": "data/ftc/onbot-java/sensors/distance-sensors.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "color-sensors", 
+              "label": "Color Sensors", 
+              "file": "data/ftc/onbot-java/sensors/color-sensors.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "imu", 
+              "label": "IMU (Inertial Measurement Unit)", 
+              "file": "data/ftc/onbot-java/sensors/imu.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            }
+          ]
         },
         {
-          "id": "ftc-simple-autonomous",
-          "label": "Simple Autonomous",
-          "file": "data/ftc/beginner/ftc-simple-autonomous.json"
+          "id": "onbot-java-teleop-programming",
+          "label": "TeleOp Programming",
+          "description": "Creating driver-controlled robot programs",
+          "items": [
+            { 
+              "id": "basic-robot-control", 
+              "label": "Basic Robot Control", 
+              "file": "data/ftc/onbot-java/teleop-programming/basic-robot-control.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            { 
+              "id": "teleop-programming", 
+              "label": "TeleOp Programming", 
+              "file": "data/ftc/onbot-java/teleop-programming/teleop-programming.json",
+              "difficulty": "beginner",
+              "duration": "30 min"
+            },
+            { 
+              "id": "gamepad-controls", 
+              "label": "Gamepad Controls", 
+              "file": "data/ftc/onbot-java/teleop-programming/gamepad-controls.json",
+              "difficulty": "beginner",
+              "duration": "25 min"
+            },
+            {
+              "id": "subsystem-organization",
+              "label": "Subsystem Organization & Modular Code",
+              "file": "data/ftc/onbot-java/teleop-programming/subsystem-organization.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "advanced-gamepad-techniques",
+              "label": "Advanced Gamepad Techniques",
+              "file": "data/ftc/onbot-java/teleop-programming/advanced-gamepad-techniques.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "telemetry-feedback",
+              "label": "Telemetry & Feedback",
+              "file": "data/ftc/onbot-java/teleop-programming/telemetry-feedback.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            {
+              "id": "teleop-exercises",
+              "label": "TeleOp Programming Exercises",
+              "file": "data/ftc/onbot-java/teleop-programming/teleop-exercises.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            }
+          ]
         },
         {
-          "id": "ftc-basic-mechanisms",
-          "label": "Basic Mechanisms",
-          "file": "data/ftc/beginner/ftc-basic-mechanisms.json"
+          "id": "onbot-java-autonomous-programming",
+          "label": "Autonomous Programming",
+          "description": "Creating autonomous robot programs",
+          "items": [
+            { 
+              "id": "basic-autonomous-programming", 
+              "label": "Basic Autonomous Programming", 
+              "file": "data/ftc/onbot-java/autonomous-programming/basic-autonomous-programming.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            { 
+              "id": "time-based-movement", 
+              "label": "Time-Based Movement", 
+              "file": "data/ftc/onbot-java/autonomous-programming/time-based-movement.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "encoder-based-movement", 
+              "label": "Encoder-Based Movement", 
+              "file": "data/ftc/onbot-java/autonomous-programming/encoder-based-movement.json",
+              "difficulty": "intermediate",
+              "duration": "40 min"
+            }
+          ]
+        },
+        {
+          "id": "onbot-java-debugging-best-practices",
+          "label": "OBJ Debugging & Best Practices",
+          "description": "Debugging techniques and programming best practices",
+          "items": [
+            {
+              "id": "basic-debugging-techniques",
+              "label": "Basic Debugging Techniques",
+              "file": "data/ftc/onbot-java/debugging-best-practices/basic-debugging-techniques.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            {
+              "id": "state-machines",
+              "label": "State Machines",
+              "file": "data/ftc/onbot-java/debugging-best-practices/state-machines.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            {
+              "id": "code-organization",
+              "label": "Code Organization",
+              "file": "data/ftc/onbot-java/debugging-best-practices/code-organization.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "troubleshooting-common-issues",
+              "label": "Troubleshooting Common Issues",
+              "file": "data/ftc/onbot-java/debugging-best-practices/troubleshooting-common-issues.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "ftc-intermediate",
-      "label": "Intermediate",
-      "items": [
+      "id": "android-studio-parent",
+      "label": "Android Studio Development",
+      "description": "Advanced FTC programming using Android Studio IDE",
+      "icon": "📱",
+      "children": [
         {
-          "id": "ftc-android-studio-intro",
-          "label": "Android Studio Introduction",
-          "file": "data/ftc/intermediate/ftc-android-studio-intro.json"
+          "id": "android-studio-environment-setup",
+          "label": "Environment Setup",
+          "description": "Setting up Android Studio for FTC development",
+          "items": [
+            { 
+              "id": "android-studio-environment", 
+              "label": "Android Studio Environment", 
+              "file": "data/ftc/android-studio/environment-setup/android-studio-environment.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            { 
+              "id": "sdk-installation", 
+              "label": "SDK Installation", 
+              "file": "data/ftc/android-studio/environment-setup/sdk-installation.json",
+              "difficulty": "intermediate",
+              "duration": "25 min"
+            },
+            { 
+              "id": "project-structure", 
+              "label": "Project Structure", 
+              "file": "data/ftc/android-studio/environment-setup/project-structure.json",
+              "difficulty": "intermediate",
+              "duration": "20 min"
+            },
+            { 
+              "id": "code-version-control", 
+              "label": "Code Version Control", 
+              "file": "data/ftc/android-studio/environment-setup/code-version-control.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            }
+          ]
         },
         {
-          "id": "ftc-onbot-vs-android",
-          "label": "OnBot vs Android Studio",
-          "file": "data/ftc/intermediate/ftc-onbot-vs-android.json"
+          "id": "android-studio-advanced-movement-control",
+          "label": "Advanced Movement Control",
+          "description": "Advanced robot movement control and control theory",
+          "items": [
+            { 
+              "id": "advanced-movement-control", 
+              "label": "Advanced Movement Control", 
+              "file": "data/ftc/android-studio/advanced-movement-control/advanced-movement-control.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            { 
+              "id": "pid-control", 
+              "label": "PID Control", 
+              "file": "data/ftc/android-studio/advanced-movement-control/pid-control.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
+            },
+            { 
+              "id": "robot-pid-control", 
+              "label": "Robot PID Control", 
+              "file": "data/ftc/android-studio/advanced-movement-control/robot-pid-control.json",
+              "difficulty": "advanced",
+              "duration": "80 min"
+            },
+            { 
+              "id": "motion-profiling", 
+              "label": "Motion Profiling", 
+              "file": "data/ftc/android-studio/advanced-movement-control/motion-profiling.json",
+              "difficulty": "advanced",
+              "duration": "70 min"
+            },
+            { 
+              "id": "advanced-control-theory", 
+              "label": "Advanced Control Theory", 
+              "file": "data/ftc/android-studio/advanced-movement-control/advanced-control-theory.json",
+              "difficulty": "advanced",
+              "duration": "90 min"
+            }
+          ]
         },
         {
-          "id": "ftc-git-version-control",
-          "label": "Git Version Control",
-          "file": "data/ftc/intermediate/ftc-git-version-control.json"
+          "id": "android-studio-odometry",
+          "label": "Odometry",
+          "description": "Advanced odometry techniques for FTC",
+          "items": [
+            { 
+              "id": "intro-to-odometry", 
+              "label": "Introduction to Odometry", 
+              "file": "data/ftc/android-studio/odometry/intro-to-odometry.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "dead-wheel-encoders", 
+              "label": "Dead Wheel Encoders", 
+              "file": "data/ftc/android-studio/odometry/dead-wheel-encoders.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "three-wheel-odometry", 
+              "label": "Three-Wheel Odometry", 
+              "file": "data/ftc/android-studio/odometry/three-wheel-odometry.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "gobilda-pinpoint", 
+              "label": "Gobilda Pinpoint", 
+              "file": "data/ftc/android-studio/odometry/gobilda-pinpoint.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            }
+          ]
         },
         {
-          "id": "ftc-command-based",
-          "label": "Command-Based Programming",
-          "file": "data/ftc/intermediate/ftc-command-based.json"
+          "id": "android-studio-path-planning-roadrunner",
+          "label": "Road Runner Path Planning",
+          "description": "Motion planning and trajectory following with Road Runner",
+          "items": [
+            {
+              "id": "intro-to-roadrunner",
+              "label": "Introduction to Road Runner",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/intro-to-roadrunner.json",
+              "difficulty": "advanced",
+              "duration": "40 min"
+            },
+            {
+              "id": "roadrunner-trajectories",
+              "label": "Road Runner Trajectories",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-trajectories.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            {
+              "id": "roadrunner-advanced-tuning",
+              "label": "Advanced Road Runner Tuning",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-advanced-tuning.json",
+              "difficulty": "advanced",
+              "duration": "50 min"
+            },
+            {
+              "id": "roadrunner-actions",
+              "label": "Road Runner Actions & Autonomous Routines",
+              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-actions.json",
+              "difficulty": "advanced",
+              "duration": "50 min"
+            }
+          ]
         },
         {
-          "id": "ftc-pedropathing",
-          "label": "PedroPathing",
-          "file": "data/ftc/intermediate/ftc-pedropathing.json"
-        }
-      ]
-    },
-    {
-      "id": "ftc-advanced",
-      "label": "Advanced",
-      "items": [
-        {
-          "id": "ftc-advanced-command-based",
-          "label": "Advanced Command-Based Programming",
-          "file": "data/ftc/advanced/ftc-advanced-command-based.json"
+          "id": "android-studio-path-planning-pedro-pathing",
+          "label": "Pedro Pathing",
+          "description": "Lightweight path planning library designed specifically for FTC",
+          "items": [
+            {
+              "id": "intro-to-pedro-pathing",
+              "label": "Introduction to Pedro Pathing",
+              "file": "data/ftc/android-studio/path-planning/pedro-pathing/intro-to-pedro-pathing.json",
+              "difficulty": "intermediate",
+              "duration": "45 min"
+            },
+            {
+              "id": "pedro-localization",
+              "label": "Pedro Localization",
+              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-localization.json",
+              "difficulty": "intermediate",
+              "duration": "50 min"
+            },
+            {
+              "id": "pedro-advanced-configuration",
+              "label": "Pedro Advanced Configuration",
+              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-advanced-configuration.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "pedro-autonomous-routines",
+              "label": "Building Pedro Pathing Autonomous Routines",
+              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-autonomous-routines.json",
+              "difficulty": "advanced",
+              "duration": "55 min"
+            }
+          ]
         },
         {
-          "id": "ftc-advanced-pedropathing",
-          "label": "Advanced PedroPathing",
-          "file": "data/ftc/advanced/ftc-advanced-pedropathing.json"
+          "id": "android-studio-solverslib",
+          "label": "SolversLib Command-Based Programming",
+          "description": "Advanced command-based programming using SolversLib framework",
+          "items": [
+            {
+              "id": "intro-to-command-system",
+              "label": "Introduction to Command-Based Programming",
+              "file": "data/ftc/android-studio/solverslib/intro-to-command-system.json",
+              "difficulty": "intermediate",
+              "duration": "45 min"
+            },
+            {
+              "id": "solverslib-subsystem-design",
+              "label": "Subsystem Design with SolversLib",
+              "file": "data/ftc/android-studio/solverslib/solverslib-subsystem-design.json",
+              "difficulty": "intermediate",
+              "duration": "50 min"
+            },
+            {
+              "id": "solverslib-commands-and-scheduler",
+              "label": "Commands and Scheduler Implementation",
+              "file": "data/ftc/android-studio/solverslib/solverslib-commands-and-scheduler.json",
+              "difficulty": "intermediate",
+              "duration": "55 min"
+            },
+            {
+              "id": "solverslib-command-groups",
+              "label": "Command Groups and Sequencing",
+              "file": "data/ftc/android-studio/solverslib/solverslib-command-groups.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "solverslib-advanced-patterns",
+              "label": "Advanced Command-Based Patterns",
+              "file": "data/ftc/android-studio/solverslib/solverslib-advanced-patterns.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
+            }
+          ]
         },
         {
-          "id": "ftc-advanced-computer-vision",
-          "label": "Advanced Computer Vision",
-          "file": "data/ftc/advanced/ftc-advanced-computer-vision.json"
+          "id": "android-studio-vision",
+          "label": "Computer Vision",
+          "description": "Advanced computer vision techniques for FTC",
+          "items": [
+            { 
+              "id": "vision-introduction", 
+              "label": "Vision Introduction", 
+              "file": "data/ftc/android-studio/vision/vision-introduction.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            },
+            { 
+              "id": "ftc-vision-portal", 
+              "label": "FTC Vision Portal", 
+              "file": "data/ftc/android-studio/vision/ftc-vision-portal.json",
+              "difficulty": "advanced",
+              "duration": "50 min"
+            },
+            { 
+              "id": "opencv-basics", 
+              "label": "OpenCV Basics", 
+              "file": "data/ftc/android-studio/vision/opencv-basics.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            { 
+              "id": "apriltags", 
+              "label": "AprilTags", 
+              "file": "data/ftc/android-studio/vision/apriltags.json",
+              "difficulty": "advanced",
+              "duration": "55 min"
+            },
+            { 
+              "id": "tensorflow-lite", 
+              "label": "TensorFlow Lite", 
+              "file": "data/ftc/android-studio/vision/tensorflow-lite.json",
+              "difficulty": "advanced",
+              "duration": "70 min"
+            },
+            { 
+              "id": "custom-vision-processing", 
+              "label": "Custom Vision Processing", 
+              "file": "data/ftc/android-studio/vision/custom-vision-processing.json",
+              "difficulty": "advanced",
+              "duration": "65 min"
+            },
+            { 
+              "id": "vision-based-navigation", 
+              "label": "Vision-Based Navigation", 
+              "file": "data/ftc/android-studio/vision/vision-based-navigation.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
+            },
+            { 
+              "id": "machine-learning-integration", 
+              "label": "Machine Learning Integration", 
+              "file": "data/ftc/android-studio/vision/machine-learning-integration.json",
+              "difficulty": "advanced",
+              "duration": "75 min"
+            }
+          ]
+        },
+        {
+          "id": "android-studio-ftc-dashboard",
+          "label": "FTCDashboard",
+          "description": "Advanced robot monitoring and control using FTCDashboard web interface",
+          "items": [
+            {
+              "id": "intro-to-ftcdashboard",
+              "label": "Introduction to FTCDashboard",
+              "file": "data/ftc/android-studio/ftc-dashboard/intro-to-ftcdashboard.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "telemetry-and-plotting",
+              "label": "Telemetry and Plotting",
+              "file": "data/ftc/android-studio/ftc-dashboard/telemetry-and-plotting.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            {
+              "id": "field-view-visualization",
+              "label": "Field View Visualization",
+              "file": "data/ftc/android-studio/ftc-dashboard/field-view-visualization.json",
+              "difficulty": "intermediate",
+              "duration": "40 min"
+            },
+            {
+              "id": "configuration-variables",
+              "label": "Configuration Variables",
+              "file": "data/ftc/android-studio/ftc-dashboard/configuration-variables.json",
+              "difficulty": "intermediate",
+              "duration": "35 min"
+            },
+            {
+              "id": "opmode-controls",
+              "label": "OpMode Controls",
+              "file": "data/ftc/android-studio/ftc-dashboard/opmode-controls.json",
+              "difficulty": "intermediate",
+              "duration": "30 min"
+            },
+            {
+              "id": "camera-streaming",
+              "label": "Camera Streaming",
+              "file": "data/ftc/android-studio/ftc-dashboard/camera-streaming.json",
+              "difficulty": "advanced",
+              "duration": "45 min"
+            }
+          ]
+        },
+        {
+          "id": "android-studio-as-debugging-best-practices",
+          "label": "AS Debugging Best Practices",
+          "description": "Advanced debugging and best practices for FTC Android Studio development",
+          "items": [
+            {
+              "id": "advanced-debugging",
+              "label": "Advanced Debugging",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/advanced-debugging.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "performance-optimization",
+              "label": "Performance Optimization",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/performance-optimization.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "software-development-best-practices",
+              "label": "Software Development Best Practices",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/software-development-best-practices.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "code-review",
+              "label": "Code Review",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/code-review.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "unit-testing",
+              "label": "Unit Testing",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/unit-testing.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            },
+            {
+              "id": "debugging-strategies",
+              "label": "Debugging Strategies",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/debugging-strategies.json",
+              "difficulty": "advanced",
+              "duration": "60 min"
+            }
+          ]
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "version": "2.1.0",
+    "lastUpdated": "2025-01-27",
+    "totalLessons": 53,
+    "difficultyLevels": {
+      "beginner": 15,
+      "intermediate": 22,
+      "advanced": 16
+    },
+    "estimatedDuration": "27.5 hours",
+    "prerequisites": ["java-training"],
+    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop", "control-theory", "path-planning", "odometry", "motion-profiling", "computer-vision", "machine-learning", "dashboard", "telemetry", "visualization", "command-based-programming", "solverslib"]
+  }
 } 

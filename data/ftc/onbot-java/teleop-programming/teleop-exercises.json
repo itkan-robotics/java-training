@@ -1,0 +1,89 @@
+{
+  "title": "TeleOp Programming Exercises and Challenges",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Purpose of Exercises",
+      "content": "Hands-on practice is essential for mastering TeleOp programming. These exercises are designed to reinforce and apply the concepts you've learned in previous lessons."
+    },
+    {
+      "type": "exercise-box",
+      "title": "Drive in a Square",
+      "description": "Write code to make the robot drive in a square pattern using TeleOp controls. Use helper methods for each movement.",
+      "tasks": [
+        "Map drive motors.",
+        "Write a helper method to drive forward for a set time.",
+        "Write a helper method to turn 90 degrees.",
+        "Use a button to trigger the square-driving sequence."
+      ],
+      "content": "// Example: Drive forward helper\nprivate void driveForward(double power, long timeMs) {\n    leftDrive.setPower(power);\n    rightDrive.setPower(power);\n    sleep(timeMs);\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Servo Toggle",
+      "description": "Implement a button toggle to open/close a claw or move a servo to two positions.",
+      "tasks": [
+        "Map a servo.",
+        "Use edge detection to toggle the servo position with a button.",
+        "Display the servo state with telemetry."
+      ],
+      "content": "// Example: Servo toggle\nprivate boolean lastA = false;\nprivate boolean clawOpen = false;\nprivate void toggleClaw() {\n    if (gamepad1.a && !lastA) {\n        clawOpen = !clawOpen;\n        clawServo.setPosition(clawOpen ? 1.0 : 0.0);\n    }\n    lastA = gamepad1.a;\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Display Arm Position",
+      "description": "Use telemetry to show the current position of an arm or lift.",
+      "tasks": [
+        "Map an arm or lift motor with an encoder.",
+        "Read the encoder value.",
+        "Display the value with telemetry."
+      ],
+      "content": "// Example: Arm position telemetry\ntelemetry.addData(\"Arm Position\", armMotor.getCurrentPosition());\ntelemetry.update();"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Slow Mode",
+      "description": "Add a button to enable/disable slow mode for precise driving.",
+      "tasks": [
+        "Use a button to toggle slow mode.",
+        "Multiply drive power by a lower value when slow mode is active.",
+        "Display slow mode status with telemetry."
+      ],
+      "content": "// Example: Slow mode\nboolean slowMode = gamepad1.left_bumper;\ndouble speed = slowMode ? 0.3 : 1.0;\nleftDrive.setPower(-gamepad1.left_stick_y * speed);\nrightDrive.setPower(-gamepad1.right_stick_y * speed);"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Multi-Subsystem Control",
+      "description": "Control two mechanisms (e.g., drive and arm) simultaneously with different gamepad inputs.",
+      "tasks": [
+        "Map drive motors and an arm motor.",
+        "Use the left stick for driving and buttons for the arm.",
+        "Add telemetry for both subsystems."
+      ],
+      "content": "// Example: Multi-subsystem control\nprivate void drive() {\n    leftDrive.setPower(-gamepad1.left_stick_y);\n    rightDrive.setPower(-gamepad1.right_stick_y);\n}\nprivate void controlArm() {\n    if (gamepad1.a) {\n        armMotor.setPower(1.0);\n    } else if (gamepad1.b) {\n        armMotor.setPower(-1.0);\n    } else {\n        armMotor.setPower(0.0);\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Troubleshooting Scenarios",
+      "description": "Practice diagnosing and fixing common TeleOp issues.",
+      "tasks": [
+        "Fix code where a motor does not move.",
+        "Debug a button that does not trigger the expected action.",
+        "Find and fix a missing telemetry.update() call."
+      ],
+      "content": "// Example: Missing telemetry update\ntelemetry.addData(\"Status\", \"Running\");\n// telemetry.update(); // Uncomment to fix"
+    },
+    {
+      "type": "text",
+      "title": "Reflection and Extension",
+      "content": "After completing these exercises, think about how you could extend your code. Try adding a new feature, optimizing your logic, or combining multiple exercises into a single OpMode."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        
+      ]
+    }
+  ]
+}

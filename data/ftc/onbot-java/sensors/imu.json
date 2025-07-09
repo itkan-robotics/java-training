@@ -1,0 +1,59 @@
+{
+  "title": "IMU (Inertial Measurement Unit) in FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is an IMU?",
+      "content": "An IMU (Inertial Measurement Unit) is a sensor that measures orientation (heading, pitch, roll) and acceleration. In FTC, the IMU is critical for tasks like navigation, turning, and field-centric control."
+    },
+    {
+      "type": "text",
+      "title": "Configuring and Mapping the IMU",
+      "content": "Add the IMU to your robot's hardware configuration and assign it a clear name. Then, map it in your code as shown below. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
+    },
+    {
+      "type": "code",
+      "title": "Mapping the IMU in Java",
+      "content": "Here's how to map the IMU in your Op Mode:",
+      "code": "private Gyroscope imu;\n\n@Override\npublic void runOpMode() {\n    imu = hardwareMap.get(Gyroscope.class, \"imu\");\n    // Now you can use imu in your code\n}"
+    },
+    {
+      "type": "code",
+      "title": "Reading Orientation Data",
+      "content": "You can read the robot's heading (rotation) from the IMU. The exact method depends on your IMU model. Here's a generic example:",
+      "code": "float heading = imu.getAngularOrientation().firstAngle;\ntelemetry.addData(\"Heading\", heading);\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Using IMU Data in Robot Logic",
+      "content": "IMU data is used for tasks like turning to a specific angle, maintaining orientation, or implementing field-centric drive."
+    },
+    {
+      "type": "code",
+      "title": "Example: Turning to a Target Angle",
+      "content": "This snippet shows how you might use IMU data to turn the robot to a specific heading (simplified):",
+      "code": "float targetAngle = 90;\nwhile (Math.abs(imu.getAngularOrientation().firstAngle - targetAngle) > 2) {\n    // Set motor powers to turn\n    // ...\n    telemetry.addData(\"Current Angle\", imu.getAngularOrientation().firstAngle);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Troubleshooting and Best Practices",
+      "content": "IMUs may require calibration and can drift over time. Always test your IMU before matches and handle exceptions in your code."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        {"label": "Intro to Sensors", "url": "#intro-to-sensors"},
+        {"label": "Touch Sensors", "url": "#touch-sensors"}
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "See Also",
+      "content": [
+        {"label": "FTC OpMode API: BNO055IMU", "url": "https://javadoc.io/doc/org.firstinspires.ftc/Hardware/latest/com/qualcomm/hardware/bosch/BNO055IMU.html"},
+        {"label": "FTC OpMode API: Gyroscope", "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/Gyroscope.html"}
+      ]
+    }
+  ]
+}

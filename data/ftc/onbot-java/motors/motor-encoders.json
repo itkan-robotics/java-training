@@ -1,0 +1,61 @@
+{
+  "title": "Motor Encoders",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is a Motor Encoder?",
+      "content": "A motor encoder is a sensor built into some DC motors that measures rotation. Encoders allow you to move your robot precise distances and track movement. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode</a>."
+    },
+    {
+      "type": "code",
+      "title": "Checking for an Encoder",
+      "content": "To use encoder features, your motor must support them. Most FTC motors do. You can check the documentation or look for an encoder port on the motor.",
+      "code": "// No code required; check your motor's datasheet or look for an encoder port."
+    },
+    {
+      "type": "code",
+      "title": "Reading Encoder Values",
+      "content": "Use <code>getCurrentPosition()</code> to read the encoder value. This tells you how far the motor has turned since it was last reset.",
+      "code": "int position = leftDrive.getCurrentPosition();\ntelemetry.addData(\"Encoder Position\", position);\ntelemetry.update();"
+    },
+    {
+      "type": "text",
+      "title": "Using Encoders for Precise Movement",
+      "content": "You can use encoders to move your robot a set distance. This is especially useful in autonomous routines."
+    },
+    {
+      "type": "code",
+      "title": "Example: Move Forward a Set Distance",
+      "content": "This code moves the robot forward until the encoder reaches a target value. Always reset the encoder before starting.",
+      "code": "leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n\nint target = 1000; // Target encoder counts\nleftDrive.setPower(0.5);\nwhile (opModeIsActive() && leftDrive.getCurrentPosition() < target) {\n    telemetry.addData(\"Encoder\", leftDrive.getCurrentPosition());\n    telemetry.update();\n}\nleftDrive.setPower(0);"
+    },
+    {
+      "type": "text",
+      "title": "Resetting and Configuring Encoders",
+      "content": "Always reset encoders at the start of your OpMode to avoid errors from previous runs. Use <code>STOP_AND_RESET_ENCODER</code> and <code>RUN_USING_ENCODER</code> modes."
+    },
+    {
+      "type": "code",
+      "title": "Resetting Encoders",
+      "content": "",
+      "code": "leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Encoder Issues",
+      "content": "If your encoder values don't change:<ul><li>Check that your motor supports encoders.</li><li>Check wiring and configuration.</li><li>Make sure you reset the encoder before use.</li></ul>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Move a Set Distance",
+      "description": "Write code to move a motor forward until the encoder reaches 500 counts, then stop.",
+      "tasks": [
+        "Reset the encoder.",
+        "Set the motor to run using encoder.",
+        "Move until the encoder reaches 500.",
+        "Stop the motor."
+      ],
+      "content": "// Example code\nleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\nleftDrive.setPower(0.5);\nwhile (opModeIsActive() && leftDrive.getCurrentPosition() < 500) {\n    telemetry.addData(\"Encoder\", leftDrive.getCurrentPosition());\n    telemetry.update();\n}\nleftDrive.setPower(0);"
+    }
+  ]
+}

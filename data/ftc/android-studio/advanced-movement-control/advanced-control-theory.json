@@ -1,0 +1,51 @@
+{
+  "title": "Advanced Control Theory (Android Studio)",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Control Theory?",
+      "content": "<p>Control theory is the science of making systems behave in a desired way. In robotics, it means using software to make your robot move precisely and reliably, even when there are disturbances or changes in the environment. Understanding control theory is essential for building robots that can perform complex tasks autonomously and consistently.</p>"
+    },
+    {
+      "type": "list",
+      "title": "Key Concepts in Control Theory",
+      "content": [
+        "<strong>Open-Loop Control</strong>: Commands are sent to motors without feedback. Simple but not robust to disturbances.",
+        "<strong>Closed-Loop Control</strong>: Uses sensor feedback to adjust commands and correct errors. Essential for precision.",
+        "<strong>Feedback</strong>: Information from sensors (like encoders or IMUs) that tells the robot how it is actually moving.",
+        "<strong>Controllers</strong>: Algorithms (like PID) that use feedback to adjust motor power and achieve the desired result."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Open-Loop vs. Closed-Loop Example",
+      "content": "<p>Suppose you want your robot to drive forward 24 inches. In open-loop control, you might run the motors at 50% power for 2 seconds. But if the battery is low or the floor is slippery, the robot might not go the full distance. In closed-loop control, you use encoders to measure the distance and adjust power until the robot has actually traveled 24 inches, regardless of external factors.</p>"
+    },
+    {
+      "type": "text",
+      "title": "Feedback and Sensors in FTC",
+      "content": "<p>FTC robots use sensors like <strong>motor encoders</strong>, <strong>IMUs</strong> (gyroscopes), and <strong>distance sensors</strong> to provide feedback. This feedback is used by control algorithms to correct errors and achieve precise movement. For example, encoders can measure wheel rotation to determine how far the robot has traveled.</p>"
+    },
+    {
+      "type": "text",
+      "title": "Introduction to PID and Other Controllers",
+      "content": "<p>The most common feedback controller in FTC is the <strong>PID controller</strong> (Proportional-Integral-Derivative). PID uses the difference between the target and actual value (the error) to adjust motor power. Other controllers include <strong>feedforward</strong> (predictive control) and <strong>bang-bang</strong> (on/off control). Each has its own strengths and use cases.</p><p>Learn more: <a href=\"https://gm0.org/en/latest/docs/software/concepts/control-loops.html\" target=\"_blank\">gm0: Control Loops</a></p>"
+    },
+    {
+      "type": "code",
+      "title": "Simple Closed-Loop Example (Encoder Distance)",
+      "content": "This Java snippet shows how you might use encoder feedback in Android Studio to drive a set distance:",
+      "code": "// Drive forward until encoder target is reached\nint targetTicks = 1000;\nmotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\nmotor.setTargetPosition(targetTicks);\nmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\nmotor.setPower(0.5);\nwhile (motor.isBusy()) {\n    // Optionally add telemetry or safety checks here\n}\nmotor.setPower(0);"
+    },
+    {
+      "type": "text",
+      "title": "Practical FTC Example: Why Feedback Matters",
+      "content": "<p>Without feedback, your robot's movements will vary from run to run. With feedback and control theory, you can make your robot drive straight, turn accurately, and move arms to precise positions—no matter the battery level or field conditions.</p>"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Reference: FTC Android Studio Op Modes",
+      "content": "See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/android_studio/creating_op_modes/Creating-and-Running-an-Op-Mode-(Android-Studio).html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (Android Studio)</a> for more on integrating sensors and feedback in your code."
+    }
+  ]
+}

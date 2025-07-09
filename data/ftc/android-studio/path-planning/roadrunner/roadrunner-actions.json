@@ -1,0 +1,38 @@
+{
+  "title": "Road Runner Actions and Autonomous Routines",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What are Actions in Road Runner?",
+      "content": "Actions are the building blocks for creating complex autonomous routines in Road Runner. They represent tasks that your robot can perform, such as following a trajectory, turning, or operating a mechanism. Actions can be combined in sequence or in parallel to build sophisticated routines."
+    },
+    {
+      "type": "code",
+      "title": "Using SequentialAction",
+      "content": "A SequentialAction lets you run multiple actions one after another. For example:",
+      "code": "Action sequence = new SequentialAction(\n    new TrajectoryActionBuilder(drive, startPose)\n        .lineToX(24)\n        .build(),\n    new TrajectoryActionBuilder(drive, new Pose2d(24, 0, 0))\n        .strafeLeft(12)\n        .build()\n);"
+    },
+    {
+      "type": "code",
+      "title": "Using ParallelAction",
+      "content": "A ParallelAction lets you run multiple actions at the same time. This is useful for multitasking, such as moving while operating a mechanism:",
+      "code": "Action parallel = new ParallelAction(\n    new TrajectoryActionBuilder(drive, startPose)\n        .lineToX(24)\n        .build(),\n    new InstantAction(() -> servo.setPosition(1.0))\n);"
+    },
+    {
+      "type": "text",
+      "title": "Building a Full Autonomous Routine",
+      "content": "You can combine actions to create a complete autonomous routine. Typically, you'll use a SequentialAction to define the order of tasks, and insert ParallelActions where needed."
+    },
+    {
+      "type": "code",
+      "title": "Example: Simple Autonomous Routine",
+      "content": "Here's how you might structure a basic autonomous routine using actions:",
+      "code": "@Autonomous\npublic class MyAuto extends LinearOpMode {\n    @Override\n    public void runOpMode() throws InterruptedException {\n        MecanumDrive drive = new MecanumDrive(hardwareMap);\n        Pose2d startPose = new Pose2d(0, 0, 0);\n\n        Action routine = new SequentialAction(\n            new TrajectoryActionBuilder(drive, startPose)\n                .lineToX(24)\n                .build(),\n            new InstantAction(() -> {\n                // Drop a game element\n                servo.setPosition(1.0);\n            }),\n            new TrajectoryActionBuilder(drive, new Pose2d(24, 0, 0))\n                .strafeLeft(12)\n                .build()\n        );\n\n        waitForStart();\n        if (isStopRequested()) return;\n\n        Actions.runBlocking(routine, this);\n    }\n}"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Reference",
+      "content": "See the <a href=\"https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/\" target=\"_blank\">Building a CENTERSTAGE Autonomous</a> and <a href=\"https://rr.brott.dev/docs/v1-0-1/actions/javadoc/com/acmerobotics/roadrunner/package-summary.html\" target=\"_blank\">Actions Javadoc</a> for more details."
+    }
+  ]
+}

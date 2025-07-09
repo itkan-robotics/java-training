@@ -1,0 +1,54 @@
+{
+  "title": "Basic Motor Control",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Setting Motor Power with Gamepad Input",
+      "content": "To control your robot in real time, you need to set motor power based on gamepad input. The FTC SDK provides <code>gamepad1</code> and <code>gamepad2</code> objects for reading controller input. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#modifying-your-op-mode-to-control-a-motor\" target=\"_blank\">FTC Docs: Modifying Your Op Mode to Control a Motor</a>."
+    },
+    {
+      "type": "code",
+      "title": "Example: Single Motor Control with Joystick",
+      "content": "This code sets the power of a motor based on the Y value of the left joystick. The joystick value is negated so pushing forward moves the robot forward.",
+      "code": "double tgtPower = 0;\nwhile (opModeIsActive()) {\n    tgtPower = -this.gamepad1.left_stick_y;\n    leftDrive.setPower(tgtPower);\n    telemetry.addData(\"Target Power\", tgtPower);\n    telemetry.addData(\"Motor Power\", leftDrive.getPower());\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Controlling Multiple Motors (Tank Drive)",
+      "content": "Most robots use two or more motors for driving. Tank drive is a common method where each side of the robot is controlled by one joystick."
+    },
+    {
+      "type": "code",
+      "title": "Example: Tank Drive Control",
+      "content": "",
+      "code": "while (opModeIsActive()) {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n    telemetry.addData(\"Left Power\", leftPower);\n    telemetry.addData(\"Right Power\", rightPower);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Using Loops for Continuous Control",
+      "content": "The <code>while(opModeIsActive())</code> loop lets you continuously update motor power based on gamepad input. Place all real-time control logic inside this loop."
+    },
+    {
+      "type": "text",
+      "title": "Best Practices: Modular Code",
+      "content": "Avoid putting all your logic in one big loop. Break up your code into small methods, such as <code>readGamepad()</code> and <code>updateMotors()</code>, to make it easier to read and debug."
+    },
+    {
+      "type": "code",
+      "title": "Example: Modular Motor Control",
+      "content": "",
+      "code": "private void readGamepad() {\n    leftPower = -gamepad1.left_stick_y;\n    rightPower = -gamepad1.right_stick_y;\n}\n\nprivate void updateMotors() {\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n\nwhile (opModeIsActive()) {\n    readGamepad();\n    updateMotors();\n    telemetry.addData(\"Left Power\", leftPower);\n    telemetry.addData(\"Right Power\", rightPower);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Write a Tank Drive Loop",
+      "description": "Write a loop that reads both joysticks and sets the power for two drive motors. Add telemetry to display both power values.",
+      "tasks": [
+        "Read left and right joystick Y values.",
+        "Set left and right motor power.",
+        "Display both values with telemetry."
+      ],
+      "content": "// Example code\nwhile (opModeIsActive()) {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n    telemetry.addData(\"Left Power\", leftPower);\n    telemetry.addData(\"Right Power\", rightPower);\n    telemetry.update();\n}"
+    }
+  ]
+}

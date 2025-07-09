@@ -1,0 +1,61 @@
+{
+  "title": "DC Motors in FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is a DC Motor?",
+      "content": "A DC motor is a device that converts electrical energy into mechanical motion. In FTC, DC motors are used to drive wheels, arms, and other moving parts. Understanding how to control DC motors is essential for building a functional robot. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#modifying-your-op-mode-to-control-a-motor\" target=\"_blank\">FTC Docs: Modifying Your Op Mode to Control a Motor</a>."
+    },
+    {
+      "type": "code",
+      "title": "Declaring and Initializing a DcMotor",
+      "content": "You must declare and initialize each motor in your OpMode. The name must match your robot configuration.",
+      "code": "private DcMotor leftDrive;\n\n@Override\npublic void runOpMode() {\n    leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n    // ... rest of your code ...\n}"
+    },
+    {
+      "type": "code",
+      "title": "Setting Motor Power",
+      "content": "Set the power of a motor using <code>setPower()</code>. Power values range from -1.0 (full reverse) to 1.0 (full forward).",
+      "code": "leftDrive.setPower(0.5); // Half speed forward\nleftDrive.setPower(-1.0); // Full speed reverse\nleftDrive.setPower(0.0); // Stop the motor"
+    },
+    {
+      "type": "text",
+      "title": "Controlling Motor Direction",
+      "content": "You can reverse a motor's direction in code using <code>setDirection()</code>. This is useful if your motors are mounted in opposite directions."
+    },
+    {
+      "type": "code",
+      "title": "Example: Setting Motor Direction",
+      "content": "",
+      "code": "leftDrive.setDirection(DcMotor.Direction.REVERSE);\nrightDrive.setDirection(DcMotor.Direction.FORWARD);"
+    },
+    {
+      "type": "text",
+      "title": "Safety and Best Practices",
+      "content": "Always set motor power to zero at the end of your OpMode to prevent unexpected movement. Use try/catch blocks when accessing hardware to handle errors gracefully."
+    },
+    {
+      "type": "code",
+      "title": "Example: Safe Motor Shutdown",
+      "content": "",
+      "code": "try {\n    leftDrive.setPower(0);\n    rightDrive.setPower(0);\n} catch (Exception e) {\n    telemetry.addData(\"Error\", e.getMessage());\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Motor Issues",
+      "content": "If your motor doesn't move, check the following:<ul><li>Is the motor name in code exactly the same as in the configuration?</li><li>Is the motor plugged into the correct port?</li><li>Is the power set to a nonzero value?</li></ul>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Motor Initialization and Control",
+      "description": "Write code to initialize two drive motors and set their power based on a variable <code>drivePower</code>. Then, safely stop both motors at the end of the OpMode.",
+      "tasks": [
+        "Declare two DcMotor variables.",
+        "Initialize them in <code>runOpMode()</code>.",
+        "Set their power using <code>setPower()</code>.",
+        "Stop both motors at the end using a try/catch block."
+      ],
+      "content": "// Example code\nprivate DcMotor leftDrive, rightDrive;\n\n@Override\npublic void runOpMode() {\n    leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n    rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    double drivePower = 0.7;\n    leftDrive.setPower(drivePower);\n    rightDrive.setPower(drivePower);\n    // ... rest of your code ...\n    try {\n        leftDrive.setPower(0);\n        rightDrive.setPower(0);\n    } catch (Exception e) {\n        telemetry.addData(\"Error\", e.getMessage());\n        telemetry.update();\n    }\n}"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Motor Types in FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Overview of FTC Motor Types",
+      "content": "FTC robots use a variety of DC motors, each with different capabilities. Choosing the right motor for your robot is important for performance and reliability. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode</a>."
+    },
+    {
+      "type": "text",
+      "title": "Common FTC Motors",
+      "content": "Some common FTC motors include:<ul><li>REV HD Hex Motor</li><li>AndyMark NeveRest</li><li>Tetrix Motor</li></ul>Each motor has different speed, torque, and encoder options."
+    },
+    {
+      "type": "text",
+      "title": "Choosing the Right Motor",
+      "content": "Consider the following when choosing a motor:<ul><li>Torque: Needed for lifting or pushing heavy objects.</li><li>Speed: Needed for fast movement.</li><li>Size and weight: Must fit your robot design.</li></ul>"
+    },
+    {
+      "type": "text",
+      "title": "Reading Motor Specifications",
+      "content": "Always check the motor's datasheet for voltage, current, speed, and torque ratings. This helps you avoid damaging your hardware and ensures your robot performs as expected."
+    },
+    {
+      "type": "code",
+      "title": "Programming Differences",
+      "content": "Most FTC DC motors are programmed the same way. However, some may require different initialization or settings. Always check the manufacturer's documentation.",
+      "code": "// Example: Initializing a REV HD Hex Motor\nDcMotor hdHex = hardwareMap.get(DcMotor.class, \"hd_hex_motor\");\nhdHex.setDirection(DcMotor.Direction.FORWARD);\nhdHex.setPower(0.5);"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Compare Motor Specs",
+      "description": "Find the datasheets for two different FTC-legal motors. List their speed, torque, and encoder options. Discuss which would be better for a drivetrain versus an arm.",
+      "tasks": [
+        "Find datasheets for two motors.",
+        "List speed, torque, and encoder options.",
+        "Decide which is better for drivetrain and which for an arm."
+      ],
+      "content": "// Example answer\n// REV HD Hex: 6000 RPM, high torque, built-in encoder\n// AndyMark NeveRest: 6000 RPM, moderate torque, built-in encoder\n// HD Hex is better for drivetrain, NeveRest for arm."
+    }
+  ]
+}

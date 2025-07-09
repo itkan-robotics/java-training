@@ -1,0 +1,82 @@
+{
+  "title": "Version Control with Git in FTC Android Studio Projects",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Version Control?",
+      "content": "Version control is a system that tracks changes to your code over time. It lets you save your work, collaborate with teammates, and revert to previous versions if something goes wrong."
+    },
+    {
+      "type": "text",
+      "title": "Why Use Git?",
+      "content": "Git is a popular version control system used by developers worldwide. It allows you to work safely on new features, collaborate with others, and keep a complete history of your project. <br><br>Learn more: <a href=\"https://github.com/git-guides\" target=\"_blank\">Git Guides</a>"
+    },
+    {
+      "type": "text",
+      "title": "Basic Git Workflow",
+      "content": "The core Git workflow involves cloning a repository, making changes, staging them, committing, and pushing to a remote server. Here are the main steps:"
+    },
+    {
+      "type": "code",
+      "title": "Cloning a Repository",
+      "content": "Download a copy of a remote repository to your computer.",
+      "code": "git clone https://github.com/your-team/ftc-robot-code.git"
+    },
+    {
+      "type": "code",
+      "title": "Adding and Committing Changes",
+      "content": "Stage your changes and save them to the repository history.",
+      "code": "git add .\ngit commit -m \"Describe your changes\""
+    },
+    {
+      "type": "code",
+      "title": "Pushing and Pulling",
+      "content": "Upload your commits to GitHub and download new changes from teammates.",
+      "code": "git push\ngit pull"
+    },
+    {
+      "type": "text",
+      "title": "Branching and Merging",
+      "content": "Branches let you work on new features or bug fixes without affecting the main code. Merging brings changes from one branch into another. <br><br>Learn more: <a href=\"https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-and-deleting-branches-within-your-repository\" target=\"_blank\">Git Branch Guide</a>"
+    },
+    {
+      "type": "code",
+      "title": "Creating and Switching Branches",
+      "content": "Create a new branch and switch to it.",
+      "code": "git branch new-feature\ngit checkout new-feature"
+    },
+    {
+      "type": "code",
+      "title": "Merging Branches",
+      "content": "Combine changes from one branch into another.",
+      "code": "git checkout main\ngit merge new-feature"
+    },
+    {
+      "type": "text",
+      "title": "Resolving Merge Conflicts",
+      "content": "Sometimes, two people change the same part of a file. Git will ask you to resolve the conflict. Open the file, look for conflict markers, and decide which changes to keep. <br><br>Learn more: <a href=\"https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request\" target=\"_blank\">Git Merge Guide</a>"
+    },
+    {
+      "type": "text",
+      "title": "Using GitHub for Collaboration",
+      "content": "GitHub is a platform for hosting Git repositories online. It makes it easy to share code, review changes, and collaborate with your team. <br><br>Learn more: <a href=\"https://github.com/git-guides\" target=\"_blank\">Git Guides</a>"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices for FTC Teams",
+      "content": "- Commit often with clear messages.<br>- Use branches for new features.<br>- Pull before you push to avoid conflicts.<br>- Never commit sensitive information.<br>- Review code before merging."
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise",
+      "description": "Try the basic Git workflow on your FTC project.",
+      "tasks": [
+        "Clone your team's repository.",
+        "Create a new branch and make a small change.",
+        "Commit and push your change.",
+        "Open a pull request on GitHub."
+      ],
+      "content": "If you get stuck, refer to the Git Guides or ask a mentor for help."
+    }
+  ]
+}

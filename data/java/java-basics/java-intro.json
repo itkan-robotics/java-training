@@ -97,7 +97,7 @@
         "Are you planning to use Java for robotics (FTC/FRC) or general programming?",
         "How much time can you dedicate to learning each week?"
       ],
-      "code": "// This is where your Java journey begins!\n// In the next lesson, you'll write your first Java program\n// and learn about the basic structure of Java code."
+      "content": "// This is where your Java journey begins!\n// In the next lesson, you'll write your first Java program\n// and learn about the basic structure of Java code."
     }
   ]
 }

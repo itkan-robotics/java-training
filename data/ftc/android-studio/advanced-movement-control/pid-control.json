@@ -1,0 +1,50 @@
+{
+  "title": "PID Control (Android Studio)",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is PID Control?",
+      "content": "<p>PID stands for <strong>Proportional-Integral-Derivative</strong>. It's a feedback control algorithm that helps your robot reach and maintain a target value (like position or speed) by adjusting motor power based on the error between the target and the actual value. PID is the most common control algorithm used in FTC for precise movement.</p>"
+    },
+    {
+      "type": "list",
+      "title": "How PID Works",
+      "content": [
+        "<strong>Proportional (P)</strong>: Reacts to the current error. The bigger the error, the stronger the correction.",
+        "<strong>Integral (I)</strong>: Reacts to the accumulation of past errors. Helps eliminate steady-state error.",
+        "<strong>Derivative (D)</strong>: Reacts to the rate of change of the error. Helps dampen oscillations and overshoot."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "The PID Formula",
+      "content": "<pre>output = kP * error + kI * integral + kD * derivative</pre><p>Where <code>error = target - actual</code>, <code>integral</code> is the sum of errors over time, and <code>derivative</code> is the rate of change of error.</p>"
+    },
+    {
+      "type": "code",
+      "title": "Basic PID Loop in Java (Android Studio)",
+      "content": "This example shows a simple PID loop for controlling a motor to reach a target position:",
+      "code": "double kP = 0.01, kI = 0.0, kD = 0.0;\ndouble integral = 0, lastError = 0;\nlong lastTime = System.currentTimeMillis();\n\nwhile (opModeIsActive()) {\n    double error = targetPosition - motor.getCurrentPosition();\n    long now = System.currentTimeMillis();\n    double dt = (now - lastTime) / 1000.0;\n    integral += error * dt;\n    double derivative = (error - lastError) / dt;\n    double output = kP * error + kI * integral + kD * derivative;\n    motor.setPower(Range.clip(output, -1, 1));\n    lastError = error;\n    lastTime = now;\n    if (Math.abs(error) < 10) break; // Stop if close enough\n}"
+    },
+    {
+      "type": "text",
+      "title": "Tuning PID Controllers",
+      "content": "<p>Tuning means finding the right values for kP, kI, and kD. Start with kP, then add kD to reduce overshoot, and finally kI if you have steady-state error. Adjust one at a time and observe the robot's response. <a href=\"https://gm0.org/en/latest/docs/software/concepts/control-loops.html\" target=\"_blank\">Learn more about tuning: gm0 Control Loops</a></p>"
+    },
+    {
+      "type": "text",
+      "title": "Sample Rate and Performance",
+      "content": "<p>The sample rate is how often your PID loop updates. Faster sample rates (more frequent updates) can improve stability and responsiveness, but may use more CPU. The FTC SDK's built-in PID runs at 20Hz, but you can run your own loop faster if needed. <a href=\"https://gm0.org/en/latest/docs/software/concepts/control-loops.html#pid-controller-sample-rate\" target=\"_blank\">Read more about sample rate</a></p>"
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting PID",
+      "content": "<ul><li><strong>Oscillation</strong>: Lower kP or increase kD.</li><li><strong>Slow response</strong>: Increase kP.</li><li><strong>Steady-state error</strong>: Increase kI.</li><li><strong>Integral windup</strong>: Limit the integral term.</li></ul>"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Reference: FTC PID Coefficients",
+      "content": "See <a href=\"https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/PIDFCoefficients.html\" target=\"_blank\">FTC Docs: PID Coefficients (Android Studio)</a> for more on using PID in the FTC SDK."
+    }
+  ]
+}

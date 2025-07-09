@@ -1,0 +1,40 @@
+{
+  "title": "Advanced Tuning for Road Runner",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Why Tuning is Important",
+      "content": "Tuning Road Runner is essential for achieving accurate and reliable robot movement. Without proper tuning, your robot may not follow paths correctly, leading to inconsistent autonomous performance."
+    },
+    {
+      "type": "list",
+      "title": "Step-by-Step Tuning Process",
+      "content": [
+        "Set up the tuning op modes provided in the quickstart project.",
+        "Run drive characterization to determine your robot's feedforward parameters.",
+        "Adjust the PID coefficients for your drive to minimize error.",
+        "Test your robot's movement and iterate on the parameters as needed.",
+        "Repeat the process if you make significant changes to your robot (e.g., weight, motors, wheels)."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Special Considerations",
+      "content": "Some tuning steps vary depending on your robot's drive type (e.g., mecanum, tank) or localization method (drive encoders vs. dead wheels). Always follow the instructions specific to your setup."
+    },
+    {
+      "type": "list",
+      "title": "Troubleshooting Common Issues",
+      "content": [
+        "Robot doesn't follow the path accurately: Revisit your tuning parameters, especially PID and feedforward values.",
+        "Robot drifts or veers off course: Check for mechanical issues and ensure your localization method is set up correctly.",
+        "Performance changes with battery voltage: Make sure your feedforward parameters are tuned for your typical battery voltage."
+      ]
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Reference",
+      "content": "For a detailed guide, see the <a href=\"https://rr.brott.dev/docs/v1-0/tuning/\" target=\"_blank\">Road Runner Tuning Guide</a>."
+    }
+  ]
+}

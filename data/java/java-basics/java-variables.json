@@ -57,19 +57,19 @@
       "answers": [
         {
           "task": "A String for the robot's team name",
-          "code": "String teamName = \"Lightning Bolts\";\nSystem.out.println(\"Team: \" + teamName);"
+          "content": "String teamName = \"Lightning Bolts\";\nSystem.out.println(\"Team: \" + teamName);"
         },
         {
           "task": "An integer for the number of wheels",
-          "code": "int numberOfWheels = 4;\nSystem.out.println(\"Wheels: \" + numberOfWheels);"
+          "content": "int numberOfWheels = 4;\nSystem.out.println(\"Wheels: \" + numberOfWheels);"
         },
         {
           "task": "A double for the robot's weight in pounds",
-          "code": "double weightInPounds = 125.5;\nSystem.out.println(\"Weight: \" + weightInPounds + \" lbs\");"
+          "content": "double weightInPounds = 125.5;\nSystem.out.println(\"Weight: \" + weightInPounds + \" lbs\");"
         },
         {
           "task": "A boolean to track if the robot is autonomous",
-          "code": "boolean isAutonomous = true;\nSystem.out.println(\"Autonomous mode: \" + isAutonomous);\n\n// Complete example:\npublic class RobotInfo {\n    public static void main(String[] args) {\n        String teamName = \"Lightning Bolts\";\n        int numberOfWheels = 4;\n        double weightInPounds = 125.5;\n        boolean isAutonomous = true;\n        \n        System.out.println(\"=== Robot Information ===\");\n        System.out.println(\"Team: \" + teamName);\n        System.out.println(\"Wheels: \" + numberOfWheels);\n        System.out.println(\"Weight: \" + weightInPounds + \" lbs\");\n        System.out.println(\"Autonomous: \" + isAutonomous);\n    }\n}"
+          "content": "boolean isAutonomous = true;\nSystem.out.println(\"Autonomous mode: \" + isAutonomous);\n\n// Complete example:\npublic class RobotInfo {\n    public static void main(String[] args) {\n        String teamName = \"Lightning Bolts\";\n        int numberOfWheels = 4;\n        double weightInPounds = 125.5;\n        boolean isAutonomous = true;\n        \n        System.out.println(\"=== Robot Information ===\");\n        System.out.println(\"Team: \" + teamName);\n        System.out.println(\"Wheels: \" + numberOfWheels);\n        System.out.println(\"Weight: \" + weightInPounds + \" lbs\");\n        System.out.println(\"Autonomous: \" + isAutonomous);\n    }\n}"
         }
       ]
     }

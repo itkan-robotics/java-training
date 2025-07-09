@@ -1,0 +1,196 @@
+{
+  "title": "OpMode Controls",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Remote OpMode Control Overview",
+      "content": "FTCDashboard provides powerful remote control capabilities that allow you to start, stop, and control OpModes from the web interface. This is particularly useful for autonomous testing, debugging, and competition scenarios where you need precise control over robot operations."
+    },
+    {
+      "type": "rules-box",
+      "title": "OpMode Control Benefits",
+      "items": [
+        "Remote start/stop OpModes without Driver Station",
+        "Create custom buttons for specific robot actions",
+        "Simulate gamepad inputs for testing",
+        "Control autonomous routines remotely",
+        "Monitor OpMode status and performance",
+        "Execute predefined sequences and commands"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Step 1: Basic OpMode Control Setup",
+      "content": "The dashboard automatically provides basic OpMode control functionality, including start and stop buttons for all registered OpModes. This allows you to control your robot from any device connected to the dashboard."
+    },
+    {
+      "type": "code",
+      "title": "Required Imports and Class Setup",
+      "content": "Start by adding these imports and setting up your OpMode:",
+      "code": "// Essential imports for OpMode control\nimport com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.telemetry.MultipleTelemetry;\nimport com.acmerobotics.dashboard.telemetry.TelemetryPacket;\n\npublic class BasicControlOpMode extends OpMode {\n    private FtcDashboard dashboard;\n    private MultipleTelemetry telemetry;\n    private TelemetryPacket packet;\n    private DcMotor leftMotor, rightMotor;\n    \n    // Status tracking variables\n    private String currentStatus = \"Initialized\";\n    private double startTime = 0;"
+    },
+    {
+      "type": "text",
+      "title": "Step 2: Dashboard Integration in Init",
+      "content": "The init() method is where we set up dashboard integration and prepare for remote control. We'll use MultipleTelemetry to send data to both the Driver Station and the dashboard."
+    },
+    {
+      "type": "code",
+      "title": "Dashboard Integration Setup",
+      "content": "Add this to your init() method:",
+      "code": "@Override\npublic void init() {\n    // Get dashboard instance\n    dashboard = FtcDashboard.getInstance();\n    \n    // Create multiple telemetry to send to both Driver Station and Dashboard\n    telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());\n    \n    // Create telemetry packet for dashboard\n    packet = new TelemetryPacket();\n    \n    // Initialize hardware\n    leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n    rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n    \n    // Send initialization status to dashboard\n    packet.put(\"Status\", \"Initialized\");\n    packet.put(\"OpMode\", \"Basic Control\");\n    packet.put(\"Hardware\", \"Motors initialized\");\n    dashboard.sendTelemetryPacket(packet);\n    \n    // Update telemetry\n    telemetry.addData(\"Status\", \"Initialized\");\n    telemetry.addData(\"Dashboard\", \"Connected\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 3: OpMode Lifecycle Methods",
+      "content": "FTCDashboard calls the same lifecycle methods as the Driver Station. The start() method is called when the OpMode is started (either from Driver Station or Dashboard), and stop() is called when it's stopped."
+    },
+    {
+      "type": "code",
+      "title": "OpMode Lifecycle Methods",
+      "content": "Add these methods to handle OpMode lifecycle:",
+      "code": "@Override\npublic void start() {\n    // Called when OpMode is started (either from Driver Station or Dashboard)\n    currentStatus = \"Started\";\n    startTime = getRuntime();\n    \n    // Send start status to dashboard\n    packet.put(\"Status\", \"Started\");\n    packet.put(\"Start Time\", startTime);\n    packet.put(\"Source\", \"Dashboard/Driver Station\");\n    dashboard.sendTelemetryPacket(packet);\n    \n    // Update telemetry\n    telemetry.addData(\"Status\", \"Started\");\n    telemetry.addData(\"Start Time\", \"%.2f\", startTime);\n    telemetry.update();\n}\n\n@Override\npublic void stop() {\n    // Called when OpMode is stopped\n    currentStatus = \"Stopped\";\n    \n    // Stop all motors for safety\n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    \n    // Send stop status to dashboard\n    packet.put(\"Status\", \"Stopped\");\n    packet.put(\"Total Runtime\", getRuntime());\n    packet.put(\"Final Status\", \"Safe shutdown\");\n    dashboard.sendTelemetryPacket(packet);\n    \n    // Update telemetry\n    telemetry.addData(\"Status\", \"Stopped\");\n    telemetry.addData(\"Total Runtime\", \"%.2f\", getRuntime());\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 4: Basic Robot Control Loop",
+      "content": "In the loop() method, we'll implement basic robot control and send status updates to the dashboard. This allows you to monitor the robot's behavior remotely."
+    },
+    {
+      "type": "code",
+      "title": "Basic Robot Control with Dashboard Updates",
+      "content": "Add this to your loop() method:",
+      "code": "@Override\npublic void loop() {\n    // Basic robot control\n    double leftPower = gamepad1.left_stick_y;\n    double rightPower = gamepad1.right_stick_y;\n    \n    // Apply motor powers\n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n    \n    // Send status to dashboard\n    packet.put(\"Left Motor Power\", leftPower);\n    packet.put(\"Right Motor Power\", rightPower);\n    packet.put(\"Runtime\", getRuntime());\n    packet.put(\"Status\", currentStatus);\n    packet.put(\"Gamepad Connected\", gamepad1 != null);\n    dashboard.sendTelemetryPacket(packet);\n    \n    // Update telemetry for Driver Station\n    telemetry.addData(\"Left Power\", \"%.2f\", leftPower);\n    telemetry.addData(\"Right Power\", \"%.2f\", rightPower);\n    telemetry.addData(\"Runtime\", \"%.2f\", getRuntime());\n    telemetry.addData(\"Status\", currentStatus);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 5: Custom Button Creation",
+      "content": "One of the most powerful features is the ability to create custom buttons that perform specific actions. These buttons can trigger autonomous sequences, test specific functions, or provide quick access to common operations."
+    },
+    {
+      "type": "code",
+      "title": "Custom Button Setup",
+      "content": "Add these variables and methods for custom button functionality:",
+      "code": "// Configuration for custom actions\npublic static double FORWARD_DISTANCE = 1000; // encoder ticks\npublic static double TURN_ANGLE = 90; // degrees\npublic static double ARM_POSITION = 0.5; // servo position\n\n// Action tracking variables\nprivate boolean isExecutingAction = false;\nprivate String currentAction = \"None\";\nprivate Servo armServo;\n\n// Add this to your init() method:\n@Override\npublic void init() {\n    // ... existing init code ...\n    \n    // Initialize additional hardware\n    armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n    \n    // Reset encoders for position tracking\n    leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    \n    // Send initial status\n    updateDashboardStatus();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 6: Custom Action Methods",
+      "content": "Now we'll create methods to handle specific robot actions that can be triggered by custom buttons. These methods will execute predefined sequences."
+    },
+    {
+      "type": "code",
+      "title": "Custom Action Implementation",
+      "content": "Add these methods to handle custom actions:",
+      "code": "// Method to check for custom action requests\nprivate void checkCustomActions() {\n    // These actions would be triggered by custom buttons in the dashboard\n    // For now, we'll use gamepad buttons as examples\n    \n    if (gamepad1.a && !isExecutingAction) {\n        executeForwardAction();\n    } else if (gamepad1.b && !isExecutingAction) {\n        executeTurnAction();\n    } else if (gamepad1.x && !isExecutingAction) {\n        executeArmUpAction();\n    } else if (gamepad1.y && !isExecutingAction) {\n        executeArmDownAction();\n    } else if (gamepad1.back) {\n        stopAllActions();\n    }\n}\n\n// Execute forward movement action\nprivate void executeForwardAction() {\n    isExecutingAction = true;\n    currentAction = \"Moving Forward\";\n    \n    // Set target position\n    int targetPosition = (int) FORWARD_DISTANCE;\n    leftMotor.setTargetPosition(targetPosition);\n    rightMotor.setTargetPosition(targetPosition);\n    \n    // Set to RUN_TO_POSITION mode\n    leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    // Start motors\n    leftMotor.setPower(0.5);\n    rightMotor.setPower(0.5);\n}\n\n// Execute turn action\nprivate void executeTurnAction() {\n    isExecutingAction = true;\n    currentAction = \"Turning\";\n    \n    // Calculate encoder ticks for turn (simplified calculation)\n    double wheelCircumference = 2 * Math.PI * 2; // 2 inch radius\n    double robotCircumference = 2 * Math.PI * 12; // 12 inch robot width\n    int targetTicks = (int) ((TURN_ANGLE / 360.0) * robotCircumference / wheelCircumference * 1440);\n    \n    leftMotor.setTargetPosition(targetTicks);\n    rightMotor.setTargetPosition(-targetTicks);\n    \n    leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    \n    leftMotor.setPower(0.3);\n    rightMotor.setPower(0.3);\n}\n\n// Execute arm up action\nprivate void executeArmUpAction() {\n    isExecutingAction = true;\n    currentAction = \"Arm Up\";\n    armServo.setPosition(ARM_POSITION);\n    \n    // Simulate action completion after a delay\n    new Thread(() -> {\n        try {\n            Thread.sleep(1000);\n            stopAllActions();\n        } catch (InterruptedException e) {\n            // Handle interruption\n        }\n    }).start();\n}\n\n// Execute arm down action\nprivate void executeArmDownAction() {\n    isExecutingAction = true;\n    currentAction = \"Arm Down\";\n    armServo.setPosition(0.0);\n    \n    // Simulate action completion after a delay\n    new Thread(() -> {\n        try {\n            Thread.sleep(1000);\n            stopAllActions();\n        } catch (InterruptedException e) {\n            // Handle interruption\n        }\n    }).start();\n}\n\n// Stop all actions and return to normal control\nprivate void stopAllActions() {\n    isExecutingAction = false;\n    currentAction = \"None\";\n    \n    // Stop motors\n    leftMotor.setPower(0);\n    rightMotor.setPower(0);\n    \n    // Reset to normal mode\n    leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n    rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 7: Action Status Monitoring",
+      "content": "We need to monitor the status of executing actions and update the dashboard accordingly. This allows you to see what the robot is doing remotely."
+    },
+    {
+      "type": "code",
+      "title": "Action Status Monitoring",
+      "content": "Add this to your loop() method to monitor action status:",
+      "code": "@Override\npublic void loop() {\n    // Check for custom button actions\n    checkCustomActions();\n    \n    // Monitor action completion\n    if (isExecutingAction) {\n        // Check if motors are still busy (for movement actions)\n        if (leftMotor.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {\n            if (!leftMotor.isBusy() && !rightMotor.isBusy()) {\n                stopAllActions();\n            }\n        }\n    }\n    \n    // Normal robot control when not executing custom action\n    if (!isExecutingAction) {\n        normalControl();\n    }\n    \n    // Update dashboard with current status\n    updateDashboardStatus();\n    \n    // Update telemetry\n    telemetry.addData(\"Current Action\", currentAction);\n    telemetry.addData(\"Executing\", isExecutingAction);\n    telemetry.update();\n}\n\n// Normal gamepad control method\nprivate void normalControl() {\n    double leftPower = gamepad1.left_stick_y;\n    double rightPower = gamepad1.right_stick_y;\n    \n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n}\n\n// Update dashboard status method\nprivate void updateDashboardStatus() {\n    packet.put(\"Status\", isExecutingAction ? \"Executing Action\" : \"Ready\");\n    packet.put(\"Current Action\", currentAction);\n    packet.put(\"Left Motor Power\", leftMotor.getPower());\n    packet.put(\"Right Motor Power\", rightMotor.getPower());\n    packet.put(\"Left Encoder\", leftMotor.getCurrentPosition());\n    packet.put(\"Right Encoder\", rightMotor.getCurrentPosition());\n    packet.put(\"Arm Position\", armServo.getPosition());\n    \n    dashboard.sendTelemetryPacket(packet);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 8: Gamepad Simulation",
+      "content": "FTCDashboard can simulate gamepad inputs, allowing you to test autonomous routines and robot functions without physical gamepads. This is particularly useful for autonomous testing and debugging."
+    },
+    {
+      "type": "code",
+      "title": "Gamepad Simulation Setup",
+      "content": "Add these variables and methods for gamepad simulation:",
+      "code": "// Simulated gamepad values\npublic static double SIM_LEFT_STICK_X = 0.0;\npublic static double SIM_LEFT_STICK_Y = 0.0;\npublic static double SIM_RIGHT_STICK_X = 0.0;\npublic static double SIM_RIGHT_STICK_Y = 0.0;\npublic static boolean SIM_A_BUTTON = false;\npublic static boolean SIM_B_BUTTON = false;\npublic static boolean SIM_X_BUTTON = false;\npublic static boolean SIM_Y_BUTTON = false;\n\nprivate boolean useSimulatedGamepad = false;\n\n// Method to get input values (either real or simulated)\nprivate void getInputValues() {\n    // Check if we should use simulated gamepad\n    if (gamepad1.back) {\n        useSimulatedGamepad = !useSimulatedGamepad;\n        telemetry.addData(\"Simulation Mode\", useSimulatedGamepad ? \"ON\" : \"OFF\");\n    }\n    \n    // Get input values (either real or simulated)\n    double leftStickX = useSimulatedGamepad ? SIM_LEFT_STICK_X : gamepad1.left_stick_x;\n    double leftStickY = useSimulatedGamepad ? SIM_LEFT_STICK_Y : gamepad1.left_stick_y;\n    double rightStickX = useSimulatedGamepad ? SIM_RIGHT_STICK_X : gamepad1.right_stick_x;\n    double rightStickY = useSimulatedGamepad ? SIM_RIGHT_STICK_Y : gamepad1.right_stick_y;\n    \n    boolean aButton = useSimulatedGamepad ? SIM_A_BUTTON : gamepad1.a;\n    boolean bButton = useSimulatedGamepad ? SIM_B_BUTTON : gamepad1.b;\n    boolean xButton = useSimulatedGamepad ? SIM_X_BUTTON : gamepad1.x;\n    boolean yButton = useSimulatedGamepad ? SIM_Y_BUTTON : gamepad1.y;\n    \n    // Process inputs\n    processGamepadInputs(leftStickX, leftStickY, rightStickX, rightStickY, \n                       aButton, bButton, xButton, yButton);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 9: Processing Simulated Inputs",
+      "content": "Now we'll create a method to process the simulated gamepad inputs and control the robot accordingly."
+    },
+    {
+      "type": "code",
+      "title": "Processing Simulated Gamepad Inputs",
+      "content": "Add this method to handle simulated inputs:",
+      "code": "private void processGamepadInputs(double leftX, double leftY, double rightX, double rightY,\n                                     boolean a, boolean b, boolean x, boolean y) {\n    // Tank drive control\n    double leftPower = leftY;\n    double rightPower = rightY;\n    \n    // Apply turn input\n    if (Math.abs(rightX) > 0.1) {\n        leftPower += rightX * 0.5;\n        rightPower -= rightX * 0.5;\n    }\n    \n    // Clamp powers to valid range\n    leftPower = Math.max(-1.0, Math.min(1.0, leftPower));\n    rightPower = Math.max(-1.0, Math.min(1.0, rightPower));\n    \n    // Apply motor powers\n    leftMotor.setPower(leftPower);\n    rightMotor.setPower(rightPower);\n    \n    // Handle button actions\n    if (a) {\n        // A button action - move forward for 1 second\n        executeTimedAction(() -> {\n            leftMotor.setPower(0.5);\n            rightMotor.setPower(0.5);\n        }, 1000);\n    }\n    \n    if (b) {\n        // B button action - turn right for 1 second\n        executeTimedAction(() -> {\n            leftMotor.setPower(0.3);\n            rightMotor.setPower(-0.3);\n        }, 1000);\n    }\n    \n    if (x) {\n        // X button action - stop motors\n        leftMotor.setPower(0);\n        rightMotor.setPower(0);\n    }\n    \n    if (y) {\n        // Y button action - reverse direction\n        leftMotor.setPower(-leftPower);\n        rightMotor.setPower(-rightPower);\n    }\n}\n\n// Execute timed actions\nprivate void executeTimedAction(Runnable action, long durationMs) {\n    new Thread(() -> {\n        action.run();\n        try {\n            Thread.sleep(durationMs);\n            // Stop motors after duration\n            leftMotor.setPower(0);\n            rightMotor.setPower(0);\n        } catch (InterruptedException e) {\n            // Handle interruption\n        }\n    }).start();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 10: Autonomous Control",
+      "content": "FTCDashboard provides powerful tools for controlling autonomous routines. You can start autonomous sequences, monitor progress, and even modify autonomous parameters in real-time."
+    },
+    {
+      "type": "code",
+      "title": "Autonomous Control Setup",
+      "content": "Add these variables and methods for autonomous control:",
+      "code": "// Autonomous configuration\npublic static String AUTO_ROUTINE = \"BASIC\";\npublic static double AUTO_SPEED = 0.5;\npublic static int AUTO_DISTANCE = 1000;\npublic static boolean USE_COLOR_SENSOR = true;\n\n// Autonomous state management\nprivate enum AutoState {\n    IDLE,\n    FORWARD,\n    TURN,\n    COLOR_DETECT,\n    COMPLETE\n}\n\nprivate AutoState currentState = AutoState.IDLE;\nprivate boolean autoRunning = false;\nprivate double autoStartTime = 0;\nprivate int stepNumber = 0;\n\n// Autonomous sequence steps\nprivate List<AutoStep> autoSequence = new ArrayList<>();\n\n// Helper class for autonomous steps\nprivate static class AutoStep {\n    String type;\n    int value;\n    \n    AutoStep(String type, int value) {\n        this.type = type;\n        this.value = value;\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise: Custom Control System",
+      "description": "Create an OpMode with custom buttons and autonomous control capabilities using FTCDashboard.",
+      "tasks": [
+        "Set up basic OpMode control with dashboard integration",
+        "Create custom buttons for specific robot actions",
+        "Implement gamepad simulation for testing",
+        "Add autonomous sequence control with real-time monitoring",
+        "Test all control methods and verify functionality"
+      ],
+      "content": "// Your OpMode should include:\n// 1. Dashboard integration and status reporting\n// 2. Custom button implementation for robot actions\n// 3. Gamepad simulation capabilities\n// 4. Autonomous sequence control and monitoring\n// 5. Real-time status updates to the dashboard"
+    },
+    {
+      "type": "rules-box",
+      "title": "OpMode Control Best Practices",
+      "items": [
+        "Always provide clear status feedback to the dashboard",
+        "Implement safety checks before executing actions",
+        "Use configuration variables for adjustable parameters",
+        "Provide both manual and automated control options",
+        "Include emergency stop functionality",
+        "Test all control methods thoroughly before competition",
+        "Document custom button functions and autonomous sequences"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Safety Guidelines for Remote Control",
+      "items": [
+        "Always have a physical emergency stop available",
+        "Test remote control in a safe environment first",
+        "Implement timeout mechanisms for long-running actions",
+        "Provide clear visual feedback for robot status",
+        "Use appropriate power limits for remote operations",
+        "Have a way to quickly disable remote control",
+        "Monitor robot behavior closely during remote operations"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting OpMode Control Issues",
+      "items": [
+        "OpMode not starting: Check dashboard connection and OpMode registration",
+        "Custom buttons not working: Verify button implementation and event handling",
+        "Gamepad simulation issues: Check input mapping and value ranges",
+        "Autonomous not executing: Verify sequence setup and state management",
+        "Status not updating: Ensure telemetry packets are being sent regularly",
+        "Performance issues: Reduce update frequency or simplify control logic"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics and Resources",
+      "links": [
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/controls\" target=\"_blank\">FTCDashboard Controls Documentation</a>",
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/controls#custom-buttons\" target=\"_blank\">Custom Buttons Guide</a>",
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/controls#gamepad-simulation\" target=\"_blank\">Gamepad Simulation</a>",
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/controls#autonomous-control\" target=\"_blank\">Autonomous Control</a>",
+        "<a href=\"../autonomous-programming/basic-autonomous-programming.json\">Basic Autonomous Programming</a>",
+        "<a href=\"../teleop-programming/gamepad-controls.json\">Gamepad Controls</a>",
+        "<a href=\"../motors/basic-motor-control.json\">Basic Motor Control</a>"
+      ]
+    }
+  ]
+}

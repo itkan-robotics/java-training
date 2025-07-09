@@ -1,0 +1,53 @@
+{
+  "title": "Using State Machines for Reliable FTC Code",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to State Machines",
+      "content": "State machines are a powerful way to organize your robot's logic, especially for complex tasks. They help you avoid tangled code and make debugging much easier. In FTC, state machines are often used to control sequences of actions in both autonomous and teleop modes."
+    },
+    {
+      "type": "text",
+      "title": "What is a State Machine?",
+      "content": "A state machine is a programming pattern where your code is always in one of several defined 'states.' Each state represents a specific behavior or phase of your robot's operation. The robot transitions between states based on events or conditions. <br><br>For a general introduction, see <a href=\"https://gm0.org/en/latest/docs/software/concepts/finite-state-machines.html\" target=\"_blank\">gm0: Finite State Machines</a>."
+    },
+    {
+      "type": "code",
+      "title": "Simple State Machine Example",
+      "content": "This example shows a basic state machine for a robot that drives forward, then turns, then stops:",
+      "code": "@TeleOp\npublic class StateMachineOpMode extends LinearOpMode {\n    private enum State { DRIVE_FORWARD, TURN, STOP }\n    private State currentState = State.DRIVE_FORWARD;\n    private DcMotor leftMotor, rightMotor;\n    @Override\n    public void runOpMode() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_drive\");\n        waitForStart();\n        while (opModeIsActive()) {\n            switch (currentState) {\n                case DRIVE_FORWARD:\n                    leftMotor.setPower(0.5);\n                    rightMotor.setPower(0.5);\n                    if (leftMotor.getCurrentPosition() > 1000) {\n                        currentState = State.TURN;\n                    }\n                    break;\n                case TURN:\n                    leftMotor.setPower(0.5);\n                    rightMotor.setPower(-0.5);\n                    if (rightMotor.getCurrentPosition() < -500) {\n                        currentState = State.STOP;\n                    }\n                    break;\n                case STOP:\n                    leftMotor.setPower(0);\n                    rightMotor.setPower(0);\n                    break;\n            }\n            telemetry.addData(\"State\", currentState);\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Debugging with State Machines",
+      "content": "State machines make it easier to pinpoint where logic fails. By reporting the current state with telemetry, you can quickly see what your robot is doing and why. If something goes wrong, you know which state to investigate."
+    },
+    {
+      "type": "code",
+      "title": "Telemetry for State Debugging",
+      "content": "telemetry.addData(\"Current State\", currentState);\ntelemetry.addData(\"Left Encoder\", leftMotor.getCurrentPosition());\ntelemetry.update();"
+    },
+    {
+      "type": "list",
+      "title": "Best Practices for State Machine Design",
+      "content": [
+        "Keep each state simple and focused on one task.",
+        "Use enums for state names to avoid typos and improve readability.",
+        "Avoid deeply nested logic inside states.",
+        "Use telemetry to track state transitions.",
+        "Break up large state machines into smaller, manageable pieces if needed."
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Build Your Own State Machine",
+      "description": "Write an OpMode that uses a state machine to perform a sequence of actions (e.g., drive forward, pause, then reverse). Use telemetry to display the current state and test your transitions.",
+      "tasks": [
+        "Define at least three states for your robot.",
+        "Implement transitions based on encoder values or timers.",
+        "Add telemetry to show the current state and relevant sensor data."
+      ],
+      "content": "// Try building and testing your own state machine!"
+    }
+  ]
+} 

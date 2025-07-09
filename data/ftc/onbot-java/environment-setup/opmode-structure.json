@@ -1,0 +1,86 @@
+{
+  "title": "OpMode Structure",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is an OpMode?",
+      "content": "An OpMode (Operation Mode) is a Java class that controls your robot during a match. OpModes define the robot's behavior for autonomous or teleop periods and are selected and started from the Driver Station app.<br><br>See: <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html' target='_blank'>FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Types of OpModes",
+      "subtitle": "OpModes can be:",
+      "items": [
+        "<code>@TeleOp</code>: For driver-controlled periods (TeleOp)",
+        "<code>@Autonomous</code>: For autonomous periods (Autonomous)",
+        "LinearOpMode: Runs code sequentially (most common for beginners)",
+        "Iterative OpMode: Runs code in a loop (advanced)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "OpMode Annotations",
+      "content": "Annotations tell the SDK how to display your OpMode in the Driver Station.<br><br>- <code>@TeleOp(name=...)</code> — TeleOp mode<br>- <code>@Autonomous(name=...)</code> — Autonomous mode<br>- <code>@Disabled</code> — Hide this OpMode<br><br>See: <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html' target='_blank'>FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>"
+    },
+    {
+      "type": "code",
+      "title": "Sample LinearOpMode",
+      "language": "java",
+      "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp(name = \"MyFIRSTJavaOpMode\")\npublic class MyFIRSTJavaOpMode extends LinearOpMode {\n    private DcMotor motorTest;\n    private Servo servoTest;\n\n    @Override\n    public void runOpMode() {\n        motorTest = hardwareMap.get(DcMotor.class, \"motorTest\");\n        servoTest = hardwareMap.get(Servo.class, \"servoTest\");\n\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        waitForStart();\n        while (opModeIsActive()) {\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}\n// Source: https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-(OnBot-Java).html"
+    },
+    {
+      "type": "text",
+      "title": "Breaking Down the OpMode Structure",
+      "content": "A well-structured OpMode should be modular and easy to read. Avoid large, monolithic files by splitting logic into methods and using clear comments.<br><br>Typical sections in an OpMode:<ul><li>Class declaration and annotation</li><li>Member variables for hardware</li><li>runOpMode() method</li><li>Hardware initialization</li><li>Main control loop</li><li>Telemetry updates</li></ul>"
+    },
+    {
+      "type": "code",
+      "title": "Hardware Initialization Example",
+      "language": "java",
+      "content": "private void initHardware() {\n    motorTest = hardwareMap.get(DcMotor.class, \"motorTest\");\n    servoTest = hardwareMap.get(Servo.class, \"servoTest\");\n}\n// Call this method at the start of runOpMode() for clarity."
+    },
+    {
+      "type": "text",
+      "title": "Organizing Your OpModes",
+      "content": "- Use clear method names for hardware initialization, input processing, and telemetry.<br>- Separate hardware mapping from robot logic.<br>- Use comments to explain each section.<br>- Keep OpModes focused on a single purpose."
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "subtitle": "For clean, reliable OpModes:",
+      "items": [
+        "Initialize hardware in a dedicated method.",
+        "Use meaningful variable and method names.",
+        "Add telemetry for debugging.",
+        "Handle errors gracefully.",
+        "Test OpModes on the robot."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Further Reading & Resources",
+      "content": "- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-(OnBot-Java).html' target='_blank'>FTC Docs: Creating an OpMode</a><br>- <a href='https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/onbot_java_reference/OnBot-Java-Reference-Info.html' target='_blank'>FTC Docs: OnBot Java Reference Info</a><br>- <a href='https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/org/firstinspires/ftc/robotcore/eventloop/opmode/OpMode.html' target='_blank'>FTC OpMode API (Javadoc)</a><br>- <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples' target='_blank'>FTC SDK Example OpModes</a>"
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        { "label": "Linear vs Iterative OpModes", "id": "linear-vs-iterative-opmodes" },
+        { "label": "Telemetry Logging", "id": "telemetry-logging" },
+        { "label": "Basic Robot Control", "id": "basic-robot-control" }
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: OpMode Structure",
+      "description": "Try these to reinforce your understanding:",
+      "tasks": [
+        "Create a TeleOp OpMode that drives a motor with the left stick.",
+        "Add telemetry to show motor power.",
+        "Use <code>@Autonomous</code> to create a simple autonomous OpMode.",
+        "Organize your code into methods for init, loop, and telemetry."
+      ],
+      "content": "// Practice: Write a TeleOp OpMode that drives a motor and displays its power."
+    }
+  ]
+} 

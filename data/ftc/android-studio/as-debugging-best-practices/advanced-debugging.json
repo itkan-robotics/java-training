@@ -1,0 +1,120 @@
+{
+  "title": "Advanced Debugging Techniques",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Advanced Debugging",
+      "content": "Advanced debugging in Android Studio is essential for FTC development. When your robot doesn't behave as expected, you need powerful tools to identify and fix issues quickly. This lesson covers professional debugging techniques that will help you troubleshoot complex robot behaviors efficiently."
+    },
+    {
+      "type": "rules-box",
+      "title": "Why Advanced Debugging Matters",
+      "items": [
+        "FTC robots operate in real-time environments where issues must be resolved quickly",
+        "Complex autonomous programs require systematic debugging approaches",
+        "Hardware-software interactions can create difficult-to-reproduce bugs",
+        "Competition environments demand reliable debugging skills"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Android Studio Debugger Setup for FTC",
+      "content": "Setting up the Android Studio debugger for FTC projects requires specific configuration to work with the Control Hub and Expansion Hub. The debugger allows you to pause execution, inspect variables, and step through code line by line."
+    },
+    {
+      "type": "code",
+      "title": "Debugger Configuration Setup",
+      "content": "To configure debugging for your FTC project, you need to set up the debug configuration in Android Studio. This involves configuring the device connection and ensuring proper permissions. Start by adding debug logging to your OpMode:",
+      "code": "// In your OpMode class, add debug logging\npublic class MyDebugOpMode extends OpMode {\n    private static final String TAG = \"MyDebugOpMode\";\n    \n    @Override\n    public void init() {\n        // Enable debug logging\n        Log.d(TAG, \"Initializing OpMode\");\n        \n        // Initialize hardware with debug info\n        try {\n            initializeHardware();\n            Log.d(TAG, \"Hardware initialized successfully\");\n        } catch (Exception e) {\n            Log.e(TAG, \"Hardware initialization failed\", e);\n            telemetry.addData(\"Error\", \"Hardware init failed: \" + e.getMessage());\n        }\n    }\n    \n    private void initializeHardware() {\n        // Your hardware initialization code here\n        // Add breakpoints in this method to debug hardware setup\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Setting Up Debug Logging",
+      "content": "Debug logging is the foundation of advanced debugging. By adding strategic log statements throughout your code, you can track program execution and identify where issues occur. The TAG constant helps organize log messages, and different log levels (d for debug, e for error) provide appropriate detail."
+    },
+    {
+      "type": "text",
+      "title": "Setting Breakpoints",
+      "content": "Breakpoints are the foundation of debugging. They allow you to pause execution at specific points in your code to inspect the program state. In Android Studio, you can set breakpoints by clicking in the gutter next to line numbers."
+    },
+    {
+      "type": "rules-box",
+      "title": "Breakpoint Best Practices",
+      "items": [
+        "Set breakpoints at the beginning of methods you suspect have issues",
+        "Use breakpoints to inspect variable values before and after critical operations",
+        "Place breakpoints before conditional statements to verify logic flow",
+        "Remove or disable breakpoints when not actively debugging to improve performance"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Conditional Breakpoints and Watch Expressions",
+      "content": "Conditional breakpoints are powerful tools for debugging complex robot behaviors. They only pause execution when specific conditions are met, making it easier to debug rare or specific scenarios."
+    },
+    {
+      "type": "code",
+      "title": "Using Conditional Breakpoints",
+      "content": "Conditional breakpoints are especially useful for debugging state machines and complex control logic. Here's how to use them effectively:",
+      "code": "public class StateMachineOpMode extends OpMode {\n    private RobotState currentState = RobotState.IDLE;\n    private int loopCount = 0;\n    \n    @Override\n    public void loop() {\n        // Set a conditional breakpoint here with condition: currentState == RobotState.MOVING\n        switch (currentState) {\n            case IDLE:\n                // Set breakpoint with condition: loopCount > 100\n                if (loopCount > 100) {\n                    currentState = RobotState.MOVING;\n                    Log.d(\"StateMachine\", \"Transitioning to MOVING state\");\n                }\n                break;\n                \n            case MOVING:\n                // Set breakpoint with condition: getRuntime() > 5.0\n                if (getRuntime() > 5.0) {\n                    currentState = RobotState.COMPLETE;\n                    Log.d(\"StateMachine\", \"Movement complete\");\n                }\n                break;\n                \n            case COMPLETE:\n                // Set breakpoint with condition: true (always break)\n                Log.d(\"StateMachine\", \"OpMode complete\");\n                requestOpModeStop();\n                break;\n        }\n        \n        loopCount++;\n        telemetry.addData(\"State\", currentState);\n        telemetry.addData(\"Loop Count\", loopCount);\n    }\n    \n    enum RobotState {\n        IDLE, MOVING, COMPLETE\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Watch Expressions",
+      "content": "Watch expressions allow you to monitor specific variables or expressions without setting breakpoints. They're displayed in the debug window and update in real-time as your program runs."
+    },
+    {
+      "type": "code",
+      "title": "Setting Up Watch Expressions",
+      "content": "Watch expressions are useful for monitoring complex calculations or object states. Here's an example of variables you might want to watch:",
+      "code": "public class WatchExpressionsExample extends OpMode {\n    private DcMotor leftMotor, rightMotor;\n    private double targetPower = 0.5;\n    private double currentPower = 0.0;\n    private boolean isMoving = false;\n    \n    @Override\n    public void init() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n        rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n        \n        // Set up watch expressions for these variables:\n        // - targetPower\n        // - currentPower\n        // - isMoving\n        // - leftMotor.getPower()\n        // - rightMotor.getPower()\n        // - getRuntime()\n    }\n    \n    @Override\n    public void loop() {\n        // Watch how these values change during execution\n        if (gamepad1.left_stick_y > 0.1) {\n            currentPower = gamepad1.left_stick_y * targetPower;\n            isMoving = true;\n        } else {\n            currentPower = 0.0;\n            isMoving = false;\n        }\n        \n        leftMotor.setPower(currentPower);\n        rightMotor.setPower(currentPower);\n        \n        // Add telemetry for debugging\n        telemetry.addData(\"Target Power\", targetPower);\n        telemetry.addData(\"Current Power\", currentPower);\n        telemetry.addData(\"Is Moving\", isMoving);\n        telemetry.addData(\"Left Motor Power\", leftMotor.getPower());\n        telemetry.addData(\"Right Motor Power\", rightMotor.getPower());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Logging Strategies for Robot State",
+      "content": "Effective logging is crucial for debugging robot behavior. You need to log enough information to understand what's happening without overwhelming the system or making logs unreadable."
+    },
+    {
+      "type": "code",
+      "title": "Structured Logging Implementation",
+      "content": "Implement a structured logging system that provides different levels of detail based on your debugging needs:",
+      "code": "public class StructuredLoggingOpMode extends OpMode {\n    private static final String TAG = \"RobotDebug\";\n    private static final boolean DEBUG_MODE = true;\n    private static final boolean VERBOSE_LOGGING = false;\n    \n    private DcMotor driveMotor;\n    private Servo armServo;\n    private ColorSensor colorSensor;\n    \n    @Override\n    public void init() {\n        // Initialize hardware\n        driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        \n        logInfo(\"Hardware initialized successfully\");\n        logDebug(\"Drive motor: \" + driveMotor.getDeviceName());\n        logDebug(\"Arm servo: \" + armServo.getDeviceName());\n        logDebug(\"Color sensor: \" + colorSensor.getDeviceName());\n    }\n    \n    @Override\n    public void loop() {\n        // Log state changes\n        if (gamepad1.a) {\n            logInfo(\"Button A pressed - starting autonomous sequence\");\n            startAutonomousSequence();\n        }\n        \n        // Log sensor readings periodically\n        if (getRuntime() % 2.0 < 0.1) { // Every 2 seconds\n            logDebug(\"Color sensor reading: R=\" + colorSensor.red() + \", G=\" + colorSensor.green() + \", B=\" + colorSensor.blue());\n        }\n        \n        // Log motor behavior\n        double motorPower = gamepad1.left_stick_y;\n        if (Math.abs(motorPower) > 0.1) {\n            logVerbose(\"Setting motor power to: \" + motorPower);\n            driveMotor.setPower(motorPower);\n        }\n    }\n    \n    private void startAutonomousSequence() {\n        logInfo(\"Starting autonomous sequence\");\n        \n        // Log each step of the sequence\n        logDebug(\"Step 1: Moving arm to position\");\n        armServo.setPosition(0.5);\n        \n        logDebug(\"Step 2: Driving forward\");\n        driveMotor.setPower(0.5);\n        \n        logInfo(\"Autonomous sequence started\");\n    }\n    \n    // Logging methods with different levels\n    private void logInfo(String message) {\n        Log.i(TAG, message);\n        telemetry.addData(\"INFO\", message);\n    }\n    \n    private void logDebug(String message) {\n        if (DEBUG_MODE) {\n            Log.d(TAG, message);\n            telemetry.addData(\"DEBUG\", message);\n        }\n    }\n    \n    private void logVerbose(String message) {\n        if (VERBOSE_LOGGING) {\n            Log.v(TAG, message);\n        }\n    }\n    \n    private void logError(String message, Exception e) {\n        Log.e(TAG, message, e);\n        telemetry.addData(\"ERROR\", message + \": \" + e.getMessage());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Remote Debugging on Control Hub",
+      "content": "Remote debugging allows you to debug code running on the actual Control Hub hardware. This is essential for debugging issues that only occur on the real robot."
+    },
+    {
+      "type": "code",
+      "title": "ADB Connection Setup",
+      "content": "To set up remote debugging, you need to establish an ADB (Android Debug Bridge) connection to the Control Hub. Here's the process:",
+      "code": "// First, ensure your Control Hub is connected to the same network\n// Then use ADB to connect to the Control Hub\n\n// In terminal/command prompt:\n// adb connect 192.168.43.1:5555\n// (Replace with your Control Hub's IP address)\n\n// Verify connection:\n// adb devices\n\n// In your OpMode, add remote debugging support:\npublic class RemoteDebugOpMode extends OpMode {\n    private static final String TAG = \"RemoteDebug\";\n    private boolean remoteDebugEnabled = false;\n    \n    @Override\n    public void init() {\n        // Check if remote debugging is available\n        try {\n            // This will only work if ADB is connected\n            Log.d(TAG, \"Remote debugging available\");\n            remoteDebugEnabled = true;\n        } catch (Exception e) {\n            Log.w(TAG, \"Remote debugging not available: \" + e.getMessage());\n            remoteDebugEnabled = false;\n        }\n        \n        // Initialize hardware with remote debugging support\n        initializeHardwareWithDebugging();\n    }\n    \n    private void initializeHardwareWithDebugging() {\n        try {\n            // Initialize motors\n            DcMotor leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n            DcMotor rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n            \n            if (remoteDebugEnabled) {\n                Log.d(TAG, \"Motors initialized: \" + leftMotor.getDeviceName() + \", \" + rightMotor.getDeviceName());\n            }\n            \n            // Initialize sensors\n            ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n            \n            if (remoteDebugEnabled) {\n                Log.d(TAG, \"Color sensor initialized: \" + colorSensor.getDeviceName());\n            }\n            \n        } catch (Exception e) {\n            Log.e(TAG, \"Hardware initialization failed\", e);\n            if (remoteDebugEnabled) {\n                // Additional debugging information for remote sessions\n                Log.e(TAG, \"Hardware map contents: \" + hardwareMap.getAll(DcMotor.class).size() + \" motors, \" + \n                      hardwareMap.getAll(ColorSensor.class).size() + \" color sensors\");\n            }\n        }\n    }\n    \n    @Override\n    public void loop() {\n        if (remoteDebugEnabled) {\n            // Enhanced logging for remote debugging\n            Log.d(TAG, \"Loop iteration: \" + getRuntime() + \"s\");\n            \n            // Log gamepad state\n            if (gamepad1.a) {\n                Log.d(TAG, \"Button A pressed\");\n            }\n            if (Math.abs(gamepad1.left_stick_y) > 0.1) {\n                Log.d(TAG, \"Left stick Y: \" + gamepad1.left_stick_y);\n            }\n        }\n        \n        // Your normal OpMode logic here\n    }\n}"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Debugging Practice Exercise",
+      "description": "Practice setting up debugging for a complex robot behavior. Create an OpMode that has a bug and use the debugging techniques learned in this lesson to find and fix it.",
+      "tasks": [
+        "Create an OpMode with a state machine that controls a robot arm",
+        "Intentionally introduce a bug (e.g., wrong state transition condition)",
+        "Set up conditional breakpoints to catch the bug",
+        "Use watch expressions to monitor state variables",
+        "Implement structured logging to track the bug",
+        "Use remote debugging to verify the fix works on hardware"
+      ],
+      "content": "// Starter code for the exercise:\npublic class DebuggingExerciseOpMode extends OpMode {\n    private enum ArmState { IDLE, MOVING_UP, MOVING_DOWN, ERROR }\n    private ArmState currentState = ArmState.IDLE;\n    private Servo armServo;\n    private double targetPosition = 0.0;\n    \n    @Override\n    public void init() {\n        armServo = hardwareMap.get(Servo.class, \"arm_servo\");\n        // TODO: Add your debugging setup here\n    }\n    \n    @Override\n    public void loop() {\n        // TODO: Implement state machine with intentional bug\n        // TODO: Add breakpoints and watch expressions\n        // TODO: Implement logging strategy\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "links": [
+        "<a href=\"https://developer.android.com/studio/debug\" target=\"_blank\">Android Studio Debugging Guide</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/android-studio.html\" target=\"_blank\">gm0: Android Studio Setup</a>",
+        "<a href=\"https://developer.android.com/studio/debug#conditional\" target=\"_blank\">Android Studio Conditional Breakpoints</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/software/tutorials/telemetry.html\" target=\"_blank\">gm0: Telemetry Tutorial</a>",
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/control_hub/control_hub_setup.html\" target=\"_blank\">FTC Control Hub Documentation</a>"
+      ]
+    }
+  ]
+}

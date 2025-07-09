@@ -1,0 +1,37 @@
+{
+  "title": "Understanding the FTC Android Studio Project Structure",
+  "sections": [
+    {
+      "type": "text",
+      "title": "High-Level Project Layout",
+      "content": "The FTC SDK project is organized into modules and directories to separate your code from the official SDK. This structure helps you keep your code organized and makes it easier to update the SDK in the future. <br><br>For a visual overview, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html\" target=\"_blank\">FTC Docs: Android Studio Programming Tutorial</a>."
+    },
+    {
+      "type": "text",
+      "title": "Key Files and Directories",
+      "content": "- <b>FtcRobotController</b>: Contains the official SDK code. Do not modify files here.<br>- <b>TeamCode</b>: This is where you write your own OpModes and custom classes.<br>- <b>build.gradle</b>: The build configuration file for each module.<br>- <b>AndroidManifest.xml</b>: Declares app permissions and components.<br>- <b>libs/</b>: Place any third-party libraries here if needed."
+    },
+    {
+      "type": "text",
+      "title": "Where to Write Your Code (TeamCode vs. FtcRobotController)",
+      "content": "Always write your OpModes and custom code in the <b>TeamCode</b> module. This keeps your code separate from the SDK, making it easier to update the SDK and avoid conflicts. <br><br>To create a new OpMode, add a new Java class in <b>TeamCode/src/main/java/org/firstinspires/ftc/teamcode</b>."
+    },
+    {
+      "type": "text",
+      "title": "Gradle and Build System Basics",
+      "content": "Gradle is the build system used by Android Studio. It compiles your code, manages dependencies, and packages your app for deployment. Most of the time, you won't need to edit Gradle files directly, but understanding the basics can help you troubleshoot build errors. <br><br>Learn more: <a href=\"https://docs.gradle.org/current/userguide/userguide.html\" target=\"_blank\">Gradle User Guide</a>"
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise",
+      "description": "Explore the FTC SDK project structure in Android Studio.",
+      "tasks": [
+        "Open the FTC SDK project in Android Studio.",
+        "Locate the TeamCode and FtcRobotController modules.",
+        "Find the build.gradle and AndroidManifest.xml files.",
+        "Create a new Java class in TeamCode/src/main/java/org/firstinspires/ftc/teamcode."
+      ],
+      "content": "If you are unsure where to add your code, ask a mentor or refer to the FTC Docs."
+    }
+  ]
+}

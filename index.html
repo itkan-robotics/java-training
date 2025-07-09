@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>FRCCodeLab - Programming Fundamentals</title>
+    <title>SwyftNav - Programming Fundamentals</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,6 @@
     <!-- Favicons for Website (Dark = Light Mode & Vice Versa) -->
     <link rel="icon" href="./media/FRCCodeLabDark.svg" type="image/svg+xml">
     <link rel="icon" href="./media/FRCCodeLabLight.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
-    <!-- <link rel="icon" href="/favicons/FRCCodeLab.svg" type="image/svg+xml"> -->
     <link rel="icon" href="./media/FRCCodeLab.png" type="image/png" sizes="any">
 
 </head>
@@ -42,7 +41,7 @@
             </div>
             <div class="header-right">
                 <div class="search-container-header">
-                    <input type="text" class="search-input-header" placeholder="Search (Ctrl+K)..." id="header-search">
+                    <input type="text" class="search-input-header" placeholder="Search (Ctrl+K)..." id="header-search" autocomplete="off" autocorrect="off">
                 </div>
                 <div class="theme-toggle-container theme-toggle-header">
                     <button class="theme-toggle" onclick="toggleTheme()">
@@ -58,7 +57,7 @@
                 <div class="sidebar-sticky">
                     <a class="sidebar-brand" href="https://github.com/itkan-robotics/java-training" target="_blank">
                         <!-- <img width="24px" height="24px" id="git-logo" src="/media/Git-Icon-White.svg"> -->
-                        <span class="sidebar-brand-text">FRCCodeLab</span>
+                        <span class="sidebar-brand-text">SwyftNav</span>
                     </a>
                     
                     <div class="sidebar-scroll">
@@ -82,6 +81,7 @@
                     </div>
                 </div>
             </div>
+            <div class="sidebar-resize-handle"></div>
         </aside>
 
         <div class="main">
@@ -98,7 +98,7 @@
                     <div class="bottom-of-page">
                         <div class="left-details">
                             <div class="copyright">
-                                Copyright © 2025 FRCCodeLab
+                                Copyright © 2025 SwyftNav
                             </div>
                         </div>
                     </div>
@@ -107,6 +107,16 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Load JavaScript modules in dependency order -->
+    <script src="js/app-state.js"></script>
+    <script src="js/config-manager.js"></script>
+    <script src="js/content-manager.js"></script>
+    <script src="js/navigation-manager.js"></script>
+    <script src="js/theme-manager.js"></script>
+    <script src="js/search-manager.js"></script>
+    <script src="js/sidebar-resize-manager.js"></script>
+    <script src="js/event-manager.js"></script>
+    <script src="js/application.js"></script>
+    <script src="js/global-functions.js"></script>
 </body>
 </html> 

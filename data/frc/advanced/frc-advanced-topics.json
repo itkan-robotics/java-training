@@ -90,7 +90,7 @@
         "Implement adaptive control systems",
         "Test and validate advanced features in simulation"
       ],
-      "code": "// Advanced topics to explore:\n// 1. Feedforward control for better tracking\n// 2. State machines for complex behaviors\n// 3. Code optimization for performance\n// 4. Competition strategy implementation\n// 5. Advanced autonomous programming\n// 6. Adaptive control systems\n\n// Remember to test thoroughly and document your implementations!"
+      "content": "// Advanced topics to explore:\n// 1. Feedforward control for better tracking\n// 2. State machines for complex behaviors\n// 3. Code optimization for performance\n// 4. Competition strategy implementation\n// 5. Advanced autonomous programming\n// 6. Adaptive control systems\n\n// Remember to test thoroughly and document your implementations!"
     }
   ]
 }

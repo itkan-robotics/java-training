@@ -1,0 +1,63 @@
+{
+  "title": "Troubleshooting Common FTC Programming Issues",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction",
+      "content": "Even experienced programmers run into common issues when working with FTC robots. This lesson will help you quickly identify and fix the most frequent problems in OnBot Java."
+    },
+    {
+      "type": "text",
+      "title": "Hardware Mapping Errors",
+      "content": "One of the most common issues is a mismatch between your hardware configuration and your code. If you misspell a device name or forget to add a device in the configuration, your code will throw an error. Always double-check that your hardwareMap.get() calls match the names in your configuration. <br><br>For more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
+    },
+    {
+      "type": "code",
+      "title": "Example: Hardware Mapping Error",
+      "content": "This code will throw an error if 'left_drive' is not in your configuration:",
+      "code": "leftMotor = hardwareMap.get(DcMotor.class, \"left_drive\");"
+    },
+    {
+      "type": "text",
+      "title": "OpMode Lifecycle Mistakes",
+      "content": "Understanding when your code runs is crucial. Initialization code should go before waitForStart(), and your main loop should be inside while (opModeIsActive()). Placing code in the wrong place can cause unexpected behavior."
+    },
+    {
+      "type": "code",
+      "title": "Correct OpMode Structure",
+      "content": "@TeleOp\npublic class LifecycleExample extends LinearOpMode {\n    private DcMotor leftMotor;\n    @Override\n    public void runOpMode() {\n        leftMotor = hardwareMap.get(DcMotor.class, \"left_drive\");\n        waitForStart();\n        while (opModeIsActive()) {\n            leftMotor.setPower(0.5);\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Sensor and Motor Initialization Problems",
+      "content": "If you try to use a sensor or motor before it's initialized, you'll get errors or unexpected results. Always initialize all hardware before waitForStart()."
+    },
+    {
+      "type": "code",
+      "title": "Initialization Example",
+      "content": "// Correct\nleftMotor = hardwareMap.get(DcMotor.class, \"left_drive\");\n// Incorrect (will cause errors)\nleftMotor.setPower(1.0); // leftMotor not initialized yet"
+    },
+    {
+      "type": "list",
+      "title": "Quick Troubleshooting Checklist",
+      "content": [
+        "Check that all device names in your code match your configuration.",
+        "Initialize all hardware before waitForStart().",
+        "Put your main robot logic inside while (opModeIsActive()).",
+        "Use telemetry to display variable values and program state.",
+        "Read error messages carefully and look up unfamiliar terms."
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice: Find and Fix Common Issues",
+      "description": "Try introducing each of the common issues above into a sample OpMode. Observe the error messages and fix the problems using the troubleshooting steps.",
+      "tasks": [
+        "Misspell a hardware device name and see what error appears.",
+        "Move hardware initialization after waitForStart() and observe the result.",
+        "Try using a motor before initializing it and note the error message."
+      ],
+      "content": "// Practice troubleshooting by making and fixing these mistakes!"
+    }
+  ]
+}

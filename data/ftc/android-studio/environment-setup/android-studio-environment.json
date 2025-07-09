@@ -1,0 +1,46 @@
+{
+  "title": "Setting Up the Android Studio Environment for FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Android Studio?",
+      "content": "Android Studio is the official integrated development environment (IDE) for Android app development. FTC teams use it to write, test, and deploy robot code in Java. It provides advanced tools for editing, debugging, and managing your robot code, making it the preferred choice for teams with prior Java experience. <br><br>Learn more: <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html\" target=\"_blank\">FTC Docs: Android Studio Programming Tutorial</a>"
+    },
+    {
+      "type": "text",
+      "title": "Why Use Android Studio for FTC?",
+      "content": "Android Studio offers powerful features such as code completion, refactoring, integrated version control, and advanced debugging. These tools help teams write robust, maintainable code and collaborate effectively. Android Studio is recommended for advanced users with Java experience, as it provides more flexibility and control than OnBot Java or Blocks."
+    },
+    {
+      "type": "text",
+      "title": "System Requirements",
+      "content": "Before installing Android Studio, ensure your computer meets the minimum requirements. Android Studio requires a modern processor, at least 8GB of RAM (16GB recommended), and several gigabytes of free disk space. For the latest requirements, see the <a href=\"https://developer.android.com/studio\" target=\"_blank\">Android Studio Official Site</a>."
+    },
+    {
+      "type": "text",
+      "title": "Installing Android Studio",
+      "content": "1. Download the installer from the <a href=\"https://developer.android.com/studio\" target=\"_blank\">Android Studio website</a>.<br>2. Run the installer and follow the setup wizard.<br>3. During installation, select the default options unless your team has specific requirements.<br>4. After installation, launch Android Studio to complete the initial setup."
+    },
+    {
+      "type": "text",
+      "title": "Downloading and Setting Up the FTC SDK Project",
+      "content": "FTC teams use a special project called the FTC SDK. You can download it from the official <a href=\"https://github.com/FIRST-Tech-Challenge/FtcRobotController\" target=\"_blank\">FTC GitHub repository</a>. <br><br>To set up the project:<ul><li>Clone or download the repository to your computer.</li><li>Open Android Studio and select 'Open an existing project'.</li><li>Navigate to the folder where you saved the FTC SDK and open it.</li></ul>"
+    },
+    {
+      "type": "text",
+      "title": "Overview of the FTC Project Structure",
+      "content": "The FTC SDK project contains two main modules: <b>FtcRobotController</b> (the SDK code) and <b>TeamCode</b> (where you write your own code). Always add your OpModes and custom classes in the TeamCode module. <br><br>For a detailed walkthrough, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html\" target=\"_blank\">FTC Docs: Android Studio Programming Tutorial</a>."
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise",
+      "description": "Set up Android Studio and open the FTC SDK project on your computer.",
+      "tasks": [
+        "Download and install Android Studio.",
+        "Clone or download the FTC SDK from GitHub.",
+        "Open the project in Android Studio and explore the TeamCode module."
+      ],
+      "content": "If you run into issues, check the FTC Docs or ask a mentor for help."
+    }
+  ]
+}

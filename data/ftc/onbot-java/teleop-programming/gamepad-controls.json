@@ -1,0 +1,68 @@
+{
+  "title": "Gamepad Controls in FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Understanding the Gamepad API",
+      "content": "FTC robots are controlled using gamepads. The <code>gamepad1</code> and <code>gamepad2</code> objects provide access to all the buttons, sticks, triggers, and dpad controls. Knowing how to use these inputs is essential for effective TeleOp programming. <br><br>For a full list of gamepad fields, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28Android-Studio%29.html#gamepad-input\" target=\"_blank\">FTC Docs: Gamepad Input</a>."
+    },
+    {
+      "type": "list",
+      "title": "Gamepad Input Reference",
+      "content": [
+        "<strong>Analog:</strong> left_stick_x, left_stick_y, right_stick_x, right_stick_y, left_trigger, right_trigger",
+        "<strong>Digital:</strong> a, b, x, y, dpad_up, dpad_down, dpad_left, dpad_right, left_bumper, right_bumper, start, back"
+      ]
+    },
+    {
+      "type": "code",
+      "title": "Example: Reading Analog and Digital Inputs",
+      "content": "This snippet shows how to read both analog and digital inputs from gamepad1.",
+      "code": "// Analog inputs\ndouble drive = -gamepad1.left_stick_y;\ndouble turn = gamepad1.right_stick_x;\ndouble lift = gamepad1.right_trigger - gamepad1.left_trigger;\n// Digital inputs\nboolean openClaw = gamepad1.a;\nboolean closeClaw = gamepad1.b;\nboolean slowMode = gamepad1.left_bumper;"
+    },
+    {
+      "type": "text",
+      "title": "Debouncing and Edge Detection",
+      "content": "When using buttons to trigger actions (like toggling a mechanism), you often want to detect when a button is pressed, not just held. This is called edge detection. Without it, your code might trigger the action repeatedly while the button is held down."
+    },
+    {
+      "type": "code",
+      "title": "Example: Button Edge Detection (Toggle)",
+      "content": "boolean lastA = false;\nboolean clawOpen = false;\n// In your main loop:\nif (gamepad1.a && !lastA) {\n    clawOpen = !clawOpen; // Toggle\n}\nlastA = gamepad1.a;"
+    },
+    {
+      "type": "text",
+      "title": "Mapping Controls to Multiple Subsystems",
+      "content": "Most robots have more than one mechanism. Assign different controls to each subsystem for clarity and ease of use. For example, use the left stick for driving and the right bumper for operating a lift."
+    },
+    {
+      "type": "code",
+      "title": "Example: Multi-Subsystem Control",
+      "content": "// Drive\ndouble leftPower = -gamepad1.left_stick_y;\ndouble rightPower = -gamepad1.right_stick_y;\nleftDrive.setPower(leftPower);\nrightDrive.setPower(rightPower);\n// Lift\nif (gamepad1.right_bumper) {\n    liftMotor.setPower(1.0);\n} else if (gamepad1.left_bumper) {\n    liftMotor.setPower(-1.0);\n} else {\n    liftMotor.setPower(0.0);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices: Clear, Readable Control Logic",
+      "content": "Use descriptive variable names and comments to make your control logic easy to understand and debug. Group related controls together and avoid duplicating code."
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise: Gamepad Mapping",
+      "description": "Write code to control a drive train with the left stick, a lift with the bumpers, and a claw with buttons A/B. Implement a toggle for the claw using edge detection.",
+      "tasks": [
+        "Map drive motors, a lift motor, and a claw servo.",
+        "Read analog and digital inputs from gamepad1.",
+        "Implement edge detection for the claw toggle.",
+        "Add comments and use clear variable names."
+      ],
+      "content": "// Example toggle for claw\nprivate boolean lastA = false;\nprivate boolean clawOpen = false;\nprivate void controlClaw() {\n    if (gamepad1.a && !lastA) {\n        clawOpen = !clawOpen;\n        clawServo.setPosition(clawOpen ? 1.0 : 0.0);\n    }\n    lastA = gamepad1.a;\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "content": [
+        
+      ]
+    }
+  ]
+}

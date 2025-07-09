@@ -1,0 +1,48 @@
+{
+  "title": "Introduction to FTC Sensors",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What are Sensors in FTC?",
+      "content": "Sensors are electronic devices that allow your robot to perceive its environment. In FTC, sensors are used for tasks like detecting objects, measuring distance, sensing color, and determining orientation. Understanding how to use sensors is crucial for building autonomous and responsive robots. <br><br>For a general overview, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/onbot_java/intro/intro.html\" target=\"_blank\">FTC Docs: OnBot Java Programming Tutorial</a>."
+    },
+    {
+      "type": "list",
+      "title": "Types of Sensors Commonly Used in FTC",
+      "content": [
+        "Touch Sensors: Detect physical contact or limits.",
+        "Distance Sensors: Measure the distance to objects.",
+        "Color Sensors: Detect color and light intensity.",
+        "IMU (Inertial Measurement Unit): Measures orientation and acceleration.",
+        "Gyroscope: Measures rotational movement (often part of IMU).",
+        "Other sensors: Analog sensors, custom sensors, etc."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "How Sensors Integrate with FTC Hardware",
+      "content": "Sensors must be configured in your robot's hardware configuration and then mapped in your code. This allows you to reference and use them in your Op Modes. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a> for details."
+    },
+    {
+      "type": "code",
+      "title": "Example: Mapping a Sensor in Java",
+      "content": "This example shows how to map a distance sensor in your Op Mode. Always use clear, modular code blocks for each sensor.",
+      "code": "private DistanceSensor sensorColorRange;\n\n@Override\npublic void runOpMode() {\n    sensorColorRange = hardwareMap.get(DistanceSensor.class, \"sensorColorRange\");\n    // Now you can use sensorColorRange in your code\n}"
+    },
+    {
+      "type": "emphasis-box",
+      "title": "Best Practice: Modular Code",
+      "content": "Avoid writing large, monolithic code files. Instead, break your code into small, focused sections for each sensor and function. This makes your code easier to read, debug, and extend."
+    },
+    {
+      "type": "link-grid",
+      "title": "Explore More Sensor Lessons",
+      "content": [
+        {"label": "Touch Sensors", "url": "#touch-sensors"},
+        {"label": "Distance Sensors", "url": "#distance-sensors"},
+        {"label": "Color Sensors", "url": "#color-sensors"},
+        {"label": "IMU", "url": "#imu"}
+      ]
+    }
+  ]
+}

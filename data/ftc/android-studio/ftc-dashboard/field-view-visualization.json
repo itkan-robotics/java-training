@@ -1,0 +1,219 @@
+{
+  "title": "Field View Visualization",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Field View Overview",
+      "content": "FTCDashboard's field view provides a powerful way to visualize your robot's position and movement on the game field. This feature is essential for autonomous programming, path planning, and debugging robot navigation. The field view creates a real-time 2D representation of the field with your robot's position, orientation, and planned paths."
+    },
+    {
+      "type": "rules-box",
+      "title": "Field View Benefits",
+      "items": [
+        "Real-time robot position tracking and visualization",
+        "Path planning and trajectory visualization",
+        "Game element and obstacle representation",
+        "Autonomous program debugging and validation",
+        "Team strategy visualization and planning",
+        "Historical movement tracking and analysis"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Step 1: Basic Setup and Imports",
+      "content": "Before we can use field view, we need to import the necessary classes and set up our OpMode. The key imports are FtcDashboard for dashboard access, TelemetryPacket for sending data, and Pose2d for representing robot positions."
+    },
+    {
+      "type": "code",
+      "title": "Required Imports and Class Setup",
+      "content": "Start by adding these imports at the top of your OpMode file:",
+      "code": "// Essential imports for field view\nimport com.acmerobotics.dashboard.FtcDashboard;\nimport com.acmerobotics.dashboard.telemetry.TelemetryPacket;\nimport com.acmerobotics.roadrunner.geometry.Pose2d;\n\n// Your OpMode class declaration\npublic class BasicFieldViewOpMode extends OpMode {\n    // Dashboard and telemetry objects\n    private FtcDashboard dashboard;\n    private TelemetryPacket packet;\n    \n    // Robot position variables (we'll track these)\n    private double x = 0, y = 0, heading = 0;\n    \n    // Hardware objects\n    private DcMotor leftMotor, rightMotor;"
+    },
+    {
+      "type": "text",
+      "title": "Step 2: Initialization Method",
+      "content": "The init() method is where we set up our dashboard connection and initialize our hardware. This is crucial for establishing communication with the dashboard and preparing our robot for position tracking."
+    },
+    {
+      "type": "code",
+      "title": "Dashboard and Hardware Initialization",
+      "content": "In your init() method, set up the dashboard connection and hardware:",
+      "code": "@Override\npublic void init() {\n    // Get dashboard instance - this connects to the web interface\n    dashboard = FtcDashboard.getInstance();\n    \n    // Create a telemetry packet for sending data to dashboard\n    packet = new TelemetryPacket();\n    \n    // Initialize motors from hardware map\n    leftMotor = hardwareMap.get(DcMotor.class, \"left_motor\");\n    rightMotor = hardwareMap.get(DcMotor.class, \"right_motor\");\n    \n    // Reset encoders to zero for accurate position tracking\n    leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n    \n    // Send initial status to dashboard\n    telemetry.addData(\"Status\", \"Field view initialized\");\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 3: Basic Position Tracking",
+      "content": "Now we'll implement basic position tracking. This simplified version uses motor encoders to estimate robot position. In practice, you'd use proper odometry, but this demonstrates the concept."
+    },
+    {
+      "type": "code",
+      "title": "Simple Position Calculation",
+      "content": "Add this code to your loop() method to track robot position:",
+      "code": "@Override\npublic void loop() {\n    // Read current encoder positions\n    double leftPos = leftMotor.getCurrentPosition();\n    double rightPos = rightMotor.getCurrentPosition();\n    \n    // Calculate average distance traveled (simplified odometry)\n    // Convert encoder ticks to meters (adjust conversion factor for your robot)\n    double distance = (leftPos + rightPos) / 2.0 * 0.001; // 0.001 meters per tick\n    \n    // Calculate x, y position based on current heading\n    x = distance * Math.cos(heading);\n    y = distance * Math.sin(heading);\n    \n    // Update heading based on difference between left and right encoders\n    // This is a simplified calculation - use proper odometry in practice\n    double headingChange = (rightPos - leftPos) * 0.0001; // Adjust for your robot\n    heading += headingChange;\n    \n    // Display position on telemetry\n    telemetry.addData(\"Position\", \"(%.2f, %.2f)\", x, y);\n    telemetry.addData(\"Heading\", \"%.2f radians\", heading);\n    telemetry.update();\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 4: Drawing the Robot on Field View",
+      "content": "Now we'll add the robot to the field view. We'll draw it as a circle and add a line to show its heading direction. This gives us a visual representation of where the robot is and which way it's facing."
+    },
+    {
+      "type": "code",
+      "title": "Robot Visualization on Field",
+      "content": "Add this code after your position calculations in the loop() method:",
+      "code": "// Draw robot as a blue circle on the field\npacket.fieldOverlay()\n    .setFill(\"blue\")           // Set fill color to blue\n    .fillCircle(x, y, 0.1);     // Draw filled circle at robot position, radius 0.1m\n\n// Draw robot heading as a red line\npacket.fieldOverlay()\n    .setStroke(\"red\")          // Set line color to red\n    .setStrokeWidth(0.02)       // Set line thickness\n    .strokeLine(x, y,           // Start at robot position\n               x + 0.2 * Math.cos(heading),  // End 0.2m in heading direction\n               y + 0.2 * Math.sin(heading));\n\n// Send the packet to dashboard to update the field view\ndashboard.sendTelemetryPacket(packet);\n\n// Small delay to prevent overwhelming the dashboard\nsleep(50);"
+    },
+    {
+      "type": "text",
+      "title": "Field Coordinate System",
+      "content": "Understanding the field coordinate system is crucial for accurate position tracking. FTCDashboard uses a standard coordinate system where the origin (0,0) is typically at the bottom-left corner of the field, with positive X extending right and positive Y extending up."
+    },
+    {
+      "type": "rules-box",
+      "title": "Field Coordinate System Rules",
+      "items": [
+        "Origin (0,0) is typically at the bottom-left corner of the field",
+        "Positive X extends to the right across the field width",
+        "Positive Y extends upward across the field length",
+        "Heading is measured in radians, with 0 pointing right (positive X)",
+        "Positive heading rotates counterclockwise",
+        "Units are typically in meters or inches depending on your setup"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Step 5: Setting Up Field Dimensions",
+      "content": "To properly display your robot on the field, you need to tell the dashboard the dimensions of your field. This ensures the coordinate system matches your actual field size."
+    },
+    {
+      "type": "code",
+      "title": "Field Dimension Setup",
+      "content": "Add this to your init() method after dashboard initialization:",
+      "code": "// Define field dimensions (adjust for your specific game)\nprivate static final double FIELD_WIDTH = 12.0;   // 12 feet in meters\nprivate static final double FIELD_LENGTH = 12.0;  // 12 feet in meters\n\n// In your init() method:\n@Override\npublic void init() {\n    dashboard = FtcDashboard.getInstance();\n    packet = new TelemetryPacket();\n    \n    // Set field dimensions for proper coordinate system\n    packet.fieldOverlay().setFieldDimensions(FIELD_WIDTH, FIELD_LENGTH);\n    \n    // Draw field boundaries so you can see the field outline\n    packet.fieldOverlay()\n        .setStroke(\"black\")        // Black border\n        .setStrokeWidth(0.05)       // Thick border line\n        .strokeRect(0, 0, FIELD_WIDTH, FIELD_LENGTH);\n    \n    // Send initial field setup to dashboard\n    dashboard.sendTelemetryPacket(packet);\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 6: Adding Coordinate System Reference",
+      "content": "It's helpful to draw reference lines showing the coordinate system. This helps you understand where the origin is and which direction is positive X and Y."
+    },
+    {
+      "type": "code",
+      "title": "Coordinate System Reference Lines",
+      "content": "Add this code to draw reference lines for the coordinate system:",
+      "code": "// Draw X-axis reference line (red)\npacket.fieldOverlay()\n    .setStroke(\"red\")          // Red for X-axis\n    .setStrokeWidth(0.02)       // Thin line\n    .strokeLine(0, 0, 1, 0);    // From origin to 1 meter right\n\n// Draw Y-axis reference line (green)\npacket.fieldOverlay()\n    .setStroke(\"green\")        // Green for Y-axis\n    .setStrokeWidth(0.02)       // Thin line\n    .strokeLine(0, 0, 0, 1);    // From origin to 1 meter up\n\n// Add text labels for the axes\npacket.fieldOverlay()\n    .setFill(\"red\")\n    .fillText(\"X\", 1.2, 0.2);  // Label for X-axis\n\npacket.fieldOverlay()\n    .setFill(\"green\")\n    .fillText(\"Y\", 0.2, 1.2);  // Label for Y-axis\n\n// Send to dashboard\ndashboard.sendTelemetryPacket(packet);"
+    },
+    {
+      "type": "text",
+      "title": "Step 7: Drawing Simple Paths",
+      "content": "One of the most useful features is drawing planned paths. This helps you visualize where your robot should go and compare it to where it actually goes."
+    },
+    {
+      "type": "code",
+      "title": "Basic Path Drawing",
+      "content": "Add this method to draw a simple path:",
+      "code": "private void drawSimplePath() {\n    // Define path waypoints (x, y, heading)\n    double[][] waypoints = {\n        {0, 0, 0},      // Start at origin\n        {1, 0, 0},      // Move 1 meter right\n        {1, 1, Math.PI/2}, // Move 1 meter up, turn 90 degrees\n        {0, 1, Math.PI},   // Move 1 meter left, turn 180 degrees\n        {0, 0, -Math.PI/2} // Return to start, turn -90 degrees\n    };\n    \n    // Draw path lines connecting waypoints\n    packet.fieldOverlay()\n        .setStroke(\"blue\")         // Blue for planned path\n        .setStrokeWidth(0.03);      // Medium thickness\n    \n    for (int i = 0; i < waypoints.length - 1; i++) {\n        double[] current = waypoints[i];\n        double[] next = waypoints[i + 1];\n        \n        // Draw line from current waypoint to next waypoint\n        packet.fieldOverlay().strokeLine(current[0], current[1], \n                                       next[0], next[1]);\n    }\n    \n    // Draw waypoint markers\n    for (double[] waypoint : waypoints) {\n        packet.fieldOverlay()\n            .setFill(\"blue\")\n            .fillCircle(waypoint[0], waypoint[1], 0.05); // Small circles\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 8: Tracking Actual Robot Path",
+      "content": "Now we'll track the actual path the robot takes and compare it to the planned path. This helps you debug autonomous programs and see if the robot is following the intended route."
+    },
+    {
+      "type": "code",
+      "title": "Actual Path Tracking",
+      "content": "Add these variables and methods to track the actual path:",
+      "code": "// Add these variables to your class\nprivate List<Pose2d> actualPath = new ArrayList<>();\nprivate boolean pathTrackingEnabled = true;\n\n// Add this method to record robot position\nprivate void recordRobotPosition() {\n    if (pathTrackingEnabled) {\n        // Create a Pose2d object with current position and heading\n        Pose2d currentPose = new Pose2d(x, y, heading);\n        actualPath.add(currentPose);\n        \n        // Draw the actual path (limit to last 100 points for performance)\n        if (actualPath.size() > 100) {\n            actualPath.remove(0); // Remove oldest point\n        }\n        \n        // Draw actual path in red\n        packet.fieldOverlay()\n            .setStroke(\"red\")         // Red for actual path\n            .setStrokeWidth(0.02);     // Thin line\n        \n        for (int i = 0; i < actualPath.size() - 1; i++) {\n            Pose2d current = actualPath.get(i);\n            Pose2d next = actualPath.get(i + 1);\n            \n            packet.fieldOverlay().strokeLine(current.getX(), current.getY(), \n                                           next.getX(), next.getY());\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 9: Adding Game Elements",
+      "content": "You can add game elements like cones, cubes, and scoring zones to your field view. This helps with strategy planning and autonomous programming."
+    },
+    {
+      "type": "code",
+      "title": "Drawing Game Elements",
+      "content": "Add this method to draw various game elements:",
+      "code": "private void drawGameElements() {\n    // Draw cones as orange circles\n    packet.fieldOverlay()\n        .setFill(\"orange\")\n        .fillCircle(2, 2, 0.1);    // Cone at position (2, 2)\n    packet.fieldOverlay()\n        .setFill(\"orange\")\n        .fillCircle(8, 3, 0.1);    // Cone at position (8, 3)\n    packet.fieldOverlay()\n        .setFill(\"orange\")\n        .fillCircle(5, 8, 0.1);    // Cone at position (5, 8)\n    \n    // Draw cubes as purple rectangles\n    packet.fieldOverlay()\n        .setFill(\"purple\")\n        .fillRect(1, 1, 0.2, 0.2); // Cube at position (1, 1)\n    packet.fieldOverlay()\n        .setFill(\"purple\")\n        .fillRect(9, 6, 0.2, 0.2); // Cube at position (9, 6)\n    \n    // Draw scoring zones as semi-transparent green rectangles\n    packet.fieldOverlay()\n        .setFill(\"green\")\n        .setFillAlpha(0.2)         // 20% opacity\n        .fillRect(10, 10, 2, 2);   // Scoring zone\n    \n    // Add text labels\n    packet.fieldOverlay()\n        .setFill(\"black\")\n        .fillText(\"SCORE\", 11, 11); // Label for scoring zone\n}"
+    },
+    {
+      "type": "text",
+      "title": "Step 10: Complete Example Integration",
+      "content": "Now let's put everything together in a complete example that shows how all these pieces work together."
+    },
+    {
+      "type": "code",
+      "title": "Complete Field View Example",
+      "content": "Here's how your complete loop() method should look:",
+      "code": "@Override\npublic void loop() {\n    // 1. Update robot position\n    updateRobotPosition();\n    \n    // 2. Record position for path tracking\n    recordRobotPosition();\n    \n    // 3. Clear previous drawings (optional - for clean display)\n    packet.fieldOverlay().clear();\n    \n    // 4. Redraw field elements\n    drawFieldBoundaries();\n    drawGameElements();\n    drawSimplePath();\n    \n    // 5. Draw robot\n    drawRobot();\n    \n    // 6. Send everything to dashboard\n    dashboard.sendTelemetryPacket(packet);\n    \n    // 7. Update telemetry\n    telemetry.addData(\"Position\", \"(%.2f, %.2f)\", x, y);\n    telemetry.addData(\"Heading\", \"%.2f rad\", heading);\n    telemetry.addData(\"Path Points\", actualPath.size());\n    telemetry.update();\n    \n    sleep(50); // Small delay\n}\n\nprivate void updateRobotPosition() {\n    // Read encoders and calculate position\n    double leftPos = leftMotor.getCurrentPosition();\n    double rightPos = rightMotor.getCurrentPosition();\n    \n    double distance = (leftPos + rightPos) / 2.0 * 0.001;\n    x = distance * Math.cos(heading);\n    y = distance * Math.sin(heading);\n    \n    double headingChange = (rightPos - leftPos) * 0.0001;\n    heading += headingChange;\n}\n\nprivate void drawFieldBoundaries() {\n    packet.fieldOverlay()\n        .setStroke(\"black\")\n        .setStrokeWidth(0.05)\n        .strokeRect(0, 0, FIELD_WIDTH, FIELD_LENGTH);\n}\n\nprivate void drawRobot() {\n    // Draw robot body\n    packet.fieldOverlay()\n        .setFill(\"blue\")\n        .fillCircle(x, y, 0.1);\n    \n    // Draw heading indicator\n    packet.fieldOverlay()\n        .setStroke(\"yellow\")\n        .setStrokeWidth(0.03)\n        .strokeLine(x, y, \n                   x + 0.2 * Math.cos(heading), \n                   y + 0.2 * Math.sin(heading));\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Field View Drawing Methods",
+      "items": [
+        "fillCircle(x, y, radius): Draw filled circles for robots and objects",
+        "strokeCircle(x, y, radius): Draw outline circles",
+        "fillRect(x, y, width, height): Draw filled rectangles",
+        "strokeRect(x, y, width, height): Draw outline rectangles",
+        "strokeLine(x1, y1, x2, y2): Draw lines for paths and headings",
+        "fillText(text, x, y): Add text labels to the field",
+        "setFill(color): Set fill color for shapes",
+        "setStroke(color): Set stroke color for lines and outlines",
+        "setStrokeWidth(width): Set line thickness",
+        "setFillAlpha(alpha): Set transparency (0.0 to 1.0)",
+        "clear(): Clear all previous drawings"
+      ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "Practice Exercise: Build Your Own Field View",
+      "description": "Create a complete field view system step by step.",
+      "tasks": [
+        "Set up basic dashboard connection and field dimensions",
+        "Implement simple robot position tracking using encoders",
+        "Draw the robot on the field with heading indicator",
+        "Add a planned path with multiple waypoints",
+        "Track and display the actual robot path",
+        "Add game elements specific to your robot's game"
+      ],
+      "content": "// Start with the basic setup:\n// 1. Copy the imports and class structure\n// 2. Implement init() with dashboard setup\n// 3. Add position tracking in loop()\n// 4. Draw robot and path elements\n// 5. Test with your robot's movement"
+    },
+    {
+      "type": "rules-box",
+      "title": "Field View Best Practices",
+      "items": [
+        "Use consistent coordinate system throughout your application",
+        "Set appropriate field dimensions for your game",
+        "Use different colors and shapes to distinguish elements",
+        "Update field view at reasonable frequency (10-20 Hz)",
+        "Clear previous drawings to avoid overlapping elements",
+        "Add labels and text for better understanding",
+        "Use transparency for overlapping elements",
+        "Limit path tracking to prevent memory issues"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Field View Issues",
+      "items": [
+        "No field view appearing: Check that fieldOverlay() methods are being called",
+        "Incorrect positioning: Verify coordinate system and units",
+        "Poor performance: Reduce update frequency or simplify drawings",
+        "Overlapping elements: Clear previous drawings or use transparency",
+        "Missing elements: Ensure all drawing methods are called in the correct order",
+        "Dashboard not connecting: Check network connection and dashboard URL"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics and Resources",
+      "links": [
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/field\" target=\"_blank\">FTCDashboard Field View Documentation</a>",
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/field#coordinate-system\" target=\"_blank\">Field Coordinate System Guide</a>",
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/field#paths\" target=\"_blank\">Path Drawing Documentation</a>",
+        "<a href=\"https://acmerobotics.github.io/ftc-dashboard/field#shapes\" target=\"_blank\">Shapes and Objects Guide</a>",
+        "<a href=\"../odometry/intro-to-odometry.json\">Introduction to Odometry</a>",
+        "<a href=\"../path-planning/roadrunner/intro-to-roadrunner.json\">RoadRunner Path Planning</a>",
+        "<a href=\"../autonomous-programming/basic-autonomous-programming.json\">Basic Autonomous Programming</a>"
+      ]
+    }
+  ]
+} 

@@ -119,7 +119,7 @@
         "Test the different robot modes (Autonomous, Teleop, Test)",
         "Create a basic telemetry output showing robot status"
       ],
-      "code": "// Add this to your robotInit() method:\nSmartDashboard.putString(\"Robot Status\", \"Initialized\");\n\n// Add this to your teleopPeriodic() method:\nSmartDashboard.putNumber(\"Match Time\", DriverStation.getMatchTime());\nSmartDashboard.putBoolean(\"Robot Enabled\", DriverStation.isEnabled());\n\n// Add this to your autonomousPeriodic() method:\nSmartDashboard.putString(\"Mode\", \"Autonomous\");\nSmartDashboard.putNumber(\"Auto Time Remaining\", DriverStation.getMatchTime());"
+      "content": "// Add this to your robotInit() method:\nSmartDashboard.putString(\"Robot Status\", \"Initialized\");\n\n// Add this to your teleopPeriodic() method:\nSmartDashboard.putNumber(\"Match Time\", DriverStation.getMatchTime());\nSmartDashboard.putBoolean(\"Robot Enabled\", DriverStation.isEnabled());\n\n// Add this to your autonomousPeriodic() method:\nSmartDashboard.putString(\"Mode\", \"Autonomous\");\nSmartDashboard.putNumber(\"Auto Time Remaining\", DriverStation.getMatchTime());"
     }
   ]
 }

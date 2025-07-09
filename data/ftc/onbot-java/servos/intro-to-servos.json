@@ -1,0 +1,39 @@
+{
+  "title": "Introduction to Servos in FTC",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is a Servo?",
+      "content": "A servo is a special type of motor designed for precise, controlled movement over a limited range. In FTC, servos are used for mechanisms like arms, claws, and sensors that need to move to specific positions and hold them. Unlike DC motors, servos are not used for continuous rotation (unless they are a special type called continuous rotation servos)."
+    },
+    {
+      "type": "text",
+      "title": "Types of Servos Used in FTC",
+      "content": "FTC robots use two main types of servos: standard (positional) and continuous rotation. Standard servos move to a specific position and hold it, while continuous rotation servos spin like a motor. Choosing the right type is important for your mechanism's function."
+    },
+    {
+      "type": "text",
+      "title": "How Servos are Controlled in Code",
+      "content": "Servos are controlled in code by setting their position (for standard servos) or power (for continuous rotation servos). The position is a value between 0.0 and 1.0, representing the servo's range of motion. You must initialize the servo in your OpMode before using it."
+    },
+    {
+      "type": "code",
+      "title": "Basic Servo Initialization and Use",
+      "content": "This example shows how to declare, initialize, and set the position of a standard servo in an FTC OpMode.",
+      "code": "import com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.Servo;\n\n@TeleOp\npublic class ServoExample extends LinearOpMode {\n    private Servo myServo;\n\n    @Override\n    public void runOpMode() {\n        myServo = hardwareMap.get(Servo.class, \"myServo\");\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        waitForStart();\n        while (opModeIsActive()) {\n            myServo.setPosition(0.5); // Move to middle position\n            telemetry.addData(\"Servo Position\", myServo.getPosition());\n            telemetry.update();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Typical Uses for Servos in FTC Robots",
+      "content": "Servos are commonly used for mechanisms that require precise movement, such as claws, arms, and sensor mounts. They are essential for tasks that need repeatable, accurate positioning."
+    },
+    {
+      "type": "list",
+      "title": "Further Reading and References",
+      "items": [
+        "<a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/controlling_a_servo/Controlling-a-Servo-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Controlling a Servo (OnBot Java)</a>",
+        "<a href=\"https://gm0.org/en/latest/docs/power-and-electronics/servo-guide/usage-tips.html\" target=\"_blank\">gm0: Servo Usage Tips</a>"
+      ]
+    }
+  ]
+}
