@@ -47,14 +47,26 @@ class Application {
     showDefaultTab() {
         let defaultTab;
         const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
-        const urlTabId = window.location.hash ? window.location.hash.substring(1) : null;
-
-        if (urlTabId) {
-            defaultTab = appState.allTabs.find(tab => tab.id === urlTabId);
+        
+        // Parse URL to determine section and tab
+        const urlData = this.navigationManager.parseCurrentUrl();
+        
+        if (urlData.tabId) {
+            // URL contains specific tab
+            defaultTab = appState.allTabs.find(tab => tab.id === urlData.tabId);
             if (defaultTab) {
                 localStorage.removeItem('lastOpenedTab');
+                this.navigationManager.navigateToTab(urlData.tabId);
+                return;
             }
-        } else if (lastOpenedTabId) {
+        } else if (urlData.sectionId && urlData.sectionId !== 'homepage') {
+            // URL contains section but no specific tab
+            this.navigationManager.navigateToTab(urlData.sectionId);
+            return;
+        }
+
+        // Fallback to stored tab or default
+        if (lastOpenedTabId) {
             defaultTab = appState.allTabs.find(tab => tab.id === lastOpenedTabId);
         }
 
@@ -64,6 +76,9 @@ class Application {
 
         if (defaultTab) {
             this.navigationManager.navigateToTab(defaultTab.id);
+        } else {
+            // Navigate to homepage if no default tab found
+            this.navigationManager.navigateToTab('homepage');
         }
     }
 

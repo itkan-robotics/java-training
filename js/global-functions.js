@@ -11,7 +11,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     app = new Application();
     await app.initialize();
     
-    // Add hashchange handler for browser navigation and direct links
+    // Add popstate handler for browser back/forward navigation
+    window.addEventListener('popstate', function(event) {
+        if (app && app.navigationManager) {
+            const urlData = app.navigationManager.parseCurrentUrl();
+            if (urlData.tabId) {
+                // Navigate to specific tab
+                if (appState.currentTab !== urlData.tabId) {
+                    app.navigationManager.navigateToTab(urlData.tabId);
+                }
+            } else if (urlData.sectionId) {
+                // Navigate to section
+                if (appState.currentSection !== urlData.sectionId) {
+                    app.navigationManager.navigateToTab(urlData.sectionId);
+                }
+            }
+        }
+    });
+
+    // Add hashchange handler for browser navigation and direct links (fallback)
     window.onhashchange = function() {
         const tabId = window.location.hash ? window.location.hash.substring(1) : null;
         if (tabId && app && app.navigationManager) {

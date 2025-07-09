@@ -7,6 +7,97 @@ class NavigationManager {
     constructor(searchManager = null, contentManager = null) {
         this.contentManager = contentManager || new ContentManager();
         this.searchManager = searchManager;
+        this.sectionUrlMap = {
+            'java-training': 'java',
+            'ftc-specific': 'ftc',
+            'frc-specific': 'frc',
+            'competitive-training': 'comp'
+        };
+        this.urlSectionMap = {
+            'java': 'java-training',
+            'ftc': 'ftc-specific',
+            'frc': 'frc-specific',
+            'comp': 'competitive-training'
+        };
+    }
+
+    /**
+     * Updates the URL to reflect the current section
+     */
+    updateUrl(sectionId, tabId = null) {
+        const sectionPath = this.sectionUrlMap[sectionId];
+        
+        if (sectionPath) {
+            // For main sections, use path routing
+            const newPath = `/${sectionPath}`;
+            if (tabId) {
+                // For specific tabs within sections, use full path routing
+                window.history.pushState({section: sectionId, tab: tabId}, '', `${newPath}/${tabId}`);
+            } else {
+                // For main sections, just use path
+                window.history.pushState({section: sectionId}, '', newPath);
+            }
+        } else if (sectionId === 'homepage') {
+            // For homepage, use root path
+            window.history.pushState({section: 'homepage'}, '', '/');
+        } else {
+            // Fallback to hash routing
+            const path = tabId ? `#${tabId}` : `#${sectionId}`;
+            if (window.location.hash !== path) {
+                window.location.hash = path;
+            }
+        }
+    }
+
+    /**
+     * Parses the current URL to determine section and tab
+     */
+    parseCurrentUrl() {
+        const path = window.location.pathname;
+        const hash = window.location.hash;
+        const pathParts = path.split('/').filter(part => part !== '');
+        
+        // Check for section/tab path structure like /java/java-intro
+        if (pathParts.length === 2) {
+            const [sectionPath, tabId] = pathParts;
+            if (this.urlSectionMap[sectionPath]) {
+                const sectionId = this.urlSectionMap[sectionPath];
+                return { sectionId, tabId };
+            }
+        }
+        
+        // Check for main section paths like /java
+        if (pathParts.length === 1) {
+            const sectionPath = pathParts[0];
+            if (this.urlSectionMap[sectionPath]) {
+                const sectionId = this.urlSectionMap[sectionPath];
+                return { sectionId, tabId: null };
+            }
+        }
+        
+        // Check for root path (homepage)
+        if (path === '/' || path === '') {
+            const tabId = hash ? hash.substring(1) : null;
+            if (tabId && tabId !== 'homepage') {
+                // Find which section this tab belongs to
+                const parentSection = this.findParentSectionIdForTab(tabId, appState.config?.sections || {});
+                if (parentSection) {
+                    return { sectionId: parentSection, tabId };
+                }
+            }
+            return { sectionId: 'homepage', tabId: null };
+        }
+        
+        // Fallback to hash routing
+        const tabId = hash ? hash.substring(1) : null;
+        if (tabId) {
+            const parentSection = this.findParentSectionIdForTab(tabId, appState.config?.sections || {});
+            if (parentSection) {
+                return { sectionId: parentSection, tabId };
+            }
+        }
+        
+        return { sectionId: 'homepage', tabId: null };
     }
 
     async generateNavigation() {
@@ -44,7 +135,7 @@ class NavigationManager {
         li.className = 'toctree-l1 current-page';
         const a = document.createElement('a');
         a.className = 'reference';
-        a.href = '#homepage';
+        a.href = '/';
         a.textContent = 'Home';
         a.onclick = (e) => {
             e.preventDefault();
@@ -123,7 +214,9 @@ class NavigationManager {
                     itemLi.className = 'toctree-l2 child-tab';
                     const itemA = document.createElement('a');
                     itemA.className = 'reference child-reference';
-                    itemA.href = `#${item.id}`;
+                    // Use proper URL routing for individual tabs
+                    const sectionPath = this.sectionUrlMap[appState.currentSection];
+                    itemA.href = sectionPath ? `/${sectionPath}/${item.id}` : `#${item.id}`;
                     itemA.textContent = item.label;
                     itemA.onclick = (e) => {
                         e.preventDefault();
@@ -169,7 +262,9 @@ class NavigationManager {
                     itemLi.className = 'toctree-l2 child-tab';
                     const itemA = document.createElement('a');
                     itemA.className = 'reference child-reference';
-                    itemA.href = `#${item.id}`;
+                    // Use proper URL routing for individual tabs
+                    const sectionPath = this.sectionUrlMap[appState.currentSection];
+                    itemA.href = sectionPath ? `/${sectionPath}/${item.id}` : `#${item.id}`;
                     itemA.textContent = item.label;
                     itemA.onclick = (e) => {
                         e.preventDefault();
@@ -210,7 +305,9 @@ class NavigationManager {
                             itemLi.className = 'toctree-l3 child-tab';
                             const itemA = document.createElement('a');
                             itemA.className = 'reference child-reference';
-                            itemA.href = `#${item.id}`;
+                            // Use proper URL routing for individual tabs
+                            const sectionPath = this.sectionUrlMap[appState.currentSection];
+                            itemA.href = sectionPath ? `/${sectionPath}/${item.id}` : `#${item.id}`;
                             itemA.textContent = item.label;
                             itemA.onclick = (e) => {
                                 e.preventDefault();
@@ -236,7 +333,9 @@ class NavigationManager {
         introLi.className = 'toctree-l1 current-page';
         const introA = document.createElement('a');
         introA.className = 'reference';
-        introA.href = `#${intro.id}`;
+        // Use proper URL routing for intro tabs
+        const sectionPath = this.sectionUrlMap[appState.currentSection];
+        introA.href = sectionPath ? `/${sectionPath}/${intro.id}` : `#${intro.id}`;
         introA.textContent = intro.label;
         introA.onclick = (e) => {
             e.preventDefault();
@@ -504,9 +603,13 @@ class NavigationManager {
         try {
             // Store the last opened tab ID
             localStorage.setItem('lastOpenedTab', tabId);
-            // Update the URL hash for direct linking and browser navigation
-            if (window.location.hash !== `#${tabId}`) {
-                window.location.hash = `#${tabId}`;
+            
+            // Check if this is a main section navigation
+            const isMainSection = ['java-training', 'ftc-specific', 'frc-specific', 'competitive-training', 'homepage'].includes(tabId);
+            
+            if (isMainSection) {
+                // Update URL for main sections
+                this.updateUrl(tabId);
             }
             // Clear current page classes
             document.querySelectorAll('.toctree-l1, .toctree-l2').forEach(li => {
@@ -582,6 +685,12 @@ class NavigationManager {
                     appState.setCurrentSection(newSection);
                     await this.generateNavigation();
                 }
+                
+                // Update URL for individual tabs within sections
+                if (!isMainSection) {
+                    this.updateUrl(newSection, tabId);
+                }
+                
                 // Highlight navigation
                 this.highlightNavigation(tabId);
                 // Update header navigation
@@ -646,6 +755,9 @@ class NavigationManager {
 
         const section = appState.config.sections[sectionId];
         if (!section || !section.file) return;
+        
+        // Update URL for section navigation
+        this.updateUrl(sectionId);
 
         // Check if we're navigating to a different section
         const currentSection = appState.currentSection;
@@ -709,7 +821,17 @@ class NavigationManager {
     }
 
     updateHeaderNavigation(sectionId) {
-        const headerLink = document.querySelector(`.header-nav-link[href="#${sectionId}"]`);
+        // Clear all active states first
+        document.querySelectorAll('.header-nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Get the URL path for this section
+        const sectionPath = this.sectionUrlMap[sectionId] || (sectionId === 'homepage' ? '' : sectionId);
+        const targetHref = sectionPath ? `/${sectionPath}` : '/';
+        
+        // Find and activate the correct header link
+        const headerLink = document.querySelector(`.header-nav-link[href="${targetHref}"]`);
         if (headerLink) {
             headerLink.classList.add('active');
         }
