@@ -44,10 +44,17 @@ class Application {
             // Mark as initialized
             appState.setInitialized(true);
             
+            // Hide loading overlay after everything is ready
+            hideLoadingOverlay();
         } catch (error) {
             console.error('Error initializing application:', error);
             this.showError('Failed to load application. Please refresh the page.');
+            hideLoadingOverlay();
         }
+    }
+
+    async showAppropriateTab() {
+        this.showDefaultTab();
     }
 
     showDefaultTab() {
@@ -109,7 +116,45 @@ class Application {
             document.body.removeChild(errorDiv);
         }, 5000);
     }
+
+    restoreUIState() {
+        if (appState.restoreScrollPosition) appState.restoreScrollPosition();
+        if (appState.restoreSidebarState) appState.restoreSidebarState();
+        if (appState.restoreSearchQuery) appState.restoreSearchQuery();
+    }
 }
+
+// Add a loading overlay to the page until initialization is complete
+function showLoadingOverlay() {
+    let overlay = document.getElementById('loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'loading-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.background = 'rgba(255,255,255,0.95)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.fontSize = '2rem';
+        overlay.style.color = '#333';
+        overlay.innerHTML = '<span>Loading...</span>';
+        document.body.appendChild(overlay);
+    }
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+showLoadingOverlay();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {

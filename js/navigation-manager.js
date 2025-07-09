@@ -344,7 +344,6 @@ class NavigationManager {
     renderTiersNavigation(container, tiers) {
         // Handle tiers navigation if needed
         // This is a placeholder for future tier-based navigation
-        console.log('Tiers navigation not yet implemented');
     }
 
     toggleGroup(groupId) {
@@ -596,6 +595,10 @@ class NavigationManager {
     }
 
     async navigateToTab(tabId) {
+        if (!appState.config || !appState.config.sections) {
+            this.showError('Configuration not loaded yet. Please wait and try again.');
+            return;
+        }
         try {
             // Store the last opened tab ID
             localStorage.setItem('lastOpenedTab', tabId);

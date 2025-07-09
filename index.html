@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-content_root="./">
 <head>
+    <base href="/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
@@ -8,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
 
     <!-- Favicons for Website (Dark = Light Mode & Vice Versa) -->
     <link rel="icon" href="./media/FRCCodeLabDark.svg" type="image/svg+xml">
@@ -64,9 +65,6 @@
                         <!-- Mobile sidebar navigation - appears on small screens -->
                         <div class="mobile-sidebar-nav">
                             <!-- Mobile search bar -->
-                            <div class="mobile-sidebar-search-container">
-                                <input type="text" class="mobile-sidebar-search-input" placeholder="Search (Ctrl+K)..." id="mobile-sidebar-search" autocomplete="off" autocorrect="off">
-                            </div>
                             
                             <a href="#homepage" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
                             <a href="#java-training" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
@@ -113,15 +111,16 @@
     </div>
 
     <!-- Load JavaScript modules in dependency order -->
-    <script src="js/app-state.js"></script>
-    <script src="js/config-manager.js"></script>
-    <script src="js/content-manager.js"></script>
-    <script src="js/navigation-manager.js"></script>
-    <script src="js/theme-manager.js"></script>
-    <script src="js/search-manager.js"></script>
-    <script src="js/sidebar-resize-manager.js"></script>
-    <script src="js/event-manager.js"></script>
-    <script src="js/application.js"></script>
-    <script src="js/global-functions.js"></script>
+    <script src="/js/app-state.js"></script>
+    <script src="/js/config-manager.js"></script>
+    <script src="/js/content-manager.js"></script>
+    <script src="/js/navigation-manager.js"></script>
+    <script src="/js/theme-manager.js"></script>
+    <script src="/js/search-manager.js"></script>
+    <script src="/js/sidebar-resize-manager.js"></script>
+    <script src="/js/event-manager.js"></script>
+    <script src="/js/application.js"></script>
+    <script src="/js/global-functions.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html> 

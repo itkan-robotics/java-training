@@ -193,7 +193,7 @@
           "id": "gamepad-controls.json"
         },
         {
-          "title": "IMU",
+          "title": "Sensors: IMU",
           "id": "imu"
         },
         {

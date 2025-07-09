@@ -4,49 +4,43 @@
  */
 
 class ConfigManager {
-    constructor() {
+    constructor(basePath = '') {
+        this.basePath = basePath;
         this.configCache = new Map();
-        // Determine the base path for the application
-        this.basePath = this.getBasePath();
-        console.log(`ConfigManager initialized with base path: ${this.basePath}`);
     }
 
     getBasePath() {
-        // Simple and reliable base path detection
+        // Allow override via global variable for custom deployments (e.g., GitHub Pages)
+        if (typeof window !== 'undefined' && window.BASE_PATH) {
+            return window.BASE_PATH;
+        }
+        // Auto-detect for GitHub Pages (repo subdirectory), else default to root
         const pathname = window.location.pathname;
-        
-        // For GitHub Pages project sites (username.github.io/repository-name/)
         if (pathname !== '/' && pathname.includes('/')) {
             const segments = pathname.split('/').filter(s => s !== '');
             if (segments.length > 0) {
-                // If we're in a subdirectory, assume it's the base path
                 const firstSegment = segments[0];
-                // Check if this looks like a repository name (no file extension)
+                // If the first segment looks like a repo name (no file extension)
                 if (firstSegment && !firstSegment.includes('.') && !firstSegment.includes('#')) {
-                    return `/${firstSegment}/`;
+                    // Only use this for GitHub Pages (hostname includes github.io)
+                    if (window.location.hostname.includes('github.io')) {
+                        return `/${firstSegment}/`;
+                    }
                 }
             }
         }
-        
         // Default to root for local development or simple hosting
         return '/';
     }
 
     resolvePath(relativePath) {
-        // Convert relative path to absolute path considering base path
-        const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-        
-        let resolvedPath;
-        if (this.basePath === '/') {
-            // Local development or root hosting
-            resolvedPath = '/' + cleanPath;
-        } else {
-            // GitHub Pages or subdirectory hosting
-            resolvedPath = this.basePath + cleanPath;
+        // If the path is already absolute, return it
+        if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
+            return relativePath;
         }
         
-        // Debug logging
-        console.log(`Path resolution: ${relativePath} -> ${resolvedPath} (base: ${this.basePath})`);
+        // Resolve relative path
+        const resolvedPath = this.basePath + relativePath;
         return resolvedPath;
     }
 

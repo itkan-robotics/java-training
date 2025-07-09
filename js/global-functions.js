@@ -79,7 +79,6 @@ window.SwyftNavUtils = {
      */
     clearSavedState() {
         appState.clearSavedState();
-        console.log('All saved state cleared');
     },
 
     /**
@@ -97,7 +96,6 @@ window.SwyftNavUtils = {
             allTabsCount: appState.allTabs.length,
             tabDataCount: appState.tabData.size
         };
-        console.log('Current App State:', state);
         return state;
     },
 
@@ -109,56 +107,37 @@ window.SwyftNavUtils = {
             const savedState = localStorage.getItem('swyftnav_state');
             if (savedState) {
                 const state = JSON.parse(savedState);
-                console.log('Saved State:', state);
                 return state;
             } else {
-                console.log('No saved state found');
                 return null;
             }
         } catch (error) {
-            console.error('Error reading saved state:', error);
             return null;
         }
     },
 
     /**
-     * Test persistence by saving current state and then restoring it
+     * Test persistence system
      */
     testPersistence() {
-        console.log('Testing persistence system...');
-        
         // Save current state
         appState.saveState();
-        console.log('State saved');
         
-        // View saved state
-        const savedState = this.viewSavedState();
-        
-        // Simulate state change
-        const originalTab = appState.currentTab;
-        appState.setCurrentTab('test-tab');
-        console.log('State changed to test-tab');
+        // Change state
+        appState.currentTab = 'test-tab';
+        appState.saveState();
         
         // Restore state
-        appState.restoreState();
-        console.log('State restored, current tab:', appState.currentTab);
-        
-        return {
-            originalTab,
-            restoredTab: appState.currentTab,
-            success: originalTab === appState.currentTab
-        };
+        appState.loadState();
     },
 
     /**
-     * Navigate to a specific tab and save state
+     * Navigate to a tab and save state
      */
     navigateAndSave(tabId) {
-        if (window.navigationManager) {
-            window.navigationManager.navigateToTab(tabId);
-            console.log(`Navigated to ${tabId} and saved state`);
-        } else {
-            console.error('Navigation manager not available');
+        if (app && app.navigationManager) {
+            app.navigationManager.navigateToTab(tabId);
+            appState.saveState();
         }
     },
 
@@ -166,8 +145,8 @@ window.SwyftNavUtils = {
      * Set scroll position and save state
      */
     setScrollAndSave(position) {
-        appState.setScrollPosition(position);
-        console.log(`Scroll position set to ${position} and saved`);
+        appState.scrollPosition = position;
+        appState.saveState();
     },
 
     /**
@@ -176,11 +155,8 @@ window.SwyftNavUtils = {
     toggleSidebarAndSave() {
         const sidebarCheckbox = document.getElementById('__navigation');
         if (sidebarCheckbox) {
-            sidebarCheckbox.checked = !sidebarCheckbox.checked;
-            appState.setSidebarOpen(sidebarCheckbox.checked);
-            console.log(`Sidebar toggled to ${sidebarCheckbox.checked} and saved`);
-        } else {
-            console.error('Sidebar checkbox not found');
+            appState.sidebarOpen = sidebarCheckbox.checked;
+            appState.saveState();
         }
     },
 
@@ -188,8 +164,8 @@ window.SwyftNavUtils = {
      * Set search query and save state
      */
     setSearchAndSave(query) {
-        appState.setSearchQuery(query);
-        console.log(`Search query set to "${query}" and saved`);
+        appState.searchQuery = query;
+        appState.saveState();
     },
 
     /**
@@ -222,10 +198,9 @@ window.SwyftNavUtils = {
                 stats.stateAge = Date.now() - state.timestamp;
             }
         } catch (error) {
-            console.error('Error calculating persistence stats:', error);
+            // Handle errors silently
         }
 
-        console.log('Persistence Statistics:', stats);
         return stats;
     }
 };

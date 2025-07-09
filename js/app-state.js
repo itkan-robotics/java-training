@@ -99,29 +99,20 @@ class AppState {
      * Save complete application state to localStorage
      */
     saveState() {
+        const state = {
+            currentSection: this.currentSection,
+            currentTab: this.currentTab,
+            theme: this.theme,
+            scrollPosition: this.scrollPosition,
+            sidebarOpen: this.sidebarOpen,
+            searchQuery: this.searchQuery,
+            timestamp: Date.now()
+        };
+
         try {
-            const state = {
-                currentSection: this.currentSection,
-                currentTab: this.currentTab,
-                theme: this.theme,
-                scrollPosition: this.scrollPosition,
-                sidebarOpen: this.sidebarOpen,
-                searchQuery: this.searchQuery,
-                lastActivity: Date.now(),
-                timestamp: Date.now()
-            };
-            
             localStorage.setItem('swyftnav_state', JSON.stringify(state));
-            
-            // Also save individual items for backward compatibility
-            if (this.currentTab) {
-                localStorage.setItem('lastOpenedTab', this.currentTab);
-            }
-            localStorage.setItem('theme', this.theme);
-            
-            console.log('State saved:', state);
         } catch (error) {
-            console.error('Failed to save state:', error);
+            // Handle localStorage errors silently
         }
     }
 
@@ -137,7 +128,6 @@ class AppState {
                 // Check if state is not too old (7 days)
                 const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
                 if (Date.now() - state.timestamp > maxAge) {
-                    console.log('Saved state is too old, clearing...');
                     this.clearSavedState();
                     return;
                 }
@@ -163,12 +153,10 @@ class AppState {
                     this.searchQuery = state.searchQuery;
                 }
                 
-                console.log('State restored:', state);
                 return state;
             }
         } catch (error) {
-            console.error('Failed to restore state:', error);
-            this.clearSavedState();
+            // Handle localStorage errors silently
         }
         return null;
     }
@@ -181,9 +169,8 @@ class AppState {
             localStorage.removeItem('swyftnav_state');
             localStorage.removeItem('lastOpenedTab');
             localStorage.removeItem('theme');
-            console.log('Saved state cleared');
         } catch (error) {
-            console.error('Failed to clear saved state:', error);
+            // Handle localStorage errors silently
         }
     }
 

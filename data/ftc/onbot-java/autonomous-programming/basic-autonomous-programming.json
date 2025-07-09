@@ -18,17 +18,6 @@
       "code": "@Autonomous(name=\"MyFirstAutonomous\")\npublic class MyFirstAutonomous extends LinearOpMode {\n    @Override\n    public void runOpMode() {\n        // Initialization code here\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n\n        // Wait for the game to start (driver presses PLAY)\n        waitForStart();\n\n        // Autonomous actions go here\n        while (opModeIsActive()) {\n            // Example: do nothing\n            telemetry.addData(\"Status\", \"Running\");\n            telemetry.update();\n        }\n    }\n}"
     },
     {
-      "type": "text",
-      "title": "Key FTC SDK Concepts for Autonomous",
-      "content": "- <strong>Hardware Mapping:</strong> Use <code>hardwareMap.get()</code> to access motors, sensors, and servos.\n- <strong>Initialization:</strong> Set up your hardware and variables before <code>waitForStart()</code>.\n- <strong>waitForStart():</strong> Pauses your code until the match begins.\n- <strong>opModeIsActive():</strong> Use this in loops to keep your code running only while the OpMode is active.\n- <strong>Telemetry:</strong> Use <code>telemetry.addData()</code> and <code>telemetry.update()</code> to send information to the driver station.\n\nFor more, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a>."
-    },
-    {
-      "type": "code",
-      "title": "Hardware Mapping Example",
-      "content": "This snippet shows how to map a DC motor and use telemetry in your autonomous OpMode.",
-      "code": "@Autonomous(name=\"HardwareMapExample\")\npublic class HardwareMapExample extends LinearOpMode {\n    private DcMotor leftDrive;\n\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        telemetry.addData(\"Status\", \"Hardware mapped\");\n        telemetry.update();\n        waitForStart();\n        leftDrive.setPower(0.5);\n        sleep(1000); // Run for 1 second\n        leftDrive.setPower(0);\n    }\n}"
-    },
-    {
       "type": "exercise-box",
       "title": "Practice Exercise: Your First Autonomous OpMode",
       "description": "Write an autonomous OpMode that drives a motor for 2 seconds, then stops. Use telemetry to display status before, during, and after movement.",
@@ -38,7 +27,46 @@
         "Set the motor power to drive forward for 2 seconds.",
         "Stop the motor and update telemetry."
       ],
-      "content": "// Your code here"
+      "answers": [
+        {
+          "task": "Map a DC motor using hardwareMap.",
+          "content": "// Map the motor in your OpMode\nDcMotor driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n// Make sure the name matches your robot configuration!"
+        },
+        {
+          "task": "Use waitForStart() to wait for the match to begin.",
+          "content": "// Wait for the game to start\nwaitForStart();"
+        },
+        {
+          "task": "Set the motor power to drive forward for 2 seconds.",
+          "content": "// Drive forward for 2 seconds\ndriveMotor.setPower(0.5); // 50% power\nsleep(2000); // Wait for 2 seconds (2000 ms)"
+        },
+        {
+          "task": "Stop the motor and update telemetry.",
+          "content": "// Stop the motor and show status\ndriveMotor.setPower(0.0);\ntelemetry.addData(\"Status\", \"Stopped\");\ntelemetry.update();"
+        },
+        {
+          "task": "Combine all tasks into one working OpMode.",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.Autonomous;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n@Autonomous(name = \"DriveForwardAuto\")\npublic class DriveForwardAuto extends LinearOpMode {\n    private DcMotor driveMotor;\n    @Override\n    public void runOpMode() {\n        // Map the motor\n        driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        // Wait for the game to start\n        waitForStart();\n        // Drive forward for 2 seconds\n        driveMotor.setPower(0.5);\n        telemetry.addData(\"Status\", \"Driving\");\n        telemetry.update();\n        sleep(2000);\n        // Stop the motor\n        driveMotor.setPower(0.0);\n        telemetry.addData(\"Status\", \"Stopped\");\n        telemetry.update();\n        // Optionally, keep the OpMode alive until STOP is pressed\n        while (opModeIsActive()) {\n            idle();\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Further Reading & Resources",
+      "content": [
+        {
+          "title": "OpMode API",
+          "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/eventloop/opmode/OpMode.html"
+        },
+        {
+          "title": "FTC Docs: Creating and Running an Op Mode (OnBot Java)",
+          "url": "https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html"
+        },
+        {
+          "title": "FTC SDK External Samples",
+          "url": "https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples"
+        }
+      ]
     }
   ]
 }

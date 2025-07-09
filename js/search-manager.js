@@ -16,38 +16,15 @@ class SearchManager {
 
     setupSearch() {
         const searchInput = document.getElementById('header-search');
-        const mobileSearchInput = document.getElementById('mobile-sidebar-search');
-        
-        console.log('Setting up search inputs:', { searchInput: !!searchInput, mobileSearchInput: !!mobileSearchInput });
         
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 this.handleSearchInput(e.target.value);
-                // Sync with mobile search
-                if (mobileSearchInput) {
-                    mobileSearchInput.value = e.target.value;
-                }
             });
 
             searchInput.addEventListener('focus', () => {
                 if (this.currentSearchQuery && this.searchResults.length > 0) {
-                    this.showResults();
-                }
-            });
-        }
-        
-        if (mobileSearchInput) {
-            mobileSearchInput.addEventListener('input', (e) => {
-                this.handleSearchInput(e.target.value);
-                // Sync with header search
-                if (searchInput) {
-                    searchInput.value = e.target.value;
-                }
-            });
-
-            mobileSearchInput.addEventListener('focus', () => {
-                if (this.currentSearchQuery && this.searchResults.length > 0) {
-                    this.showResults();
+                    // Optionally show search results
                 }
             });
         }
@@ -55,7 +32,6 @@ class SearchManager {
         // Close search results when clicking outside
         document.addEventListener('mousedown', (e) => {
             if (!e.target.closest('.search-container-header') && 
-                !e.target.closest('.mobile-sidebar-search-container') && 
                 !e.target.closest('.search-results')) {
                 this.hideResults();
             }
@@ -140,8 +116,6 @@ class SearchManager {
             return;
         }
         
-        console.log('Performing search for:', searchQuery);
-        
         try {
             // Search through all available tabs
             this.searchResults = [];
@@ -150,7 +124,6 @@ class SearchManager {
             // Sort results with titles first
             this.sortResults();
             
-            console.log(`Search completed. Found ${this.searchResults.length} results.`);
             this.showResults();
             
         } catch (error) {
@@ -403,11 +376,6 @@ class SearchManager {
         
         // Check if this is the mobile sidebar search
         const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
-        console.log('Showing search results:', { 
-            isMobileSearch, 
-            searchContainer: searchContainer.className,
-            resultsCount: this.searchResults.length 
-        });
         
         const resultsDiv = document.createElement('div');
         resultsDiv.className = 'search-results';
@@ -545,8 +513,7 @@ class SearchManager {
     }
 
     getSearchContainer() {
-        return document.querySelector('.search-container-header') || 
-               document.querySelector('.mobile-sidebar-search-container');
+        return document.querySelector('.search-container-header');
     }
 
     hideResults() {
@@ -829,16 +796,14 @@ class SearchManager {
     restoreSearchInputs() {
         if (this.currentSearchQuery) {
             const searchInput = document.getElementById('header-search');
-            const mobileSearchInput = document.getElementById('mobile-sidebar-search');
             
             if (searchInput) searchInput.value = this.currentSearchQuery;
-            if (mobileSearchInput) mobileSearchInput.value = this.currentSearchQuery;
         }
     }
     
     testSearch() {
-        console.log('Testing search functionality...');
-        this.performSearch('robot');
+        // Test search functionality
+        this.performSearch('test');
     }
 }
 

@@ -23,10 +23,6 @@ Loading Order:
 The HTML file should include these scripts in this exact order:
 */
 
-console.log('SwyftNav - Loading modules...');
-
 // This file is primarily for documentation and organization
 // The actual loading is handled by script tags in the HTML file
-// in the order specified above.
-
-console.log('SwyftNav - Module loading order documented'); 
+// in the order specified above. 

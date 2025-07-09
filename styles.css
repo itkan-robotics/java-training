@@ -1459,7 +1459,34 @@ footer {
   }
   
   .search-container-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1 1 100%;
+    order: 2;
+  }
+  .search-input-header {
+    width: 50vw;
+    min-width: 120px;
+    max-width: 400px;
+    margin: 0 auto;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+  }
+  .mobile-header .header-center {
     display: none;
+  }
+  .mobile-header .header-right {
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
   
   /* Show mobile sidebar navigation on small screens */
@@ -2092,6 +2119,19 @@ footer {
         transform: translateX(100%);
         opacity: 0;
     }
+} 
+
+@media (max-width: 63em) {
+  .search-results {
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 90%;
+    min-width: 0;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 0.75rem;
+  }
 } 
 
  
