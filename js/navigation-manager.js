@@ -135,7 +135,7 @@ class NavigationManager {
         li.className = 'toctree-l1 current-page';
         const a = document.createElement('a');
         a.className = 'reference';
-        a.href = '/';
+        a.href = '#homepage';
         a.textContent = 'Home';
         a.onclick = (e) => {
             e.preventDefault();
@@ -214,9 +214,8 @@ class NavigationManager {
                     itemLi.className = 'toctree-l2 child-tab';
                     const itemA = document.createElement('a');
                     itemA.className = 'reference child-reference';
-                    // Use proper URL routing for individual tabs
-                    const sectionPath = this.sectionUrlMap[appState.currentSection];
-                    itemA.href = sectionPath ? `/${sectionPath}/${item.id}` : `#${item.id}`;
+                    // Use hash-based navigation for GitHub Pages compatibility
+                    itemA.href = `#${item.id}`;
                     itemA.textContent = item.label;
                     itemA.onclick = (e) => {
                         e.preventDefault();
@@ -262,9 +261,8 @@ class NavigationManager {
                     itemLi.className = 'toctree-l2 child-tab';
                     const itemA = document.createElement('a');
                     itemA.className = 'reference child-reference';
-                    // Use proper URL routing for individual tabs
-                    const sectionPath = this.sectionUrlMap[appState.currentSection];
-                    itemA.href = sectionPath ? `/${sectionPath}/${item.id}` : `#${item.id}`;
+                    // Use hash-based navigation for GitHub Pages compatibility
+                    itemA.href = `#${item.id}`;
                     itemA.textContent = item.label;
                     itemA.onclick = (e) => {
                         e.preventDefault();
@@ -305,9 +303,8 @@ class NavigationManager {
                             itemLi.className = 'toctree-l3 child-tab';
                             const itemA = document.createElement('a');
                             itemA.className = 'reference child-reference';
-                            // Use proper URL routing for individual tabs
-                            const sectionPath = this.sectionUrlMap[appState.currentSection];
-                            itemA.href = sectionPath ? `/${sectionPath}/${item.id}` : `#${item.id}`;
+                            // Use hash-based navigation for GitHub Pages compatibility
+                            itemA.href = `#${item.id}`;
                             itemA.textContent = item.label;
                             itemA.onclick = (e) => {
                                 e.preventDefault();
@@ -333,9 +330,8 @@ class NavigationManager {
         introLi.className = 'toctree-l1 current-page';
         const introA = document.createElement('a');
         introA.className = 'reference';
-        // Use proper URL routing for intro tabs
-        const sectionPath = this.sectionUrlMap[appState.currentSection];
-        introA.href = sectionPath ? `/${sectionPath}/${intro.id}` : `#${intro.id}`;
+        // Use hash-based navigation for GitHub Pages compatibility
+        introA.href = `#${intro.id}`;
         introA.textContent = intro.label;
         introA.onclick = (e) => {
             e.preventDefault();
@@ -826,9 +822,8 @@ class NavigationManager {
             link.classList.remove('active');
         });
         
-        // Get the URL path for this section
-        const sectionPath = this.sectionUrlMap[sectionId] || (sectionId === 'homepage' ? '' : sectionId);
-        const targetHref = sectionPath ? `/${sectionPath}` : '/';
+        // Use hash-based hrefs for compatibility with GitHub Pages
+        const targetHref = `#${sectionId}`;
         
         // Find and activate the correct header link
         const headerLink = document.querySelector(`.header-nav-link[href="${targetHref}"]`);
