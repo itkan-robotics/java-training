@@ -8,45 +8,46 @@ class ConfigManager {
         this.configCache = new Map();
         // Determine the base path for the application
         this.basePath = this.getBasePath();
+        console.log(`ConfigManager initialized with base path: ${this.basePath}`);
     }
 
     getBasePath() {
-        // Detect base path from the script tag or pathname
-        const scriptTags = document.querySelectorAll('script[src]');
-        for (const script of scriptTags) {
-            const src = script.getAttribute('src');
-            if (src && src.includes('config-manager.js')) {
-                // Extract base path from script location
-                const basePath = src.replace(/js\/config-manager\.js.*$/, '');
-                return basePath || './';
-            }
-        }
-        
-        // Fallback: detect from pathname for GitHub Pages
+        // Simple and reliable base path detection
         const pathname = window.location.pathname;
+        
         // For GitHub Pages project sites (username.github.io/repository-name/)
         if (pathname !== '/' && pathname.includes('/')) {
             const segments = pathname.split('/').filter(s => s !== '');
             if (segments.length > 0) {
-                // Check if this looks like a GitHub Pages project path
-                const possibleRepoName = segments[0];
-                if (possibleRepoName && !possibleRepoName.includes('.')) {
-                    return `/${possibleRepoName}/`;
+                // If we're in a subdirectory, assume it's the base path
+                const firstSegment = segments[0];
+                // Check if this looks like a repository name (no file extension)
+                if (firstSegment && !firstSegment.includes('.') && !firstSegment.includes('#')) {
+                    return `/${firstSegment}/`;
                 }
             }
         }
         
-        return './'; // Default to relative path
+        // Default to root for local development or simple hosting
+        return '/';
     }
 
     resolvePath(relativePath) {
         // Convert relative path to absolute path considering base path
         const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-        if (this.basePath === './') {
-            return cleanPath; // Use relative path as-is
+        
+        let resolvedPath;
+        if (this.basePath === '/') {
+            // Local development or root hosting
+            resolvedPath = '/' + cleanPath;
         } else {
-            return this.basePath + cleanPath; // Use absolute path with base
+            // GitHub Pages or subdirectory hosting
+            resolvedPath = this.basePath + cleanPath;
         }
+        
+        // Debug logging
+        console.log(`Path resolution: ${relativePath} -> ${resolvedPath} (base: ${this.basePath})`);
+        return resolvedPath;
     }
 
     async loadMainConfig() {
@@ -79,10 +80,9 @@ class ConfigManager {
             // Resolve path considering base path (for GitHub Pages)
             const resolvedPath = this.resolvePath(section.file);
             // Add cache-busting parameter
-            const url = new URL(resolvedPath, window.location.origin);
-            url.searchParams.set('v', Date.now());
+            const url = `${resolvedPath}?v=${Date.now()}`;
             
-            const response = await fetch(url.toString());
+            const response = await fetch(url);
             if (!response.ok) throw new Error(`Failed to load section config: ${section.file}`);
                 
             const sectionConfig = await response.json();
@@ -106,10 +106,9 @@ class ConfigManager {
             // Resolve path considering base path (for GitHub Pages)
             const resolvedPath = this.resolvePath(filePath);
             // Add cache-busting parameter
-            const url = new URL(resolvedPath, window.location.origin);
-            url.searchParams.set('v', Date.now());
+            const url = `${resolvedPath}?v=${Date.now()}`;
             
-            const response = await fetch(url.toString());
+            const response = await fetch(url);
             if (!response.ok) throw new Error(`Failed to load content file: ${filePath}`);
             return await response.json();
         } catch (error) {
