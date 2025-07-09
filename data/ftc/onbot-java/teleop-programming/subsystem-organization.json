@@ -9,7 +9,7 @@
     {
       "type": "text",
       "title": "Identifying Robot Subsystems",
-      "content": "A subsystem is a part of your robot with its own logic, like a drivetrain, arm, or claw. Each subsystem should have its own methods (or even its own class) to keep your code organized. <br><br>For more on modular code, see <a href=\"https://gm0.org/en/latest/docs/software/getting-started/fundamental-concepts.html\" target=\"_blank\">gm0: Fundamental Concepts</a>."
+      "content": "A subsystem is a part of your robot with its own logic, like a drivetrain, arm, or claw. Each subsystem should have its own methods (or even its own class) to keep your code organized."
     },
     {
       "type": "code",
@@ -25,17 +25,17 @@
     {
       "type": "code",
       "title": "Example: Simple Drivetrain Class",
-      "content": "public class Drivetrain {\n    private DcMotor leftDrive, rightDrive;\n    public Drivetrain(HardwareMap hardwareMap) {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    }\n    public void drive(double leftPower, double rightPower) {\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n    }\n}"
+      "content": "public class Drivetrain {\n    private DcMotor leftDrive, rightDrive;\n\n    // Get the hardwareMap from the teleop program when we initialize the Drivetrain class\n    // because it is only accessible in the teleop program\n    public Drivetrain(HardwareMap hardwareMap) {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    }\n    public void drive(double leftPower, double rightPower) {\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Integrating Subsystems in the Main Loop",
-      "content": "Call your subsystem methods from the main loop to keep your OpMode clean and organized."
+      "title": "Integrating Subsystem Classes in the Main Loop",
+      "content": "When each subsystem is its own class, you must first create and initialize each subsystem object before using it in your OpMode. This makes your code modular and allows you to call methods on each subsystem instance from your main loop, keeping your OpMode organized and easy to read."
     },
     {
       "type": "code",
-      "title": "Example: Main Loop with Subsystems",
-      "content": "@Override\npublic void runOpMode() {\n    // ... hardware mapping ...\n    waitForStart();\n    while (opModeIsActive()) {\n        drive();\n        operateArm();\n        telemetry.update();\n    }\n}"
+      "title": "Example: Main Loop with Subsystem Classes",
+      "content": "private Drivetrain drivetrain;\nprivate Arm arm;\n\n@Override\npublic void runOpMode() {\n    //Initialize our subsystems\n    drivetrain = new Drivetrain(hardwareMap);\n    arm = new Arm(hardwareMap);\n    //Initialize the rest of our subsystems...\n\n    waitForStart();\n    while (opModeIsActive()) {\n        //Call our methods on the subsystems\n        drivetrain.drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);\n        arm.operate(gamepad1.a, gamepad1.b);\n        telemetry.update();\n    }\n}"
     },
     {
       "type": "text",
@@ -51,6 +51,27 @@
         "Write a helper method for each subsystem.",
         "Call each helper method from your main loop.",
         "(Optional) Create a Java class for a subsystem."
+      ],
+      "answers": [
+        {
+          "task": "Identify at least two subsystems in your robot."
+        },
+        {
+          "task": "Write a helper method for each subsystem.",
+          "content": "// Helper method for driving\nprivate void drive() {\n    double leftPower = -gamepad1.left_stick_y;\n    double rightPower = -gamepad1.right_stick_y;\n    leftDrive.setPower(leftPower);\n    rightDrive.setPower(rightPower);\n}\n// Helper method for operating the arm\nprivate void operateArm() {\n    if (gamepad1.a) {\n        armMotor.setPower(1.0);\n    } else if (gamepad1.b) {\n        armMotor.setPower(-1.0);\n    } else {\n        armMotor.setPower(0.0);\n    }\n}"
+        },
+        {
+          "task": "Call each helper method from your main loop.",
+          "content": "@Override\npublic void runOpMode() {\n    // Initialize hardware (leftDrive, rightDrive, armMotor, etc.)\n    // ...\n    waitForStart();\n    while (opModeIsActive()) {\n        drive(); // Call drivetrain helper\n        operateArm(); // Call arm helper\n        telemetry.update();\n    }\n}"
+        },
+        {
+          "task": "Combine all tasks into one working OpMode.",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n@TeleOp(name = \"ModularTeleOpExample\")\npublic class ModularTeleOpExample extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive, armMotor;\n\n    private void drive() {\n        double leftPower = -gamepad1.left_stick_y;\n        double rightPower = -gamepad1.right_stick_y;\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n    }\n    private void operateArm() {\n        if (gamepad1.a) {\n            armMotor.setPower(1.0);\n        } else if (gamepad1.b) {\n            armMotor.setPower(-1.0);\n        } else {\n            armMotor.setPower(0.0);\n        }\n    }\n\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        armMotor = hardwareMap.get(DcMotor.class, \"arm_motor\");\n        waitForStart();\n        while (opModeIsActive()) {\n            drive();\n            operateArm();\n            telemetry.update();\n        }\n    }\n}"
+        },
+        {
+          "task": "(Optional) Create a Java class for a subsystem.",
+          "content": "// Example Arm subsystem class\npublic class Arm {\n    private DcMotor armMotor;\n    public Arm(HardwareMap hardwareMap) {\n        armMotor = hardwareMap.get(DcMotor.class, \"arm_motor\");\n    }\n    public void operate(boolean up, boolean down) {\n        if (up) {\n            armMotor.setPower(1.0);\n        } else if (down) {\n            armMotor.setPower(-1.0);\n        } else {\n            armMotor.setPower(0.0);\n        }\n    }\n}\n// To use this class, initialize it in your OpMode like in the examples above:\n// Arm arm = new Arm(hardwareMap);\n// Then call arm.operate(gamepad1.a, gamepad1.b); in your main loop.\n// Try adding this to your own code!"
+        }
       ],
       "content": "// Example helper method for a claw\nprivate void controlClaw() {\n    if (gamepad1.x) {\n        clawServo.setPosition(1.0);\n    } else if (gamepad1.y) {\n        clawServo.setPosition(0.0);\n    }\n}"
     },

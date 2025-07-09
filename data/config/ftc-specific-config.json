@@ -209,13 +209,6 @@
               "duration": "30 min"
             },
             {
-              "id": "advanced-gamepad-techniques",
-              "label": "Advanced Gamepad Techniques",
-              "file": "data/ftc/onbot-java/teleop-programming/advanced-gamepad-techniques.json",
-              "difficulty": "intermediate",
-              "duration": "30 min"
-            },
-            {
               "id": "telemetry-feedback",
               "label": "Telemetry & Feedback",
               "file": "data/ftc/onbot-java/teleop-programming/telemetry-feedback.json",
