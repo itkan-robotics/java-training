@@ -9,6 +9,7 @@ let app;
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
     app = new Application();
+    window.app = app; // Make app globally accessible
     await app.initialize();
     
     // Add popstate handler for browser back/forward navigation
@@ -243,4 +244,59 @@ window.addEventListener('scroll', function() {
     }
 
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-}, false); 
+}, false);
+
+// Keyboard shortcuts overlay toggle
+function toggleKeyboardShortcuts() {
+    const overlay = document.getElementById('keyboard-shortcuts-overlay');
+    if (overlay) {
+        const isVisible = overlay.classList.contains('visible');
+        if (isVisible) {
+            overlay.classList.remove('visible');
+            // Re-enable body scroll
+            document.body.style.overflow = '';
+        } else {
+            overlay.classList.add('visible');
+            // Disable body scroll when overlay is open
+            document.body.style.overflow = 'hidden';
+            
+            // Focus the close button for accessibility
+            const closeButton = overlay.querySelector('.keyboard-shortcuts-close');
+            if (closeButton) {
+                setTimeout(() => closeButton.focus(), 100);
+            }
+        }
+    }
+}
+
+// Add click outside functionality for keyboard shortcuts overlay
+document.addEventListener('DOMContentLoaded', function() {
+    const overlay = document.getElementById('keyboard-shortcuts-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            // Close overlay if clicking on the background (not the modal)
+            if (e.target === overlay) {
+                toggleKeyboardShortcuts();
+            }
+        });
+        
+        // Add ESC key support to close overlay
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay.classList.contains('visible')) {
+                e.preventDefault();
+                toggleKeyboardShortcuts();
+            }
+        });
+        
+        // Add focus trap for accessibility
+        const closeButton = overlay.querySelector('.keyboard-shortcuts-close');
+        if (closeButton) {
+            closeButton.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleKeyboardShortcuts();
+                }
+            });
+        }
+    }
+}); 

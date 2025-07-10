@@ -25,7 +25,7 @@
     {
       "type": "text",
       "title": "Calculating Robot Position from Encoders",
-      "content": "To convert encoder ticks to robot position, you need to know the wheel diameter, encoder resolution, and the distance between wheels. The basic formula is:<br><code>distance = (ticks / ticks_per_revolution) * wheel_circumference</code><br>By combining the distances from each wheel, you can estimate the robot's X, Y, and heading."
+      "content": "To convert encoder ticks to robot position, you need to know the wheel diameter, encoder resolution, and the distance between wheels. The basic formula is:<br><code>distance = (ticks / ticks_per_revolution) * wheel_circumference</code><br>By combining the distances from each wheel, you can estimate the robot's X, Y, and heading.<br> You can also determine the inches/tick ratio manually by moving your robot forward/laterally and dividing the distance traveled by the number of ticks recorded."
     },
     {
       "type": "code",
@@ -57,7 +57,20 @@
         "Display their tick values on telemetry.",
         "Convert the tick values to inches and display those as well."
       ],
-      "content": "// Use the code snippets above as a starting point."
+      "answers": [
+        {
+          "task": "Initialize three encoders in your op mode.",
+          "content": "// Declare encoder variables\nDcMotor leftEncoder, rightEncoder, centerEncoder;\n\n@Override\npublic void runOpMode() {\n    leftEncoder = hardwareMap.get(DcMotor.class, \"leftEncoder\");\n    rightEncoder = hardwareMap.get(DcMotor.class, \"rightEncoder\");\n    centerEncoder = hardwareMap.get(DcMotor.class, \"centerEncoder\");\n    // ... rest of your code\n}"
+        },
+        {
+          "task": "Display their tick values on telemetry.",
+          "content": "while (opModeIsActive()) {\n    int leftTicks = leftEncoder.getCurrentPosition();\n    int rightTicks = rightEncoder.getCurrentPosition();\n    int centerTicks = centerEncoder.getCurrentPosition();\n    telemetry.addData(\"Left Encoder\", leftTicks);\n    telemetry.addData(\"Right Encoder\", rightTicks);\n    telemetry.addData(\"Center Encoder\", centerTicks);\n    telemetry.update();\n}"
+        },
+        {
+          "task": "Convert the tick values to inches and display those as well.",
+          "content": "double TICKS_PER_REV = 8192; // Example for REV Through Bore Encoder\ndouble WHEEL_DIAMETER_INCHES = 2.0;\ndouble WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER_INCHES;\n\nwhile (opModeIsActive()) {\n    int leftTicks = leftEncoder.getCurrentPosition();\n    int rightTicks = rightEncoder.getCurrentPosition();\n    int centerTicks = centerEncoder.getCurrentPosition();\n    double leftInches = (leftTicks / TICKS_PER_REV) * WHEEL_CIRCUMFERENCE;\n    double rightInches = (rightTicks / TICKS_PER_REV) * WHEEL_CIRCUMFERENCE;\n    double centerInches = (centerTicks / TICKS_PER_REV) * WHEEL_CIRCUMFERENCE;\n    telemetry.addData(\"Left Encoder (in)\", leftInches);\n    telemetry.addData(\"Right Encoder (in)\", rightInches);\n    telemetry.addData(\"Center Encoder (in)\", centerInches);\n    telemetry.update();\n}"
+        }
+      ]
     }
   ]
 }

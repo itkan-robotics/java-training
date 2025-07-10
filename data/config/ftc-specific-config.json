@@ -329,6 +329,13 @@
               "duration": "60 min"
             },
             { 
+              "id": "external-libraries", 
+              "label": "External Libraries in FTC", 
+              "file": "data/ftc/android-studio/advanced-movement-control/external-libraries.json",
+              "difficulty": "intermediate",
+              "duration": "45 min"
+            },
+            { 
               "id": "pid-control", 
               "label": "PID Control", 
               "file": "data/ftc/android-studio/advanced-movement-control/pid-control.json",
@@ -387,229 +394,34 @@
           ]
         },
         {
-          "id": "android-studio-path-planning-roadrunner",
-          "label": "Road Runner Path Planning",
-          "description": "Motion planning and trajectory following with Road Runner",
+          "id": "android-studio-path-planning",
+          "label": "Path Planning",
+          "description": "FTC path planning theory, libraries, and custom algorithms",
           "items": [
             {
-              "id": "intro-to-roadrunner",
-              "label": "Introduction to Road Runner",
-              "file": "data/ftc/android-studio/path-planning/roadrunner/intro-to-roadrunner.json",
+              "id": "poses-paths-theory",
+              "label": "Poses, Paths, and Theory",
+              "file": "data/ftc/android-studio/path-planning/poses-paths-theory.json",
               "difficulty": "advanced",
-              "duration": "40 min"
-            },
-            {
-              "id": "roadrunner-trajectories",
-              "label": "Road Runner Trajectories",
-              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-trajectories.json",
-              "difficulty": "advanced",
-              "duration": "45 min"
-            },
-            {
-              "id": "roadrunner-advanced-tuning",
-              "label": "Advanced Road Runner Tuning",
-              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-advanced-tuning.json",
-              "difficulty": "advanced",
-              "duration": "50 min"
-            },
-            {
-              "id": "roadrunner-actions",
-              "label": "Road Runner Actions & Autonomous Routines",
-              "file": "data/ftc/android-studio/path-planning/roadrunner/roadrunner-actions.json",
-              "difficulty": "advanced",
-              "duration": "50 min"
-            }
-          ]
-        },
-        {
-          "id": "android-studio-path-planning-pedro-pathing",
-          "label": "Pedro Pathing",
-          "description": "Lightweight path planning library designed specifically for FTC",
-          "items": [
-            {
-              "id": "intro-to-pedro-pathing",
-              "label": "Introduction to Pedro Pathing",
-              "file": "data/ftc/android-studio/path-planning/pedro-pathing/intro-to-pedro-pathing.json",
-              "difficulty": "intermediate",
-              "duration": "45 min"
-            },
-            {
-              "id": "pedro-localization",
-              "label": "Pedro Localization",
-              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-localization.json",
-              "difficulty": "intermediate",
-              "duration": "50 min"
-            },
-            {
-              "id": "pedro-advanced-configuration",
-              "label": "Pedro Advanced Configuration",
-              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-advanced-configuration.json",
-              "difficulty": "advanced",
-              "duration": "60 min"
-            },
-            {
-              "id": "pedro-autonomous-routines",
-              "label": "Building Pedro Pathing Autonomous Routines",
-              "file": "data/ftc/android-studio/path-planning/pedro-pathing/pedro-autonomous-routines.json",
-              "difficulty": "advanced",
-              "duration": "55 min"
-            }
-          ]
-        },
-        {
-          "id": "android-studio-solverslib",
-          "label": "SolversLib Command-Based Programming",
-          "description": "Advanced command-based programming using SolversLib framework",
-          "items": [
-            {
-              "id": "intro-to-command-system",
-              "label": "Introduction to Command-Based Programming",
-              "file": "data/ftc/android-studio/solverslib/intro-to-command-system.json",
-              "difficulty": "intermediate",
-              "duration": "45 min"
-            },
-            {
-              "id": "solverslib-subsystem-design",
-              "label": "Subsystem Design with SolversLib",
-              "file": "data/ftc/android-studio/solverslib/solverslib-subsystem-design.json",
-              "difficulty": "intermediate",
-              "duration": "50 min"
-            },
-            {
-              "id": "solverslib-commands-and-scheduler",
-              "label": "Commands and Scheduler Implementation",
-              "file": "data/ftc/android-studio/solverslib/solverslib-commands-and-scheduler.json",
-              "difficulty": "intermediate",
-              "duration": "55 min"
-            },
-            {
-              "id": "solverslib-command-groups",
-              "label": "Command Groups and Sequencing",
-              "file": "data/ftc/android-studio/solverslib/solverslib-command-groups.json",
-              "difficulty": "advanced",
-              "duration": "60 min"
-            },
-            {
-              "id": "solverslib-advanced-patterns",
-              "label": "Advanced Command-Based Patterns",
-              "file": "data/ftc/android-studio/solverslib/solverslib-advanced-patterns.json",
-              "difficulty": "advanced",
-              "duration": "75 min"
-            }
-          ]
-        },
-        {
-          "id": "android-studio-vision",
-          "label": "Computer Vision",
-          "description": "Advanced computer vision techniques for FTC",
-          "items": [
-            { 
-              "id": "vision-introduction", 
-              "label": "Vision Introduction", 
-              "file": "data/ftc/android-studio/vision/vision-introduction.json",
-              "difficulty": "advanced",
-              "duration": "45 min"
-            },
-            { 
-              "id": "ftc-vision-portal", 
-              "label": "FTC Vision Portal", 
-              "file": "data/ftc/android-studio/vision/ftc-vision-portal.json",
-              "difficulty": "advanced",
-              "duration": "50 min"
-            },
-            { 
-              "id": "opencv-basics", 
-              "label": "OpenCV Basics", 
-              "file": "data/ftc/android-studio/vision/opencv-basics.json",
-              "difficulty": "advanced",
-              "duration": "60 min"
-            },
-            { 
-              "id": "apriltags", 
-              "label": "AprilTags", 
-              "file": "data/ftc/android-studio/vision/apriltags.json",
-              "difficulty": "advanced",
-              "duration": "55 min"
-            },
-            { 
-              "id": "tensorflow-lite", 
-              "label": "TensorFlow Lite", 
-              "file": "data/ftc/android-studio/vision/tensorflow-lite.json",
-              "difficulty": "advanced",
-              "duration": "70 min"
-            },
-            { 
-              "id": "custom-vision-processing", 
-              "label": "Custom Vision Processing", 
-              "file": "data/ftc/android-studio/vision/custom-vision-processing.json",
-              "difficulty": "advanced",
-              "duration": "65 min"
-            },
-            { 
-              "id": "vision-based-navigation", 
-              "label": "Vision-Based Navigation", 
-              "file": "data/ftc/android-studio/vision/vision-based-navigation.json",
-              "difficulty": "advanced",
-              "duration": "75 min"
-            },
-            { 
-              "id": "machine-learning-integration", 
-              "label": "Machine Learning Integration", 
-              "file": "data/ftc/android-studio/vision/machine-learning-integration.json",
-              "difficulty": "advanced",
-              "duration": "75 min"
-            }
-          ]
-        },
-        {
-          "id": "android-studio-ftc-dashboard",
-          "label": "FTCDashboard",
-          "description": "Advanced robot monitoring and control using FTCDashboard web interface",
-          "items": [
-            {
-              "id": "intro-to-ftcdashboard",
-              "label": "Introduction to FTCDashboard",
-              "file": "data/ftc/android-studio/ftc-dashboard/intro-to-ftcdashboard.json",
-              "difficulty": "intermediate",
               "duration": "30 min"
             },
             {
-              "id": "telemetry-and-plotting",
-              "label": "Telemetry and Plotting",
-              "file": "data/ftc/android-studio/ftc-dashboard/telemetry-and-plotting.json",
-              "difficulty": "intermediate",
-              "duration": "35 min"
-            },
-            {
-              "id": "field-view-visualization",
-              "label": "Field View Visualization",
-              "file": "data/ftc/android-studio/ftc-dashboard/field-view-visualization.json",
-              "difficulty": "intermediate",
-              "duration": "40 min"
-            },
-            {
-              "id": "configuration-variables",
-              "label": "Configuration Variables",
-              "file": "data/ftc/android-studio/ftc-dashboard/configuration-variables.json",
-              "difficulty": "intermediate",
-              "duration": "35 min"
-            },
-            {
-              "id": "opmode-controls",
-              "label": "OpMode Controls",
-              "file": "data/ftc/android-studio/ftc-dashboard/opmode-controls.json",
-              "difficulty": "intermediate",
+              "id": "path-planning-comparison",
+              "label": "PedroPathing vs. Road Runner",
+              "file": "data/ftc/android-studio/path-planning/path-planning-comparison.json",
+              "difficulty": "advanced",
               "duration": "30 min"
             },
             {
-              "id": "camera-streaming",
-              "label": "Camera Streaming",
-              "file": "data/ftc/android-studio/ftc-dashboard/camera-streaming.json",
+              "id": "custom-path-following",
+              "label": "Custom Path Following Algorithms",
+              "file": "data/ftc/android-studio/path-planning/custom-path-following.json",
               "difficulty": "advanced",
-              "duration": "45 min"
+              "duration": "40 min"
             }
           ]
         },
+
         {
           "id": "android-studio-as-debugging-best-practices",
           "label": "AS Debugging Best Practices",
@@ -656,6 +468,13 @@
               "file": "data/ftc/android-studio/as-debugging-best-practices/debugging-strategies.json",
               "difficulty": "advanced",
               "duration": "60 min"
+            },
+            {
+              "id": "ftc-dashboard-comprehensive",
+              "label": "FTCDashboard Comprehensive Guide",
+              "file": "data/ftc/android-studio/as-debugging-best-practices/ftc-dashboard-comprehensive.json",
+              "difficulty": "advanced",
+              "duration": "90 min"
             }
           ]
         }
@@ -665,14 +484,14 @@
   "metadata": {
     "version": "2.1.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 52,
+    "totalLessons": 48,
     "difficultyLevels": {
       "beginner": 15,
-      "intermediate": 22,
-      "advanced": 15
+      "intermediate": 17,
+      "advanced": 16
     },
-    "estimatedDuration": "27.5 hours",
+    "estimatedDuration": "26.8 hours",
     "prerequisites": ["java-training"],
-    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop", "control-theory", "path-planning", "odometry", "motion-profiling", "computer-vision", "machine-learning", "dashboard", "telemetry", "visualization", "command-based-programming", "solverslib"]
+    "tags": ["ftc", "robotics", "java", "android", "autonomous", "teleop", "control-theory", "path-planning", "odometry", "motion-profiling", "computer-vision", "machine-learning", "dashboard", "telemetry", "visualization", "command-based-programming", "solverslib", "external-libraries", "trclib", "nextftc", "dairy", "ftclib"]
   }
 } 

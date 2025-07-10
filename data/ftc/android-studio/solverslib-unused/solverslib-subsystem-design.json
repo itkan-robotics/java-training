@@ -26,19 +26,13 @@
     {
       "type": "code",
       "title": "Subsystem with State Management",
-      "content": "<p>Subsystems can maintain state and provide methods to query that state:</p>",
-      "code": "public class ArmSubsystem extends SubsystemBase {\n    private final Servo armServo;\n    private final DcMotor armMotor;\n    private double currentPosition;\n    private boolean isExtended;\n    \n    public ArmSubsystem(HardwareMap hardwareMap) {\n        armServo = hardwareMap.get(Servo.class, \"armServo\");\n        armMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\n        currentPosition = 0.0;\n        isExtended = false;\n    }\n    \n    public void setArmPosition(double position) {\n        armServo.setPosition(position);\n        currentPosition = position;\n        isExtended = position > 0.5;\n    }\n    \n    public void extendArm() {\n        setArmPosition(1.0);\n    }\n    \n    public void retractArm() {\n        setArmPosition(0.0);\n    }\n    \n    public double getCurrentPosition() {\n        return currentPosition;\n    }\n    \n    public boolean isExtended() {\n        return isExtended;\n    }\n    \n    public void stop() {\n        armMotor.setPower(0);\n    }\n}"
+      "content": "<p>This example shows how to use an enum-based state machine inside a subsystem to manage its behavior. This pattern makes it easy to track and control the subsystem's state, and is especially useful for mechanisms with multiple modes or actions.</p>",
+      "code": "public class ArmSubsystem extends SubsystemBase {\n    private final Servo armServo;\n    private final DcMotor armMotor;\n    \n    // Define possible states for the arm\n    public enum ArmState { RETRACTED, EXTENDING, EXTENDED, RETRACTING, HOLDING }\n    private ArmState currentState = ArmState.RETRACTED;\n    \n    public ArmSubsystem(HardwareMap hardwareMap) {\n        armServo = hardwareMap.get(Servo.class, \"armServo\");\n        armMotor = hardwareMap.get(DcMotor.class, \"armMotor\");\n    }\n    \n    public void setState(ArmState newState) {\n        currentState = newState;\n    }\n    \n    public ArmState getState() {\n        return currentState;\n    }\n    \n    // Call this method periodically (e.g., in periodic() or from a command)\n    public void update() {\n        switch (currentState) {\n            case RETRACTED:\n                armMotor.setPower(0);\n                armServo.setPosition(0.0);\n                break;\n            case EXTENDING:\n                armMotor.setPower(0.5);\n                // Add logic to check if fully extended, then:\n                // currentState = ArmState.EXTENDED;\n                break;\n            case EXTENDED:\n                armMotor.setPower(0);\n                armServo.setPosition(1.0);\n                break;\n            case RETRACTING:\n                armMotor.setPower(-0.5);\n                // Add logic to check if fully retracted, then:\n                // currentState = ArmState.RETRACTED;\n                break;\n            case HOLDING:\n                armMotor.setPower(0.1); // Hold position\n                break;\n        }\n    }\n}\n// Usage: In your command or opmode, call armSubsystem.setState(ArmState.EXTENDING) and periodically call armSubsystem.update()."
     },
     {
       "type": "text",
       "title": "Default Commands and State Management",
-      "content": "<p>Subsystems can have default commands that run when no other command requires the subsystem. This is useful for maintaining safe states or providing default behaviors. For example, a drive subsystem might have a default command that stops the robot when no driving command is active.</p><p>Default commands are set using the <code>setDefaultCommand()</code> method and are automatically managed by the scheduler.</p>"
-    },
-    {
-      "type": "code",
-      "title": "Setting Default Commands",
-      "content": "<p>Here's how to set up a default command for a subsystem:</p>",
-      "code": "public class RobotContainer {\n    private final DriveSubsystem driveSubsystem;\n    private final StopDriveCommand stopDriveCommand;\n    \n    public RobotContainer() {\n        // Initialize subsystems\n        driveSubsystem = new DriveSubsystem(hardwareMap);\n        \n        // Create default commands\n        stopDriveCommand = new StopDriveCommand(driveSubsystem);\n        \n        // Set default commands\n        driveSubsystem.setDefaultCommand(stopDriveCommand);\n    }\n}\n\n// Default command that stops the drive\npublic class StopDriveCommand extends CommandBase {\n    private final DriveSubsystem driveSubsystem;\n    \n    public StopDriveCommand(DriveSubsystem driveSubsystem) {\n        this.driveSubsystem = driveSubsystem;\n        addRequirements(driveSubsystem);\n    }\n    \n    @Override\n    public void execute() {\n        // This command runs by default to keep the robot stopped\n        driveSubsystem.stop();\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Default commands typically run forever\n        return false;\n    }\n}"
+      "content": "<p>Subsystems can have default commands that run when no other command requires the subsystem. This is useful for maintaining safe states or providing default behaviors. For example, a drive subsystem might have a default command that stops the robot when no driving command is active.</p><p>Default commands are set using the <code>setDefaultCommand()</code> method and are automatically managed by the scheduler. For mor information about commands and the command scheduler, see <a href='../solverslib/solverslib-commands-and-scheduler.json'>Commands and the Command Scheduler</a></p>"
     },
     {
       "type": "text",
@@ -58,11 +52,22 @@
       "tasks": [
         "Design a subsystem for an elevator/lift mechanism",
         "Include methods for moving up, down, and stopping",
-        "Add state tracking (current position, isMoving, etc.)",
-        "Create a default command that stops the elevator",
-        "Write a simple command that uses your subsystem"
+        "Add state tracking (current position, isMoving, etc.)"
       ],
-      "content": "// Start with this basic structure\npublic class ElevatorSubsystem extends SubsystemBase {\n    private final DcMotor elevatorMotor;\n    private final TouchSensor limitSwitch;\n    \n    public ElevatorSubsystem(HardwareMap hardwareMap) {\n        elevatorMotor = hardwareMap.get(DcMotor.class, \"elevatorMotor\");\n        limitSwitch = hardwareMap.get(TouchSensor.class, \"limitSwitch\");\n    }\n    \n    // Add methods for:\n    // - Moving up and down\n    // - Stopping\n    // - Getting current state\n    // - Checking if at limits\n}"
+      "answers": [
+        {
+          "task": "Design a subsystem for an elevator/lift mechanism",
+          "content": "// Define the ElevatorSubsystem class\npublic class ElevatorSubsystem extends SubsystemBase {\n    private final DcMotor elevatorMotor;\n    private final TouchSensor limitSwitch;\n    \n    public ElevatorSubsystem(HardwareMap hardwareMap) {\n        elevatorMotor = hardwareMap.get(DcMotor.class, \"elevatorMotor\");\n        limitSwitch = hardwareMap.get(TouchSensor.class, \"limitSwitch\");\n        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    }\n    // Add methods for moving, stopping, and state tracking below\n}"
+        },
+        {
+          "task": "Include methods for moving up, down, and stopping",
+          "content": "// Add movement methods to the subsystem\npublic void moveToPosition(int targetTicks, double power) {\n    elevatorMotor.setTargetPosition(targetTicks);\n    elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    elevatorMotor.setPower(power);\n}\npublic void stop() {\n    elevatorMotor.setPower(0);\n}"
+        },
+        {
+          "task": "Add state tracking (current position, isMoving, etc.)",
+          "content": "// Add state tracking fields and methods\nprivate boolean isMoving = false;\npublic boolean isMoving() {\n    return elevatorMotor.isBusy();\n}\npublic int getCurrentPosition() {\n    return elevatorMotor.getCurrentPosition();\n}\n// Update isMoving in your moveToPosition/stop methods\npublic void moveToPosition(int targetTicks, double power) {\n    elevatorMotor.setTargetPosition(targetTicks);\n    elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);\n    elevatorMotor.setPower(power);\n    isMoving = true;\n}\npublic void stop() {\n    elevatorMotor.setPower(0);\n    isMoving = false;\n}"
+        }
+      ]
     },
     {
       "type": "text",

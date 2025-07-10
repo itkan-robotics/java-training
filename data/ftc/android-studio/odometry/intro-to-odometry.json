@@ -48,7 +48,12 @@
         "Describe a game scenario where odometry is useful.",
         "Draw a robot and show possible odometry wheel placements."
       ],
-      "content": "// No code required for this exercise."
+      "answers": [
+        {
+          "task": "Describe a game scenario where odometry is useful.",
+          "content": "Suppose your robot needs to pick up a game element from one side of the field and deliver it to a scoring zone on the opposite side during the autonomous period. With odometry, your robot can accurately track its position and heading as it moves, allowing it to follow a precise path, avoid obstacles, and reliably reach the scoring zone even if the field is crowded or the robot starts at a slightly different position each match. Odometry helps ensure your robot can repeat complex autonomous routines with high accuracy."
+        }
+      ]
     }
   ]
 }

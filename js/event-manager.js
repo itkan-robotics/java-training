@@ -152,6 +152,30 @@ class EventManager {
                 this.focusSearch();
             }
         });
+
+        // Toggle all code blocks on Ctrl+Shift+C
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                this.toggleAllCodeBlocks();
+            }
+        });
+
+        // Show keyboard shortcuts on ? key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                this.showKeyboardShortcuts();
+            }
+        });
+
+        // Show keyboard shortcuts on Ctrl+/ key
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                this.showKeyboardShortcuts();
+            }
+        });
     }
 
     navigateWithArrows(key) {
@@ -228,6 +252,24 @@ class EventManager {
             // Otherwise focus header search
             headerSearchInput.focus();
             headerSearchInput.select();
+        }
+    }
+
+    toggleAllCodeBlocks() {
+        // Access the content manager through the global app instance
+        if (window.app && window.app.contentManager) {
+            window.app.contentManager.toggleAllCodeBlocks();
+        } else {
+            console.warn('Content manager not available for code block toggle');
+        }
+    }
+
+    showKeyboardShortcuts() {
+        // Access the global toggle function
+        if (typeof toggleKeyboardShortcuts === 'function') {
+            toggleKeyboardShortcuts();
+        } else {
+            console.warn('Keyboard shortcuts toggle function not available');
         }
     }
 

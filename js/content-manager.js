@@ -238,6 +238,65 @@ class ContentManager {
         if (data.language) {
             codeBlock.classList.add(`language-${data.language}`);
         }
+        
+        // Create header with minimize/maximize button
+        const codeHeader = document.createElement('div');
+        codeHeader.className = 'code-header';
+        codeHeader.style.cssText = `
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--color-background-secondary);
+            border-bottom: 1px solid var(--color-border);
+            border-radius: 6px 6px 0 0;
+            font-size: 0.9em;
+            color: var(--color-foreground-secondary);
+        `;
+        
+        const titleLabel = document.createElement('span');
+        // Use the section title if available, otherwise fall back to language or "CODE"
+        const displayTitle = data.title || (data.language ? data.language.toUpperCase() : 'CODE');
+        titleLabel.textContent = displayTitle;
+        titleLabel.style.cssText = `
+            font-weight: 500;
+            font-family: var(--font-stack--monospace);
+            font-size: 0.85em;
+        `;
+        
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'code-toggle-btn';
+        toggleButton.innerHTML = '−'; // Minus sign for collapse
+        toggleButton.style.cssText = `
+            background: none;
+            border: none;
+            color: var(--color-foreground-secondary);
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        `;
+        
+        // Add hover effect
+        toggleButton.addEventListener('mouseenter', () => {
+            toggleButton.style.backgroundColor = 'var(--color-background-tertiary)';
+        });
+        
+        toggleButton.addEventListener('mouseleave', () => {
+            toggleButton.style.backgroundColor = 'transparent';
+        });
+        
+        codeHeader.appendChild(titleLabel);
+        codeHeader.appendChild(toggleButton);
+        codeBlock.appendChild(codeHeader);
+        
         const pre = document.createElement('pre');
         const code = document.createElement('code');
         // Set language class on code element for syntax highlighting
@@ -247,6 +306,22 @@ class ContentManager {
         code.textContent = codeToRender;
         pre.appendChild(code);
         codeBlock.appendChild(pre);
+        
+        // Add toggle functionality
+        let isCollapsed = false;
+        toggleButton.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            if (isCollapsed) {
+                pre.style.display = 'none';
+                toggleButton.innerHTML = '+'; // Plus sign for expand
+                codeBlock.style.borderRadius = '6px';
+            } else {
+                pre.style.display = 'block';
+                toggleButton.innerHTML = '−'; // Minus sign for collapse
+                codeBlock.style.borderRadius = '6px 6px 0 0';
+            }
+        });
+        
         container.appendChild(codeBlock);
     }
 
@@ -270,6 +345,61 @@ class ContentManager {
             rulesBox.appendChild(h4);
         }
         
+        // Handle goodPractices section
+        if (data.goodPractices && Array.isArray(data.goodPractices)) {
+            const goodPracticesSection = document.createElement('div');
+            goodPracticesSection.style.marginBottom = '1.5rem';
+            
+            const goodPracticesTitle = document.createElement('h5');
+            goodPracticesTitle.textContent = 'Good Practices:';
+            goodPracticesTitle.style.marginBottom = '0.5rem';
+            goodPracticesTitle.style.color = 'var(--color-success)';
+            goodPracticesTitle.style.fontWeight = '600';
+            goodPracticesSection.appendChild(goodPracticesTitle);
+            
+            const goodPracticesList = document.createElement('ul');
+            goodPracticesList.style.margin = '0';
+            goodPracticesList.style.paddingLeft = '1.5rem';
+            
+            data.goodPractices.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = item;
+                li.style.marginBottom = '0.5rem';
+                li.style.lineHeight = '1.5';
+                goodPracticesList.appendChild(li);
+            });
+            goodPracticesSection.appendChild(goodPracticesList);
+            rulesBox.appendChild(goodPracticesSection);
+        }
+        
+        // Handle avoid section
+        if (data.avoid && Array.isArray(data.avoid)) {
+            const avoidSection = document.createElement('div');
+            avoidSection.style.marginBottom = '1.5rem';
+            
+            const avoidTitle = document.createElement('h5');
+            avoidTitle.textContent = 'Avoid:';
+            avoidTitle.style.marginBottom = '0.5rem';
+            avoidTitle.style.color = 'var(--color-error)';
+            avoidTitle.style.fontWeight = '600';
+            avoidSection.appendChild(avoidTitle);
+            
+            const avoidList = document.createElement('ul');
+            avoidList.style.margin = '0';
+            avoidList.style.paddingLeft = '1.5rem';
+            
+            data.avoid.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = item;
+                li.style.marginBottom = '0.5rem';
+                li.style.lineHeight = '1.5';
+                avoidList.appendChild(li);
+            });
+            avoidSection.appendChild(avoidList);
+            rulesBox.appendChild(avoidSection);
+        }
+        
+        // Handle legacy items (for backward compatibility)
         if (data.items && Array.isArray(data.items)) {
             const itemsList = document.createElement('ul');
             itemsList.style.margin = '0';
@@ -344,6 +474,65 @@ class ContentManager {
             if (data.language) {
                 codeBlock.classList.add(`language-${data.language}`);
             }
+            
+            // Create header with minimize/maximize button for exercise code
+            const codeHeader = document.createElement('div');
+            codeHeader.className = 'code-header';
+            codeHeader.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 12px;
+                background: var(--color-background-secondary);
+                border-bottom: 1px solid var(--color-border);
+                border-radius: 6px 6px 0 0;
+                font-size: 0.9em;
+                color: var(--color-foreground-secondary);
+            `;
+            
+            const titleLabel = document.createElement('span');
+            // Use the section title if available, otherwise fall back to language or "CODE"
+            const displayTitle = data.title || (data.language ? data.language.toUpperCase() : 'CODE');
+            titleLabel.textContent = displayTitle;
+            titleLabel.style.cssText = `
+                font-weight: 500;
+                font-family: var(--font-stack--monospace);
+                font-size: 0.85em;
+            `;
+            
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'code-toggle-btn';
+            toggleButton.innerHTML = '−'; // Minus sign for collapse
+            toggleButton.style.cssText = `
+                background: none;
+                border: none;
+                color: var(--color-foreground-secondary);
+                cursor: pointer;
+                font-size: 1.2em;
+                font-weight: bold;
+                padding: 0;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 3px;
+                transition: background-color 0.2s;
+            `;
+            
+            // Add hover effect
+            toggleButton.addEventListener('mouseenter', () => {
+                toggleButton.style.backgroundColor = 'var(--color-background-tertiary)';
+            });
+            
+            toggleButton.addEventListener('mouseleave', () => {
+                toggleButton.style.backgroundColor = 'transparent';
+            });
+            
+            codeHeader.appendChild(titleLabel);
+            codeHeader.appendChild(toggleButton);
+            codeBlock.appendChild(codeHeader);
+            
             const pre = document.createElement('pre');
             const code = document.createElement('code');
             // Set language class on code element for syntax highlighting
@@ -353,6 +542,22 @@ class ContentManager {
             code.textContent = codeToRender;
             pre.appendChild(code);
             codeBlock.appendChild(pre);
+            
+            // Add toggle functionality
+            let isCollapsed = false;
+            toggleButton.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                if (isCollapsed) {
+                    pre.style.display = 'none';
+                    toggleButton.innerHTML = '+'; // Plus sign for expand
+                    codeBlock.style.borderRadius = '6px';
+                } else {
+                    pre.style.display = 'block';
+                    toggleButton.innerHTML = '−'; // Minus sign for collapse
+                    codeBlock.style.borderRadius = '6px 6px 0 0';
+                }
+            });
+            
             exerciseBox.appendChild(codeBlock);
         }
 
@@ -385,6 +590,65 @@ class ContentManager {
                     if (answer.language) {
                         codeBlock.classList.add(`language-${answer.language}`);
                     }
+                    
+                    // Create header with minimize/maximize button for answer code
+                    const codeHeader = document.createElement('div');
+                    codeHeader.className = 'code-header';
+                    codeHeader.style.cssText = `
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 8px 12px;
+                        background: var(--color-background-secondary);
+                        border-bottom: 1px solid var(--color-border);
+                        border-radius: 6px 6px 0 0;
+                        font-size: 0.9em;
+                        color: var(--color-foreground-secondary);
+                    `;
+                    
+                    const titleLabel = document.createElement('span');
+                    // Use the task title if available, otherwise fall back to language or "CODE"
+                    const displayTitle = answer.task || (answer.language ? answer.language.toUpperCase() : 'CODE');
+                    titleLabel.textContent = displayTitle;
+                    titleLabel.style.cssText = `
+                        font-weight: 500;
+                        font-family: var(--font-stack--monospace);
+                        font-size: 0.85em;
+                    `;
+                    
+                    const toggleButton = document.createElement('button');
+                    toggleButton.className = 'code-toggle-btn';
+                    toggleButton.innerHTML = '−'; // Minus sign for collapse
+                    toggleButton.style.cssText = `
+                        background: none;
+                        border: none;
+                        color: var(--color-foreground-secondary);
+                        cursor: pointer;
+                        font-size: 1.2em;
+                        font-weight: bold;
+                        padding: 0;
+                        width: 20px;
+                        height: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 3px;
+                        transition: background-color 0.2s;
+                    `;
+                    
+                    // Add hover effect
+                    toggleButton.addEventListener('mouseenter', () => {
+                        toggleButton.style.backgroundColor = 'var(--color-background-tertiary)';
+                    });
+                    
+                    toggleButton.addEventListener('mouseleave', () => {
+                        toggleButton.style.backgroundColor = 'transparent';
+                    });
+                    
+                    codeHeader.appendChild(titleLabel);
+                    codeHeader.appendChild(toggleButton);
+                    codeBlock.appendChild(codeHeader);
+                    
                     const pre = document.createElement('pre');
                     const code = document.createElement('code');
                     // Set language class on code element for syntax highlighting
@@ -394,6 +658,22 @@ class ContentManager {
                     code.textContent = answer.content;
                     pre.appendChild(code);
                     codeBlock.appendChild(pre);
+                    
+                    // Add toggle functionality
+                    let isCollapsed = false;
+                    toggleButton.addEventListener('click', () => {
+                        isCollapsed = !isCollapsed;
+                        if (isCollapsed) {
+                            pre.style.display = 'none';
+                            toggleButton.innerHTML = '+'; // Plus sign for expand
+                            codeBlock.style.borderRadius = '6px';
+                        } else {
+                            pre.style.display = 'block';
+                            toggleButton.innerHTML = '−'; // Minus sign for collapse
+                            codeBlock.style.borderRadius = '6px 6px 0 0';
+                        }
+                    });
+                    
                     answerItem.appendChild(codeBlock);
                 }
 
@@ -641,6 +921,105 @@ class ContentManager {
         
         tableContainer.appendChild(table);
         container.appendChild(tableContainer);
+    }
+
+    toggleAllCodeBlocks() {
+        // Find all code blocks with a code-toggle-btn
+        const codeBlocks = document.querySelectorAll('.code-block');
+        if (!codeBlocks.length) return;
+
+        // Determine if we should collapse or expand (collapse if any are open)
+        let shouldCollapse = false;
+        for (const block of codeBlocks) {
+            const pre = block.querySelector('pre');
+            if (pre && pre.style.display !== 'none') {
+                shouldCollapse = true;
+                break;
+            }
+        }
+
+        for (const block of codeBlocks) {
+            const pre = block.querySelector('pre');
+            const toggleBtn = block.querySelector('.code-toggle-btn');
+            if (!pre || !toggleBtn) continue;
+            if (shouldCollapse) {
+                pre.style.display = 'none';
+                toggleBtn.innerHTML = '+';
+                block.style.borderRadius = '6px';
+            } else {
+                pre.style.display = 'block';
+                toggleBtn.innerHTML = '−';
+                block.style.borderRadius = '6px 6px 0 0';
+            }
+        }
+
+        // Show notification
+        const action = shouldCollapse ? 'Collapsed' : 'Expanded';
+        this.showNotification(`${action} code blocks`);
+    }
+
+    showNotification(message, duration = 3000) {
+        // Remove any existing notifications
+        const existingNotifications = document.querySelectorAll('.notification-popup');
+        existingNotifications.forEach(notification => notification.remove());
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'notification-popup';
+        notification.textContent = message;
+        
+        // Style the notification
+        notification.style.cssText = `
+            position: fixed;
+            top: calc(var(--header-height) + 10px);
+            right: 20px;
+            background: var(--color-background-secondary);
+            color: var(--color-foreground-secondary);
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-background-border);
+            font-family: var(--font-stack--monospace);
+            font-size: 0.75rem;
+            font-weight: 400;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            max-width: 200px;
+            word-wrap: break-word;
+        `;
+
+        // Add to DOM
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+        }, 10);
+
+        // Auto remove after duration
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 200);
+        }, duration);
+
+        // Allow manual dismissal on click
+        notification.addEventListener('click', () => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 200);
+        });
     }
 }
 

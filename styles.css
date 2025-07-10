@@ -1124,6 +1124,74 @@ code {
   max-width: 100%;
 }
 
+/* Code header styles for minimize/maximize functionality */
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-background-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  font-size: 0.9em;
+  color: var(--color-foreground-secondary);
+  font-weight: 500;
+}
+
+.code-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-foreground-secondary);
+  cursor: pointer;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.code-toggle-btn:hover {
+  background-color: var(--color-background-hover);
+}
+
+.code-toggle-btn:active {
+  background-color: var(--color-background-border);
+}
+
+/* Dark theme adjustments for code header */
+[data-theme="dark"] .code-header {
+  background: var(--color-background-secondary);
+  border-bottom-color: var(--color-background-border);
+  color: var(--color-foreground-secondary);
+}
+
+[data-theme="dark"] .code-toggle-btn {
+  color: var(--color-foreground-secondary);
+}
+
+[data-theme="dark"] .code-toggle-btn:hover {
+  background-color: var(--color-background-hover);
+}
+
+/* Mobile adjustments for code header */
+@media (max-width: 48em) {
+  .code-header {
+    padding: 6px 10px;
+    font-size: 0.85em;
+  }
+  
+  .code-toggle-btn {
+    width: 18px;
+    height: 18px;
+    font-size: 1.1em;
+  }
+}
+
 /* Lists */
 ol, ul {
   margin-bottom: 1rem;
@@ -2142,4 +2210,395 @@ footer {
   }
 } 
 
+/* Keyboard Shortcuts Overlay Styles */
+.keyboard-shortcuts-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.keyboard-shortcuts-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.keyboard-shortcuts-modal {
+    background-color: var(--color-background-primary);
+    border: 1px solid var(--color-background-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.keyboard-shortcuts-overlay.visible .keyboard-shortcuts-modal {
+    transform: scale(1);
+}
+
+.keyboard-shortcuts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-background-border);
+}
+
+.keyboard-shortcuts-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-foreground-primary);
+}
+
+.keyboard-shortcuts-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-foreground-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+}
+
+.keyboard-shortcuts-close:hover {
+    color: var(--color-foreground-primary);
+    background-color: var(--color-background-hover);
+}
+
+.keyboard-shortcuts-close:focus {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+}
+
+.keyboard-shortcuts-close:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.keyboard-shortcuts-content {
+    padding: 1.5rem;
+}
+
+.shortcut-group {
+    margin-bottom: 2rem;
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-background-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.shortcut-group:last-child {
+    margin-bottom: 0;
+}
+
+.shortcut-group h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-foreground-primary);
+    background: var(--color-background-secondary);
+    border-bottom: 1px solid var(--color-background-border);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    color: var(--color-foreground-secondary);
+    font-weight: 500;
+}
+
+.shortcut-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-background-border);
+    background: var(--color-background-primary);
+}
+
+.shortcut-item:last-child {
+    border-bottom: none;
+}
+
+.shortcut-item:hover {
+    background: var(--color-background-hover);
+}
+
+.shortcut-key {
+    background-color: var(--color-code-background);
+    color: var(--color-code-foreground);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-stack--monospace);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-top: 2px solid var(--color-brand-primary);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    min-width: 120px;
+    text-align: center;
+    user-select: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.shortcut-key:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.shortcut-description {
+    color: var(--color-foreground-secondary);
+    font-size: 0.9rem;
+    flex: 1;
+    margin-left: 1rem;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .keyboard-shortcuts-modal {
+    background-color: var(--color-background-secondary);
+    border-color: var(--color-background-border);
+}
+
+[data-theme="dark"] .keyboard-shortcuts-header {
+    border-bottom-color: var(--color-background-border);
+}
+
+[data-theme="dark"] .shortcut-group h3 {
+    background: var(--color-background-secondary);
+    border-bottom-color: var(--color-background-border);
+    color: var(--color-foreground-secondary);
+}
+
+[data-theme="dark"] .shortcut-group {
+    background: var(--color-background-secondary);
+    border-color: var(--color-background-border);
+}
+
+[data-theme="dark"] .shortcut-item {
+    border-bottom-color: var(--color-background-border);
+    background: var(--color-background-secondary);
+}
+
+[data-theme="dark"] .shortcut-item:hover {
+    background: var(--color-background-hover);
+}
+
+[data-theme="dark"] .shortcut-key {
+    background-color: var(--color-code-background);
+    color: var(--color-code-foreground);
+    border-top-color: var(--color-brand-primary);
+}
+
+/* Responsive design */
+@media (max-width: 48em) {
+    .help-toggle {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .help-icon {
+        font-size: 0.9rem;
+    }
+    
+    .keyboard-shortcuts-modal {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .keyboard-shortcuts-header {
+        padding: 1rem 1rem 0.75rem 1rem;
+    }
+    
+    .keyboard-shortcuts-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .keyboard-shortcuts-content {
+        padding: 1rem;
+    }
+    
+    .shortcut-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .shortcut-key {
+        min-width: auto;
+        align-self: flex-start;
+    }
+    
+    .shortcut-description {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 32em) {
+    .keyboard-shortcuts-modal {
+        width: 98%;
+        max-height: 95vh;
+    }
+    
+    .keyboard-shortcuts-header {
+        padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+    }
+    
+    .keyboard-shortcuts-content {
+        padding: 0.75rem;
+    }
+    
+    .shortcut-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .shortcut-group h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .shortcut-item {
+        padding: 0.5rem 0;
+    }
+}
+
+/* Help toggle button styles */
+.help-toggle-container {
+    display: flex;
+    align-items: center;
+}
+
+.help-toggle {
+    background: none;
+    color: var(--color-foreground-secondary);
+    border: none;
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 0.75rem;
+    outline: none;
+    transition: color 0.18s, background 0.18s;
+}
+.help-toggle:hover, .help-toggle:focus {
+    background: var(--color-background-hover);
+    color: var(--color-foreground-primary);
+}
+.help-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-right: 0;
+}
+
+/* Undo overlay/modal redesign, keep previous modal/card style */
+/* ...keep previous overlay/modal styles here... */
+
+/* Keyboard shortcut key: no border, background is lightest/darkest color */
+.shortcut-key {
+    background: var(--color-background-primary);
+    color: var(--color-code-foreground);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-stack--monospace);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    min-width: 120px;
+    text-align: center;
+    user-select: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+[data-theme="dark"] .shortcut-key {
+    background: var(--color-background-primary);
+    color: var(--color-code-foreground);
+}
+:root .shortcut-key {
+    background: var(--color-background-secondary);
+    color: var(--color-code-foreground);
+}
+
+/* Notification popup styles */
+.notification-popup {
+    position: fixed;
+    top: calc(var(--header-height) + 10px);
+    right: 20px;
+    background: var(--color-background-secondary);
+    color: var(--color-foreground-secondary);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-background-border);
+    font-family: var(--font-stack--monospace);
+    font-size: 0.75rem;
+    font-weight: 400;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    max-width: 200px;
+    word-wrap: break-word;
+    cursor: pointer;
+    user-select: none;
+}
+
+.notification-popup:hover {
+    background: var(--color-background-hover);
+    color: var(--color-foreground-primary);
+    border-color: var(--color-brand-primary);
+}
+
+/* Dark theme adjustments for notification */
+[data-theme="dark"] .notification-popup {
+    background: var(--color-background-secondary);
+    color: var(--color-foreground-secondary);
+    border-color: var(--color-background-border);
+}
+
+[data-theme="dark"] .notification-popup:hover {
+    background: var(--color-background-hover);
+    color: var(--color-foreground-primary);
+    border-color: var(--color-brand-primary);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 48em) {
+    .notification-popup {
+        top: calc(var(--header-height) + 5px);
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        transform: translateY(5px);
+    }
+    
+    .notification-popup:hover {
+        transform: translateY(0);
+    }
+}
  

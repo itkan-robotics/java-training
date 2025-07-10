@@ -23,6 +23,53 @@
         <div class="visually-hidden">Hide navigation sidebar</div>
     </label>
 
+    <!-- Keyboard Shortcuts Overlay -->
+    <div id="keyboard-shortcuts-overlay" class="keyboard-shortcuts-overlay">
+        <div class="keyboard-shortcuts-modal">
+            <div class="keyboard-shortcuts-header">
+                <h2>Keyboard Shortcuts</h2>
+                <button class="keyboard-shortcuts-close" onclick="toggleKeyboardShortcuts()">
+                    <span class="visually-hidden">Close keyboard shortcuts</span>
+                    ×
+                </button>
+            </div>
+            <div class="keyboard-shortcuts-content">
+                <div class="shortcut-group">
+                    <h3>Navigation</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + ←</span>
+                        <span class="shortcut-description">Previous tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + →</span>
+                        <span class="shortcut-description">Next tab</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3>Search</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + K</span>
+                        <span class="shortcut-description">Focus search</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3>Code Blocks</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + Shift + C</span>
+                        <span class="shortcut-description">Toggle all code blocks</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3>Help</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + /</span>
+                        <span class="shortcut-description">Show this help</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="page">
         <header class="mobile-header">
             <div class="header-left">
@@ -43,6 +90,12 @@
             <div class="header-right">
                 <div class="search-container-header">
                     <input type="text" class="search-input-header" placeholder="Search (Ctrl+K)..." id="header-search" autocomplete="off" autocorrect="off">
+                </div>
+                <div class="help-toggle-container">
+                    <button class="help-toggle" onclick="toggleKeyboardShortcuts()">
+                        <div class="visually-hidden">Show keyboard shortcuts</div>
+                        <span class="help-icon">?</span>
+                    </button>
                 </div>
                 <div class="theme-toggle-container theme-toggle-header">
                     <button class="theme-toggle" onclick="toggleTheme()">
