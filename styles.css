@@ -1818,6 +1818,8 @@ footer {
 .parent-tab.current-page > .parent-reference {
     background-color: var(--color-sidebar-item-background--current);
     color: var(--color-sidebar-link-text--top-level);
+    font-weight: 600;
+    border-left: 3px solid var(--color-brand-primary);
 }
 
 .child-tab.current-page > .child-reference {
@@ -1825,6 +1827,12 @@ footer {
     color: var(--color-sidebar-link-text--top-level);
     border-left-color: var(--color-brand-primary);
     font-weight: 600;
+    border-left: 3px solid var(--color-brand-primary);
+}
+
+/* Add smooth scrolling to sidebar */
+.sidebar-scroll {
+    scroll-behavior: smooth;
 }
 
 /* Responsive adjustments for mobile */

@@ -8,8 +8,28 @@
     },
     {
       "type": "text",
+      "title": "Installing Git and GitHub Desktop",
+      "content": "Before you can use version control, you need to install Git and optionally GitHub Desktop. Git is the core version control system, while GitHub Desktop provides a user-friendly interface for Git operations."
+    },
+    {
+      "type": "text",
+      "title": "Downloading and Installing Git",
+      "content": "Git is the foundation of version control. Download it from the official website and follow the installation wizard. <br><br><b>Download Git:</b> <a href=\"https://git-scm.com/downloads\" target=\"_blank\">Git Official Downloads</a><br><b>Installation Guide:</b> <a href=\"https://git-scm.com/book/en/v2/Getting-Started-Installing-Git\" target=\"_blank\">Git Installation Documentation</a><br><br>During installation, use the default settings unless your team has specific requirements. After installation, you can verify Git is installed by opening a terminal and typing <code><code>git --version</code></code>."
+    },
+    {
+      "type": "text",
+      "title": "Installing GitHub Desktop (Optional)",
+      "content": "GitHub Desktop provides a graphical interface for Git, making it easier for beginners to use version control. It's especially helpful for teams new to Git. <br><br><b>Download GitHub Desktop:</b> <a href=\"https://desktop.github.com/\" target=\"_blank\">GitHub Desktop Official Site</a><br><b>Getting Started Guide:</b> <a href=\"https://docs.github.com/en/desktop\" target=\"_blank\">GitHub Desktop Documentation</a><br><br>After installing GitHub Desktop, you'll need to sign in with your GitHub account to access your repositories."
+    },
+    {
+      "type": "text",
+      "title": "Setting Up Your GitHub Account",
+      "content": "To collaborate with your team, you'll need a GitHub account. Create one at <a href=\"https://github.com/join\" target=\"_blank\">GitHub - Sign Up</a>. Once you have an account, you can create repositories, join your team's organization, and start collaborating on code. <br><br>For FTC teams, it's common to have a team organization on GitHub where all team members can access the robot code repository."
+    },
+    {
+      "type": "text",
       "title": "Why Use Git?",
-      "content": "Git is a popular version control system used by developers worldwide. It allows you to work safely on new features, collaborate with others, and keep a complete history of your project. <br><br>Learn more: <a href=\"https://github.com/git-guides\" target=\"_blank\">Git Guides</a>"
+      "content": "Git is a popular version control system used by developers worldwide. It makes it easy to share code, review changes, and collaborate with your team. For new teams, we recommend creating an organization in GitHub to host all of your team's code, so you can store previous seasons' code, share code with other teams and help new members get started. For more information on creating organizations in GitHub, see <a href=\"https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch\" target=\"_blank\">GitHub's documentation on creating organizations</a>."
     },
     {
       "type": "text",
@@ -58,11 +78,6 @@
     },
     {
       "type": "text",
-      "title": "Using GitHub for Collaboration",
-      "content": "GitHub is a platform for hosting Git repositories online. It makes it easy to share code, review changes, and collaborate with your team. <br><br>Learn more: <a href=\"https://github.com/git-guides\" target=\"_blank\">Git Guides</a>"
-    },
-    {
-      "type": "text",
       "title": "Best Practices for FTC Teams",
       "content": "- Commit often with clear messages.<br>- Use branches for new features.<br>- Pull before you push to avoid conflicts.<br>- Never commit sensitive information.<br>- Review code before merging."
     },
@@ -75,8 +90,7 @@
         "Create a new branch and make a small change.",
         "Commit and push your change.",
         "Open a pull request on GitHub."
-      ],
-      "content": "If you get stuck, refer to the Git Guides or ask a mentor for help."
+      ]
     }
   ]
 }

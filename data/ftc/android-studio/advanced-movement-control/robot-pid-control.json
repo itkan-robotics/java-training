@@ -42,7 +42,7 @@
     {
       "type": "text",
       "title": "Integrating PID with the FTC SDK",
-      "content": "<p>The FTC SDK provides built-in PIDFController classes and hardware integration. You can use these classes for more advanced control and to simplify your code. See the official documentation for details: <a href=\"https://github.com/FIRST-Tech-Challenge/ftcdocs/commit/5a414e16cccd76b53e8aa8ddf1a9e2ba0aa42921\" target=\"_blank\">FTC Docs: PIDF Coefficients (Android Studio)</a></p>"
+      "content": "<p>The FTC SDK provides built-in PIDFCoefficients classes so users can tune their motors' PIDF coefficients. You can use these classes for more advanced control and to simplify your code. See the official documentation for details: <a href=\"https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/PIDFCoefficients.html\" target=\"_blank\">PIDFCoefficients Javadoc</a></p>"
     },
     {
       "type": "text",
@@ -50,9 +50,26 @@
       "content": "<ul><li>Always set limits on motor power and positions to prevent hardware damage.</li><li>Use failsafes and watchdog timers to stop the robot if something goes wrong.</li><li>Test new PID code at low power and with the robot off the ground.</li></ul>"
     },
     {
-      "type": "emphasis-box",
-      "title": "Reference: Odometry and Multi-Axis Control",
-      "content": "Learn more about odometry and multi-axis control at <a href=\"https://gm0.org/en/latest/docs/software/concepts/odometry.html\" target=\"_blank\">gm0: Odometry</a>."
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "description": "Essential resources for multi-axis PID control and robot applications",
+      "links": [
+        {
+          "title": "gm0 Odometry Guide",
+          "description": "Comprehensive guide to odometry and multi-axis control for FTC robots",
+          "url": "https://gm0.org/en/latest/docs/software/concepts/odometry.html"
+        },
+        {
+          "title": "FTC PID Coefficients Javadoc",
+          "description": "Official FTC SDK documentation for PID control implementation",
+          "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/PIDFCoefficients.html"
+        },
+        {
+          "title": "CTRL ALT FTC Motor Control",
+          "description": "Practical guide to PID motor control with FTC-specific examples and implementation",
+          "url": "https://www.ctrlaltftc.com/practical-examples/ftc-motor-control"
+        }
+      ]
     }
   ]
 }

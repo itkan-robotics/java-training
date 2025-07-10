@@ -221,6 +221,14 @@ function toggleTheme() {
     }
 }
 
+// Function to handle sidebar opening and scroll to current tab
+function handleSidebarOpen() {
+    if (app && app.navigationManager && appState.currentTab) {
+        // Use the new method that includes retry logic
+        app.navigationManager.ensureCurrentTabHighlighted();
+    }
+}
+
 // Mobile header scroll behavior
 let lastScrollTop = 0;
 const mobileHeader = document.querySelector('.mobile-header');

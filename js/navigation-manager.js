@@ -127,6 +127,11 @@ class NavigationManager {
                 }
                 navCheckbox.checked = false;
             }
+            
+            // Highlight current tab and scroll to it if sidebar is open
+            if (appState.currentTab) {
+                this.ensureCurrentTabHighlighted();
+            }
         }, 100);
     }
 
@@ -698,6 +703,14 @@ class NavigationManager {
                 this.contentManager.renderContent(tabId);
                 appState.setCurrentTab(tabId);
                 
+                // Scroll to current tab if sidebar is open
+                const navCheckbox = document.getElementById('__navigation');
+                if (navCheckbox && navCheckbox.checked) {
+                    setTimeout(() => {
+                        this.ensureCurrentTabHighlighted();
+                    }, 50);
+                }
+                
                 // Scroll to top of the page
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
@@ -811,12 +824,111 @@ class NavigationManager {
     }
 
     highlightNavigation(tabId) {
+        // Clear all current-page classes first
+        document.querySelectorAll('.current-page').forEach(element => {
+            element.classList.remove('current-page');
+        });
+
+        // Find and highlight the current tab
         const navLinks = document.querySelectorAll('.child-reference, .reference');
+        let foundCurrentTab = false;
+        
         navLinks.forEach(link => {
-            if (link.onclick && link.onclick.toString().includes(tabId)) {
-                link.closest('.toctree-l1, .toctree-l2').classList.add('current-page');
+            // Check if this link corresponds to the current tab
+            if (link.href && link.href.includes(`#${tabId}`)) {
+                const parentLi = link.closest('.toctree-l1, .toctree-l2, .toctree-l3');
+                if (parentLi) {
+                    parentLi.classList.add('current-page');
+                    foundCurrentTab = true;
+                }
             }
         });
+
+        // If we found the current tab, also expand its parent groups
+        if (foundCurrentTab) {
+            this.expandParentGroupsForTab(tabId);
+        }
+    }
+
+    /**
+     * Expands parent groups that contain the current tab
+     */
+    expandParentGroupsForTab(tabId) {
+        const currentTabElement = document.querySelector(`.current-page`);
+        if (!currentTabElement) return;
+
+        // Find all parent groups that need to be expanded
+        let parent = currentTabElement.parentElement;
+        while (parent && !parent.classList.contains('sidebar-tree')) {
+            if (parent.classList.contains('children-nav')) {
+                parent.classList.add('expanded');
+                parent.classList.remove('collapsed');
+                
+                // Update the expand icon
+                const parentLi = parent.previousElementSibling;
+                if (parentLi && parentLi.classList.contains('parent-tab')) {
+                    const expandIcon = parentLi.querySelector('.expand-icon');
+                    if (expandIcon) {
+                        expandIcon.innerHTML = '▼';
+                    }
+                }
+            }
+            parent = parent.parentElement;
+        }
+    }
+
+    /**
+     * Scrolls the sidebar to the current tab when the sidebar is opened
+     */
+    scrollToCurrentTab() {
+        const currentTabElement = document.querySelector('.current-page');
+        if (!currentTabElement) return;
+
+        const sidebarScroll = document.querySelector('.sidebar-scroll');
+        if (!sidebarScroll) return;
+
+        // Calculate the position to scroll to
+        const sidebarRect = sidebarScroll.getBoundingClientRect();
+        const tabRect = currentTabElement.getBoundingClientRect();
+        
+        // Calculate the scroll position to center the current tab
+        const scrollTop = sidebarScroll.scrollTop;
+        const tabTop = tabRect.top - sidebarRect.top;
+        const sidebarHeight = sidebarRect.height;
+        const tabHeight = tabRect.height;
+        
+        // Center the tab in the sidebar
+        const targetScrollTop = scrollTop + tabTop - (sidebarHeight / 2) + (tabHeight / 2);
+        
+        // Smooth scroll to the target position
+        sidebarScroll.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+        });
+    }
+
+    /**
+     * Ensures the current tab is highlighted and scrolled to when sidebar is opened
+     * This method includes retry logic for cases where navigation might not be fully rendered
+     */
+    ensureCurrentTabHighlighted() {
+        if (!appState.currentTab) return;
+
+        // First, try to highlight the current tab
+        this.highlightNavigation(appState.currentTab);
+        
+        // Check if highlighting was successful
+        const currentTabElement = document.querySelector('.current-page');
+        if (!currentTabElement) {
+            // If highlighting failed, try again after a short delay
+            setTimeout(() => {
+                this.highlightNavigation(appState.currentTab);
+                this.scrollToCurrentTab();
+            }, 200);
+        } else {
+            // If highlighting was successful, scroll to the tab
+            this.scrollToCurrentTab();
+        }
     }
 
     updateHeaderNavigation(sectionId) {

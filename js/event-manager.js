@@ -46,6 +46,15 @@ class EventManager {
                     this.navigationManager.ensureSmoothSidebarTransition();
                     // Adjust layout immediately for smooth animation
                     this.navigationManager.adjustLayoutForSidebar();
+                    
+                    // Ensure current tab is highlighted and scrolled to
+                    setTimeout(() => {
+                        this.navigationManager.ensureCurrentTabHighlighted();
+                        // Also call the global function for manual sidebar opening
+                        if (typeof handleSidebarOpen === 'function') {
+                            handleSidebarOpen();
+                        }
+                    }, 100);
                 } else {
                     // Sidebar is now hidden
                     this.navigationManager.resetLayoutForHiddenSidebar();

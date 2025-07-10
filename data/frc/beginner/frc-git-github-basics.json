@@ -27,7 +27,7 @@
     {
       "type": "code",
       "title": "Git Configuration",
-      "content": "// Open a terminal or command prompt and run:\n\ngit config --global user.name \"Your Name\"\ngit config --global user.email \"your.email@example.com\"\n\n// Verify your configuration:\ngit config --list"
+      "content": "// Open a terminal or command prompt and run:\n\ngit config <code>--global</code> user.name \"Your Name\"\ngit config <code>--global</code> user.email \"your.email@example.com\"\n\n// Verify your configuration:\n<code>git config --list</code>"
     },
     {
       "type": "text",

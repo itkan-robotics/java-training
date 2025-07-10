@@ -302,24 +302,10 @@
           "items": [
             { 
               "id": "android-studio-environment", 
-              "label": "Android Studio Environment", 
+              "label": "Android Studio Environment Setup", 
               "file": "data/ftc/android-studio/environment-setup/android-studio-environment.json",
               "difficulty": "intermediate",
-              "duration": "30 min"
-            },
-            { 
-              "id": "sdk-installation", 
-              "label": "SDK Installation", 
-              "file": "data/ftc/android-studio/environment-setup/sdk-installation.json",
-              "difficulty": "intermediate",
-              "duration": "25 min"
-            },
-            { 
-              "id": "project-structure", 
-              "label": "Project Structure", 
-              "file": "data/ftc/android-studio/environment-setup/project-structure.json",
-              "difficulty": "intermediate",
-              "duration": "20 min"
+              "duration": "75 min"
             },
             { 
               "id": "code-version-control", 
@@ -362,13 +348,6 @@
               "file": "data/ftc/android-studio/advanced-movement-control/motion-profiling.json",
               "difficulty": "advanced",
               "duration": "70 min"
-            },
-            { 
-              "id": "advanced-control-theory", 
-              "label": "Advanced Control Theory", 
-              "file": "data/ftc/android-studio/advanced-movement-control/advanced-control-theory.json",
-              "difficulty": "advanced",
-              "duration": "90 min"
             }
           ]
         },
@@ -686,11 +665,11 @@
   "metadata": {
     "version": "2.1.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 53,
+    "totalLessons": 52,
     "difficultyLevels": {
       "beginner": 15,
       "intermediate": 22,
-      "advanced": 16
+      "advanced": 15
     },
     "estimatedDuration": "27.5 hours",
     "prerequisites": ["java-training"],
