@@ -13,6 +13,9 @@ class Application {
         this.themeManager = new ThemeManager();
         this.eventManager = new EventManager(this.navigationManager, this.themeManager, this.searchManager);
         this.sidebarResizeManager = new SidebarResizeManager();
+        
+        // Initialize router after navigation manager is created
+        // Remove router initialization and usage
     }
 
     async initialize() {
@@ -32,28 +35,47 @@ class Application {
             // Initialize sidebar resize functionality
             this.sidebarResizeManager.initialize();
             
-            // Show default tab
-            this.showDefaultTab();
+            // Set up navigation persistence after navigation manager is ready
+            appState.setupNavigationPersistence();
+            
+            // Show appropriate tab based on saved state or defaults
+            await this.showAppropriateTab();
+            
+            // Restore UI state after navigation
+            this.restoreUIState();
             
             // Mark as initialized
             appState.setInitialized(true);
             
+            // Hide loading overlay after everything is ready
+            hideLoadingOverlay();
         } catch (error) {
             console.error('Error initializing application:', error);
             this.showError('Failed to load application. Please refresh the page.');
+            hideLoadingOverlay();
+        }
+    }
+
+    async showAppropriateTab() {
+        // Remove isReady check and just select the default or current tab
+        // Parse the current URL and navigate to the appropriate tab
+        const { sectionId, tabId } = this.navigationManager.parseCurrentUrl();
+        if (sectionId && tabId) {
+            await this.navigationManager.navigateToTab(tabId);
+        } else if (sectionId) {
+            await this.navigationManager.handleSectionNavigation(sectionId);
+        } else {
+            // Fallback to homepage
+            await this.navigationManager.handleSectionNavigation('homepage');
         }
     }
 
     showDefaultTab() {
-        let defaultTab;
-        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
-        
-        // Parse URL to determine section and tab
         const urlData = this.navigationManager.parseCurrentUrl();
         
         if (urlData.tabId) {
             // URL contains specific tab
-            defaultTab = appState.allTabs.find(tab => tab.id === urlData.tabId);
+            const defaultTab = appState.allTabs.find(tab => tab.id === urlData.tabId);
             if (defaultTab) {
                 localStorage.removeItem('lastOpenedTab');
                 this.navigationManager.navigateToTab(urlData.tabId);
@@ -66,9 +88,9 @@ class Application {
         }
 
         // Fallback to stored tab or default
-        if (lastOpenedTabId) {
-            defaultTab = appState.allTabs.find(tab => tab.id === lastOpenedTabId);
-        }
+        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
+        let defaultTab = lastOpenedTabId ? 
+            appState.allTabs.find(tab => tab.id === lastOpenedTabId) : null;
 
         if (!defaultTab) {
             defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
@@ -100,12 +122,86 @@ class Application {
         document.body.appendChild(errorDiv);
         
         setTimeout(() => {
-            document.body.removeChild(errorDiv);
+            if (document.body.contains(errorDiv)) {
+                document.body.removeChild(errorDiv);
+            }
         }, 5000);
     }
+
+    restoreUIState() {
+        if (appState.restoreScrollPosition) appState.restoreScrollPosition();
+        if (appState.restoreSidebarState) appState.restoreSidebarState();
+        if (appState.restoreSearchQuery) appState.restoreSearchQuery();
+    }
+
+    showLoadingOverlay() {
+        let overlay = document.getElementById('loading-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'loading-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255,255,255,0.95);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                color: #333;
+            `;
+            overlay.innerHTML = '<span>Loading...</span>';
+            document.body.appendChild(overlay);
+        }
+    }
+
+    hideLoadingOverlay() {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
 }
+
+// Global loading overlay functions for use before Application is initialized
+function showLoadingOverlay() {
+    let overlay = document.getElementById('loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'loading-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #333;
+        `;
+        overlay.innerHTML = '<span>Loading...</span>';
+        document.body.appendChild(overlay);
+    }
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+// Show loading overlay immediately
+showLoadingOverlay();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Application;
-} 
+}

@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" data-content_root="./">
 <head>
+    <base href="/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Programming documentation website written by Swyft Robotics">
+    <meta name="keywords" content="FIRST Robotics, Swyft, documentation, programming, robotics, FTC, FRC, Competitive Programming, Java Education">
+    <meta name="author" content="Swyft Robotics">
+    <meta property="og:title" content="SwyftNav">
+    <meta property="og:description" content="Programming documentation website written by Swyft Robotics">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://swyftnav.netlify.app">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SwyftNav">
+    <meta name="twitter:description" content="Programming documentation website written by Swyft Robotics">
     <title>SwyftNav - Programming Fundamentals</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,13 +25,59 @@
     <link rel="icon" href="./media/FRCCodeLabDark.svg" type="image/svg+xml">
     <link rel="icon" href="./media/FRCCodeLabLight.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
     <link rel="icon" href="./media/FRCCodeLab.png" type="image/png" sizes="any">
-
 </head>
 <body>
     <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
     <label class="overlay sidebar-overlay" for="__navigation">
         <div class="visually-hidden">Hide navigation sidebar</div>
     </label>
+
+    <!-- Keyboard Shortcuts Overlay -->
+    <div id="keyboard-shortcuts-overlay" class="keyboard-shortcuts-overlay">
+        <div class="keyboard-shortcuts-modal">
+            <div class="keyboard-shortcuts-header">
+                <h2>Keyboard Shortcuts</h2>
+                <button class="keyboard-shortcuts-close" onclick="toggleKeyboardShortcuts()">
+                    <span class="visually-hidden">Close keyboard shortcuts</span>
+                    ×
+                </button>
+            </div>
+            <div class="keyboard-shortcuts-content">
+                <div class="shortcut-group">
+                    <h3>Navigation</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + ←</span>
+                        <span class="shortcut-description">Previous tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + →</span>
+                        <span class="shortcut-description">Next tab</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3>Search</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + K</span>
+                        <span class="shortcut-description">Focus search</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3>Code Blocks</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + Shift + C</span>
+                        <span class="shortcut-description">Toggle all code blocks</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3>Help</h3>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + /</span>
+                        <span class="shortcut-description">Show this help</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="page">
         <header class="mobile-header">
@@ -43,6 +100,12 @@
                 <div class="search-container-header">
                     <input type="text" class="search-input-header" placeholder="Search (Ctrl+K)..." id="header-search" autocomplete="off" autocorrect="off">
                 </div>
+                <div class="help-toggle-container">
+                    <button class="help-toggle" onclick="toggleKeyboardShortcuts()">
+                        <div class="visually-hidden">Show keyboard shortcuts</div>
+                        <span class="help-icon">?</span>
+                    </button>
+                </div>
                 <div class="theme-toggle-container theme-toggle-header">
                     <button class="theme-toggle" onclick="toggleTheme()">
                         <div class="visually-hidden">Toggle Light / Dark theme</div>
@@ -56,13 +119,14 @@
             <div class="sidebar-container">
                 <div class="sidebar-sticky">
                     <a class="sidebar-brand" href="https://github.com/itkan-robotics/java-training" target="_blank">
-                        <!-- <img width="24px" height="24px" id="git-logo" src="/media/Git-Icon-White.svg"> -->
                         <span class="sidebar-brand-text">SwyftNav</span>
                     </a>
                     
                     <div class="sidebar-scroll">
                         <!-- Mobile sidebar navigation - appears on small screens -->
                         <div class="mobile-sidebar-nav">
+                            <!-- Mobile search bar -->
+                            
                             <a href="#homepage" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
                             <a href="#java-training" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
                             <a href="#ftc-specific" class="header-nav-link" onclick="openTab(event, 'ftc-specific')">FTC Training</a>
@@ -108,15 +172,16 @@
     </div>
 
     <!-- Load JavaScript modules in dependency order -->
-    <script src="js/app-state.js"></script>
-    <script src="js/config-manager.js"></script>
-    <script src="js/content-manager.js"></script>
-    <script src="js/navigation-manager.js"></script>
-    <script src="js/theme-manager.js"></script>
-    <script src="js/search-manager.js"></script>
-    <script src="js/sidebar-resize-manager.js"></script>
-    <script src="js/event-manager.js"></script>
-    <script src="js/application.js"></script>
-    <script src="js/global-functions.js"></script>
+    <script src="/js/app-state.js"></script>
+    <script src="/js/config-manager.js"></script>
+    <script src="/js/content-manager.js"></script>
+    <script src="/js/navigation-manager.js"></script>
+    <script src="/js/theme-manager.js"></script>
+    <script src="/js/search-manager.js"></script>
+    <script src="/js/sidebar-resize-manager.js"></script>
+    <script src="/js/event-manager.js"></script>
+    <script src="/js/application.js"></script>
+    <script src="/js/global-functions.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html> 

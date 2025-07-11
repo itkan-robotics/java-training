@@ -158,19 +158,97 @@
           "duration": "20 min"
         }
       ]
+    },
+    {
+      "id": "version-control",
+      "label": "Version Control with Git & GitHub",
+      "description": "Git and GitHub for FTC team collaboration",
+      "icon": "📚",
+      "items": [
+        {
+          "id": "intro-version-control",
+          "label": "Introduction to Version Control",
+          "file": "data/java/version-control/intro-version-control.json",
+          "difficulty": "beginner",
+          "duration": "20 min"
+        },
+        {
+          "id": "install-git",
+          "label": "Installing and Setting Up Git",
+          "file": "data/java/version-control/install-git.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
+        },
+        {
+          "id": "local-workflow",
+          "label": "Local Git Workflow",
+          "file": "data/java/version-control/local-workflow.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
+        },
+        {
+          "id": "branching-merging",
+          "label": "Branching and Merging",
+          "file": "data/java/version-control/branching-merging.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        },
+        {
+          "id": "github-remotes",
+          "label": "GitHub and Remote Repositories",
+          "file": "data/java/version-control/github-remotes.json",
+          "difficulty": "intermediate",
+          "duration": "30 min"
+        },
+        {
+          "id": "pull-requests",
+          "label": "Pull Requests and Collaboration",
+          "file": "data/java/version-control/pull-requests.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "github-desktop",
+          "label": "Using GitHub Desktop",
+          "file": "data/java/version-control/github-desktop.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
+        },
+        {
+          "id": "best-practices",
+          "label": "Version Control Best Practices",
+          "file": "data/java/version-control/best-practices.json",
+          "difficulty": "intermediate",
+          "duration": "30 min"
+        },
+        {
+          "id": "organizations",
+          "label": "GitHub Organizations and Team Management",
+          "file": "data/java/version-control/organizations.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        },
+        {
+          "id": "advanced-git",
+          "label": "Advanced Git Concepts",
+          "file": "data/java/version-control/advanced-git.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
+        }
+      ]
     }
   ],
   "metadata": {
-    "version": "2.0.0",
+    "version": "2.1.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 17,
+    "totalLessons": 27,
     "difficultyLevels": {
-      "beginner": 12,
-      "intermediate": 5,
-      "advanced": 0
+      "beginner": 17,
+      "intermediate": 9,
+      "advanced": 1
     },
-    "estimatedDuration": "8 hours",
+    "estimatedDuration": "12 hours",
     "prerequisites": [],
-    "tags": ["java", "programming", "basics", "oop", "loops", "conditionals"]
+    "tags": ["java", "programming", "basics", "oop", "loops", "conditionals", "git", "github", "version-control"]
   }
 } 

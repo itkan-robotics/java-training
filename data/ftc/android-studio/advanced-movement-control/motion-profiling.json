@@ -24,7 +24,7 @@
     {
       "type": "text",
       "title": "Combining Motion Profiling with PID and Feedforward",
-      "content": "<p>Motion profiles generate target positions and velocities over time. You use a PID controller to follow the position setpoint, and optionally add <strong>feedforward</strong> terms to account for expected velocity and acceleration. This combination gives you both accuracy and responsiveness.</p><p>Learn more: <a href=\"https://gm0.org/en/latest/_sources/docs/software/concepts/control-loops.rst.txt\" target=\"_blank\">gm0: Feedforward Control</a></p>"
+      "content": "<p>Motion profiles generate target positions and velocities over time. You use a PID controller to follow the position setpoint, and optionally add <strong>feedforward</strong> terms to account for expected velocity and acceleration. This combination gives you both accuracy and responsiveness.</p><p>Learn more: <a href=\"https://gm0.org/en/latest/docs/software/concepts/control-loops.html#feedforward-control\" target=\"_blank\">gm0: Feedforward Control</a></p>"
     },
     {
       "type": "code",
@@ -43,9 +43,26 @@
       "content": "<ul><li>If motion is jerky, lower max acceleration or tune PID gains.</li><li>If the robot overshoots, increase deceleration or tune PID/FF gains.</li><li>Use telemetry to plot position, velocity, and error for debugging.</li></ul>"
     },
     {
-      "type": "emphasis-box",
-      "title": "Reference: Control Loops and Motion Profiling",
-      "content": "See <a href=\"https://gm0.org/en/latest/docs/software/concepts/control-loops.html\" target=\"_blank\">gm0: Control Loops</a> for more on motion profiling and advanced control strategies."
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "description": "Essential resources for motion profiling and trajectory following",
+      "links": [
+        {
+          "title": "gm0 Control Loops Guide",
+          "description": "Comprehensive guide to control loops, motion profiling, and feedforward control",
+          "url": "https://gm0.org/en/latest/docs/software/concepts/control-loops.html"
+        },
+        {
+          "title": "Road Runner Motion Planning",
+          "description": "Advanced motion planning library designed specifically for FTC autonomous movement",
+          "url": "https://github.com/acmerobotics/road-runner"
+        },
+        {
+          "title": "Learn Road Runner",
+          "description": "Step-by-step guide to setting up and using Road Runner for motion profiling",
+          "url": "https://rr.brott.dev/docs/v1-0/installation/"
+        }
+      ]
     }
   ]
 }

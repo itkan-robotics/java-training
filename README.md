@@ -77,25 +77,53 @@ Application
 ## 🚀 Quick Start
 
 ### Local Development
+
+#### Using Node.js and npm (Recommended)
+
+1. **Install Node.js**
+   - Download and install Node.js from [nodejs.org](https://nodejs.org/).
+   - This will also install npm (Node Package Manager).
+
+2. **Install Dependencies**
+   - Open a terminal in the project root directory.
+   - Run:
+     ```bash
+     npm install
+     ```
+   - This will install any required dependencies (if `package.json` is present).
+
+3. **Start the Local Server**
+   - Run:
+     ```bash
+     npx http-server -p 8000 -c-1
+     ```
+   - If you prefer, you can install `http-server` globally:
+     ```bash
+     npm install -g http-server
+     http-server -p 8000 -c-1
+     ```
+   - Alternatively, if a script is provided in `package.json`, you can use:
+     ```bash
+     npm start
+     ```
+     (Check `package.json` for available scripts.)
+
+4. **Open the App**
+   - Visit [http://localhost:8000/](http://localhost:8000/) in your browser.
+
+#### Troubleshooting
+- If you get a 'command not found' error for `http-server`, ensure you have installed it globally or use `npx http-server`.
+- If port 8000 is in use, change the port number (e.g., `-p 8080`).
+- For Windows users, use PowerShell or Command Prompt in the project directory.
+
+#### Alternative: Python HTTP Server
+If you have Python installed, you can also run:
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/swyftnav.git
-cd swyftnav
-
-# Start local server (choose one):
-
-# Option 1: Python (built-in)
 python -m http.server 8000
-
-# Option 2: Node.js (recommended)
-npm install -g http-server
-http-server -p 8000 -c-1
-
-# Option 3: VS Code Live Server extension
-# Right-click index.html → "Open with Live Server"
 ```
 
-Then visit: `http://localhost:8000/`
+#### Alternative: VS Code Live Server Extension
+- Right-click `index.html` → "Open with Live Server"
 
 ### Production Deployment
 
@@ -233,6 +261,16 @@ All content files follow a standardized JSON format:
       "code": "public class Example {\n    // Code here\n}"
     },
     {
+      "type": "table",
+      "title": "Comparison Table",
+      "headers": ["Feature", "Option A", "Option B"],
+      "rows": [
+        ["Speed", "Fast", "Slow"],
+        ["Memory", "Low", "High"],
+        ["Complexity", "Simple", "Complex"]
+      ]
+    },
+    {
       "type": "exercise-box",
       "title": "Practice Exercise",
       "description": "Exercise description",
@@ -257,6 +295,7 @@ All content files follow a standardized JSON format:
 - `data-types-grid`: Interactive data type comparisons
 - `logical-operators`: Operator reference tables
 - `link-grid`: Navigation to related topics
+- `table`: Structured data tables with headers and rows
 
 ## 🔧 Development Guidelines
 

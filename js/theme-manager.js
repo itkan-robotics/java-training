@@ -9,18 +9,18 @@ class ThemeManager {
     }
 
     initializeTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        const theme = savedTheme || 'light'; // Default to light theme
-        
+        // Theme is already restored by AppState, just update the icon
+        this.updateThemeIcon(appState.theme);
+    }
+
+    setTheme(theme) {
         appState.setTheme(theme);
         this.updateThemeIcon(theme);
     }
 
     toggleTheme() {
         const newTheme = appState.theme === 'light' ? 'dark' : 'light';
-        appState.setTheme(newTheme);
-        this.updateThemeIcon(newTheme);
+        this.setTheme(newTheme);
     }
 
     updateThemeIcon(theme) {

@@ -45,20 +45,24 @@
       ]
     },
     {
-      "type": "text",
-      "title": "Troubleshooting",
-      "content": "If you have connection issues:<ul><li>Check RS485 cable is secure.</li><li>Ensure both hubs are powered.</li><li>Verify device names in configuration match your code.</li><li>Check for firmware updates.</li></ul>See <a href='https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/Troubleshooting' target='_blank'>FTC Docs: Troubleshooting</a> for more help."
-    },
-    {
       "type": "exercise-box",
       "title": "Practice: Hardware Setup",
       "description": "Try these to reinforce your understanding:",
       "tasks": [
-        "Configure a new device in the Driver Station app.",
-        "Write code to access a motor and a sensor.",
-        "Troubleshoot a wiring issue using the troubleshooting guide."
+        "Configure a new device on the Expansion Hub in the Driver Station app.",
+        "Write code to access a motor and a sensor on the Expansion Hub.",
+        "Ask your mentor to cause a wiring issue, then fix it."
       ],
-      "content": "// Practice: Set up your robot hardware and access it in code."
+      "answers": [
+        {
+          "task": "Configure a new device in the Driver Station app",
+          "content": "// Steps to configure hardware in Driver Station:\n//\n// 1. Open Driver Station app on your phone/tablet\n// 2. Tap 'Configure Robot' button\n// 3. Tap 'New Configuration' or select existing config\n// 4. Tap '+' to add a new device\n// 5. Select device type (Motor, Servo, Sensor, etc.)\n// 6. Choose the specific device (e.g., 'DcMotor', 'ColorSensor')\n// 7. Enter a name (e.g., 'left_drive', 'color_sensor')\n// 8. Select which hub it's connected to (Control Hub or Expansion Hub)\n// 9. Select the port number (e.g., port 0, port 1)\n// 10. Tap 'Done' to save the configuration\n//\n// Example configuration:\n// - Device: DcMotor, Name: 'left_drive', Hub: Control Hub, Port: 0\n// - Device: ColorSensor, Name: 'color_sensor', Hub: Expansion Hub, Port: 1\n//\n// Remember: Device names must match exactly in your code!"
+        },
+        {
+          "task": "Write code to access a motor and a sensor",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.DcMotor;\nimport com.qualcomm.robotcore.hardware.ColorSensor;\n\n@TeleOp(name = \"HardwareAccess\")\npublic class HardwareAccess extends LinearOpMode {\n    // Declare hardware variables\n    private DcMotor driveMotor;\n    private ColorSensor colorSensor;\n\n    @Override\n    public void runOpMode() {\n        // Initialize hardware using hardwareMap\n        // Names must match your Driver Station configuration\n        driveMotor = hardwareMap.get(DcMotor.class, \"drive_motor\");\n        colorSensor = hardwareMap.get(ColorSensor.class, \"color_sensor\");\n        \n        // Show initialization status\n        telemetry.addData(\"Status\", \"Hardware initialized\");\n        telemetry.addData(\"Motor Name\", \"drive_motor\");\n        telemetry.addData(\"Sensor Name\", \"color_sensor\");\n        telemetry.update();\n        \n        waitForStart();\n        \n        while (opModeIsActive()) {\n            // Control motor with gamepad\n            double motorPower = -gamepad1.left_stick_y;\n            driveMotor.setPower(motorPower);\n            \n            // Read sensor values\n            int red = colorSensor.red();\n            int green = colorSensor.green();\n            int blue = colorSensor.blue();\n            \n            // Display data on Driver Station\n            telemetry.addData(\"Motor Power\", motorPower);\n            telemetry.addData(\"Color Sensor\", \"R:%d G:%d B:%d\", red, green, blue);\n            telemetry.update();\n        }\n    }\n}"
+        }
+      ]
     }
   ]
 } 

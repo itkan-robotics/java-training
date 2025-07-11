@@ -25,6 +25,7 @@ class NavigationManager {
      * Updates the URL to reflect the current section
      */
     updateUrl(sectionId, tabId = null) {
+        // Fallback to direct URL manipulation
         const sectionPath = this.sectionUrlMap[sectionId];
         
         if (sectionPath) {
@@ -53,6 +54,7 @@ class NavigationManager {
      * Parses the current URL to determine section and tab
      */
     parseCurrentUrl() {
+        // Fallback to direct URL parsing
         const path = window.location.pathname;
         const hash = window.location.hash;
         const pathParts = path.split('/').filter(part => part !== '');
@@ -108,6 +110,8 @@ class NavigationManager {
 
         if (appState.currentSection === 'homepage') {
             this.renderHomepageNavigation(navigationContainer);
+            // Update title for homepage
+            this.updateSectionTitle('homepage', { title: 'Home' });
         } else {
             await this.renderSectionNavigation(navigationContainer);
         }
@@ -127,22 +131,17 @@ class NavigationManager {
                 }
                 navCheckbox.checked = false;
             }
+            
+            // Highlight current tab and scroll to it if sidebar is open
+            if (appState.currentTab) {
+                this.ensureCurrentTabHighlighted();
+            }
         }, 100);
     }
 
     renderHomepageNavigation(container) {
-        const li = document.createElement('li');
-        li.className = 'toctree-l1 current-page';
-        const a = document.createElement('a');
-        a.className = 'reference';
-        a.href = '#homepage';
-        a.textContent = 'Home';
-        a.onclick = (e) => {
-            e.preventDefault();
-            this.navigateToTab('homepage');
-        };
-        li.appendChild(a);
-        container.appendChild(li);
+        const navigationItem = this.createNavigationItem('Home', 'homepage', 'toctree-l1 current-page');
+        container.appendChild(navigationItem);
     }
 
     async renderSectionNavigation(container) {
@@ -181,25 +180,8 @@ class NavigationManager {
 
     renderParentGroupsNavigation(container, parents) {
         parents.forEach(parent => {
-            const parentLi = document.createElement('li');
-            parentLi.className = 'toctree-l0 parent-folder';
-
-            const parentA = document.createElement('a');
-            parentA.className = 'reference parent-folder-reference';
-            parentA.href = '#';
-            parentA.innerHTML = `
-                <span class="expand-icon expand-icon-${parent.id}">▼</span>
-                ${parent.label}
-            `;
-            parentA.onclick = (e) => {
-                e.preventDefault();
-                this.toggleGroup(parent.id);
-            };
-            parentLi.appendChild(parentA);
-
-            const childrenUl = document.createElement('ul');
-            childrenUl.className = 'children-nav expanded';
-            childrenUl.id = `children-${parent.id}`;
+            const parentLi = this.createParentNavigationItem(parent);
+            const childrenUl = this.createChildrenContainer(parent.id);
 
             // Render each group (child) under this parent
             if (parent.children) {
@@ -209,21 +191,7 @@ class NavigationManager {
                 this.renderGroupsNavigation(childrenUl, parent.groups);
             } else if (parent.items) {
                 // Render items directly if present
-                parent.items.forEach(item => {
-                    const itemLi = document.createElement('li');
-                    itemLi.className = 'toctree-l2 child-tab';
-                    const itemA = document.createElement('a');
-                    itemA.className = 'reference child-reference';
-                    // Use hash-based navigation for GitHub Pages compatibility
-                    itemA.href = `#${item.id}`;
-                    itemA.textContent = item.label;
-                    itemA.onclick = (e) => {
-                        e.preventDefault();
-                        this.navigateToTab(item.id);
-                    };
-                    itemLi.appendChild(itemA);
-                    childrenUl.appendChild(itemLi);
-                });
+                this.renderItemsList(childrenUl, parent.items);
             }
 
             parentLi.appendChild(childrenUl);
@@ -233,86 +201,26 @@ class NavigationManager {
 
     renderGroupsNavigation(container, groups) {
         if (!Array.isArray(groups)) return;
+        
         groups.forEach(group => {
-            const groupLi = document.createElement('li');
-            groupLi.className = 'toctree-l1 parent-tab';
-            
-            const groupA = document.createElement('a');
-            groupA.className = 'reference parent-reference';
-            groupA.href = '#';
-            groupA.innerHTML = `
-                <span class="expand-icon expand-icon-${group.id}">▼</span>
-                ${group.label}
-            `;
-            groupA.onclick = (e) => {
-                e.preventDefault();
-                this.toggleGroup(group.id);
-            };
-            groupLi.appendChild(groupA);
-
-            const itemsUl = document.createElement('ul');
-            itemsUl.className = 'children-nav expanded';
-            itemsUl.id = `children-${group.id}`;
+            const groupLi = this.createParentNavigationItem(group);
+            const itemsUl = this.createChildrenContainer(group.id);
 
             // Handle direct items in group
             if (Array.isArray(group.items)) {
-                group.items.forEach(item => {
-                    const itemLi = document.createElement('li');
-                    itemLi.className = 'toctree-l2 child-tab';
-                    const itemA = document.createElement('a');
-                    itemA.className = 'reference child-reference';
-                    // Use hash-based navigation for GitHub Pages compatibility
-                    itemA.href = `#${item.id}`;
-                    itemA.textContent = item.label;
-                    itemA.onclick = (e) => {
-                        e.preventDefault();
-                        this.navigateToTab(item.id);
-                    };
-                    itemLi.appendChild(itemA);
-                    itemsUl.appendChild(itemLi);
-                });
+                this.renderItemsList(itemsUl, group.items);
             }
 
             // Handle nested children structure (like FTC config)
             if (Array.isArray(group.children)) {
                 group.children.forEach(child => {
                     // Create child group header
-                    const childGroupLi = document.createElement('li');
-                    childGroupLi.className = 'toctree-l2 parent-tab';
+                    const childGroupLi = this.createParentNavigationItem(child, 'toctree-l2 parent-tab');
                     
-                    const childGroupA = document.createElement('a');
-                    childGroupA.className = 'reference parent-reference';
-                    childGroupA.href = '#';
-                    childGroupA.innerHTML = `
-                        <span class="expand-icon expand-icon-${child.id}">▼</span>
-                        ${child.label}
-                    `;
-                    childGroupA.onclick = (e) => {
-                        e.preventDefault();
-                        this.toggleGroup(child.id);
-                    };
-                    childGroupLi.appendChild(childGroupA);
-
-                    const childItemsUl = document.createElement('ul');
-                    childItemsUl.className = 'children-nav expanded';
-                    childItemsUl.id = `children-${child.id}`;
+                    const childItemsUl = this.createChildrenContainer(child.id);
 
                     if (Array.isArray(child.items)) {
-                        child.items.forEach(item => {
-                            const itemLi = document.createElement('li');
-                            itemLi.className = 'toctree-l3 child-tab';
-                            const itemA = document.createElement('a');
-                            itemA.className = 'reference child-reference';
-                            // Use hash-based navigation for GitHub Pages compatibility
-                            itemA.href = `#${item.id}`;
-                            itemA.textContent = item.label;
-                            itemA.onclick = (e) => {
-                                e.preventDefault();
-                                this.navigateToTab(item.id);
-                            };
-                            itemLi.appendChild(itemA);
-                            childItemsUl.appendChild(itemLi);
-                        });
+                        this.renderItemsList(childItemsUl, child.items, 'toctree-l3 child-tab');
                     }
 
                     childGroupLi.appendChild(childItemsUl);
@@ -326,25 +234,72 @@ class NavigationManager {
     }
 
     renderIntroNavigation(container, intro) {
-        const introLi = document.createElement('li');
-        introLi.className = 'toctree-l1 current-page';
-        const introA = document.createElement('a');
-        introA.className = 'reference';
-        // Use hash-based navigation for GitHub Pages compatibility
-        introA.href = `#${intro.id}`;
-        introA.textContent = intro.label;
-        introA.onclick = (e) => {
-            e.preventDefault();
-            this.navigateToTab(intro.id);
-        };
-        introLi.appendChild(introA);
-        container.appendChild(introLi);
+        const navigationItem = this.createNavigationItem(intro.label, intro.id, 'toctree-l1 current-page');
+        container.appendChild(navigationItem);
     }
 
     renderTiersNavigation(container, tiers) {
         // Handle tiers navigation if needed
         // This is a placeholder for future tier-based navigation
-        console.log('Tiers navigation not yet implemented');
+    }
+
+    // Helper methods to reduce code duplication
+    createNavigationItem(label, tabId, className = 'toctree-l1') {
+        const li = document.createElement('li');
+        li.className = className;
+        const a = document.createElement('a');
+        a.className = 'reference';
+        a.href = `#${tabId}`;
+        a.textContent = label;
+        a.onclick = (e) => {
+            e.preventDefault();
+            this.navigateToTab(tabId);
+        };
+        li.appendChild(a);
+        return li;
+    }
+
+    createParentNavigationItem(parent, className = 'toctree-l1 parent-tab') {
+        const li = document.createElement('li');
+        li.className = className;
+        
+        const a = document.createElement('a');
+        a.className = 'reference parent-folder-reference';
+        a.href = '#';
+        a.innerHTML = `
+            <span class="expand-icon expand-icon-${parent.id}">▼</span>
+            ${parent.label}
+        `;
+        a.onclick = (e) => {
+            e.preventDefault();
+            this.toggleGroup(parent.id);
+        };
+        li.appendChild(a);
+        return li;
+    }
+
+    createChildrenContainer(groupId) {
+        const ul = document.createElement('ul');
+        ul.className = 'children-nav expanded';
+        ul.id = `children-${groupId}`;
+        return ul;
+    }
+
+    renderItemsList(container, items, itemClassName = 'toctree-l2 child-tab') {
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.className = itemClassName;
+            const a = document.createElement('a');
+            a.className = 'reference child-reference';
+            a.href = `#${item.id}`;
+            a.textContent = item.label;
+            a.onclick = (e) => {
+                e.preventDefault();
+                this.navigateToTab(item.id);
+            };
+            li.appendChild(a);
+            container.appendChild(li);
+        });
     }
 
     toggleGroup(groupId) {
@@ -371,11 +326,9 @@ class NavigationManager {
         const sidebarDrawer = document.querySelector('.sidebar-drawer');
         const mainContent = document.querySelector('.main');
         const navCheckbox = document.getElementById('__navigation');
-        if (!sidebarDrawer || !mainContent) {
-            return;
-        }
-        const sidebarContent = sidebarDrawer.querySelector('.sidebar-scroll');
-        if (!sidebarContent) {
+        const sidebarContent = sidebarDrawer?.querySelector('.sidebar-scroll');
+        
+        if (!sidebarDrawer || !mainContent || !sidebarContent) {
             return;
         }
         // Check if sidebar is currently visible (checkbox is checked)
@@ -596,6 +549,10 @@ class NavigationManager {
     }
 
     async navigateToTab(tabId) {
+        if (!appState.config || !appState.config.sections) {
+            this.showError('Configuration not loaded yet. Please wait and try again.');
+            return;
+        }
         try {
             // Store the last opened tab ID
             localStorage.setItem('lastOpenedTab', tabId);
@@ -695,6 +652,14 @@ class NavigationManager {
                 this.contentManager.renderContent(tabId);
                 appState.setCurrentTab(tabId);
                 
+                // Scroll to current tab if sidebar is open
+                const navCheckbox = document.getElementById('__navigation');
+                if (navCheckbox && navCheckbox.checked) {
+                    setTimeout(() => {
+                        this.ensureCurrentTabHighlighted();
+                    }, 50);
+                }
+                
                 // Scroll to top of the page
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
@@ -777,6 +742,9 @@ class NavigationManager {
             await this.contentManager.loadSectionContent(sectionId);
             const updatedSection = appState.config.sections[sectionId];
             
+            // Update page title for section navigation
+            this.updateSectionTitle(sectionId, updatedSection);
+            
             // Scroll to top of the page
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
@@ -808,12 +776,111 @@ class NavigationManager {
     }
 
     highlightNavigation(tabId) {
+        // Clear all current-page classes first
+        document.querySelectorAll('.current-page').forEach(element => {
+            element.classList.remove('current-page');
+        });
+
+        // Find and highlight the current tab
         const navLinks = document.querySelectorAll('.child-reference, .reference');
+        let foundCurrentTab = false;
+        
         navLinks.forEach(link => {
-            if (link.onclick && link.onclick.toString().includes(tabId)) {
-                link.closest('.toctree-l1, .toctree-l2').classList.add('current-page');
+            // Check if this link corresponds to the current tab
+            if (link.href && link.href.includes(`#${tabId}`)) {
+                const parentLi = link.closest('.toctree-l1, .toctree-l2, .toctree-l3');
+                if (parentLi) {
+                    parentLi.classList.add('current-page');
+                    foundCurrentTab = true;
+                }
             }
         });
+
+        // If we found the current tab, also expand its parent groups
+        if (foundCurrentTab) {
+            this.expandParentGroupsForTab(tabId);
+        }
+    }
+
+    /**
+     * Expands parent groups that contain the current tab
+     */
+    expandParentGroupsForTab(tabId) {
+        const currentTabElement = document.querySelector(`.current-page`);
+        if (!currentTabElement) return;
+
+        // Find all parent groups that need to be expanded
+        let parent = currentTabElement.parentElement;
+        while (parent && !parent.classList.contains('sidebar-tree')) {
+            if (parent.classList.contains('children-nav')) {
+                parent.classList.add('expanded');
+                parent.classList.remove('collapsed');
+                
+                // Update the expand icon
+                const parentLi = parent.previousElementSibling;
+                if (parentLi && parentLi.classList.contains('parent-tab')) {
+                    const expandIcon = parentLi.querySelector('.expand-icon');
+                    if (expandIcon) {
+                        expandIcon.innerHTML = '▼';
+                    }
+                }
+            }
+            parent = parent.parentElement;
+        }
+    }
+
+    /**
+     * Scrolls the sidebar to the current tab when the sidebar is opened
+     */
+    scrollToCurrentTab() {
+        const currentTabElement = document.querySelector('.current-page');
+        if (!currentTabElement) return;
+
+        const sidebarScroll = document.querySelector('.sidebar-scroll');
+        if (!sidebarScroll) return;
+
+        // Calculate the position to scroll to
+        const sidebarRect = sidebarScroll.getBoundingClientRect();
+        const tabRect = currentTabElement.getBoundingClientRect();
+        
+        // Calculate the scroll position to center the current tab
+        const scrollTop = sidebarScroll.scrollTop;
+        const tabTop = tabRect.top - sidebarRect.top;
+        const sidebarHeight = sidebarRect.height;
+        const tabHeight = tabRect.height;
+        
+        // Center the tab in the sidebar
+        const targetScrollTop = scrollTop + tabTop - (sidebarHeight / 2) + (tabHeight / 2);
+        
+        // Smooth scroll to the target position
+        sidebarScroll.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+        });
+    }
+
+    /**
+     * Ensures the current tab is highlighted and scrolled to when sidebar is opened
+     * This method includes retry logic for cases where navigation might not be fully rendered
+     */
+    ensureCurrentTabHighlighted() {
+        if (!appState.currentTab) return;
+
+        // First, try to highlight the current tab
+        this.highlightNavigation(appState.currentTab);
+        
+        // Check if highlighting was successful
+        const currentTabElement = document.querySelector('.current-page');
+        if (!currentTabElement) {
+            // If highlighting failed, try again after a short delay
+            setTimeout(() => {
+                this.highlightNavigation(appState.currentTab);
+                this.scrollToCurrentTab();
+            }, 200);
+        } else {
+            // If highlighting was successful, scroll to the tab
+            this.scrollToCurrentTab();
+        }
     }
 
     updateHeaderNavigation(sectionId) {
@@ -878,6 +945,39 @@ class NavigationManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Updates the page title for section navigation
+     */
+    updateSectionTitle(sectionId, section) {
+        let title = 'SwyftNav - Programming Fundamentals';
+        
+        if (section && section.title) {
+            title = `${section.title} - SwyftNav`;
+        } else {
+            // Use section ID to generate a title
+            const sectionName = this.getSectionDisplayName(sectionId);
+            title = `${sectionName} - SwyftNav`;
+        }
+        
+        // Update the document title
+        document.title = title;
+    }
+
+    /**
+     * Gets a display name for a section ID
+     */
+    getSectionDisplayName(sectionId) {
+        const sectionNames = {
+            'homepage': 'Home',
+            'java-training': 'Java Training',
+            'ftc-specific': 'FTC Training',
+            'frc-specific': 'FRC Training',
+            'competitive-training': 'Competitive Training'
+        };
+        
+        return sectionNames[sectionId] || sectionId;
     }
 }
 

@@ -9,11 +9,11 @@
     {
       "type": "text",
       "title": "Hardware Overview and Installation",
-      "content": "The Pinpoint kit includes three encoder-equipped wheels mounted in a standard three-wheel odometry configuration. Proper installation is crucial for accuracy—follow the manufacturer's instructions for mounting and alignment. <br><br>For more details, see the <a href=\"https://www.gobilda.com/content/spec_sheets/2205-0001-0001-spec-sheet.pdf\" target=\"_blank\">goBILDA Pinpoint Spec Sheet</a>."
+      "content": "The Pinpoint kit includes three encoder-equipped wheels mounted in a standard three-wheel odometry configuration. Proper installation is crucial for accuracy—follow the manufacturer's instructions for mounting and alignment. <br><br>For more details, see the <a href=\"https://www.gobilda.com/pinpoint-odometry-computer-imu-sensor-fusion-for-2-wheel-odometry/\" target=\"_blank\">goBILDA Pinpoint Product Page</a>."
     },
     {
       "type": "text",
-      "title": "Integrating Pinpoint with Android Studio (FTC SDK)",
+      "title": "Integrating Pinpoint with Android Studio",
       "content": "To use Pinpoint in your Android Studio project, you can utilize the <a href=\"https://javadoc.io/doc/org.firstinspires.ftc/Hardware/latest/com/qualcomm/hardware/gobilda/GoBildaPinpointDriver.html\" target=\"_blank\">GoBildaPinpointDriver</a> class provided in the FTC SDK. This class helps you interface with the Pinpoint hardware and retrieve encoder values for odometry calculations."
     },
     {
@@ -41,12 +41,12 @@
           "url": "https://javadoc.io/doc/org.firstinspires.ftc/Hardware/latest/com/qualcomm/hardware/gobilda/GoBildaPinpointDriver.html"
         },
         {
-          "label": "goBILDA Pinpoint Spec Sheet",
-          "url": "https://www.gobilda.com/content/spec_sheets/2205-0001-0001-spec-sheet.pdf"
+          "label": "goBILDA Pinpoint Product Page",
+          "url": "https://www.gobilda.com/pinpoint-odometry-computer-imu-sensor-fusion-for-2-wheel-odometry/"
         },
         {
-          "label": "gm0: Odometry (Theory)",
-          "url": "https://gm0.org/en/latest/docs/software/concepts/odometry.html"
+          "label": "goBILDA Example Code",
+          "url": "https://github.com/goBILDA-Official/FtcRobotController-Add-Pinpoint/tree/goBILDA-Odometry-Driver/TeamCode/src/main/java/org/firstinspires/ftc/teamcode"
         }
       ]
     },
@@ -58,8 +58,7 @@
         "Initialize GoBildaPinpointDriver in your op mode.",
         "Display left, right, and center encoder values on telemetry.",
         "Move the robot and observe the encoder changes."
-      ],
-      "content": "// Use the code snippet above as a starting point."
+      ]
     }
   ]
 }

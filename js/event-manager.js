@@ -46,6 +46,15 @@ class EventManager {
                     this.navigationManager.ensureSmoothSidebarTransition();
                     // Adjust layout immediately for smooth animation
                     this.navigationManager.adjustLayoutForSidebar();
+                    
+                    // Ensure current tab is highlighted and scrolled to
+                    setTimeout(() => {
+                        this.navigationManager.ensureCurrentTabHighlighted();
+                        // Also call the global function for manual sidebar opening
+                        if (typeof handleSidebarOpen === 'function') {
+                            handleSidebarOpen();
+                        }
+                    }, 100);
                 } else {
                     // Sidebar is now hidden
                     this.navigationManager.resetLayoutForHiddenSidebar();
@@ -143,6 +152,30 @@ class EventManager {
                 this.focusSearch();
             }
         });
+
+        // Toggle all code blocks on Ctrl+Shift+C
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                this.toggleAllCodeBlocks();
+            }
+        });
+
+        // Show keyboard shortcuts on ? key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                this.showKeyboardShortcuts();
+            }
+        });
+
+        // Show keyboard shortcuts on Ctrl+/ key
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                this.showKeyboardShortcuts();
+            }
+        });
     }
 
     navigateWithArrows(key) {
@@ -161,11 +194,21 @@ class EventManager {
     }
 
     copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            console.log('Text copied to clipboard');
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-        });
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text);
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            textArea.remove();
+        }
     }
 
     showNotification(message) {
@@ -196,10 +239,37 @@ class EventManager {
     }
 
     focusSearch() {
-        const searchInput = document.getElementById('header-search');
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.select();
+        // Check if we're on mobile (sidebar is visible/checked)
+        const navToggle = document.getElementById('__navigation');
+        const mobileSearchInput = document.getElementById('mobile-sidebar-search');
+        const headerSearchInput = document.getElementById('header-search');
+        
+        if (navToggle && navToggle.checked && mobileSearchInput) {
+            // On mobile with sidebar open, focus mobile search
+            mobileSearchInput.focus();
+            mobileSearchInput.select();
+        } else if (headerSearchInput) {
+            // Otherwise focus header search
+            headerSearchInput.focus();
+            headerSearchInput.select();
+        }
+    }
+
+    toggleAllCodeBlocks() {
+        // Access the content manager through the global app instance
+        if (window.app && window.app.contentManager) {
+            window.app.contentManager.toggleAllCodeBlocks();
+        } else {
+            console.warn('Content manager not available for code block toggle');
+        }
+    }
+
+    showKeyboardShortcuts() {
+        // Access the global toggle function
+        if (typeof toggleKeyboardShortcuts === 'function') {
+            toggleKeyboardShortcuts();
+        } else {
+            console.warn('Keyboard shortcuts toggle function not available');
         }
     }
 

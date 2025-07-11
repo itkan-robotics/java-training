@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What are Sensors in FTC?",
-      "content": "Sensors are electronic devices that allow your robot to perceive its environment. In FTC, sensors are used for tasks like detecting objects, measuring distance, sensing color, and determining orientation. Understanding how to use sensors is crucial for building autonomous and responsive robots. <br><br>For a general overview, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/onbot_java/intro/intro.html\" target=\"_blank\">FTC Docs: OnBot Java Programming Tutorial</a>."
+      "content": "Sensors are electronic devices that allow your robot to perceive its environment. In FTC, sensors are used for tasks like detecting objects, measuring distance, sensing color, and determining orientation. Understanding how to use sensors is crucial for building autonomous and responsive robots. <br><br>For a general overview, see <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/using_sensors/Using-Sensors-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Using Sensors in OnBot Java</a>."
     },
     {
       "type": "list",
@@ -21,18 +21,7 @@
     {
       "type": "text",
       "title": "How Sensors Integrate with FTC Hardware",
-      "content": "Sensors must be configured in your robot's hardware configuration and then mapped in your code. This allows you to reference and use them in your Op Modes. <br><br>See <a href=\"https://ftc-docs.firstinspires.org/en/latest/programming_resources/tutorial_specific/onbot_java/creating_op_modes/Creating-and-Running-an-Op-Mode-%28OnBot-Java%29.html\" target=\"_blank\">FTC Docs: Creating and Running an Op Mode (OnBot Java)</a> for details."
-    },
-    {
-      "type": "code",
-      "title": "Example: Mapping a Sensor in Java",
-      "content": "This example shows how to map a distance sensor in your Op Mode. Always use clear, modular code blocks for each sensor.",
-      "code": "private DistanceSensor sensorColorRange;\n\n@Override\npublic void runOpMode() {\n    sensorColorRange = hardwareMap.get(DistanceSensor.class, \"sensorColorRange\");\n    // Now you can use sensorColorRange in your code\n}"
-    },
-    {
-      "type": "emphasis-box",
-      "title": "Best Practice: Modular Code",
-      "content": "Avoid writing large, monolithic code files. Instead, break your code into small, focused sections for each sensor and function. This makes your code easier to read, debug, and extend."
+      "content": "Sensors must be configured in your robot's hardware configuration and then mapped in your code. This allows you to reference and use them in your Op Modes."
     },
     {
       "type": "link-grid",

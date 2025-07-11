@@ -42,9 +42,66 @@
       "content": "<ul><li><strong>Oscillation</strong>: Lower kP or increase kD.</li><li><strong>Slow response</strong>: Increase kP.</li><li><strong>Steady-state error</strong>: Increase kI.</li><li><strong>Integral windup</strong>: Limit the integral term.</li></ul>"
     },
     {
+      "type": "exercise-box",
+      "title": "Practice Exercise: PID Tuning Simulator",
+      "description": "Practice tuning PID controllers using an interactive simulator to understand how different parameters affect system behavior.",
+      "tasks": [
+        "Open the PID Simulator at https://pknessness.github.io/pid_sim/pid.html",
+        "Start with default values and observe the system response",
+        "Practice tuning each parameter (kP, kI, kD) individually",
+        "Test different scenarios using the Test Sequence button",
+        "Record your best tuning values and explain why they work well"
+      ],
+      "answers": [
+        {
+          "task": "Open the PID Simulator and observe default behavior",
+          "content": "Navigate to https://pknessness.github.io/pid_sim/pid.html in your browser. Click 'Test Sequence' to see how the default PID values (kP=0.1, kI=0.0, kD=0.0) perform. Notice the response time, overshoot, and settling behavior."
+        },
+        {
+          "task": "Tune the Proportional (kP) parameter",
+          "content": "Set kI and kD to 0, start with kP = 0.1. Click 'Test Sequence' and observe:<br>- If response is too slow, increase kP<br>- If there's too much overshoot, decrease kP<br>- Aim for a quick response without excessive oscillation"
+        },
+        {
+          "task": "Add Derivative (kD) to reduce oscillations",
+          "content": "Keep your best kP value, start with kD = 0.01. Increase kD gradually until oscillations stop. Be careful not to make the response too sluggish. A good kD value should dampen oscillations without significantly slowing the response."
+        },
+        {
+          "task": "Add Integral (kI) to eliminate steady-state error",
+          "content": "Keep your best kP and kD values, start with kI = 0.001. Increase kI slowly until the system reaches the target without steady-state error. Watch for integral windup (excessive overshoot) and adjust accordingly."
+        },
+        {
+          "task": "Fine-tune all parameters and test different scenarios",
+          "content": "Make small adjustments to all three parameters. Test with different setpoints using the Test Sequence. Aim for: fast response, minimal overshoot, no steady-state error. Try these starting values:<br>- Conservative: kP=0.1, kI=0.001, kD=0.01<br>- Aggressive: kP=0.5, kI=0.01, kD=0.05<br>- Balanced: kP=0.2, kI=0.005, kD=0.02"
+        },
+        {
+          "task": "Record your findings and explain your best tuning",
+          "content": "Document your best PID values and explain why they work well. Consider:<br>- Rise time (how quickly it reaches target)<br>- Overshoot (maximum deviation from target)<br>- Settling time (time to stabilize)<br>- Steady-state error (final deviation from target)<br><br>Good tuning should have: quick rise time, minimal overshoot, fast settling, and no steady-state error."
+        }
+      ]
+    },
+    {
       "type": "emphasis-box",
-      "title": "Reference: FTC PID Coefficients",
-      "content": "See <a href=\"https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/PIDFCoefficients.html\" target=\"_blank\">FTC Docs: PID Coefficients (Android Studio)</a> for more on using PID in the FTC SDK."
+      "title": "Caution: Using the Integral (kI) Term in Robotics",
+      "content": "<p>In FIRST robotics and many real-world applications, using the integral (kI) term in PID control is generally discouraged unless you have a strong understanding of how PID works. The kI term can sometimes introduce <strong>steady-state error</strong> or cause your robot to <strong>drift over time</strong> if not tuned carefully. This is because the integral term accumulates error over time, which can lead to <em>integral windup</em> and unpredictable behavior. For most FTC robots, you can achieve good control with just the proportional (kP) and derivative (kD) terms. Only add kI if you have a persistent steady-state error that cannot be fixed by adjusting kP and kD, and always test thoroughly to ensure stability.</p>"
+    },
+    {
+      "type": "link-grid",
+      "title": "Additional Resources",
+      "description": "Essential resources for understanding and implementing PID control in FTC",
+      "links": [
+        {
+          "title": "gm0 PID Control Guide",
+          "url": "https://gm0.org/en/latest/docs/software/concepts/control-loops.html"
+        },
+        {
+          "title": "FTC PID Coefficients Javadoc",
+          "url": "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/latest/com/qualcomm/robotcore/hardware/PIDFCoefficients.html"
+        },
+        {
+          "title": "PID Control Explained",
+          "url": "https://www.youtube.com/watch?v=wkfEZmsQqiA"
+        }
+      ]
     }
   ]
 }

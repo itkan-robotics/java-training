@@ -37,7 +37,46 @@
         "Use sleep() to control the turn duration.",
         "Stop both motors and update telemetry."
       ],
-      "content": "// Your code here"
+      "answers": [
+        {
+          "task": "Map both left and right drive motors.",
+          "content": "// Map the drive motors in your OpMode\nDcMotor leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\nDcMotor rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n// Make sure these names match your robot configuration!"
+        },
+        {
+          "task": "Set one motor forward and the other backward to turn.",
+          "content": "// Set left motor forward, right motor backward to turn in place\nleftDrive.setPower(0.5);  // Forward\nrightDrive.setPower(-0.5); // Backward"
+        },
+        {
+          "task": "Use sleep() to control the turn duration.",
+          "content": "// Turn for 0.5 seconds\nsleep(500); // 500 ms = 0.5 seconds"
+        },
+        {
+          "task": "Stop both motors and update telemetry.",
+          "content": "// Stop both motors and show status\nleftDrive.setPower(0.0);\nrightDrive.setPower(0.0);\ntelemetry.addData(\"Status\", \"Turn Complete\");\ntelemetry.update();"
+        },
+        {
+          "task": "Combine all tasks into one working OpMode.",
+          "content": "import com.qualcomm.robotcore.eventloop.opmode.Autonomous;\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.hardware.DcMotor;\n\n@Autonomous(name = \"TimeBasedTurnAuto\")\npublic class TimeBasedTurnAuto extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n    @Override\n    public void runOpMode() {\n        // Map the motors\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        telemetry.addData(\"Status\", \"Initialized\");\n        telemetry.update();\n        // Wait for the game to start\n        waitForStart();\n        // Turn in place for 0.5 seconds\n        leftDrive.setPower(0.5);\n        rightDrive.setPower(-0.5);\n        telemetry.addData(\"Status\", \"Turning\");\n        telemetry.update();\n        sleep(500);\n        // Stop both motors\n        leftDrive.setPower(0.0);\n        rightDrive.setPower(0.0);\n        telemetry.addData(\"Status\", \"Turn Complete\");\n        telemetry.update();\n        // Optionally, keep the OpMode alive until STOP is pressed\n        while (opModeIsActive()) {\n            idle();\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "References & Further Reading",
+      "content": [
+        {
+          "title": "Motor Encoders (Precise Movement)",
+          "url": "../motors/motor-encoders.json"
+        },
+        {
+          "title": "Introduction to Odometry",
+          "url": "../../android-studio/odometry/intro-to-odometry.json"
+        },
+        {
+          "title": "FTC SDK External Samples",
+          "url": "https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples"
+        }
+      ]
     }
   ]
 }
