@@ -16,7 +16,13 @@ class AppState {
         this.sidebarOpen = false;
         this.searchQuery = '';
         this.lastActivity = Date.now();
-        
+        // Ensure sidebar is fully closed on first load
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarCheckbox = document.getElementById('__navigation');
+            const sidebarDrawer = document.querySelector('.sidebar-drawer');
+            if (sidebarCheckbox) sidebarCheckbox.checked = false;
+            if (sidebarDrawer) sidebarDrawer.style.setProperty('--sidebar-width', '15em');
+        });
         // Initialize persistence
         this.initializePersistence();
     }
@@ -190,13 +196,13 @@ class AppState {
      * Restore sidebar state
      */
     restoreSidebarState() {
-        if (this.sidebarOpen !== undefined) {
-            const sidebarCheckbox = document.getElementById('__navigation');
-            if (sidebarCheckbox && sidebarCheckbox.checked !== this.sidebarOpen) {
-                sidebarCheckbox.checked = this.sidebarOpen;
-                // Trigger change event
-                sidebarCheckbox.dispatchEvent(new Event('change'));
-            }
+        // Always close the sidebar when restoring state after navigation
+        this.sidebarOpen = false;
+        const sidebarCheckbox = document.getElementById('__navigation');
+        if (sidebarCheckbox && sidebarCheckbox.checked !== this.sidebarOpen) {
+            sidebarCheckbox.checked = this.sidebarOpen;
+            // Trigger change event
+            sidebarCheckbox.dispatchEvent(new Event('change'));
         }
     }
 

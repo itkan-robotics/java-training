@@ -384,7 +384,7 @@ class NavigationManager {
         sidebarDrawer.style.width = `${optimalWidth}px`;
         sidebarDrawer.querySelector('.sidebar-container').style.width = `${optimalWidth}px`;
         // Set the CSS variable for sidebar width
-        sidebarDrawer.style.setProperty('--sidebar-width', `${optimalWidth}px`);
+        sidebarDrawer.style.setProperty('--sidebar-width', optimalWidth ? `${optimalWidth}px` : '15em');
         
         // If sidebar is visible and we have a stored width, use it for immediate opening
         if (isSidebarVisible && sidebarDrawer.dataset.storedWidth) {
@@ -392,7 +392,7 @@ class NavigationManager {
             sidebarDrawer.style.width = `${storedWidth}px`;
             sidebarDrawer.querySelector('.sidebar-container').style.width = `${storedWidth}px`;
             // Set the CSS variable for sidebar width
-            sidebarDrawer.style.setProperty('--sidebar-width', `${storedWidth}px`);
+            sidebarDrawer.style.setProperty('--sidebar-width', storedWidth ? `${storedWidth}px` : '15em');
         } else if (isSidebarVisible && !sidebarDrawer.dataset.storedWidth) {
             const localStorageWidth = localStorage.getItem('sidebarWidth');
             let width = optimalWidth;
@@ -402,11 +402,11 @@ class NavigationManager {
             sidebarDrawer.style.width = `${width}px`;
             sidebarDrawer.querySelector('.sidebar-container').style.width = `${width}px`;
             // Set the CSS variable for sidebar width
-            sidebarDrawer.style.setProperty('--sidebar-width', `${width}px`);
+            sidebarDrawer.style.setProperty('--sidebar-width', width ? `${width}px` : '15em');
             sidebarDrawer.dataset.storedWidth = width;
         } else {
             // Set the CSS variable for sidebar width
-            sidebarDrawer.style.setProperty('--sidebar-width', `${optimalWidth}px`);
+            sidebarDrawer.style.setProperty('--sidebar-width', optimalWidth ? `${optimalWidth}px` : '15em');
         }
 
         // Only adjust main content if sidebar is actually visible

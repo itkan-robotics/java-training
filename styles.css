@@ -628,8 +628,8 @@
   .sidebar-drawer {
     position: fixed;
     top: 0;
-    left: calc(-1 * var(--sidebar-width, 600px));
-    width: 15em;
+    left: calc(-1 * var(--sidebar-width, 60em));
+    width: var(--sidebar-width, 15em);
     height: 100vh;
     background-color: var(--color-sidebar-background);
     transition: left 0.3s ease;
@@ -1443,7 +1443,7 @@
       z-index: 29;
     }
     .sidebar-drawer {
-      left: -15em;
+      left: -50em;
       position: fixed;
       top: 0;
       width: 15em;
@@ -1511,7 +1511,7 @@
     
     .sidebar-drawer {
       height: 100vh;
-      left: -15em;
+      left: -50em;
       position: fixed;
       top: 0;
       width: 15em;

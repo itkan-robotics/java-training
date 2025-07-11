@@ -96,8 +96,8 @@ class SidebarResizeManager {
         if (sidebarDrawer) {
             sidebarDrawer.style.width = `${width}px`;
             sidebarDrawer.querySelector('.sidebar-container').style.width = `${width}px`;
-            // Set the CSS variable for sidebar width
-            sidebarDrawer.style.setProperty('--sidebar-width', `${width}px`);
+            // Set the CSS variable for sidebar width, defaulting to 15em if not specified
+            sidebarDrawer.style.setProperty('--sidebar-width', width ? `${width}px` : '15em');
         }
         this.adjustMainContent(width);
         localStorage.setItem('sidebarWidth', width);
