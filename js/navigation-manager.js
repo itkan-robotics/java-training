@@ -7,6 +7,7 @@ class NavigationManager {
     constructor(searchManager = null, contentManager = null) {
         this.contentManager = contentManager || new ContentManager();
         this.searchManager = searchManager;
+        this.router = null; // Will be set by Application
         this.sectionUrlMap = {
             'java-training': 'java',
             'ftc-specific': 'ftc',
@@ -25,26 +26,32 @@ class NavigationManager {
      * Updates the URL to reflect the current section
      */
     updateUrl(sectionId, tabId = null) {
-        const sectionPath = this.sectionUrlMap[sectionId];
-        
-        if (sectionPath) {
-            // For main sections, use path routing
-            const newPath = `/${sectionPath}`;
-            if (tabId) {
-                // For specific tabs within sections, use full path routing
-                window.history.pushState({section: sectionId, tab: tabId}, '', `${newPath}/${tabId}`);
-            } else {
-                // For main sections, just use path
-                window.history.pushState({section: sectionId}, '', newPath);
-            }
-        } else if (sectionId === 'homepage') {
-            // For homepage, use root path
-            window.history.pushState({section: 'homepage'}, '', '/');
+        // Use router if available, otherwise fall back to direct URL manipulation
+        if (this.router && this.router.isReady()) {
+            this.router.updateUrl(sectionId, tabId);
         } else {
-            // Fallback to hash routing
-            const path = tabId ? `#${tabId}` : `#${sectionId}`;
-            if (window.location.hash !== path) {
-                window.location.hash = path;
+            // Fallback to direct URL manipulation
+            const sectionPath = this.sectionUrlMap[sectionId];
+            
+            if (sectionPath) {
+                // For main sections, use path routing
+                const newPath = `/${sectionPath}`;
+                if (tabId) {
+                    // For specific tabs within sections, use full path routing
+                    window.history.pushState({section: sectionId, tab: tabId}, '', `${newPath}/${tabId}`);
+                } else {
+                    // For main sections, just use path
+                    window.history.pushState({section: sectionId}, '', newPath);
+                }
+            } else if (sectionId === 'homepage') {
+                // For homepage, use root path
+                window.history.pushState({section: 'homepage'}, '', '/');
+            } else {
+                // Fallback to hash routing
+                const path = tabId ? `#${tabId}` : `#${sectionId}`;
+                if (window.location.hash !== path) {
+                    window.location.hash = path;
+                }
             }
         }
     }
@@ -53,6 +60,15 @@ class NavigationManager {
      * Parses the current URL to determine section and tab
      */
     parseCurrentUrl() {
+        // Use router if available, otherwise fall back to direct URL parsing
+        if (this.router && this.router.isReady()) {
+            const currentRoute = this.router.getCurrentRoute();
+            if (currentRoute) {
+                return currentRoute;
+            }
+        }
+        
+        // Fallback to direct URL parsing
         const path = window.location.pathname;
         const hash = window.location.hash;
         const pathParts = path.split('/').filter(part => part !== '');
@@ -140,7 +156,7 @@ class NavigationManager {
         li.className = 'toctree-l1 current-page';
         const a = document.createElement('a');
         a.className = 'reference';
-        a.href = '#homepage';
+        a.href = '/';
         a.textContent = 'Home';
         a.onclick = (e) => {
             e.preventDefault();

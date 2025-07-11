@@ -13,6 +13,10 @@ class Application {
         this.themeManager = new ThemeManager();
         this.eventManager = new EventManager(this.navigationManager, this.themeManager, this.searchManager);
         this.sidebarResizeManager = new SidebarResizeManager();
+        
+        // Initialize router after navigation manager is created
+        this.router = new Router(this.navigationManager);
+        this.navigationManager.router = this.router;
     }
 
     async initialize() {
@@ -54,7 +58,13 @@ class Application {
     }
 
     async showAppropriateTab() {
-        this.showDefaultTab();
+        // Handle initial route with router
+        if (this.router && this.router.isReady()) {
+            this.router.handleInitialRoute();
+        } else {
+            // Fallback to default tab selection
+            this.showDefaultTab();
+        }
     }
 
     showDefaultTab() {

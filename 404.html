@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwyftNav - Programming Fundamentals</title>
+    <script>
+        // GitHub Pages SPA routing handler
+        // This script redirects all 404 routes to index.html with the path as a query parameter
+        
+        (function() {
+            // Get the current path that caused the 404
+            const path = window.location.pathname;
+            const search = window.location.search;
+            const hash = window.location.hash;
+            
+            // Only redirect if this is not already index.html
+            if (path !== '/index.html' && path !== '/') {
+                // Construct the redirect URL
+                const redirectUrl = '/index.html?redirect=' + encodeURIComponent(path + search + hash);
+                
+                // Redirect to index.html with the original path as a query parameter
+                window.location.replace(redirectUrl);
+            } else {
+                // If we're already on index.html, just show a 404 message
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+                        <h1>404 - Page Not Found</h1>
+                        <p>The page you're looking for doesn't exist.</p>
+                        <a href="/">Go to Homepage</a>
+                    </div>
+                `;
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1>Redirecting...</h1>
+        <p>If you're not redirected automatically, <a href="/">click here</a>.</p>
+    </div>
+</body>
+</html> 
