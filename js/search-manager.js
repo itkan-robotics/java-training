@@ -28,11 +28,23 @@ class SearchManager {
                 }
             });
         }
-        
+        // Also set up mobile sidebar search
+        const mobileSearchInput = document.getElementById('mobile-sidebar-search');
+        if (mobileSearchInput) {
+            mobileSearchInput.addEventListener('input', (e) => {
+                this.handleSearchInput(e.target.value);
+            });
+            mobileSearchInput.addEventListener('focus', () => {
+                if (this.currentSearchQuery && this.searchResults.length > 0) {
+                    // Optionally show search results
+                }
+            });
+        }
         // Close search results when clicking outside
         document.addEventListener('mousedown', (e) => {
             if (!e.target.closest('.search-container-header') && 
-                !e.target.closest('.search-results')) {
+                !e.target.closest('.search-results') &&
+                !e.target.closest('.mobile-sidebar-search-container')) {
                 this.hideResults();
             }
         });
@@ -376,6 +388,64 @@ class SearchManager {
         });
     }
 
+    // Creates the header for the dropdown search results
+    createSearchResultsHeader(resultsDiv, resultCount, isMobileSearch = false, shownCount = null) {
+        // On mobile, use a more compact header styled for the dropdown, not the header bar
+        const headerDiv = document.createElement('div');
+        headerDiv.style.cssText = isMobileSearch
+            ? `
+                display: block;
+                text-align: left;
+                padding: 0.25rem 0.5rem 0.25rem 0;
+                border-bottom: 1px solid var(--color-background-border);
+                margin-bottom: 0.5rem;
+                font-size: 0.95rem;
+                color: var(--color-sidebar-link-text--top-level);
+                background: none;
+            `
+            : `
+                display: block;
+                text-align: left;
+                padding: 0.5rem 1rem 0.5rem 0;
+                border-bottom: 1px solid var(--color-background-border);
+                margin-bottom: 0.5rem;
+                font-size: 1rem;
+                color: var(--color-sidebar-link-text--top-level);
+                background: none;
+            `;
+
+        // Results count
+        const countSpan = document.createElement('span');
+        countSpan.textContent = `Results (${shownCount !== null ? shownCount : resultCount}${shownCount !== null && shownCount < resultCount ? ' of ' + resultCount : ''})`;
+        countSpan.style.fontWeight = 'bold';
+        countSpan.style.display = 'block';
+        countSpan.style.marginBottom = '0.15rem';
+        headerDiv.appendChild(countSpan);
+
+        // If there are more than 15 results, show a 'Show all results' link
+        if (resultCount > 15 && shownCount !== null && shownCount < resultCount) {
+            const showAllLink = document.createElement('span');
+            showAllLink.textContent = 'Show all results';
+            showAllLink.style.cssText = `
+                color: var(--color-sidebar-link-text--top-level);
+                text-decoration: underline;
+                cursor: pointer;
+                font-size: 0.95rem;
+                display: block;
+                margin-top: 0.1rem;
+                margin-bottom: 0.1rem;
+                width: fit-content;
+            `;
+            showAllLink.onclick = (e) => {
+                e.preventDefault();
+                this.showAllResultsPage();
+            };
+            headerDiv.appendChild(showAllLink);
+        }
+
+        return headerDiv;
+    }
+
     showResults() {
         this.hideResults();
         
@@ -472,6 +542,12 @@ class SearchManager {
     }
 
     getSearchContainer() {
+        // Prefer the focused input's container
+        const activeElement = document.activeElement;
+        if (activeElement && activeElement.id === 'mobile-sidebar-search') {
+            return activeElement.closest('.mobile-sidebar-search-container');
+        }
+        // Default to header search container
         return document.querySelector('.search-container-header');
     }
 
@@ -721,64 +797,6 @@ class SearchManager {
         });
         
         return card;
-    }
-
-    // Creates the header for the dropdown search results
-    createSearchResultsHeader(resultsDiv, resultCount, isMobileSearch = false, shownCount = null) {
-        // On mobile, use a more compact header styled for the dropdown, not the header bar
-        const headerDiv = document.createElement('div');
-        headerDiv.style.cssText = isMobileSearch
-            ? `
-                display: block;
-                text-align: left;
-                padding: 0.25rem 0.5rem 0.25rem 0;
-                border-bottom: 1px solid var(--color-background-border);
-                margin-bottom: 0.5rem;
-                font-size: 0.95rem;
-                color: var(--color-sidebar-link-text--top-level);
-                background: none;
-            `
-            : `
-                display: block;
-                text-align: left;
-                padding: 0.5rem 1rem 0.5rem 0;
-                border-bottom: 1px solid var(--color-background-border);
-                margin-bottom: 0.5rem;
-                font-size: 1rem;
-                color: var(--color-sidebar-link-text--top-level);
-                background: none;
-            `;
-
-        // Results count
-        const countSpan = document.createElement('span');
-        countSpan.textContent = `Results (${shownCount !== null ? shownCount : resultCount}${shownCount !== null && shownCount < resultCount ? ' of ' + resultCount : ''})`;
-        countSpan.style.fontWeight = 'bold';
-        countSpan.style.display = 'block';
-        countSpan.style.marginBottom = '0.15rem';
-        headerDiv.appendChild(countSpan);
-
-        // If there are more than 15 results, show a 'Show all results' link
-        if (resultCount > 15 && shownCount !== null && shownCount < resultCount) {
-            const showAllLink = document.createElement('span');
-            showAllLink.textContent = 'Show all results';
-            showAllLink.style.cssText = `
-                color: var(--color-sidebar-link-text--top-level);
-                text-decoration: underline;
-                cursor: pointer;
-                font-size: 0.95rem;
-                display: block;
-                margin-top: 0.1rem;
-                margin-bottom: 0.1rem;
-                width: fit-content;
-            `;
-            showAllLink.onclick = (e) => {
-                e.preventDefault();
-                this.showAllResultsPage();
-            };
-            headerDiv.appendChild(showAllLink);
-        }
-
-        return headerDiv;
     }
 
     restoreSearchResults() {
