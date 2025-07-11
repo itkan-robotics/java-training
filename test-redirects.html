@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Test - SwyftNav</title>
+    <style>
+        body { 
+            font-family: 'Inter', Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .success {
+            color: #28a745;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Redirect Test Page</h1>
+        <div class="success">✅ This page loaded successfully!</div>
+        <div class="info">
+            <p><strong>If you can see this page, the redirects are working correctly.</strong></p>
+            <p>This page should only be accessible via direct URL. If you navigated here through the main site, the SPA routing is working properly.</p>
+        </div>
+        <a href="/">Return to Home</a>
+    </div>
+</body>
+</html> 

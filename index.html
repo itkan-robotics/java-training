@@ -5,17 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Programming documentation website written by Swyft Robotics">
+    <meta name="keywords" content="FIRST Robotics, Swyft, documentation, programming, robotics, FTC, FRC, Competitive Programming, Java Education">
+    <meta name="author" content="Swyft Robotics">
+    <meta property="og:title" content="SwyftNav">
+    <meta property="og:description" content="Programming documentation website written by Swyft Robotics">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://swyftnav.netlify.app">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SwyftNav">
+    <meta name="twitter:description" content="Programming documentation website written by Swyft Robotics">
     <title>SwyftNav - Programming Fundamentals</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <!-- Favicons for Website (Dark = Light Mode & Vice Versa) -->
     <link rel="icon" href="./media/FRCCodeLabDark.svg" type="image/svg+xml">
     <link rel="icon" href="./media/FRCCodeLabLight.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
     <link rel="icon" href="./media/FRCCodeLab.png" type="image/png" sizes="any">
-
 </head>
 <body>
     <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
@@ -80,11 +89,11 @@
             </div>
             <div class="header-center">
                 <nav class="header-navigation">
-                    <a href="/" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
-                    <a href="/java" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
-                    <a href="/ftc" class="header-nav-link" onclick="openTab(event, 'ftc-specific')">FTC Training</a>
-                    <a href="/frc" class="header-nav-link" onclick="openTab(event, 'frc-specific')">FRC Training</a>
-                    <a href="/comp" class="header-nav-link" onclick="openTab(event, 'competitive-training')">Competitive</a>
+                    <a href="#homepage" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
+                    <a href="#java-training" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
+                    <a href="#ftc-specific" class="header-nav-link" onclick="openTab(event, 'ftc-specific')">FTC Training</a>
+                    <a href="#frc-specific" class="header-nav-link" onclick="openTab(event, 'frc-specific')">FRC Training</a>
+                    <a href="#competitive-training" class="header-nav-link" onclick="openTab(event, 'competitive-training')">Competitive</a>
                 </nav>
             </div>
             <div class="header-right">
@@ -110,7 +119,6 @@
             <div class="sidebar-container">
                 <div class="sidebar-sticky">
                     <a class="sidebar-brand" href="https://github.com/itkan-robotics/java-training" target="_blank">
-                        <!-- <img width="24px" height="24px" id="git-logo" src="/media/Git-Icon-White.svg"> -->
                         <span class="sidebar-brand-text">SwyftNav</span>
                     </a>
                     
@@ -119,11 +127,11 @@
                         <div class="mobile-sidebar-nav">
                             <!-- Mobile search bar -->
                             
-                            <a href="/" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
-                            <a href="/java" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
-                            <a href="/ftc" class="header-nav-link" onclick="openTab(event, 'ftc-specific')">FTC Training</a>
-                            <a href="/frc" class="header-nav-link" onclick="openTab(event, 'frc-specific')">FRC Training</a>
-                            <a href="/comp" class="header-nav-link" onclick="openTab(event, 'competitive-training')">Competitive</a>
+                            <a href="#homepage" class="header-nav-link" onclick="openTab(event, 'homepage')">Home</a>
+                            <a href="#java-training" class="header-nav-link" onclick="openTab(event, 'java-training')">Java Training</a>
+                            <a href="#ftc-specific" class="header-nav-link" onclick="openTab(event, 'ftc-specific')">FTC Training</a>
+                            <a href="#frc-specific" class="header-nav-link" onclick="openTab(event, 'frc-specific')">FRC Training</a>
+                            <a href="#competitive-training" class="header-nav-link" onclick="openTab(event, 'competitive-training')">Competitive</a>
                         </div>
                         
                         <div class="sidebar-tree">
@@ -168,7 +176,6 @@
     <script src="/js/config-manager.js"></script>
     <script src="/js/content-manager.js"></script>
     <script src="/js/navigation-manager.js"></script>
-    <script src="/js/router.js"></script>
     <script src="/js/theme-manager.js"></script>
     <script src="/js/search-manager.js"></script>
     <script src="/js/sidebar-resize-manager.js"></script>

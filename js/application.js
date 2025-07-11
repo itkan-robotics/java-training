@@ -15,8 +15,7 @@ class Application {
         this.sidebarResizeManager = new SidebarResizeManager();
         
         // Initialize router after navigation manager is created
-        this.router = new Router(this.navigationManager);
-        this.navigationManager.router = this.router;
+        // Remove router initialization and usage
     }
 
     async initialize() {
@@ -58,25 +57,25 @@ class Application {
     }
 
     async showAppropriateTab() {
-        // Handle initial route with router
-        if (this.router && this.router.isReady()) {
-            this.router.handleInitialRoute();
+        // Remove isReady check and just select the default or current tab
+        // Parse the current URL and navigate to the appropriate tab
+        const { sectionId, tabId } = this.navigationManager.parseCurrentUrl();
+        if (sectionId && tabId) {
+            await this.navigationManager.navigateToTab(tabId);
+        } else if (sectionId) {
+            await this.navigationManager.handleSectionNavigation(sectionId);
         } else {
-            // Fallback to default tab selection
-            this.showDefaultTab();
+            // Fallback to homepage
+            await this.navigationManager.handleSectionNavigation('homepage');
         }
     }
 
     showDefaultTab() {
-        let defaultTab;
-        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
-        
-        // Parse URL to determine section and tab
         const urlData = this.navigationManager.parseCurrentUrl();
         
         if (urlData.tabId) {
             // URL contains specific tab
-            defaultTab = appState.allTabs.find(tab => tab.id === urlData.tabId);
+            const defaultTab = appState.allTabs.find(tab => tab.id === urlData.tabId);
             if (defaultTab) {
                 localStorage.removeItem('lastOpenedTab');
                 this.navigationManager.navigateToTab(urlData.tabId);
@@ -89,9 +88,9 @@ class Application {
         }
 
         // Fallback to stored tab or default
-        if (lastOpenedTabId) {
-            defaultTab = appState.allTabs.find(tab => tab.id === lastOpenedTabId);
-        }
+        const lastOpenedTabId = localStorage.getItem('lastOpenedTab');
+        let defaultTab = lastOpenedTabId ? 
+            appState.allTabs.find(tab => tab.id === lastOpenedTabId) : null;
 
         if (!defaultTab) {
             defaultTab = appState.allTabs.find(tab => tab.default) || appState.allTabs[0];
@@ -123,7 +122,9 @@ class Application {
         document.body.appendChild(errorDiv);
         
         setTimeout(() => {
-            document.body.removeChild(errorDiv);
+            if (document.body.contains(errorDiv)) {
+                document.body.removeChild(errorDiv);
+            }
         }, 5000);
     }
 
@@ -132,26 +133,59 @@ class Application {
         if (appState.restoreSidebarState) appState.restoreSidebarState();
         if (appState.restoreSearchQuery) appState.restoreSearchQuery();
     }
+
+    showLoadingOverlay() {
+        let overlay = document.getElementById('loading-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'loading-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255,255,255,0.95);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                color: #333;
+            `;
+            overlay.innerHTML = '<span>Loading...</span>';
+            document.body.appendChild(overlay);
+        }
+    }
+
+    hideLoadingOverlay() {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
 }
 
-// Add a loading overlay to the page until initialization is complete
+// Global loading overlay functions for use before Application is initialized
 function showLoadingOverlay() {
     let overlay = document.getElementById('loading-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'loading-overlay';
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100vw';
-        overlay.style.height = '100vh';
-        overlay.style.background = 'rgba(255,255,255,0.95)';
-        overlay.style.zIndex = '9999';
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'center';
-        overlay.style.justifyContent = 'center';
-        overlay.style.fontSize = '2rem';
-        overlay.style.color = '#333';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #333;
+        `;
         overlay.innerHTML = '<span>Loading...</span>';
         document.body.appendChild(overlay);
     }
@@ -164,9 +198,10 @@ function hideLoadingOverlay() {
     }
 }
 
+// Show loading overlay immediately
 showLoadingOverlay();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Application;
-} 
+}

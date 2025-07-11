@@ -8,39 +8,47 @@ let app;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
-    app = new Application();
-    window.app = app; // Make app globally accessible
-    await app.initialize();
-    
-    // Router handles popstate and navigation events
-    // The router is initialized in the Application constructor
-    
-    // Delegated click handler for internal <a> links in content
-    // This handles content links that reference specific tabs
-    document.getElementById('tab-container').addEventListener('click', function(e) {
-        const anchor = e.target.closest('a');
-        if (anchor && anchor.getAttribute('href')) {
-            const href = anchor.getAttribute('href');
-            // Match ../motors/basic-motor-control.json or similar
-            const match = href.match(/\.\.\/([\w-]+)\/([\w-]+)\.json$/);
-            let tabId = null;
-            if (match) {
-                tabId = match[2];
-            } else if (href.startsWith('#')) {
-                tabId = href.substring(1);
-            } else if (/^[\w-]+$/.test(href)) {
-                // Support <a href="basic-motor-control">...</a> style
-                tabId = href;
-            }
-            // Check if tabId is a valid internal tab
-            if (tabId && (appState.allTabs.some(tab => tab.id === tabId) || appState.getTabData(tabId))) {
-                if (app && app.navigationManager) {
-                    e.preventDefault();
-                    app.navigationManager.navigateToTab(tabId);
+    try {
+        app = new Application();
+        window.app = app; // Make app globally accessible
+        await app.initialize();
+        
+        // Delegated click handler for internal <a> links in content
+        // This handles content links that reference specific tabs
+        const tabContainer = document.getElementById('tab-container');
+        if (tabContainer) {
+            tabContainer.addEventListener('click', function(e) {
+                const anchor = e.target.closest('a');
+                if (!anchor?.getAttribute('href')) return;
+                
+                const href = anchor.getAttribute('href');
+                // Match ../motors/basic-motor-control.json or similar
+                const match = href.match(/\.\.\/([\w-]+)\/([\w-]+)\.json$/);
+                let tabId = null;
+                
+                if (match) {
+                    tabId = match[2];
+                } else if (href.startsWith('#')) {
+                    tabId = href.substring(1);
+                } else if (/^[\w-]+$/.test(href)) {
+                    // Support <a href="basic-motor-control">...</a> style
+                    tabId = href;
                 }
-            }
+                
+                // Check if tabId is a valid internal tab
+                if (tabId && (appState.allTabs.some(tab => tab.id === tabId) || appState.getTabData(tabId))) {
+                    if (app?.navigationManager) {
+                        e.preventDefault();
+                        app.navigationManager.navigateToTab(tabId);
+                    }
+                }
+            });
         }
-    });
+    } catch (error) {
+        console.error('Failed to initialize application:', error);
+        // Hide loading overlay even if initialization fails
+        hideLoadingOverlay();
+    }
 });
 
 /**
@@ -186,8 +194,6 @@ function openTab(event, tabId) {
     event.preventDefault();
     if (app && app.navigationManager) {
         app.navigationManager.navigateToTab(tabId);
-    } else {
-        console.error('Application not initialized or navigation manager not available');
     }
 }
 

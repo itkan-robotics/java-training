@@ -22,7 +22,7 @@
       "content": "Always check the motor's datasheet for voltage, current, speed, and torque ratings. This helps you avoid damaging your hardware and ensures your robot performs as expected."
     },
     {
-      "type": "trext",
+      "type": "text",
       "title": "Programming Differences",
       "content": "Most FTC DC motors are programmed the same way. However, some may require different initialization when configuring the motor in the Driver Station or different settings. Always check the manufacturer's documentation."
     },

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Title Update</title>
+</head>
+<body>
+    <h1>Title Update Test</h1>
+    <p>This page tests the title update functionality.</p>
+    
+    <div id="test-results">
+        <h2>Test Results:</h2>
+        <div id="current-title">Current Title: <span id="title-display"></span></div>
+        <div id="test-buttons">
+            <button onclick="testHomepageTitle()">Test Homepage Title</button>
+            <button onclick="testSectionTitle()">Test Section Title</button>
+            <button onclick="testTabTitle()">Test Tab Title</button>
+        </div>
+    </div>
+
+    <script>
+        // Mock the necessary functions and objects for testing
+        const appState = {
+            currentSection: 'homepage',
+            currentTab: null,
+            getTabData: (id) => {
+                const mockData = {
+                    'homepage': { title: 'Home', sectionId: 'homepage', sectionLabel: 'Home' },
+                    'java-intro': { title: 'Introduction to Java', sectionId: 'java-training', sectionLabel: 'Java Training' },
+                    'ftc-basics': { title: 'FTC Basics', sectionId: 'ftc-specific', sectionLabel: 'FTC Training' }
+                };
+                return mockData[id];
+            }
+        };
+
+        // Mock content manager methods
+        class MockContentManager {
+            updatePageTitle(data) {
+                let title = 'SwyftNav - Programming Fundamentals';
+                
+                if (data && data.title) {
+                    // Format: "Page Title - SwyftNav"
+                    title = `${data.title} - SwyftNav`;
+                }
+                
+                document.title = title;
+                document.getElementById('title-display').textContent = title;
+            }
+
+            getSectionDisplayName(sectionId) {
+                const sectionNames = {
+                    'homepage': 'Home',
+                    'java-training': 'Java Training',
+                    'ftc-specific': 'FTC Training',
+                    'frc-specific': 'FRC Training',
+                    'competitive-training': 'Competitive Training'
+                };
+                
+                return sectionNames[sectionId] || sectionId;
+            }
+        }
+
+        // Mock navigation manager methods
+        class MockNavigationManager {
+            updateSectionTitle(sectionId, section) {
+                let title = 'SwyftNav - Programming Fundamentals';
+                
+                if (section && section.title) {
+                    title = `${section.title} - SwyftNav`;
+                } else {
+                    const sectionName = this.getSectionDisplayName(sectionId);
+                    title = `${sectionName} - SwyftNav`;
+                }
+                
+                document.title = title;
+                document.getElementById('title-display').textContent = title;
+            }
+
+            getSectionDisplayName(sectionId) {
+                const sectionNames = {
+                    'homepage': 'Home',
+                    'java-training': 'Java Training',
+                    'ftc-specific': 'FTC Training',
+                    'frc-specific': 'FRC Training',
+                    'competitive-training': 'Competitive Training'
+                };
+                
+                return sectionNames[sectionId] || sectionId;
+            }
+        }
+
+        const contentManager = new MockContentManager();
+        const navigationManager = new MockNavigationManager();
+
+        // Test functions
+        function testHomepageTitle() {
+            const data = appState.getTabData('homepage');
+            contentManager.updatePageTitle(data);
+        }
+
+        function testSectionTitle() {
+            navigationManager.updateSectionTitle('java-training', { title: 'Java Training' });
+        }
+
+        function testTabTitle() {
+            const data = appState.getTabData('java-intro');
+            contentManager.updatePageTitle(data);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('title-display').textContent = document.title;
+        });
+    </script>
+</body>
+</html> 

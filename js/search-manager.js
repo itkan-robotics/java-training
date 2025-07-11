@@ -71,37 +71,36 @@ class SearchManager {
         // Check if this is the mobile sidebar search
         const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
         
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'search-results';
-        
-        const baseStyles = `
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--color-sidebar-background);
-            border: 2px solid var(--color-background-border);
-            border-radius: 0.75rem;
-            z-index: 1000;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            margin-top: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-            color: var(--color-sidebar-link-text);
-        `;
-        
-        const mobileStyles = `
-            max-height: 60vh;
-        `;
-        
-        const desktopStyles = `
-            max-height: 200px;
-        `;
-        
-        loadingDiv.style.cssText = baseStyles + (isMobileSearch ? mobileStyles : desktopStyles);
+        const loadingDiv = this.createSearchResultsContainer(isMobileSearch);
         loadingDiv.textContent = 'Searching...';
         
         searchContainer.appendChild(loadingDiv);
+    }
+
+    // Helper method to create search results container
+    createSearchResultsContainer(isMobileSearch = false) {
+        const container = document.createElement('div');
+        container.className = 'search-results';
+        
+        const baseStyles = {
+            position: 'absolute',
+            top: '100%',
+            left: '0',
+            right: '0',
+            backgroundColor: 'var(--color-sidebar-background)',
+            border: '2px solid var(--color-background-border)',
+            borderRadius: '0.75rem',
+            zIndex: '1000',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+            marginTop: '0.5rem',
+            padding: '1rem',
+            textAlign: 'center',
+            color: 'var(--color-sidebar-link-text)',
+            maxHeight: isMobileSearch ? '60vh' : '200px'
+        };
+        
+        Object.assign(container.style, baseStyles);
+        return container;
     }
 
     async performSearch(query) {
@@ -247,86 +246,73 @@ class SearchManager {
             for (const section of sections) {
                 // Search section title
                 if (section.title && typeof section.title === 'string' && section.title.toLowerCase().includes(query)) {
-                    const sectionTitleLower = section.title.toLowerCase();
-                    const isFullWordMatch = this.isFullWordMatch(sectionTitleLower, query);
+                    const titleLower = section.title.toLowerCase();
+                    const isFullWordMatch = this.isFullWordMatch(titleLower, query);
                     
                     this.searchResults.push({
-                        type: 'section',
+                        type: 'section-title',
                         text: section.title,
                         section: tab.sectionLabel || tab.sectionId || 'Unknown',
                         group: tab.groupLabel || tab.groupId || 'Unknown',
                         tabId: tab.id,
-                        priority: isFullWordMatch ? 2 : 2.5 // Full word matches get higher priority
+                        priority: isFullWordMatch ? 2 : 2.5
                     });
                 }
                 
-                // Search section content - handle different content types
-                if (section.content) {
-                    let contentText = '';
+                // Search section content
+                if (section.content && typeof section.content === 'string' && section.content.toLowerCase().includes(query)) {
+                    const contentLower = section.content.toLowerCase();
+                    const isFullWordMatch = this.isFullWordMatch(contentLower, query);
                     
-                    // Handle different content types
-                    if (typeof section.content === 'string') {
-                        contentText = section.content;
-                    } else if (Array.isArray(section.content)) {
-                        // If content is an array, join it
-                        contentText = section.content.join(' ');
-                    } else if (typeof section.content === 'object') {
-                        // If content is an object, try to extract text
-                        contentText = JSON.stringify(section.content);
-                    }
+                    // Create snippet for content matches
+                    const snippet = this.createSnippet(section.content, query);
                     
-                    if (contentText && contentText.toLowerCase().includes(query)) {
-                        const snippet = this.createSnippet(contentText, query);
-                        this.searchResults.push({
-                            type: 'content',
-                            text: snippet,
-                            section: tab.sectionLabel || tab.sectionId || 'Unknown',
-                            group: tab.groupLabel || tab.groupId || 'Unknown',
-                            tabId: tab.id,
-                            priority: 3
-                        });
-                    }
+                    this.searchResults.push({
+                        type: 'content',
+                        text: snippet,
+                        section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                        group: tab.groupLabel || tab.groupId || 'Unknown',
+                        tabId: tab.id,
+                        priority: isFullWordMatch ? 3 : 3.5
+                    });
+                }
+                
+                // Search code content
+                if (section.code && typeof section.code === 'string' && section.code.toLowerCase().includes(query)) {
+                    const codeLower = section.code.toLowerCase();
+                    const isFullWordMatch = this.isFullWordMatch(codeLower, query);
+                    
+                    // Create snippet for code matches
+                    const snippet = this.createSnippet(section.code, query);
+                    
+                    this.searchResults.push({
+                        type: 'code',
+                        text: snippet,
+                        section: tab.sectionLabel || tab.sectionId || 'Unknown',
+                        group: tab.groupLabel || tab.groupId || 'Unknown',
+                        tabId: tab.id,
+                        priority: isFullWordMatch ? 4 : 4.5
+                    });
                 }
                 
                 // Search list items
                 if (section.items && Array.isArray(section.items)) {
                     for (const item of section.items) {
                         if (typeof item === 'string' && item.toLowerCase().includes(query)) {
+                            const itemLower = item.toLowerCase();
+                            const isFullWordMatch = this.isFullWordMatch(itemLower, query);
+                            
+                            const snippet = this.createSnippet(item, query);
+                            
                             this.searchResults.push({
                                 type: 'list-item',
-                                text: item,
+                                text: snippet,
                                 section: tab.sectionLabel || tab.sectionId || 'Unknown',
                                 group: tab.groupLabel || tab.groupId || 'Unknown',
                                 tabId: tab.id,
-                                priority: 4
+                                priority: isFullWordMatch ? 5 : 5.5
                             });
                         }
-                    }
-                }
-                
-                // Search code - handle different content types
-                if (section.type === 'code' && section.content) {
-                    let codeText = '';
-                    
-                    // Handle different content types for code
-                    if (typeof section.content === 'string') {
-                        codeText = section.content;
-                    } else if (Array.isArray(section.content)) {
-                        codeText = section.content.join('\n');
-                    } else if (typeof section.content === 'object') {
-                        codeText = JSON.stringify(section.content);
-                    }
-                    
-                    if (codeText && codeText.toLowerCase().includes(query)) {
-                        const snippet = this.createSnippet(codeText, query, 30);
-                        this.searchResults.push({
-                            type: 'code',
-                            text: snippet,
-                            section: tab.sectionLabel || tab.sectionId || 'Unknown',
-                            group: tab.groupLabel || tab.groupId || 'Unknown',
-                            tabId: tab.id,
-                            priority: 5
-                        });
                     }
                 }
             }
@@ -334,34 +320,47 @@ class SearchManager {
     }
 
     createSnippet(content, query, contextLength = 50) {
-        const index = content.toLowerCase().indexOf(query);
+        const lowerContent = content.toLowerCase();
+        const lowerQuery = query.toLowerCase();
+        const index = lowerContent.indexOf(lowerQuery);
+        
+        if (index === -1) return content.substring(0, contextLength * 2);
+        
         const start = Math.max(0, index - contextLength);
         const end = Math.min(content.length, index + query.length + contextLength);
-        return content.substring(start, end);
+        
+        let snippet = content.substring(start, end);
+        
+        if (start > 0) snippet = '...' + snippet;
+        if (end < content.length) snippet = snippet + '...';
+        
+        return snippet;
     }
 
     isFullWordMatch(text, query) {
-        // Split text into words and check if query is a complete word
-        const words = text.toLowerCase().split(/\s+/);
-        return words.includes(query.toLowerCase());
+        const words = text.split(/\s+/);
+        return words.some(word => word.toLowerCase() === query.toLowerCase());
     }
 
     sortResults() {
-        // Sort by priority, then remove duplicates
         this.searchResults.sort((a, b) => {
+            // First by priority
             if (a.priority !== b.priority) {
                 return a.priority - b.priority;
             }
-            return a.section.localeCompare(b.section);
-        });
-        
-        // Remove duplicates (keep the first occurrence, which will be the highest priority)
-        const seen = new Set();
-        this.searchResults = this.searchResults.filter(result => {
-            const key = `${result.tabId}-${result.type}`;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
+            
+            // Then by section name
+            if (a.section !== b.section) {
+                return a.section.localeCompare(b.section);
+            }
+            
+            // Then by group name
+            if (a.group !== b.group) {
+                return a.group.localeCompare(b.group);
+            }
+            
+            // Finally by text
+            return a.text.localeCompare(b.text);
         });
     }
 
@@ -377,68 +376,11 @@ class SearchManager {
         // Check if this is the mobile sidebar search
         const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
         
-        const resultsDiv = document.createElement('div');
-        resultsDiv.className = 'search-results';
-        
-        // Adjust positioning and styling for mobile sidebar
-        const baseStyles = `
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--color-sidebar-background);
-            border: 2px solid var(--color-background-border);
-            border-radius: 0.75rem;
-            z-index: 1000;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            margin-top: 0.5rem;
-        `;
-        
-        const mobileStyles = `
-            max-height: 60vh;
-            overflow-y: auto;
-        `;
-        
-        const desktopStyles = `
-            max-height: 500px;
-            overflow-y: auto;
-        `;
-        
-        resultsDiv.style.cssText = baseStyles + (isMobileSearch ? mobileStyles : desktopStyles);
+        const resultsDiv = this.createSearchResultsContainer(isMobileSearch);
         
         // Header
-        const header = document.createElement('div');
-        header.style.cssText = `
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--color-background-border);
-            font-weight: bold;
-            color: var(--color-sidebar-link-text);
-            background-color: var(--color-sidebar-item-background--hover);
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        `;
-        
-        if (this.searchResults.length === 0) {
-            header.textContent = `No results found for "${this.currentSearchQuery}"`;
-        } else {
-            header.textContent = `Found ${this.searchResults.length} result${this.searchResults.length !== 1 ? 's' : ''}`;
-            
-            // Make header clickable to show all results
-            header.addEventListener('click', () => {
-                this.showAllResultsPage();
-            });
-            
-            header.addEventListener('mouseenter', () => {
-                header.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
-                header.style.textDecoration = 'underline';
-            });
-            
-            header.addEventListener('mouseleave', () => {
-                header.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
-                header.style.textDecoration = 'none';
-            });
-        }
-        resultsDiv.appendChild(header);
+        const header = this.createSearchResultsHeader(resultsDiv, this.searchResults.length);
+        searchContainer.appendChild(header);
         
         // Show results
         this.searchResults.slice(0, 15).forEach(result => {
@@ -466,7 +408,7 @@ class SearchManager {
         
         const typeIcons = {
             'title': '📖',
-            'section': '📑',
+            'section-title': '📑',
             'content': '📝',
             'list-item': '📋',
             'code': '💻'
@@ -532,34 +474,7 @@ class SearchManager {
         // Check if this is the mobile sidebar search
         const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
         
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'search-results';
-        
-        const baseStyles = `
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: #f44336;
-            color: white;
-            border: 2px solid var(--color-background-border);
-            border-radius: 0.75rem;
-            z-index: 1000;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            margin-top: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-        `;
-        
-        const mobileStyles = `
-            max-height: 60vh;
-        `;
-        
-        const desktopStyles = `
-            max-height: 200px;
-        `;
-        
-        errorDiv.style.cssText = baseStyles + (isMobileSearch ? mobileStyles : desktopStyles);
+        const errorDiv = this.createSearchResultsContainer(isMobileSearch);
         errorDiv.textContent = message;
         
         searchContainer.appendChild(errorDiv);
@@ -668,7 +583,7 @@ class SearchManager {
             
             const typeLabels = {
                 'title': '📖 Page Titles',
-                'section': '📑 Section Headers',
+                'section-title': '📑 Section Headers',
                 'content': '📝 Content',
                 'list-item': '📋 List Items',
                 'code': '💻 Code'
@@ -709,7 +624,7 @@ class SearchManager {
     groupResultsByType() {
         const grouped = {
             'title': [],
-            'section': [],
+            'section-title': [],
             'content': [],
             'list-item': [],
             'code': []
@@ -744,7 +659,7 @@ class SearchManager {
         
         const typeIcons = {
             'title': '📖',
-            'section': '📑',
+            'section-title': '📑',
             'content': '📝',
             'list-item': '📋',
             'code': '💻'

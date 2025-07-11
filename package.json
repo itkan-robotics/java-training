@@ -3,6 +3,10 @@
     "@web/dev-server": "^0.4.6"
   },
   "scripts": {
-    "start": "web-dev-server --node-resolve --open --watch --app-index index.html"
+    "build": "echo 'No build process needed for static site'",
+    "start": "npx serve .",
+    "dev": "npx serve .",
+    "netlify-dev": "netlify dev",
+    "serve": "web-dev-server --node-resolve --open --watch --app-index index.html"
   }
 }

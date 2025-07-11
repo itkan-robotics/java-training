@@ -57,7 +57,7 @@ class AppState {
      * Set up listeners for automatic state persistence
      */
     setupPersistenceListeners() {
-        // Save state on scroll
+        // Save state on scroll with debouncing
         let scrollTimeout;
         window.addEventListener('scroll', () => {
             this.scrollPosition = window.scrollY;
@@ -81,7 +81,7 @@ class AppState {
      * Set up navigation persistence after navigation manager is available
      */
     setupNavigationPersistence() {
-        if (window.navigationManager && window.navigationManager.navigateToTab) {
+        if (window.navigationManager?.navigateToTab) {
             const originalNavigateToTab = window.navigationManager.navigateToTab;
             window.navigationManager.navigateToTab = async (tabId) => {
                 await originalNavigateToTab.call(window.navigationManager, tabId);
@@ -113,6 +113,7 @@ class AppState {
             localStorage.setItem('swyftnav_state', JSON.stringify(state));
         } catch (error) {
             // Handle localStorage errors silently
+            console.warn('Failed to save state to localStorage:', error);
         }
     }
 
@@ -122,43 +123,43 @@ class AppState {
     restoreState() {
         try {
             const savedState = localStorage.getItem('swyftnav_state');
-            if (savedState) {
-                const state = JSON.parse(savedState);
-                
-                // Check if state is not too old (7 days)
-                const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-                if (Date.now() - state.timestamp > maxAge) {
-                    this.clearSavedState();
-                    return;
-                }
-                
-                // Restore state properties
-                if (state.currentSection) {
-                    this.currentSection = state.currentSection;
-                }
-                if (state.currentTab) {
-                    this.currentTab = state.currentTab;
-                }
-                if (state.theme) {
-                    this.theme = state.theme;
-                    document.documentElement.setAttribute('data-theme', state.theme);
-                }
-                if (state.scrollPosition !== undefined) {
-                    this.scrollPosition = state.scrollPosition;
-                }
-                if (state.sidebarOpen !== undefined) {
-                    this.sidebarOpen = state.sidebarOpen;
-                }
-                if (state.searchQuery) {
-                    this.searchQuery = state.searchQuery;
-                }
-                
-                return state;
+            if (!savedState) return null;
+            
+            const state = JSON.parse(savedState);
+            
+            // Check if state is not too old (7 days)
+            const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+            if (Date.now() - state.timestamp > maxAge) {
+                this.clearSavedState();
+                return null;
             }
+            
+            // Restore state properties
+            if (state.currentSection) {
+                this.currentSection = state.currentSection;
+            }
+            if (state.currentTab) {
+                this.currentTab = state.currentTab;
+            }
+            if (state.theme) {
+                this.theme = state.theme;
+                document.documentElement.setAttribute('data-theme', state.theme);
+            }
+            if (state.scrollPosition !== undefined) {
+                this.scrollPosition = state.scrollPosition;
+            }
+            if (state.sidebarOpen !== undefined) {
+                this.sidebarOpen = state.sidebarOpen;
+            }
+            if (state.searchQuery) {
+                this.searchQuery = state.searchQuery;
+            }
+            
+            return state;
         } catch (error) {
-            // Handle localStorage errors silently
+            console.warn('Failed to restore state from localStorage:', error);
+            return null;
         }
-        return null;
     }
 
     /**
@@ -170,7 +171,7 @@ class AppState {
             localStorage.removeItem('lastOpenedTab');
             localStorage.removeItem('theme');
         } catch (error) {
-            // Handle localStorage errors silently
+            console.warn('Failed to clear saved state:', error);
         }
     }
 

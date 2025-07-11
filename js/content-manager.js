@@ -132,6 +132,9 @@ class ContentManager {
             return;
         }
         
+        // Update page title based on current content
+        this.updatePageTitle(data);
+        
         const container = document.getElementById('tab-container');
         container.innerHTML = '';
         
@@ -162,6 +165,36 @@ class ContentManager {
         container.appendChild(tabContent);
     }
 
+    /**
+     * Updates the page title based on the current content
+     */
+    updatePageTitle(data) {
+        let title = 'SwyftNav - Programming Fundamentals';
+        
+        if (data && data.title) {
+            // Format: "Page Title - SwyftNav"
+            title = `${data.title} - SwyftNav`;
+        }
+        
+        // Update the document title
+        document.title = title;
+    }
+
+    /**
+     * Gets a display name for a section ID
+     */
+    getSectionDisplayName(sectionId) {
+        const sectionNames = {
+            'homepage': 'Home',
+            'java-training': 'Java Training',
+            'ftc-specific': 'FTC Training',
+            'frc-specific': 'FRC Training',
+            'competitive-training': 'Competitive Training'
+        };
+        
+        return sectionNames[sectionId] || sectionId;
+    }
+
     renderSection(container, sectionData) {
         const renderers = {
             'text': this.renderTextSection.bind(this),
@@ -185,41 +218,50 @@ class ContentManager {
         }
     }
 
-    renderTextSection(container, data) {
-        if (data.title) {
+    // Helper methods to reduce code duplication
+    createSectionTitle(container, title) {
+        if (title) {
             const h3 = document.createElement('h3');
-            h3.textContent = data.title;
+            h3.textContent = title;
             container.appendChild(h3);
         }
+    }
+
+    createStyledElement(tagName, className, styles = {}) {
+        const element = document.createElement(tagName);
+        if (className) {
+            element.className = className;
+        }
+        Object.assign(element.style, styles);
+        return element;
+    }
+
+    renderTextSection(container, data) {
+        this.createSectionTitle(container, data.title);
         
-        const p = document.createElement('p');
-        p.innerHTML = data.content;
-        container.appendChild(p);
+        const paragraph = document.createElement('p');
+        paragraph.innerHTML = data.content;
+        container.appendChild(paragraph);
     }
 
     renderListSection(container, data) {
-        if (data.title) {
-            const h3 = document.createElement('h3');
-            h3.textContent = data.title;
-            container.appendChild(h3);
-        }
-        const ul = document.createElement('ul');
+        this.createSectionTitle(container, data.title);
+        
+        const list = document.createElement('ul');
         // Defensive: support both 'items' and 'content', and ensure it's an array
-        let items = Array.isArray(data.items) ? data.items : (Array.isArray(data.content) ? data.content : []);
+        const items = Array.isArray(data.items) ? data.items : (Array.isArray(data.content) ? data.content : []);
+        
         items.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = item;
-            ul.appendChild(li);
+            const listItem = document.createElement('li');
+            listItem.innerHTML = item;
+            list.appendChild(listItem);
         });
-        container.appendChild(ul);
+        
+        container.appendChild(list);
     }
 
     renderCodeSection(container, data) {
-        if (data.title) {
-            const h3 = document.createElement('h3');
-            h3.textContent = data.title;
-            container.appendChild(h3);
-        }
+        this.createSectionTitle(container, data.title);
         
         // Determine what code to render - use content if no code property exists
         const codeToRender = data.code || data.content;
@@ -227,62 +269,59 @@ class ContentManager {
         // Only render content as HTML above the code block if there's a code property AND content is different
         // If there's no code property, content IS the code, so don't render it as HTML
         if (data.code && data.content && data.content !== data.code) {
-            const div = document.createElement('div');
-            div.innerHTML = data.content;
-            container.appendChild(div);
+            const contentDiv = document.createElement('div');
+            contentDiv.innerHTML = data.content;
+            container.appendChild(contentDiv);
         }
         
-        const codeBlock = document.createElement('div');
-        codeBlock.className = 'code-block';
+        const codeBlock = this.createStyledElement('div', 'code-block');
+        
         // Add language class if specified
         if (data.language) {
             codeBlock.classList.add(`language-${data.language}`);
         }
         
         // Create header with minimize/maximize button
-        const codeHeader = document.createElement('div');
-        codeHeader.className = 'code-header';
-        codeHeader.style.cssText = `
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: var(--color-background-secondary);
-            border-bottom: 1px solid var(--color-border);
-            border-radius: 6px 6px 0 0;
-            font-size: 0.9em;
-            color: var(--color-foreground-secondary);
-        `;
+        const codeHeader = this.createStyledElement('div', 'code-header', {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '8px 12px',
+            background: 'var(--color-background-secondary)',
+            borderBottom: '1px solid var(--color-border)',
+            borderRadius: '6px 6px 0 0',
+            fontSize: '0.9em',
+            color: 'var(--color-foreground-secondary)'
+        });
         
-        const titleLabel = document.createElement('span');
+        const titleLabel = this.createStyledElement('span', null, {
+            fontWeight: '500',
+            fontFamily: 'var(--font-stack--monospace)',
+            fontSize: '0.85em'
+        });
+        
         // Use the section title if available, otherwise fall back to language or "CODE"
         const displayTitle = data.title || (data.language ? data.language.toUpperCase() : 'CODE');
         titleLabel.textContent = displayTitle;
-        titleLabel.style.cssText = `
-            font-weight: 500;
-            font-family: var(--font-stack--monospace);
-            font-size: 0.85em;
-        `;
         
-        const toggleButton = document.createElement('button');
-        toggleButton.className = 'code-toggle-btn';
+        const toggleButton = this.createStyledElement('button', 'code-toggle-btn', {
+            background: 'none',
+            border: 'none',
+            color: 'var(--color-foreground-secondary)',
+            cursor: 'pointer',
+            fontSize: '1.2em',
+            fontWeight: 'bold',
+            padding: '0',
+            width: '20px',
+            height: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '3px',
+            transition: 'background-color 0.2s'
+        });
+        
         toggleButton.innerHTML = '−'; // Minus sign for collapse
-        toggleButton.style.cssText = `
-            background: none;
-            border: none;
-            color: var(--color-foreground-secondary);
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            padding: 0;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 3px;
-            transition: background-color 0.2s;
-        `;
         
         // Add hover effect
         toggleButton.addEventListener('mouseenter', () => {
@@ -299,10 +338,12 @@ class ContentManager {
         
         const pre = document.createElement('pre');
         const code = document.createElement('code');
+        
         // Set language class on code element for syntax highlighting
         if (data.language) {
             code.className = `language-${data.language}`;
         }
+        
         code.textContent = codeToRender;
         pre.appendChild(code);
         codeBlock.appendChild(pre);
