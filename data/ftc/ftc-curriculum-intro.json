@@ -91,10 +91,6 @@
           "id": "robot-hardware-overview"
         },
         {
-          "label": "Basic Robot Control",
-          "id": "basic-robot-control"
-        },
-        {
           "label": "Android Studio Environment",
           "id": "android-studio-environment"
         }

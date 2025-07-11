@@ -49,6 +49,11 @@ class Application {
             
             // Hide loading overlay after everything is ready
             hideLoadingOverlay();
+
+            // Ensure content reloads on browser navigation (back/forward)
+            window.addEventListener('popstate', async () => {
+                await this.showAppropriateTab();
+            });
         } catch (error) {
             console.error('Error initializing application:', error);
             this.showError('Failed to load application. Please refresh the page.');
@@ -57,16 +62,31 @@ class Application {
     }
 
     async showAppropriateTab() {
-        // Remove isReady check and just select the default or current tab
         // Parse the current URL and navigate to the appropriate tab
         const { sectionId, tabId } = this.navigationManager.parseCurrentUrl();
+        // If both sectionId and tabId are missing or invalid, force homepage
+        if ((!sectionId || sectionId === '' || sectionId === null) && (!tabId || tabId === '' || tabId === null)) {
+            appState.currentSection = 'homepage';
+            appState.currentTab = null;
+            this.navigationManager.updateUrl('homepage');
+            await this.navigationManager.handleSectionNavigation('homepage');
+            this.contentManager.renderContent('homepage');
+            return;
+        }
         if (sectionId && tabId) {
             await this.navigationManager.navigateToTab(tabId);
         } else if (sectionId) {
             await this.navigationManager.handleSectionNavigation(sectionId);
+            if (sectionId === 'homepage') {
+                this.contentManager.renderContent('homepage');
+            }
         } else {
             // Fallback to homepage
+            appState.currentSection = 'homepage';
+            appState.currentTab = null;
+            this.navigationManager.updateUrl('homepage');
             await this.navigationManager.handleSectionNavigation('homepage');
+            this.contentManager.renderContent('homepage');
         }
     }
 

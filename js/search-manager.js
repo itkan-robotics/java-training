@@ -362,6 +362,18 @@ class SearchManager {
             // Finally by text
             return a.text.localeCompare(b.text);
         });
+        // Deduplicate results: keep only one per tabId/type/text
+        const seen = new Set();
+        this.searchResults = this.searchResults.filter(result => {
+            // For content/code/list-item, include text in key; for title/section-title, just tabId+type
+            const key =
+                (result.type === 'content' || result.type === 'code' || result.type === 'list-item')
+                    ? `${result.tabId}|${result.type}|${result.text}`
+                    : `${result.tabId}|${result.type}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
     }
 
     showResults() {
@@ -377,14 +389,19 @@ class SearchManager {
         const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
         
         const resultsDiv = this.createSearchResultsContainer(isMobileSearch);
+        resultsDiv.style.textAlign = 'left';
         
-        // Header
-        const header = this.createSearchResultsHeader(resultsDiv, this.searchResults.length);
-        searchContainer.appendChild(header);
+        // Only show up to 15 results in dropdown
+        const shownResults = this.searchResults.slice(0, 15);
+        const header = this.createSearchResultsHeader(resultsDiv, this.searchResults.length, isMobileSearch, shownResults.length);
+        if (header) {
+            resultsDiv.appendChild(header); // On mobile, header goes inside the dropdown
+        }
         
         // Show results
-        this.searchResults.slice(0, 15).forEach(result => {
+        shownResults.forEach(result => {
             const item = this.createResultItem(result);
+            item.style.textAlign = 'left';
             resultsDiv.appendChild(item);
         });
         
@@ -503,6 +520,7 @@ class SearchManager {
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            text-align: left;
         `;
         
         // Header section
@@ -511,12 +529,14 @@ class SearchManager {
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--color-background-border);
+            text-align: left;
         `;
         
         const title = document.createElement('h1');
         title.style.cssText = `
             color: var(--color-sidebar-link-text--top-level);
             margin-bottom: 0.5rem;
+            text-align: left;
         `;
         title.textContent = `Search Results for "${this.currentSearchQuery}"`;
         
@@ -525,36 +545,33 @@ class SearchManager {
             color: var(--color-sidebar-link-text);
             font-size: 1.1rem;
             margin: 0;
+            text-align: left;
         `;
         resultCount.textContent = `Found ${this.searchResults.length} result${this.searchResults.length !== 1 ? 's' : ''}`;
         
-        const backButton = document.createElement('button');
+        // Improved back button logic
+        const backButton = document.createElement('span');
         backButton.textContent = '← Back to Previous Page';
         backButton.style.cssText = `
             margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background-color: var(--color-sidebar-item-background--hover);
-            color: var(--color-sidebar-link-text);
-            border: 1px solid var(--color-background-border);
-            border-radius: 0.5rem;
+            color: var(--color-sidebar-link-text--top-level);
+            text-decoration: underline;
             cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 1rem;
+            display: inline-block;
         `;
-        
-        backButton.addEventListener('click', () => {
-            // Go back to the previous page
-            window.history.back();
-        });
-        
-        backButton.addEventListener('mouseenter', () => {
-            backButton.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
-            backButton.style.transform = 'translateY(-1px)';
-        });
-        
-        backButton.addEventListener('mouseleave', () => {
-            backButton.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
-            backButton.style.transform = 'translateY(0)';
-        });
+        backButton.onclick = (e) => {
+            e.preventDefault();
+            // Try to go back, but if not possible, go to homepage
+            if (window.history.length > 1) {
+                window.history.back();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 200);
+            } else {
+                window.location.href = '/';
+            }
+        };
         
         header.appendChild(title);
         header.appendChild(resultCount);
@@ -571,6 +588,7 @@ class SearchManager {
             const section = document.createElement('div');
             section.style.cssText = `
                 margin-bottom: 2rem;
+                text-align: left;
             `;
             
             const sectionTitle = document.createElement('h2');
@@ -579,6 +597,7 @@ class SearchManager {
                 margin-bottom: 1rem;
                 padding-bottom: 0.5rem;
                 border-bottom: 1px solid var(--color-background-border);
+                text-align: left;
             `;
             
             const typeLabels = {
@@ -598,10 +617,12 @@ class SearchManager {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
                 gap: 1rem;
+                text-align: left;
             `;
             
             results.forEach(result => {
                 const resultCard = this.createFullPageResultCard(result);
+                resultCard.style.textAlign = 'left';
                 resultsGrid.appendChild(resultCard);
             });
             
@@ -700,6 +721,64 @@ class SearchManager {
         });
         
         return card;
+    }
+
+    // Creates the header for the dropdown search results
+    createSearchResultsHeader(resultsDiv, resultCount, isMobileSearch = false, shownCount = null) {
+        // On mobile, use a more compact header styled for the dropdown, not the header bar
+        const headerDiv = document.createElement('div');
+        headerDiv.style.cssText = isMobileSearch
+            ? `
+                display: block;
+                text-align: left;
+                padding: 0.25rem 0.5rem 0.25rem 0;
+                border-bottom: 1px solid var(--color-background-border);
+                margin-bottom: 0.5rem;
+                font-size: 0.95rem;
+                color: var(--color-sidebar-link-text--top-level);
+                background: none;
+            `
+            : `
+                display: block;
+                text-align: left;
+                padding: 0.5rem 1rem 0.5rem 0;
+                border-bottom: 1px solid var(--color-background-border);
+                margin-bottom: 0.5rem;
+                font-size: 1rem;
+                color: var(--color-sidebar-link-text--top-level);
+                background: none;
+            `;
+
+        // Results count
+        const countSpan = document.createElement('span');
+        countSpan.textContent = `Results (${shownCount !== null ? shownCount : resultCount}${shownCount !== null && shownCount < resultCount ? ' of ' + resultCount : ''})`;
+        countSpan.style.fontWeight = 'bold';
+        countSpan.style.display = 'block';
+        countSpan.style.marginBottom = '0.15rem';
+        headerDiv.appendChild(countSpan);
+
+        // If there are more than 15 results, show a 'Show all results' link
+        if (resultCount > 15 && shownCount !== null && shownCount < resultCount) {
+            const showAllLink = document.createElement('span');
+            showAllLink.textContent = 'Show all results';
+            showAllLink.style.cssText = `
+                color: var(--color-sidebar-link-text--top-level);
+                text-decoration: underline;
+                cursor: pointer;
+                font-size: 0.95rem;
+                display: block;
+                margin-top: 0.1rem;
+                margin-bottom: 0.1rem;
+                width: fit-content;
+            `;
+            showAllLink.onclick = (e) => {
+                e.preventDefault();
+                this.showAllResultsPage();
+            };
+            headerDiv.appendChild(showAllLink);
+        }
+
+        return headerDiv;
     }
 
     restoreSearchResults() {
