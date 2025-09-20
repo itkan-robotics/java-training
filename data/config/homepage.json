@@ -52,12 +52,26 @@
       "type": "text",
       "title": "How to Navigate:",
       "content": "Click on any of the training sections above to explore that area. Each section contains multiple lessons that you can access through the sidebar navigation. We recommend starting with Java Training if you're new to programming, or jumping directly to your specific competition type if you have prior experience."
+    },
+    {
+      "type": "link-grid",
+      "title": "Contributors:",
+      "links": [
+        {
+          "label": "Squirrr (Abdullah Khaled)",
+          "url": "https://github.com/Squirrr"
+        },
+        {
+          "label": "TheAilurusFulgens (Abdur-Rehman Naveed)",
+          "url": "https://github.com/TheAilurusFulgens"
+        }
+      ]
     }
   ],
   "metadata": {
     "version": "2.0.0",
-    "lastUpdated": "2025-01-27",
-    "totalSections": 4,
+    "lastUpdated": "2025-09-19",
+    "totalSections": 5,
     "features": {
       "responsiveDesign": true,
       "searchFunctionality": true,
