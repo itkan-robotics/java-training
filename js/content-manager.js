@@ -161,8 +161,276 @@ class ContentManager {
         }
         
         section.appendChild(contentSection);
+        
+        // Add navigation buttons at the bottom
+        const navButtons = this.createNavigationButtons(tabId);
+        if (navButtons) {
+            section.appendChild(navButtons);
+        }
+        
         tabContent.appendChild(section);
         container.appendChild(tabContent);
+    }
+
+    /**
+     * Gets the ordered list of tabs for the current section
+     */
+    getSectionTabOrder(sectionId) {
+        const config = appState.config && appState.config.sections && appState.config.sections[sectionId];
+        if (!config) return [];
+        
+        const tabOrder = [];
+        
+        // Add intro if present
+        if (config.intro && config.intro.id) {
+            tabOrder.push({ id: config.intro.id, label: config.intro.label || config.intro.title });
+        }
+        
+        // Add groups/children/items recursively
+        const addItemsFromGroups = (groups) => {
+            if (!Array.isArray(groups)) return;
+            groups.forEach(group => {
+                if (Array.isArray(group.items)) {
+                    group.items.forEach(item => {
+                        tabOrder.push({ id: item.id, label: item.label || item.title });
+                    });
+                }
+                if (Array.isArray(group.children)) {
+                    addItemsFromGroups(group.children);
+                }
+            });
+        };
+        
+        if (Array.isArray(config.groups)) addItemsFromGroups(config.groups);
+        if (Array.isArray(config.children)) addItemsFromGroups(config.children);
+        
+        // Add top-level items if present
+        if (Array.isArray(config.items)) {
+            config.items.forEach(item => {
+                tabOrder.push({ id: item.id, label: item.label || item.title });
+            });
+        }
+        
+        // Handle tiers structure (for FTC)
+        if (Array.isArray(config.tiers)) {
+            config.tiers.forEach(tier => {
+                if (Array.isArray(tier.lessons)) {
+                    tier.lessons.forEach(lesson => {
+                        // Extract ID from lesson file path
+                        const lessonId = lesson.replace(/^.*\/([^/]+)\.json$/, '$1');
+                        tabOrder.push({ id: lessonId, label: lessonId });
+                    });
+                }
+            });
+        }
+        
+        return tabOrder;
+    }
+    
+    /**
+     * Gets previous and next tab information for the current tab
+     */
+    getPreviousNextTabs(currentTabId) {
+        const sectionId = appState.currentSection;
+        
+        // Don't show navigation for homepage or if section is not found
+        if (!sectionId || sectionId === 'homepage') {
+            return { previous: null, next: null };
+        }
+        
+        const tabOrder = this.getSectionTabOrder(sectionId);
+        
+        if (tabOrder.length === 0) return { previous: null, next: null };
+        
+        const currentIndex = tabOrder.findIndex(tab => tab.id === currentTabId);
+        if (currentIndex === -1) return { previous: null, next: null };
+        
+        const previousIndex = currentIndex > 0 ? currentIndex - 1 : null;
+        const nextIndex = currentIndex < tabOrder.length - 1 ? currentIndex + 1 : null;
+        
+        // Get tab data to use actual titles if available
+        const getTabInfo = (tab) => {
+            const tabData = appState.getTabData(tab.id);
+            return {
+                id: tab.id,
+                label: tabData?.title || tab.label || tab.id
+            };
+        };
+        
+        return {
+            previous: previousIndex !== null ? getTabInfo(tabOrder[previousIndex]) : null,
+            next: nextIndex !== null ? getTabInfo(tabOrder[nextIndex]) : null
+        };
+    }
+    
+    /**
+     * Creates navigation buttons for previous/next tabs
+     */
+    createNavigationButtons(currentTabId) {
+        // Don't show navigation for homepage
+        if (appState.currentSection === 'homepage') {
+            return null;
+        }
+        
+        const { previous, next } = this.getPreviousNextTabs(currentTabId);
+        
+        // Don't show navigation if there's no previous or next tab
+        if (!previous && !next) return null;
+        
+        const navContainer = document.createElement('div');
+        navContainer.className = 'page-navigation';
+        
+        // Previous button
+        if (previous) {
+            const prevButton = document.createElement('button');
+            prevButton.className = 'nav-button nav-button-prev';
+            prevButton.innerHTML = `
+                <span class="nav-button-icon">←</span>
+                <span class="nav-button-content">
+                    <span class="nav-button-label">Previous</span>
+                    <span class="nav-button-title">${this.escapeHtml(previous.label)}</span>
+                </span>
+            `;
+            prevButton.onclick = () => {
+                if (window.app && window.app.navigationManager) {
+                    window.app.navigationManager.navigateToTab(previous.id);
+                }
+            };
+            navContainer.appendChild(prevButton);
+        } else {
+            // Spacer to keep next button on the right
+            const spacer = document.createElement('div');
+            spacer.style.flex = '1';
+            navContainer.appendChild(spacer);
+        }
+        
+        // Next button
+        if (next) {
+            const nextButton = document.createElement('button');
+            nextButton.className = 'nav-button nav-button-next';
+            nextButton.innerHTML = `
+                <span class="nav-button-content">
+                    <span class="nav-button-label">Next</span>
+                    <span class="nav-button-title">${this.escapeHtml(next.label)}</span>
+                </span>
+                <span class="nav-button-icon">→</span>
+            `;
+            nextButton.onclick = () => {
+                if (window.app && window.app.navigationManager) {
+                    window.app.navigationManager.navigateToTab(next.id);
+                }
+            };
+            navContainer.appendChild(nextButton);
+        }
+        
+        return navContainer;
+    }
+    
+    /**
+     * Escapes HTML to prevent XSS
+     */
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    /**
+     * Highlights Java syntax with HTML spans
+     */
+    highlightJava(code) {
+        if (!code) return '';
+        
+        // Escape HTML first
+        let highlighted = this.escapeHtml(code);
+        
+        // Use a marker system to protect already-highlighted content
+        const markers = [];
+        let markerIndex = 0;
+        
+        const mark = (content) => {
+            const marker = `\x01MARK${markerIndex++}\x01`;
+            markers.push({ marker, content });
+            return marker;
+        };
+        
+        // Process in order: comments first, then strings, then everything else
+        // This prevents matching inside already-highlighted sections
+        
+        // Highlight multi-line comments first
+        highlighted = highlighted.replace(/\/\*[\s\S]*?\*\//g, (match) => {
+            return mark(`<span class="java-comment">${match}</span>`);
+        });
+        
+        // Highlight single-line comments
+        highlighted = highlighted.replace(/\/\/.*$/gm, (match) => {
+            return mark(`<span class="java-comment">${match}</span>`);
+        });
+        
+        // Highlight string literals (both single and double quotes)
+        highlighted = highlighted.replace(/"([^"\\]|\\.)*"/g, (match) => {
+            return mark(`<span class="java-string">${match}</span>`);
+        });
+        highlighted = highlighted.replace(/'([^'\\]|\\.)*'/g, (match) => {
+            return mark(`<span class="java-string">${match}</span>`);
+        });
+        
+        // Highlight annotations
+        highlighted = highlighted.replace(/@(\w+)/g, (match, annotation) => {
+            return mark(`<span class="java-annotation">@${annotation}</span>`);
+        });
+        
+        // Highlight numbers
+        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, (match) => {
+            return mark(`<span class="java-number">${match}</span>`);
+        });
+        
+        // Java keywords
+        const keywords = [
+            'abstract', 'assert', 'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'const',
+            'continue', 'default', 'do', 'double', 'else', 'enum', 'extends', 'final', 'finally', 'float',
+            'for', 'goto', 'if', 'implements', 'import', 'instanceof', 'int', 'interface', 'long', 'native',
+            'new', 'package', 'private', 'protected', 'public', 'return', 'short', 'static', 'strictfp',
+            'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient', 'try', 'void', 'volatile', 'while'
+        ];
+        
+        // Highlight keywords
+        keywords.forEach(keyword => {
+            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+            highlighted = highlighted.replace(regex, (match) => {
+                return mark(`<span class="java-keyword">${match}</span>`);
+            });
+        });
+        
+        // Java types
+        const types = ['String', 'Integer', 'Double', 'Float', 'Long', 'Boolean', 'Character', 'Byte', 'Short'];
+        
+        // Highlight types
+        types.forEach(type => {
+            const regex = new RegExp(`\\b(${type})\\b`, 'g');
+            highlighted = highlighted.replace(regex, (match) => {
+                return mark(`<span class="java-type">${match}</span>`);
+            });
+        });
+        
+        // Literals
+        const literals = ['true', 'false', 'null'];
+        
+        // Highlight literals
+        literals.forEach(literal => {
+            const regex = new RegExp(`\\b(${literal})\\b`, 'g');
+            highlighted = highlighted.replace(regex, (match) => {
+                return mark(`<span class="java-literal">${match}</span>`);
+            });
+        });
+        
+        // Replace all markers with their actual content (in reverse order to maintain correct replacement)
+        for (let i = markers.length - 1; i >= 0; i--) {
+            const { marker, content } = markers[i];
+            highlighted = highlighted.replace(new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), content);
+        }
+        
+        return highlighted;
     }
 
     /**
@@ -276,10 +544,9 @@ class ContentManager {
         
         const codeBlock = this.createStyledElement('div', 'code-block');
         
-        // Add language class if specified
-        if (data.language) {
-            codeBlock.classList.add(`language-${data.language}`);
-        }
+        // Default to Java if no language is specified
+        const language = data.language || 'java';
+        codeBlock.classList.add(`language-${language}`);
         
         // Create header with minimize/maximize button
         const codeHeader = this.createStyledElement('div', 'code-header', {
@@ -300,8 +567,8 @@ class ContentManager {
             fontSize: '0.85em'
         });
         
-        // Use the section title if available, otherwise fall back to language or "CODE"
-        const displayTitle = data.title || (data.language ? data.language.toUpperCase() : 'CODE');
+        // Use the section title if available, otherwise fall back to language or "JAVA"
+        const displayTitle = data.title || (language ? language.toUpperCase() : 'JAVA');
         titleLabel.textContent = displayTitle;
         
         const toggleButton = this.createStyledElement('button', 'code-toggle-btn', {
@@ -340,11 +607,15 @@ class ContentManager {
         const code = document.createElement('code');
         
         // Set language class on code element for syntax highlighting
-        if (data.language) {
-            code.className = `language-${data.language}`;
+        code.className = `language-${language}`;
+        
+        // Apply Java syntax highlighting if language is Java
+        if (language === 'java' || !data.language) {
+            code.innerHTML = this.highlightJava(codeToRender);
+        } else {
+            code.textContent = codeToRender;
         }
         
-        code.textContent = codeToRender;
         pre.appendChild(code);
         codeBlock.appendChild(pre);
         
@@ -511,10 +782,9 @@ class ContentManager {
         if (codeToRender && codeToRender.trim() !== '') {
             const codeBlock = document.createElement('div');
             codeBlock.className = 'code-block';
-            // Add language class if specified
-            if (data.language) {
-                codeBlock.classList.add(`language-${data.language}`);
-            }
+            // Default to Java if no language is specified
+            const exerciseLanguage = data.language || 'java';
+            codeBlock.classList.add(`language-${exerciseLanguage}`);
             
             // Create header with minimize/maximize button for exercise code
             const codeHeader = document.createElement('div');
@@ -532,8 +802,8 @@ class ContentManager {
             `;
             
             const titleLabel = document.createElement('span');
-            // Use the section title if available, otherwise fall back to language or "CODE"
-            const displayTitle = data.title || (data.language ? data.language.toUpperCase() : 'CODE');
+            // Use the section title if available, otherwise fall back to language or "JAVA"
+            const displayTitle = data.title || (exerciseLanguage ? exerciseLanguage.toUpperCase() : 'JAVA');
             titleLabel.textContent = displayTitle;
             titleLabel.style.cssText = `
                 font-weight: 500;
@@ -577,10 +847,15 @@ class ContentManager {
             const pre = document.createElement('pre');
             const code = document.createElement('code');
             // Set language class on code element for syntax highlighting
-            if (data.language) {
-                code.className = `language-${data.language}`;
+            code.className = `language-${exerciseLanguage}`;
+            
+            // Apply Java syntax highlighting if language is Java
+            if (exerciseLanguage === 'java' || !data.language) {
+                code.innerHTML = this.highlightJava(codeToRender);
+            } else {
+                code.textContent = codeToRender;
             }
-            code.textContent = codeToRender;
+            
             pre.appendChild(code);
             codeBlock.appendChild(pre);
             
@@ -692,11 +967,17 @@ class ContentManager {
                     
                     const pre = document.createElement('pre');
                     const code = document.createElement('code');
-                    // Set language class on code element for syntax highlighting
-                    if (answer.language) {
-                        code.className = `language-${answer.language}`;
+                    // Default to Java if no language is specified
+                    const answerLanguage = answer.language || 'java';
+                    code.className = `language-${answerLanguage}`;
+                    
+                    // Apply Java syntax highlighting if language is Java
+                    if (answerLanguage === 'java' || !answer.language) {
+                        code.innerHTML = this.highlightJava(answer.content);
+                    } else {
+                        code.textContent = answer.content;
                     }
-                    code.textContent = answer.content;
+                    
                     pre.appendChild(code);
                     codeBlock.appendChild(pre);
                     

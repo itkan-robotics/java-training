@@ -1,0 +1,113 @@
+{
+  "title": "Talon FX Setup and Basic Usage",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Talon FX",
+      "content": "The Talon FX is CTRE's high-performance brushless motor controller designed for FRC. It features a built-in encoder, advanced control capabilities, and CAN bus communication. The Talon FX is one of the most popular motor controllers in FRC due to its performance and feature set.<br><br><strong>Key Specifications:</strong><br>- Brushless motor control (Falcon 500 compatible)<br>- Integrated encoder (2048 counts per revolution)<br>- CAN bus communication<br>- Advanced motion profiling (Motion Magic)<br>- Multiple PID slots for different scenarios<br>- Current limiting and voltage compensation"
+    },
+    {
+      "type": "rules-box",
+      "title": "Talon FX Capabilities",
+      "subtitle": "What Talon FX provides:",
+      "items": [
+        "High-performance brushless motor control",
+        "Built-in encoder (no external encoder needed)",
+        "CAN bus communication (reliable, fast)",
+        "Advanced PID control with multiple slots",
+        "Motion Magic motion profiling",
+        "Current limiting (motor and battery protection)",
+        "Voltage compensation",
+        "Status monitoring and diagnostics"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Hardware Setup",
+      "content": "Before programming, you need to physically set up your Talon FX controllers on the robot.<br><br><strong>Wiring Talon FX:</strong><br>1. <strong>Motor Connections:</strong> Connect the brushless motor leads to the Talon FX motor terminals<br>2. <strong>Power Connections:</strong> Connect power from the Power Distribution Hub (PDH) to the Talon FX power terminals<br>3. <strong>CAN Bus:</strong> Connect the CAN bus wires (CAN High and CAN Low) to the CAN bus network<br>4. <strong>Ground:</strong> Ensure proper grounding connections<br><br><strong>Status LED:</strong> The Talon FX has a status LED that indicates its state:<br>- <strong>Green:</strong> Device is operating normally<br>- <strong>Red:</strong> Fault condition (check Phoenix Tuner for details)<br>- <strong>Orange:</strong> Device is in bootloader mode<br>- <strong>Off:</strong> No power or not connected"
+    },
+    {
+      "type": "text",
+      "title": "CAN ID Configuration",
+      "content": "Each Talon FX needs a unique CAN ID (0-62) to communicate on the CAN bus. You can set the CAN ID using Phoenix Tuner or programmatically in code.<br><br><strong>Using Phoenix Tuner:</strong><br>1. Open Phoenix Tuner<br>2. Connect to your robot<br>3. Select the Talon FX device<br>4. Set the CAN ID in the configuration panel<br>5. Apply and save the configuration<br><br><strong>In Code:</strong> When you create a Talon FX instance, you specify the CAN ID in the constructor. The CAN ID must match what's configured in Phoenix Tuner.<br><br><strong>Best Practices:</strong><br>- Use sequential IDs for related devices (e.g., drivetrain: 1, 2, 3, 4)<br>- Document your CAN ID assignments<br>- Keep a consistent numbering scheme across your robot"
+    },
+    {
+      "type": "code",
+      "title": "Creating Talon FX Instances",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.DutyCycleOut;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\n\npublic class Drivetrain {\n    // Create Talon FX instances with CAN IDs\n    private final TalonFX m_leftFront = new TalonFX(1);  // CAN ID 1\n    private final TalonFX m_leftBack = new TalonFX(2);   // CAN ID 2\n    private final TalonFX m_rightFront = new TalonFX(3); // CAN ID 3\n    private final TalonFX m_rightBack = new TalonFX(4);  // CAN ID 4\n    \n    // Control requests (reusable)\n    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);\n    \n    public Drivetrain() {\n        // Configure motor settings using configuration objects\n        TalonFXConfiguration leftConfig = new TalonFXConfiguration();\n        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;\n        leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_leftFront.getConfigurator().apply(leftConfig);\n        m_leftBack.getConfigurator().apply(leftConfig);\n        \n        TalonFXConfiguration rightConfig = new TalonFXConfiguration();\n        rightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;\n        rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_rightFront.getConfigurator().apply(rightConfig);\n        m_rightBack.getConfigurator().apply(rightConfig);\n        \n        // Configure followers (back motors follow front motors)\n        m_leftBack.setControl(new DutyCycleOut(0).withMasterOutput(m_leftFront));\n        m_rightBack.setControl(new DutyCycleOut(0).withMasterOutput(m_rightFront));\n    }\n    \n    public void drive(double leftPower, double rightPower) {\n        // Set motor power using duty cycle (percent output)\n        m_leftFront.setControl(m_dutyCycleRequest.withOutput(leftPower));\n        m_rightFront.setControl(m_dutyCycleRequest.withOutput(rightPower));\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Basic Motor Control",
+      "content": "The Talon FX supports several control request types. For basic operation, you'll typically use Duty Cycle (percent output) control, which sets the motor power as a percentage (-1.0 to 1.0).<br><br><strong>Control Request Types:</strong><br>- <strong>Duty Cycle:</strong> Direct power control (-1.0 to 1.0)<br>- <strong>Voltage:</strong> Control by voltage<br>- <strong>Position:</strong> PID position control (covered in PID lesson)<br>- <strong>Velocity:</strong> PID velocity control (covered in PID lesson)<br>- <strong>Motion Magic:</strong> Motion profiling (covered in Motion Magic lesson)<br><br><strong>Setting Motor Power:</strong> Use the <code>setControl()</code> method with a control request object. For duty cycle, values range from -1.0 (full reverse) to 1.0 (full forward), with 0.0 being stopped."
+    },
+    {
+      "type": "code",
+      "title": "Basic Motor Control Examples",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.DutyCycleOut;\nimport com.ctre.phoenix6.controls.VoltageOut;\nimport edu.wpi.first.units.measure.Voltage;\nimport edu.wpi.first.units.Units;\n\npublic class BasicMotorControl {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Reusable control requests\n    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);\n    private final VoltageOut m_voltageRequest = new VoltageOut(0);\n    \n    public void examples() {\n        // Duty cycle (percent output): -1.0 to 1.0\n        m_motor.setControl(m_dutyCycleRequest.withOutput(0.5));   // 50% forward\n        m_motor.setControl(m_dutyCycleRequest.withOutput(-0.5));  // 50% reverse\n        m_motor.setControl(m_dutyCycleRequest.withOutput(0.0));    // Stop\n        \n        // Voltage control (in volts)\n        Voltage voltage = Units.Volts.of(6.0);\n        m_motor.setControl(m_voltageRequest.withOutput(voltage));\n        \n        // Reading current motor output (duty cycle)\n        double currentOutput = m_motor.getDutyCycle().getValue();\n        \n        // Reading motor current (amperes) - using StatusSignal\n        double statorCurrent = m_motor.getStatorCurrent().getValue();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Initial Configuration",
+      "content": "When setting up a Talon FX, there are several essential configuration parameters you should set:<br><br><strong>Essential Settings:</strong><br>- <strong>Motor Inversion:</strong> Set if motor runs backwards when given positive power<br>- <strong>Neutral Mode:</strong> Brake (motor resists movement) or Coast (motor free-spins)<br>- <strong>Current Limits:</strong> Protect motor and battery from overcurrent (covered in current limiting lesson)<br>- <strong>Voltage Compensation:</strong> Compensate for battery voltage changes<br>- <strong>Sensor Phase:</strong> If using external encoder, set sensor phase to match motor direction<br><br>These settings can be configured in Phoenix Tuner or in code. It's recommended to configure them in code so they're consistent across deployments."
+    },
+    {
+      "type": "code",
+      "title": "Basic Talon FX Configuration",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class ConfiguredTalonFX {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public ConfiguredTalonFX() {\n        // Create configuration object\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure motor inversion\n        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;\n        \n        // Configure neutral mode\n        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        \n        // Configure integrated encoder as feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Reset encoder position to zero\n        m_motor.setPosition(0);\n        \n        // Enable voltage compensation (compensates for battery voltage)\n        config.Voltage.PeakForwardVoltage = 12.0;\n        config.Voltage.PeakReverseVoltage = -12.0;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Using Phoenix Tuner",
+      "content": "Phoenix Tuner is CTRE's configuration tool for setting up and diagnosing Talon FX controllers. It's essential for initial setup and troubleshooting.<br><br><strong>Connecting to Robot:</strong><br>1. Open Phoenix Tuner<br>2. Ensure robot is powered and connected to network<br>3. Click \"Find Devices\" or enter robot IP address<br>4. Phoenix Tuner will discover all CTRE devices on the CAN bus<br><br><strong>Configuring Talon FX:</strong><br>1. Select the Talon FX from the device list<br>2. Configure parameters in the configuration panel:<br>   - CAN ID<br>   - Motor inversion<br>   - Neutral mode<br>   - Current limits<br>   - Other settings<br>3. Click \"Apply\" to save configuration to device<br>4. Configuration is stored in the Talon FX's non-volatile memory<br><br><strong>Monitoring:</strong> Phoenix Tuner can display real-time data from Talon FX, including current, voltage, position, velocity, and status information."
+    },
+    {
+      "type": "text",
+      "title": "Reading Motor Status",
+      "content": "The Talon FX provides extensive status information that you can read in your code. This is useful for monitoring, debugging, and displaying telemetry.<br><br><strong>Available Status Information:</strong><br>- Motor output (power/voltage being applied)<br>- Stator current (current through motor windings)<br>- Supply current (current from battery)<br>- Temperature<br>- Encoder position and velocity<br>- Closed loop error (for PID control)<br>- Fault information<br><br>Reading status information helps you understand what the motor is doing and diagnose issues."
+    },
+    {
+      "type": "code",
+      "title": "Reading Talon FX Status",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class MotorStatus {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Status signals for reading data\n    private final BaseStatusSignal[] m_signals = {\n        m_motor.getDutyCycle(),\n        m_motor.getStatorCurrent(),\n        m_motor.getSupplyCurrent(),\n        m_motor.getDeviceTemp(),\n        m_motor.getPosition(),\n        m_motor.getVelocity(),\n        m_motor.getSupplyVoltage()\n    };\n    \n    public void updateStatus() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Motor output (duty cycle: -1.0 to 1.0)\n        double output = m_motor.getDutyCycle().getValue();\n        \n        // Current draw\n        double statorCurrent = m_motor.getStatorCurrent().getValue();\n        double supplyCurrent = m_motor.getSupplyCurrent().getValue();\n        \n        // Temperature\n        double temperature = m_motor.getDeviceTemp().getValue();\n        \n        // Encoder position and velocity\n        double position = m_motor.getPosition().getValue();\n        double velocity = m_motor.getVelocity().getValue();\n        \n        // Voltage\n        double supplyVoltage = m_motor.getSupplyVoltage().getValue();\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Motor Output\", output);\n        SmartDashboard.putNumber(\"Stator Current\", statorCurrent);\n        SmartDashboard.putNumber(\"Supply Current\", supplyCurrent);\n        SmartDashboard.putNumber(\"Temperature\", temperature);\n        SmartDashboard.putNumber(\"Position\", position);\n        SmartDashboard.putNumber(\"Velocity\", velocity);\n        SmartDashboard.putNumber(\"Supply Voltage\", supplyVoltage);\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Common Setup Issues",
+      "subtitle": "If Talon FX isn't working:",
+      "items": [
+        "<strong>Device Not Found:</strong> Check CAN ID matches code, verify CAN bus wiring, ensure device is powered",
+        "<strong>Motor Not Moving:</strong> Check motor wiring, verify power connections, check if motor is enabled",
+        "<strong>Wrong Direction:</strong> Configure inversion in TalonFXConfiguration or Phoenix Tuner",
+        "<strong>CAN Bus Errors:</strong> Check CAN bus wiring, verify termination resistors, check for CAN ID conflicts",
+        "<strong>Status LED Red:</strong> Check Phoenix Tuner for fault codes, verify configuration",
+        "<strong>No Communication:</strong> Verify robot is on same network, check firewall settings, restart robot"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Follower Configuration",
+      "content": "In many drivetrains, you have multiple motors on the same side. The Talon FX supports follower mode, where one Talon FX follows another, reducing the number of control signals needed.<br><br><strong>Follower Setup:</strong><br>- One Talon FX is the leader (you control it directly)<br>- Other Talon FX controllers are followers (they mirror the leader)<br>- Followers automatically match the leader's output<br>- Followers can be inverted relative to the leader<br><br><strong>Benefits:</strong><br>- Simpler code (only control leader motors)<br>- Reduced CAN bus traffic<br>- Automatic synchronization<br><br><strong>Limitations:</strong><br>- Followers can't have independent control<br>- All followers on same side should have same gearing"
+    },
+    {
+      "type": "code",
+      "title": "Follower Configuration Example",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.DutyCycleOut;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\n\npublic class DrivetrainWithFollowers {\n    // Leader motors (front)\n    private final TalonFX m_leftFront = new TalonFX(1);\n    private final TalonFX m_rightFront = new TalonFX(3);\n    \n    // Follower motors (back)\n    private final TalonFX m_leftBack = new TalonFX(2);\n    private final TalonFX m_rightBack = new TalonFX(4);\n    \n    // Control requests\n    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);\n    \n    public DrivetrainWithFollowers() {\n        // Configure left side\n        TalonFXConfiguration leftConfig = new TalonFXConfiguration();\n        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;\n        leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_leftFront.getConfigurator().apply(leftConfig);\n        m_leftBack.getConfigurator().apply(leftConfig);\n        \n        // Configure right side\n        TalonFXConfiguration rightConfig = new TalonFXConfiguration();\n        rightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;\n        rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_rightFront.getConfigurator().apply(rightConfig);\n        m_rightBack.getConfigurator().apply(rightConfig);\n        \n        // Configure followers - back motors follow front motors\n        m_leftBack.setControl(new DutyCycleOut(0).withMasterOutput(m_leftFront));\n        m_rightBack.setControl(new DutyCycleOut(0).withMasterOutput(m_rightFront));\n    }\n    \n    public void drive(double leftPower, double rightPower) {\n        // Only set leader motors\n        // Followers automatically match\n        m_leftFront.setControl(m_dutyCycleRequest.withOutput(leftPower));\n        m_rightFront.setControl(m_dutyCycleRequest.withOutput(rightPower));\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices for Talon FX Setup",
+      "content": "Following best practices ensures reliable operation and easier troubleshooting:<br><br><strong>CAN ID Management:</strong><br>- Use sequential IDs for related devices<br>- Document all CAN ID assignments<br>- Keep a consistent numbering scheme<br>- Avoid using CAN ID 0 (reserved)<br><br><strong>Configuration:</strong><br>- Configure settings in code (not just Phoenix Tuner)<br>- Use consistent configuration across similar devices<br>- Set appropriate current limits<br>- Enable voltage compensation<br><br><strong>Code Organization:</strong><br>- Create Talon FX instances in subsystem constructors<br>- Configure devices immediately after creation<br>- Group related motors together<br>- Use descriptive variable names"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Talon FX Configuration", "id": "talon-fx-configuration" },
+        { "label": "Talon FX PID Control", "id": "talon-fx-pid-control" },
+        { "label": "CTRE Introduction", "id": "ctre-intro" }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,102 @@
+{
+  "title": "Introduction to CTRE Hardware",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is CTRE?",
+      "content": "CTRE (Cross The Road Electronics) is a leading manufacturer of motor controllers, sensors, and other electronics for FRC robots. CTRE products are widely used in FRC due to their reliability, advanced features, and excellent performance. Understanding CTRE hardware is essential for many FRC teams.<br><br>CTRE provides a comprehensive ecosystem of hardware and software tools that work together seamlessly. Their products are designed specifically for FRC competition and are well-documented and supported."
+    },
+    {
+      "type": "rules-box",
+      "title": "CTRE Product Lineup",
+      "subtitle": "Main CTRE products for FRC:",
+      "items": [
+        "<strong>Talon FX:</strong> High-performance brushless motor controller with integrated encoder and advanced control features",
+        "<strong>CANcoder:</strong> Absolute encoder for precise position tracking on mechanisms",
+        "<strong>Pigeon IMU:</strong> Gyroscope and IMU for robot orientation and heading",
+        "<strong>Phoenix Framework:</strong> Software library for programming CTRE hardware",
+        "<strong>Phoenix Tuner:</strong> Configuration tool for setting up and tuning CTRE devices"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "CTRE Phoenix Framework",
+      "content": "The CTRE Phoenix Framework is the software library that provides Java APIs for controlling CTRE hardware. It's built on top of WPILib and integrates seamlessly with the FRC development environment.<br><br><strong>Key Features:</strong><br>- CAN bus communication for all devices<br>- Advanced motor control (PID, motion profiling)<br>- Sensor integration and data processing<br>- Configuration persistence<br>- Status monitoring and diagnostics<br><br>The Phoenix Framework is actively maintained and updated for each FRC season, ensuring compatibility with the latest WPILib versions."
+    },
+    {
+      "type": "text",
+      "title": "When to Use CTRE Hardware",
+      "content": "CTRE hardware is an excellent choice for many FRC applications. Here are situations where CTRE products excel:<br><br><strong>Talon FX Advantages:</strong><br>- High-performance brushless motor control<br>- Built-in encoder (no external encoder needed)<br>- Advanced motion profiling (Motion Magic)<br>- Multiple PID slots for different scenarios<br>- Excellent documentation and support<br><br><strong>CANcoder Advantages:</strong><br>- Absolute position tracking (no need to reset on startup)<br>- High resolution (4096 counts per revolution)<br>- CAN bus communication (no extra wiring)<br>- Ideal for swerve modules, arms, and other mechanisms<br><br><strong>Pigeon IMU Advantages:</strong><br>- Accurate heading and orientation<br>- Integrated gyroscope and accelerometer<br>- CAN bus communication<br>- Useful for field-relative driving and odometry"
+    },
+    {
+      "type": "text",
+      "title": "Adding CTRE Phoenix to Your Project",
+      "content": "To use CTRE hardware in your FRC project, you need to add the CTRE Phoenix library. WPILib provides a built-in system for managing vendor dependencies (vendordeps) that automatically configures dependencies and repositories. This is the recommended method for adding CTRE Phoenix to your project.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html' target='_blank'>WPILib Documentation: Third-Party Libraries</a>"
+    },
+    {
+      "type": "text",
+      "title": "Installing CTRE Phoenix (Online Method)",
+      "content": "The online installation method fetches the latest library version directly from the internet. This is the simplest method if you have internet access.<br><br><strong>Steps:</strong><br>1. In Visual Studio Code, press <code>Ctrl+Shift+P</code> (or <code>Cmd+Shift+P</code> on Mac) to open the Command Palette<br>2. Type \"WPILib: Manage Vendor Libraries\" and select it<br>3. Choose \"Install new libraries (online)\"<br>4. Enter the URL for the CTRE Phoenix vendordeps JSON file:<br>   <code>https://maven.phoenixframework.org/json/Phoenix-frc.json</code><br>5. VS Code will download and configure the library automatically<br>6. Your Gradle project will sync automatically<br><br>The library will be added to your project's <code>vendordeps/</code> folder, and all dependencies and repositories will be configured automatically."
+    },
+    {
+      "type": "text",
+      "title": "Installing CTRE Phoenix (Offline Method)",
+      "content": "The offline installation method uses an installer provided by CTRE to add the library to your system without requiring an internet connection during installation.<br><br><strong>Steps:</strong><br>1. Download and run the CTRE Phoenix offline installer from the <a href='https://github.com/CrossTheRoadElec/Phoenix-Releases/releases' target='_blank'>CTRE Phoenix releases page</a><br>2. The installer places the vendordeps JSON file in your system's vendordeps directory (e.g., <code>C:\\Users\\Public\\wpilib\\YYYY\\vendordeps</code> on Windows)<br>3. In Visual Studio Code, press <code>Ctrl+Shift+P</code> (or <code>Cmd+Shift+P</code> on Mac) to open the Command Palette<br>4. Type \"WPILib: Manage Vendor Libraries\" and select it<br>5. Choose \"Install new libraries (offline)\"<br>6. Select \"Phoenix-frc\" from the list of available libraries<br>7. Click OK to add it to your project<br><br>The library will be added to your project, and all dependencies will be configured automatically."
+    },
+    {
+      "type": "text",
+      "title": "Checking for Updates",
+      "content": "It's important to keep your vendor libraries up to date to ensure compatibility with the latest WPILib version and to receive bug fixes and new features.<br><br><strong>Checking for Updates (Offline):</strong><br>1. Open the Command Palette (<code>Ctrl+Shift+P</code> or <code>Cmd+Shift+P</code>)<br>2. Type \"WPILib: Manage Vendor Libraries\" and select it<br>3. Choose \"Check for updates (offline)\"<br>4. VS Code will check for newer versions in your system's vendordeps directory<br><br><strong>Checking for Updates (Online):</strong><br>1. Open the Command Palette<br>2. Type \"WPILib: Manage Vendor Libraries\" and select it<br>3. Choose \"Check for updates (online)\"<br>4. VS Code will fetch the latest version from the internet if the vendordeps JSON includes an update URL<br><br><strong>Best Practice:</strong> Check for updates periodically, especially at the start of a new FRC season or when updating WPILib."
+    },
+    {
+      "type": "text",
+      "title": "Removing CTRE Phoenix",
+      "content": "If you need to remove the CTRE Phoenix library from your project:<br><br><strong>Steps:</strong><br>1. Open the Command Palette (<code>Ctrl+Shift+P</code> or <code>Cmd+Shift+P</code>)<br>2. Type \"WPILib: Manage Vendor Libraries\" and select it<br>3. Choose \"Manage Current Libraries\"<br>4. Check the box next to \"Phoenix-frc\" (or the CTRE library you want to remove)<br>5. Click OK<br><br>The library will be removed from your project, and Gradle will sync automatically. Note that this only removes the library from your project - it doesn't uninstall it from your system."
+    },
+    {
+      "type": "text",
+      "title": "CTRE Phoenix API Structure",
+      "content": "CTRE provides two major versions of the Phoenix API: Phoenix 5 and Phoenix 6. Phoenix 6 is the newer version with improved architecture and better WPILib integration. This curriculum focuses on Phoenix 6, which is the recommended version for new projects.<br><br><strong>Phoenix 6 Main Packages:</strong><br>- <code>com.ctre.phoenix6.hardware</code> - Hardware classes (TalonFX, CANcoder, etc.)<br>- <code>com.ctre.phoenix6.configs</code> - Configuration classes (TalonFXConfiguration, CANcoderConfiguration, etc.)<br>- <code>com.ctre.phoenix6.controls</code> - Control request classes (PositionVoltage, VelocityVoltage, etc.)<br>- <code>com.ctre.phoenix6.signals</code> - Signal and enum classes (InvertedValue, NeutralModeValue, etc.)<br>- <code>com.ctre.phoenix6</code> - Core framework classes (BaseStatusSignal, StatusSignal, etc.)<br>"
+    },
+    {
+      "type": "code",
+      "title": "Basic CTRE Phoenix 6 Import Structure",
+      "content": "// Hardware classes\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.hardware.CANcoder;\n\n// Configuration classes\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.configs.CANcoderConfiguration;\n\n// Control request classes\nimport com.ctre.phoenix6.controls.PositionVoltage;\nimport com.ctre.phoenix6.controls.VelocityVoltage;\nimport com.ctre.phoenix6.controls.VoltageOut;\nimport com.ctre.phoenix6.controls.TorqueCurrentFOC;\n\n// Signal and enum classes\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\n// Status signals\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport com.ctre.phoenix6.StatusSignal;\n\n// WPILib units integration\nimport edu.wpi.first.units.measure.Voltage;\nimport edu.wpi.first.units.measure.Current;\nimport edu.wpi.first.units.measure.Angle;\nimport edu.wpi.first.units.measure.AngularVelocity;"
+    },
+    {
+      "type": "text",
+      "title": "Phoenix 5 vs Phoenix 6",
+      "content": "CTRE maintains two versions of the Phoenix API. Understanding the differences helps you choose the right version for your project.<br><br><strong>Phoenix 6 (Recommended for New Projects):</strong><br>- Modern architecture with improved design<br>- Better WPILib integration, including units library support<br>- Simplified API with clearer separation of concerns<br>- Configuration objects instead of individual config methods<br>- Control request pattern instead of control modes<br>- Status signals for asynchronous data reading<br>- Better documentation and examples<br><br><strong>Phoenix 5 (Legacy):</strong><br>- Still supported and widely used<br>- Many existing robot projects use Phoenix 5<br>- Different API structure (WPI_TalonFX, ControlMode, etc.)<br>- Individual config methods instead of configuration objects<br><br><strong>Migration:</strong> If you're starting a new project, use Phoenix 6. If you're working with existing code, you may need to use Phoenix 5 for compatibility. Both versions can be used in the same project if needed."
+    },
+    {
+      "type": "text",
+      "title": "Phoenix Tuner Configuration Tool",
+      "content": "Phoenix Tuner is CTRE's configuration and diagnostic tool. It's essential for setting up and tuning CTRE hardware.<br><br><strong>Phoenix Tuner Capabilities:</strong><br>- Configure CAN IDs for all CTRE devices<br>- Set motor controller parameters<br>- Configure sensors (CANcoder, Pigeon)<br>- Tune PID loops<br>- Monitor device status and diagnostics<br>- Update firmware<br>- Save and load configurations<br><br><strong>Download:</strong> Phoenix Tuner is available from the <a href='https://github.com/CrossTheRoadElec/Phoenix-Releases/releases' target='_blank'>CTRE Phoenix releases page</a>. It's a standalone application that connects to your robot over the network."
+    },
+    {
+      "type": "text",
+      "title": "CAN Bus Communication",
+      "content": "All CTRE devices communicate over the CAN (Controller Area Network) bus. Understanding CAN bus basics helps when working with CTRE hardware.<br><br><strong>CAN Bus Basics:</strong><br>- All devices share the same CAN bus<br>- Each device has a unique CAN ID (0-62)<br>- Devices communicate at high speed (1 Mbps)<br>- CAN bus is more reliable than PWM<br><br><strong>CAN ID Assignment:</strong><br>- Each CTRE device needs a unique CAN ID<br>- Set CAN IDs using Phoenix Tuner or in code<br>- Common practice: Use sequential IDs (1, 2, 3, etc.)<br>- Document your CAN ID assignments<br><br><strong>CAN Bus Wiring:</strong><br>- Use proper CAN bus wiring (daisy-chain)<br>- Terminate the CAN bus at both ends (120 ohm resistors)<br>- Ensure proper power distribution"
+    },
+    {
+      "type": "text",
+      "title": "CTRE Documentation Resources",
+      "content": "CTRE provides comprehensive documentation for all their products. Here are key resources:<br><br><strong>Official Documentation:</strong><br>- <a href='https://v6.docs.ctr-electronics.com/en/stable/' target='_blank'>CTRE Phoenix v6 Documentation</a> - Complete API reference and guides<br>- <a href='https://github.com/CrossTheRoadElec/Phoenix-Releases' target='_blank'>CTRE Phoenix Releases</a> - Latest library versions and vendordeps files<br><br><strong>Community Resources:</strong><br>- CTRE forums and community support<br>- FRC programming resources and examples<br>- Team code examples and tutorials"
+    },
+    {
+      "type": "text",
+      "title": "CTRE vs Other Vendors",
+      "content": "FRC teams can choose from multiple hardware vendors. Understanding the differences helps make informed decisions.<br><br><strong>CTRE Advantages:</strong><br>- Advanced motion profiling (Motion Magic)<br>- Built-in encoders on Talon FX<br>- Excellent documentation<br>- Strong community support<br>- Proven reliability in competition<br><br><strong>Considerations:</strong><br>- Cost may be higher than some alternatives<br>- Learning curve for advanced features<br>- Requires Phoenix Tuner for configuration<br><br><strong>Vendor Choice:</strong> Many successful teams use CTRE hardware. The choice often comes down to team preference, budget, and specific requirements. Some teams use a mix of vendors for different mechanisms."
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        { "label": "Talon FX Setup", "id": "talon-fx-setup" },
+        { "label": "CANcoder Setup", "id": "cancoder-setup" },
+        { "label": "Gradle Build System", "id": "gradle-build-system" }
+      ]
+    }
+  ]
+}
+

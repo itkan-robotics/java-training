@@ -1,0 +1,119 @@
+{
+  "title": "CTRE Current Limiting",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Current Limiting",
+      "content": "Current limiting is a critical safety feature that protects your motors, motor controllers, and battery from damage due to excessive current draw. The Talon FX supports sophisticated current limiting that can prevent costly hardware failures and improve robot reliability.<br><br>Understanding and properly configuring current limiting is essential for safe and reliable robot operation. Current limiting can prevent:<br>- Motor overheating and damage<br>- Circuit breaker tripping<br>- Battery damage<br>- Motor controller failure<br>- Electrical fires"
+    },
+    {
+      "type": "rules-box",
+      "title": "Why Current Limiting is Important",
+      "subtitle": "Current limiting protects:",
+      "items": [
+        "Motors from overheating and damage",
+        "Battery from excessive discharge",
+        "Power Distribution Hub from overload",
+        "Motor controllers from damage",
+        "Electrical system from failures",
+        "Robot from unexpected shutdowns"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Types of Current Limiting",
+      "content": "The Talon FX supports two types of current limiting, each protecting different parts of your electrical system:<br><br><strong>Stator Current Limiting:</strong><br>- Limits current through the motor windings<br>- Protects the motor itself<br>- Prevents motor overheating<br>- More restrictive (lower limits typically)<br>- Responds to actual motor current<br><br><strong>Supply Current Limiting:</strong><br>- Limits current from the power source (battery/PDH)<br>- Protects battery and Power Distribution Hub<br>- Prevents circuit breaker tripping<br>- Less restrictive (higher limits typically)<br>- Responds to current from power source<br><br><strong>Differences:</strong> Stator current is what the motor actually uses, while supply current is what comes from the battery. They can be different due to motor efficiency and other factors."
+    },
+    {
+      "type": "text",
+      "title": "When to Use Each Type",
+      "content": "Understanding when to use stator vs supply current limiting helps you configure appropriate protection:<br><br><strong>Use Stator Current Limiting When:</strong><br>- Motor is the primary concern<br>- You want to prevent motor overheating<br>- Motor has lower current rating than power system<br>- Protecting motor is more important than maximum performance<br><br><strong>Use Supply Current Limiting When:</strong><br>- Battery/PDH protection is primary concern<br>- Circuit breakers are tripping<br>- Multiple motors share power source<br>- You want to limit total power draw<br><br><strong>Use Both:</strong> For maximum protection, configure both stator and supply current limits. This protects both the motor and the power system."
+    },
+    {
+      "type": "code",
+      "title": "Configuring Stator Current Limits",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\npublic class StatorCurrentLimit {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Current limit parameters\n    // Enable, current limit (amps), trigger threshold (amps), trigger time (seconds)\n    private static final boolean ENABLE = true;\n    private static final double CURRENT_LIMIT = 40.0;      // 40 amps limit\n    private static final double TRIGGER_THRESHOLD = 45.0;  // Trigger at 45 amps\n    private static final double TRIGGER_TIME = 0.5;         // Hold for 0.5 seconds before limiting\n    \n    public StatorCurrentLimit() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure stator current limit\n        config.CurrentLimits.StatorCurrentLimitEnable = ENABLE;\n        config.CurrentLimits.StatorCurrentLimit = CURRENT_LIMIT;\n        config.CurrentLimits.StatorCurrentLimitThreshold = TRIGGER_THRESHOLD;\n        config.CurrentLimits.StatorCurrentLimitThresholdTime = TRIGGER_TIME;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n        \n        // Explanation:\n        // - If current exceeds TRIGGER_THRESHOLD (45A) for TRIGGER_TIME (0.5s),\n        //   current is limited to CURRENT_LIMIT (40A)\n        // - This prevents brief spikes from triggering, but limits sustained high current\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Configuring Supply Current Limits",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\npublic class SupplyCurrentLimit {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Supply current limit parameters\n    private static final boolean ENABLE = true;\n    private static final double CURRENT_LIMIT = 50.0;      // 50 amps limit\n    private static final double TRIGGER_THRESHOLD = 55.0;  // Trigger at 55 amps\n    private static final double TRIGGER_TIME = 0.5;        // Hold for 0.5 seconds\n    \n    public SupplyCurrentLimit() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure supply current limit\n        config.CurrentLimits.SupplyCurrentLimitEnable = ENABLE;\n        config.CurrentLimits.SupplyCurrentLimit = CURRENT_LIMIT;\n        config.CurrentLimits.SupplyCurrentLimitThreshold = TRIGGER_THRESHOLD;\n        config.CurrentLimits.SupplyCurrentLimitThresholdTime = TRIGGER_TIME;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n        \n        // Explanation:\n        // - Protects battery and Power Distribution Hub\n        // - Limits current from power source\n        // - Typically higher limits than stator (battery can supply more)\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Configuring Both Current Limits",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\npublic class CompleteCurrentLimiting {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Stator current limit (motor protection)\n    private static final double STATOR_LIMIT = 40.0;\n    private static final double STATOR_THRESHOLD = 45.0;\n    private static final double STATOR_TIME = 0.5;\n    \n    // Supply current limit (battery protection)\n    private static final double SUPPLY_LIMIT = 50.0;\n    private static final double SUPPLY_THRESHOLD = 55.0;\n    private static final double SUPPLY_TIME = 0.5;\n    \n    public CompleteCurrentLimiting() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure stator current limit\n        config.CurrentLimits.StatorCurrentLimitEnable = true;\n        config.CurrentLimits.StatorCurrentLimit = STATOR_LIMIT;\n        config.CurrentLimits.StatorCurrentLimitThreshold = STATOR_THRESHOLD;\n        config.CurrentLimits.StatorCurrentLimitThresholdTime = STATOR_TIME;\n        \n        // Configure supply current limit\n        config.CurrentLimits.SupplyCurrentLimitEnable = true;\n        config.CurrentLimits.SupplyCurrentLimit = SUPPLY_LIMIT;\n        config.CurrentLimits.SupplyCurrentLimitThreshold = SUPPLY_THRESHOLD;\n        config.CurrentLimits.SupplyCurrentLimitThresholdTime = SUPPLY_TIME;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Current Limit Parameters Explained",
+      "content": "Current limiting uses several parameters to determine when and how to limit current:<br><br><strong>Enable:</strong><br>- Whether current limiting is active<br>- Set to true to enable, false to disable<br>- Should typically be enabled<br><br><strong>Current Limit:</strong><br>- Maximum current allowed (in amps)<br>- Motor output is reduced to stay under this limit<br>- Set based on motor specifications and application<br><br><strong>Trigger Threshold:</strong><br>- Current level that triggers limiting (in amps)<br>- Must exceed this for trigger time before limiting activates<br>- Prevents brief spikes from triggering<br>- Typically 5-10 amps above current limit<br><br><strong>Trigger Time:</strong><br>- How long current must exceed threshold before limiting (in seconds)<br>- Prevents brief spikes from triggering<br>- Typical values: 0.1-1.0 seconds<br>- Longer = less sensitive to spikes, shorter = more responsive"
+    },
+    {
+      "type": "text",
+      "title": "Current Monitoring",
+      "content": "You can read actual current draw from Talon FX to monitor motor performance and verify current limiting is working correctly.<br><br><strong>Available Current Readings:</strong><br>- <strong>Stator Current:</strong> Current through motor windings<br>- <strong>Supply Current:</strong> Current from battery/PDH<br><br><strong>Use Cases:</strong><br>- Monitor motor performance<br>- Verify current limiting is working<br>- Diagnose electrical issues<br>- Optimize current limits<br>- Display telemetry<br><br><strong>Reading Current:</strong> Use <code>getStatorCurrent().getValue()</code> and <code>getSupplyCurrent().getValue()</code> to read current values. These are returned as <code>StatusSignal</code> objects which must be read using <code>getValue()</code>. For efficient reading, refresh multiple signals at once using <code>BaseStatusSignal.refreshAll()</code>."
+    },
+    {
+      "type": "code",
+      "title": "Monitoring Current Draw",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class CurrentMonitoring extends SubsystemBase {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_motor.getStatorCurrent(),\n        m_motor.getSupplyCurrent()\n    };\n    \n    // Track maximum currents seen\n    private double m_maxStatorCurrent = 0.0;\n    private double m_maxSupplyCurrent = 0.0;\n    \n    public CurrentMonitoring() {\n        // Configure current limits (see previous examples)\n    }\n    \n    @Override\n    public void periodic() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Read current values\n        double statorCurrent = m_motor.getStatorCurrent().getValue();\n        double supplyCurrent = m_motor.getSupplyCurrent().getValue();\n        \n        // Track maximums\n        if (statorCurrent > m_maxStatorCurrent) {\n            m_maxStatorCurrent = statorCurrent;\n        }\n        if (supplyCurrent > m_maxSupplyCurrent) {\n            m_maxSupplyCurrent = supplyCurrent;\n        }\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Stator Current\", statorCurrent);\n        SmartDashboard.putNumber(\"Supply Current\", supplyCurrent);\n        SmartDashboard.putNumber(\"Max Stator Current\", m_maxStatorCurrent);\n        SmartDashboard.putNumber(\"Max Supply Current\", m_maxSupplyCurrent);\n        \n        // Check if current limiting is active\n        boolean isLimiting = statorCurrent >= 40.0 || supplyCurrent >= 50.0;\n        SmartDashboard.putBoolean(\"Current Limiting Active\", isLimiting);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Best Practices for Current Limiting",
+      "content": "Following best practices ensures effective current limiting:<br><br><strong>Setting Appropriate Limits:</strong><br>- Research motor specifications for rated current<br>- Consider mechanism requirements<br>- Test with actual loads<br>- Leave safety margin (don't set at absolute maximum)<br><br><strong>Typical Values:</strong><br>- <strong>Small motors (CIM, etc.):</strong> 20-30 amps<br>- <strong>Medium motors (Falcon 500, Kraken X60):</strong> 40-60 amps<br>- <strong>Large motors:</strong> 60-80 amps (check specifications)<br><br><strong>Trigger Settings:</strong><br>- Threshold: 5-10 amps above limit<br>- Time: 0.1-0.5 seconds (prevents spike triggers)<br><br><strong>Testing:</strong><br>- Test with mechanism under load<br>- Monitor current during operation<br>- Adjust limits based on actual performance<br>- Verify protection is working"
+    },
+    {
+      "type": "code",
+      "title": "Current Limiting for Different Motors",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\npublic class MotorSpecificLimits {\n    // Example: Falcon 500 motor\n    // Rated: ~60A continuous, ~100A peak\n    public static void configureFalcon500(TalonFX motor) {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Stator: protect motor (40A continuous)\n        config.CurrentLimits.StatorCurrentLimitEnable = true;\n        config.CurrentLimits.StatorCurrentLimit = 40.0;\n        config.CurrentLimits.StatorCurrentLimitThreshold = 50.0;\n        config.CurrentLimits.StatorCurrentLimitThresholdTime = 0.5;\n        \n        // Supply: protect battery (50A)\n        config.CurrentLimits.SupplyCurrentLimitEnable = true;\n        config.CurrentLimits.SupplyCurrentLimit = 50.0;\n        config.CurrentLimits.SupplyCurrentLimitThreshold = 60.0;\n        config.CurrentLimits.SupplyCurrentLimitThresholdTime = 0.5;\n        \n        motor.getConfigurator().apply(config);\n    }\n    \n    // Example: Smaller motor (e.g., NEO)\n    // Rated: ~30A continuous, ~60A peak\n    public static void configureSmallMotor(TalonFX motor) {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Stator: protect motor (25A continuous)\n        config.CurrentLimits.StatorCurrentLimitEnable = true;\n        config.CurrentLimits.StatorCurrentLimit = 25.0;\n        config.CurrentLimits.StatorCurrentLimitThreshold = 35.0;\n        config.CurrentLimits.StatorCurrentLimitThresholdTime = 0.5;\n        \n        // Supply: protect battery (30A)\n        config.CurrentLimits.SupplyCurrentLimitEnable = true;\n        config.CurrentLimits.SupplyCurrentLimit = 30.0;\n        config.CurrentLimits.SupplyCurrentLimitThreshold = 40.0;\n        config.CurrentLimits.SupplyCurrentLimitThresholdTime = 0.5;\n        \n        motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Balancing Protection vs Performance",
+      "content": "Current limiting is a balance between protection and performance. Setting limits too low protects hardware but may limit robot performance. Setting limits too high provides performance but risks damage.<br><br><strong>Too Low Limits:</strong><br>- Excellent protection<br>- May limit robot performance<br>- Motors may not reach full power<br>- Mechanism may be slower than desired<br><br><strong>Too High Limits:</strong><br>- Maximum performance<br>- Risk of motor/controller damage<br>- Risk of circuit breaker tripping<br>- May cause overheating<br><br><strong>Finding the Balance:</strong><br>- Start with conservative limits<br>- Test mechanism performance<br>- Gradually increase if needed<br>- Monitor current during operation<br>- Never exceed motor/controller specifications<br>- Leave safety margin"
+    },
+    {
+      "type": "text",
+      "title": "Testing Current Limits",
+      "content": "Testing current limits ensures they're configured correctly and provide adequate protection:<br><br><strong>Test Procedure:</strong><br>1. Configure current limits<br>2. Operate mechanism under normal load<br>3. Monitor current readings<br>4. Verify current stays within limits<br>5. Test with maximum load<br>6. Verify protection activates if needed<br>7. Adjust limits based on results<br><br><strong>What to Monitor:</strong><br>- Maximum current reached<br>- Whether limits are too restrictive<br>- Whether protection activates appropriately<br>- Motor temperature (if possible)<br>- Mechanism performance<br><br><strong>Tools:</strong> Use Phoenix Tuner or your dashboard to monitor current in real-time during testing."
+    },
+    {
+      "type": "code",
+      "title": "Current Limit Testing Helper",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class CurrentLimitTesting {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_motor.getStatorCurrent(),\n        m_motor.getSupplyCurrent()\n    };\n    \n    private double m_peakStatorCurrent = 0.0;\n    private double m_peakSupplyCurrent = 0.0;\n    \n    public void testCurrentLimits() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Read current values\n        double statorCurrent = Math.abs(m_motor.getStatorCurrent().getValue());\n        double supplyCurrent = Math.abs(m_motor.getSupplyCurrent().getValue());\n        \n        // Track peak values\n        if (statorCurrent > m_peakStatorCurrent) {\n            m_peakStatorCurrent = statorCurrent;\n        }\n        if (supplyCurrent > m_peakSupplyCurrent) {\n            m_peakSupplyCurrent = supplyCurrent;\n        }\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Current Test - Stator\", statorCurrent);\n        SmartDashboard.putNumber(\"Current Test - Supply\", supplyCurrent);\n        SmartDashboard.putNumber(\"Peak Stator\", m_peakStatorCurrent);\n        SmartDashboard.putNumber(\"Peak Supply\", m_peakSupplyCurrent);\n        \n        // Check if limits are appropriate\n        boolean statorOK = m_peakStatorCurrent < 45.0;  // Below threshold\n        boolean supplyOK = m_peakSupplyCurrent < 55.0;\n        \n        SmartDashboard.putBoolean(\"Stator Limit OK\", statorOK);\n        SmartDashboard.putBoolean(\"Supply Limit OK\", supplyOK);\n    }\n    \n    public void resetPeaks() {\n        m_peakStatorCurrent = 0.0;\n        m_peakSupplyCurrent = 0.0;\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Current Limiting Best Practices",
+      "subtitle": "Tips for effective current limiting:",
+      "items": [
+        "Always configure current limits for all motors",
+        "Use both stator and supply limits for maximum protection",
+        "Set limits based on motor specifications, not maximum possible",
+        "Leave safety margin (don't set at absolute maximum)",
+        "Test limits with actual mechanism loads",
+        "Monitor current during operation",
+        "Adjust limits based on testing results",
+        "Document your current limit settings",
+        "Use Phoenix Tuner to verify limits are active"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Current Limiting Issues",
+      "content": "Common issues with current limiting and solutions:<br><br><strong>Motors Not Reaching Full Power:</strong><br>- Current limits may be too low<br>- Increase limits (but stay within specifications)<br>- Check if limits are actually the problem<br><br><strong>Circuit Breakers Still Tripping:</strong><br>- Supply current limits may be too high<br>- Reduce supply current limits<br>- Check total robot current draw<br>- Verify PDH circuit breaker ratings<br><br><strong>Motors Overheating:</strong><br>- Stator current limits may be too high<br>- Reduce stator current limits<br>- Check motor specifications<br>- Verify cooling is adequate<br><br><strong>Current Limiting Not Working:</strong><br>- Verify limits are enabled<br>- Check configuration is applied<br>- Verify trigger threshold and time settings<br>- Test with known load"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Talon FX Configuration", "id": "talon-fx-configuration" },
+        { "label": "Talon FX Setup", "id": "talon-fx-setup" },
+        { "label": "CTRE Introduction", "id": "ctre-intro" }
+      ]
+    }
+  ]
+}
+

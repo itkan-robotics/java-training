@@ -1,0 +1,110 @@
+{
+  "title": "Creating Your First FRC Robot Project",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to FRC Projects",
+      "content": "An FRC robot project is a structured codebase that contains all the code needed to control your robot. WPILib provides project templates that give you a starting point with the correct structure and configuration. Understanding how to create and configure projects is essential for FRC development.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/frc-game-tools.html' target='_blank'>WPILib Documentation: Creating a Robot Project</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Project Templates Available",
+      "subtitle": "WPILib provides several project templates:",
+      "items": [
+        "<strong>TimedRobot:</strong> Simple template with basic robot lifecycle methods (best for beginners)",
+        "<strong>Command Robot:</strong> Full command-based programming framework (recommended for most teams)",
+        "<strong>Command Robot (Skeleton):</strong> Minimal command-based template with less boilerplate",
+        "<strong>Example Projects:</strong> Pre-built examples demonstrating various features"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Creating a New Project",
+      "content": "The easiest way to create a new FRC project is using the WPILib VS Code extension. This ensures your project is properly configured with all necessary files and dependencies.<br><br><strong>Steps to Create a Project:</strong><br><br><strong>1. Open VS Code:</strong> Launch Visual Studio Code (installed with WPILib).<br><br><strong>2. Open Command Palette:</strong> Press <code>Ctrl+Shift+P</code> (Windows/Linux) or <code>Cmd+Shift+P</code> (Mac) to open the command palette.<br><br><strong>3. Select Create Project:</strong> Type 'WPILib: Create a new project' and select it from the list.<br><br><strong>4. Choose Template:</strong> Select your project type (TimedRobot or Command Robot).<br><br><strong>5. Select Language:</strong> Choose Java (recommended for beginners).<br><br><strong>6. Enter Team Number:</strong> Enter your FRC team number (e.g., 1234). This is important for network configuration.<br><br><strong>7. Name Your Project:</strong> Enter a descriptive name (e.g., 'Robot2024').<br><br><strong>8. Choose Location:</strong> Select where to save your project folder.<br><br><strong>9. Create Project:</strong> Click 'Generate Project' and wait for the project to be created."
+    },
+    {
+      "type": "text",
+      "title": "Project Structure Overview",
+      "content": "A WPILib project has a specific directory structure that organizes your code and configuration files. Understanding this structure helps you navigate and organize your robot code effectively.<br><br><strong>Root Directory:</strong> Contains configuration files and project metadata<br><strong>src/main/java/:</strong> Your Java source code goes here<br><strong>src/main/deploy/:</strong> Configuration files for robot hardware<br><strong>vendordeps/:</strong> Third-party library dependencies (CTRE, REV, etc.)<br><strong>.wpilib/:</strong> WPILib-specific configuration<br><strong>build.gradle:</strong> Build configuration and dependencies<br><strong>settings.gradle:</strong> Gradle project settings"
+    },
+    {
+      "type": "code",
+      "title": "Project Directory Structure",
+      "content": "YourProjectName/\n├── .wpilib/                    # WPILib configuration\n│   └── wpilib_preferences.json  # Team number and preferences\n├── src/\n│   └── main/\n│       ├── java/               # Java source code\n│       │   └── frc/\n│       │       └── robot/\n│       │           ├── Main.java        # Entry point\n│       │           ├── Robot.java       # Main robot class\n│       │           └── RobotContainer.java  # Command-based config\n│       └── deploy/             # Deploy configuration files\n├── vendordeps/                  # Vendor dependencies\n├── build.gradle                 # Build configuration\n├── settings.gradle              # Gradle settings\n└── gradlew                      # Gradle wrapper script"
+    },
+    {
+      "type": "text",
+      "title": "Key Files Explained",
+      "content": "Each file in your project has a specific purpose. Understanding these files helps you work effectively with your robot code.<br><br><strong>Main.java:</strong> The entry point of your program. It calls the Robot class and handles program initialization.<br><br><strong>Robot.java (TimedRobot):</strong> The main robot class that extends TimedRobot. Contains methods like <code>robotInit()</code>, <code>autonomousPeriodic()</code>, and <code>teleopPeriodic()</code> that are called at different times during robot operation.<br><br><strong>RobotContainer.java (Command-based):</strong> Central configuration class for command-based programming. Sets up subsystems, commands, and button bindings.<br><br><strong>Constants.java:</strong> A file (you may need to create) for storing constant values like motor IDs, speeds, and configuration parameters.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/basic-programming/project-structure.html' target='_blank'>WPILib Documentation: Project Structure</a>"
+    },
+    {
+      "type": "code",
+      "title": "Basic TimedRobot Template Structure",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class Robot extends TimedRobot {\n    private Command m_autonomousCommand;\n\n    @Override\n    public void robotInit() {\n        // This method is called once when the robot starts\n        // Initialize hardware, sensors, and subsystems here\n    }\n\n    @Override\n    public void robotPeriodic() {\n        // This method is called repeatedly while the robot is on\n        // Update dashboard, run periodic tasks\n        CommandScheduler.getInstance().run();\n    }\n\n    @Override\n    public void autonomousInit() {\n        // Called once when autonomous mode starts\n        // Schedule autonomous commands here\n    }\n\n    @Override\n    public void autonomousPeriodic() {\n        // Called repeatedly during autonomous\n        // Autonomous logic goes here\n    }\n\n    @Override\n    public void teleopInit() {\n        // Called once when teleop mode starts\n        // Cancel autonomous commands, initialize teleop\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // Called repeatedly during teleop\n        // Teleop control logic goes here\n    }\n\n    @Override\n    public void testInit() {\n        // Called once when test mode starts\n    }\n\n    @Override\n    public void testPeriodic() {\n        // Called repeatedly during test mode\n        // Test code goes here\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "build.gradle File Overview",
+      "content": "The <code>build.gradle</code> file is the heart of your project's build configuration. It defines dependencies, plugins, and build settings. While you don't need to understand every detail, knowing the basics helps when adding vendor libraries or troubleshooting build issues.<br><br><strong>Key Sections:</strong><br>- <strong>Plugins:</strong> WPILib, Java, and other build plugins<br>- <strong>Repositories:</strong> Where to download dependencies from<br>- <strong>Dependencies:</strong> Libraries your code uses (WPILib, CTRE, REV, etc.)<br>- <strong>WPILib Version:</strong> Specifies which version of WPILib to use<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html' target='_blank'>WPILib Documentation: Third-Party Libraries</a>"
+    },
+    {
+      "type": "code",
+      "title": "Example build.gradle Structure",
+      "content": "plugins {\n    id \"java\"\n    id \"edu.wpi.first.GradleRIO\" version \"2024.1.1\"  // WPILib version\n}\n\nrepositories {\n    mavenCentral()  // Standard Java libraries\n    maven { url = \"https://maven.phoenixframework.org/\" }  // CTRE\n    maven { url = \"https://www.revrobotics.com/content/sw/max/sdk/maven/\" }  // REV\n}\n\ndependencies {\n    // WPILib dependencies (automatically included)\n    implementation wpi.java.deps.wpilib()\n    implementation wpi.java.vendor.java()\n    \n    // Example: Adding CTRE Phoenix library\n    // implementation \"com.ctre.phoenix:api-java:5.30.3\"\n    \n    // Example: Adding REV Robotics library\n    // implementation \"com.revrobotics.frc:SparkMax-java:1.11.1\"\n}\n\n// WPILib version configuration\nwpi {\n    javaVersion = JavaVersion.VERSION_17\n}"
+    },
+    {
+      "type": "text",
+      "title": "Team Number Configuration",
+      "content": "Your team number is crucial for network communication between your computer and robot. It's used to configure the robot's network settings and must be set correctly in your project.<br><br><strong>Where Team Number is Stored:</strong> The team number is stored in <code>.wpilib/wpilib_preferences.json</code>. This file is automatically created when you create a project with a team number.<br><br><strong>Changing Team Number:</strong> You can change the team number by:<br>1. Opening <code>.wpilib/wpilib_preferences.json</code><br>2. Editing the <code>teamNumber</code> field<br>3. Or using the WPILib VS Code command: 'WPILib: Set Team Number'<br><br><strong>Why It Matters:</strong> The team number determines the robot's IP address on the network. Incorrect team numbers prevent communication between your computer and robot."
+    },
+    {
+      "type": "code",
+      "title": "wpilib_preferences.json Example",
+      "content": "{\n    \"enableJava\": true,\n    \"enableCpp\": false,\n    \"teamNumber\": \"1234\",\n    \"currentLanguage\": \"java\",\n    \"projectType\": \"timed\",\n    \"useDesktop\": false,\n    \"projectYear\": \"2024\"\n}"
+    },
+    {
+      "type": "text",
+      "title": "Building the Project",
+      "content": "Building your project compiles your Java code into a format that can run on the roboRIO. The WPILib VS Code extension provides easy ways to build your project.<br><br><strong>Building Methods:</strong><br><br><strong>1. Using VS Code Command:</strong><br>- Press <code>Ctrl+Shift+P</code> and type 'WPILib: Build Robot Code'<br>- Or use the keyboard shortcut <code>Ctrl+Shift+B</code><br><br><strong>2. Using Terminal:</strong><br>- Open the integrated terminal in VS Code<br>- Run <code>./gradlew build</code> (Windows: <code>gradlew.bat build</code>)<br><br><strong>3. Using Build Task:</strong><br>- Go to Terminal → Run Build Task<br>- Select 'WPILib: Build Robot Code'<br><br>If the build succeeds, you'll see 'BUILD SUCCESSFUL' in the output. Any errors will be displayed with file names and line numbers."
+    },
+    {
+      "type": "text",
+      "title": "Deploying to Robot",
+      "content": "Deploying uploads your compiled code to the roboRIO (robot controller). The robot must be powered on and connected to the same network as your computer.<br><br><strong>Deployment Methods:</strong><br><br><strong>1. Using VS Code Command:</strong><br>- Press <code>Ctrl+Shift+P</code> and type 'WPILib: Deploy Robot Code'<br>- Or use the keyboard shortcut <code>Ctrl+F5</code><br><br><strong>2. Using Terminal:</strong><br>- Run <code>./gradlew deploy</code> (Windows: <code>gradlew.bat deploy</code>)<br><br><strong>Deployment Process:</strong><br>1. Builds your project (if not already built)<br>2. Connects to the robot over the network<br>3. Uploads the compiled code<br>4. Restarts the robot code on the roboRIO<br><br><strong>Verification:</strong> After deployment, check the Driver Station to see if the robot code is running. You should see your robot's status indicators active.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/getting-started/getting-started-frc-control-system/roborio-introduction.html' target='_blank'>WPILib Documentation: roboRIO Introduction</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Project Configuration Best Practices",
+      "subtitle": "For well-organized projects:",
+      "items": [
+        "Use descriptive project names that indicate the season or purpose",
+        "Set your team number correctly during project creation",
+        "Organize code into packages (subsystems, commands, etc.)",
+        "Use a Constants class for configuration values",
+        "Keep build.gradle updated with correct WPILib version",
+        "Use version control (Git) to track changes",
+        "Document your code with comments"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Project Lifecycle",
+      "content": "Understanding the project lifecycle helps you work efficiently:<br><br><strong>1. Create:</strong> Use WPILib template to create project structure<br><strong>2. Develop:</strong> Write and modify code in the <code>src/main/java/</code> directory<br><strong>3. Build:</strong> Compile code to check for errors<br><strong>4. Deploy:</strong> Upload code to robot for testing<br><strong>5. Test:</strong> Run code on robot and verify behavior<br><strong>6. Iterate:</strong> Make changes and repeat the cycle<br><br>This cycle repeats throughout development. Building frequently catches errors early, and deploying regularly ensures your code works on the actual robot hardware."
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Project Issues",
+      "content": "Common issues when creating or working with projects:<br><br><strong>Project Creation Fails:</strong> Ensure WPILib is properly installed and VS Code extension is active. Try restarting VS Code.<br><br><strong>Build Errors:</strong> Check that your Java code has no syntax errors. Review the error messages in the build output for specific issues.<br><br><strong>Deployment Fails:</strong> Verify robot is powered on and connected to the network. Check that team number is correct. Ensure firewall isn't blocking communication.<br><br><strong>Code Not Running:</strong> Verify deployment was successful. Check Driver Station for robot status. Ensure robot code matches the selected mode (autonomous/teleop).<br><br><strong>Dependencies Missing:</strong> If using vendor libraries, ensure they're properly added to <code>build.gradle</code> and vendordeps folder."
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        { "label": "VS Code Setup", "id": "vs-code-setup" },
+        { "label": "Gradle Build System", "id": "gradle-build-system" },
+        { "label": "Basic Robot Structure", "id": "frc-basic-robot-structure" }
+      ]
+    }
+  ]
+}
+

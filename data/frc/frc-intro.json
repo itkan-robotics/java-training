@@ -1,76 +1,152 @@
 {
-  "title": "FRC Java Programming Curriculum Overview",
+  "title": "FRC Curriculum Overview",
   "sections": [
     {
       "type": "text",
-      "title": "Welcome to FRC Java Programming",
-      "content": "This comprehensive curriculum is designed for students with a solid Java background who want to learn FRC (FIRST Robotics Competition) robotics programming. The curriculum is structured in three progressive tiers, each building upon the previous level."
+      "title": "Welcome to FRC Programming",
+      "content": "Welcome to the comprehensive FRC (FIRST Robotics Competition) programming curriculum! This curriculum is designed to take you from complete beginner to advanced FRC programmer, covering WPILib framework, command-based programming, control theory, and professional robotics development practices."
     },
     {
       "type": "rules-box",
-      "title": "Curriculum Structure",
-      "subtitle": "Our curriculum follows a progressive learning path designed to take you from basic robot control to advanced autonomous systems.",
+      "title": "What is FRC?",
+      "subtitle": "FIRST Robotics Competition is:",
       "items": [
-        "<strong>Beginner Tier:</strong> Focus on WPILib setup, Git/GitHub basics, basic robot structure, drivetrain control, gamepad control, sensors, simple autonomous, and basic mechanisms",
-        "<strong>Intermediate Tier:</strong> Command-based programming, PID control, motion profiling, PathPlanner, and AdvantageKit swerve tuning",
-        "<strong>Advanced Tier:</strong> AdvantageScope, advanced logging, simulation, and advanced topics for competition robotics"
+        "A robotics competition for high school students (grades 9-12)",
+        "A platform for learning professional engineering and programming practices",
+        "An opportunity to work with industrial-grade robotics hardware and software",
+        "A chance to develop advanced problem-solving and teamwork skills",
+        "A pathway to careers in engineering, programming, and STEM fields",
+        "A competition that combines strategy, design, and programming excellence"
       ]
     },
     {
       "type": "text",
-      "title": "Prerequisites",
-      "content": "Before starting this curriculum, you should have:"
+      "title": "Curriculum Structure",
+      "content": "This FRC curriculum is organized into comprehensive learning modules, each building essential skills for competitive robotics:"
     },
     {
       "type": "list",
+      "title": "Learning Modules",
+      "items": [
+        "<strong>Environment Setup:</strong> Master WPILib installation, project creation, VS Code setup, Gradle build system, Driver Station configuration, and SmartDashboard usage. Essential foundation for all FRC development.",
+        "<strong>Hardware Vendors:</strong> Learn to work with CTRE (Talon FX, CANcoder) and REV (Spark MAX, Spark) motor controllers, sensors, and pneumatics. Understand configuration, PID control, and advanced features.",
+        "<strong>Command-Based Programming:</strong> Master the command-based framework with subsystems, commands, command groups, triggers, and the robot container pattern. Professional architecture for complex robots.",
+        "<strong>Control Theory:</strong> Deep dive into PID control, motion profiling (trapezoidal and exponential), feedforward control, and advanced control techniques. Essential for precise robot movement.",
+        "<strong>Pose Estimation:</strong> Learn odometry basics, swerve odometry, vision-based pose estimation, AprilTag integration, sensor fusion, and tuning techniques for accurate robot localization.",
+        "<strong>Path Planning:</strong> Master PathPlanner setup, trajectory creation, path following, event markers, AutoBuilder, and tuning. Create sophisticated autonomous routines.",
+        "<strong>YAMS Framework:</strong> Learn the YAMS (Yet Another Mechanism System) framework for mechanism configuration, state machines, commands, and advanced patterns.",
+        "<strong>Advanced Topics:</strong> Explore AdvantageScope logging and analysis, AdvantageKit architecture, simulation basics and advanced simulation, unit testing, and professional code organization."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Learning Path Overview",
+      "content": "Follow this recommended learning path to build your FRC programming skills systematically:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "<strong>Start with Environment Setup:</strong> Begin with WPILib setup and project creation. Learn VS Code configuration, understand the Gradle build system, and set up Driver Station and SmartDashboard.",
+        "<strong>Master Hardware Integration:</strong> Learn to configure and control motors using CTRE and REV hardware. Understand encoders, sensors, PID control, and current limiting.",
+        "<strong>Learn Command-Based Architecture:</strong> Understand subsystems, commands, and the command scheduler. Build well-structured, maintainable robot code.",
+        "<strong>Implement Control Systems:</strong> Master PID control, motion profiling, and feedforward control. Create smooth, precise robot movements.",
+        "<strong>Add Pose Estimation:</strong> Implement odometry and vision-based localization. Enable sophisticated autonomous behaviors.",
+        "<strong>Create Autonomous Paths:</strong> Use PathPlanner to design and execute complex autonomous routines with events and markers.",
+        "<strong>Explore Advanced Tools:</strong> Learn AdvantageScope for data analysis, AdvantageKit for advanced architecture, and simulation for testing."
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Prerequisites",
+      "subtitle": "Before starting FRC programming, you should have:",
       "items": [
         "Solid understanding of Java programming fundamentals",
-        "Basic knowledge of object-oriented programming concepts",
-        "Familiarity with control structures (if/else, loops)",
-        "Understanding of methods and classes",
-        "Basic knowledge of arrays and data structures",
-        "Understanding of Git version control basics"
+        "Familiarity with object-oriented programming concepts",
+        "Understanding of basic electronics and robotics hardware",
+        "Access to FRC robot hardware (or simulation environment)",
+        "WPILib development environment set up",
+        "Willingness to learn professional software development practices"
       ]
     },
     {
       "type": "text",
-      "title": "Learning Resources",
-      "content": "This curriculum is based on the following authoritative sources:"
+      "title": "FRC Development Tools",
+      "content": "Essential tools for FRC programming:"
     },
     {
       "type": "list",
       "items": [
-        "<a href='https://docs.wpilib.org/' target='_blank'>WPILib Documentation</a> - Official FRC programming framework documentation",
-        "<a href='https://www.firstinspires.org/resource-library/frc/technology-information-and-resources' target='_blank'>FIRST Technology Information</a> - Official FIRST resources and documentation",
-        "<a href='https://github.com/Mechanical-Advantage/AdvantageKit' target='_blank'>AdvantageKit</a> - Advanced FRC programming framework",
-        "<a href='https://pathplanner.dev/' target='_blank'>PathPlanner</a> - Autonomous path planning tool",
-        "<a href='https://github.com/Mechanical-Advantage/AdvantageScope' target='_blank'>AdvantageScope</a> - Data analysis and visualization tool"
+        "<strong>WPILib:</strong> Official FRC programming framework with libraries, tools, and utilities",
+        "<strong>VS Code:</strong> Recommended IDE with WPILib extensions for FRC development",
+        "<strong>Gradle:</strong> Build system used by WPILib projects for dependency management",
+        "<strong>Driver Station:</strong> Software for controlling and monitoring robots during competition",
+        "<strong>SmartDashboard:</strong> Real-time robot data visualization and control interface",
+        "<strong>PathPlanner:</strong> Visual path planning tool for autonomous routines",
+        "<strong>AdvantageScope:</strong> Data logging and analysis tool for robot performance",
+        "<strong>AdvantageKit:</strong> Advanced framework for professional FRC development"
       ]
     },
     {
-      "type": "rules-box",
-      "title": "Development Environment",
-      "subtitle": "You'll learn to work with the professional FRC development environment:",
+      "type": "text",
+      "title": "Best Practices",
+      "content": "Follow these practices for professional FRC development:"
+    },
+    {
+      "type": "list",
       "items": [
-        "<strong>WPILib:</strong> Official FRC programming framework with comprehensive libraries and tools",
-        "<strong>Git/GitHub:</strong> Version control and collaboration tools essential for team development",
-        "<strong>AdvantageKit:</strong> Advanced framework for complex robot control and data logging",
-        "<strong>PathPlanner:</strong> Visual path planning tool for autonomous routines"
+        "<strong>Use Command-Based Architecture:</strong> Organize code with subsystems and commands for maintainability",
+        "<strong>Version Control:</strong> Use Git to track changes and collaborate with your team",
+        "<strong>Test Thoroughly:</strong> Test code in simulation and on practice robots before competition",
+        "<strong>Document Code:</strong> Write clear comments and documentation for team members",
+        "<strong>Follow WPILib Conventions:</strong> Use standard naming and structure patterns",
+        "<strong>Log Data:</strong> Use AdvantageScope to analyze robot performance and debug issues",
+        "<strong>Plan Autonomous:</strong> Design autonomous routines with PathPlanner before coding",
+        "<strong>Code Reviews:</strong> Have team members review code for quality and correctness"
       ]
     },
     {
       "type": "text",
       "title": "Getting Started",
-      "content": "Start with the Beginner Tier if you're new to FRC programming. Each lesson includes hands-on exercises and example code. Make sure to complete the exercises and experiment with the provided code examples."
+      "content": "Ready to begin your FRC programming journey? Start with the <strong>WPILib Setup</strong> lesson in the Environment Setup section to learn the fundamentals of FRC development."
     },
     {
       "type": "link-grid",
-      "title": "Ready to Begin?",
+      "title": "Quick Navigation",
       "links": [
-        { "id": "frc-wpilib-setup", "label": "Start with WPILib Setup" },
-        { "id": "frc-git-github-basics", "label": "Git/GitHub Basics" },
-        { "id": "frc-basic-robot-structure", "label": "Basic Robot Structure" }
+        {
+          "label": "WPILib Setup",
+          "id": "wpilib-setup"
+        },
+        {
+          "label": "Project Creation",
+          "id": "project-creation"
+        },
+        {
+          "label": "Command-Based Intro",
+          "id": "command-based-intro"
+        },
+        {
+          "label": "PID Control Intro",
+          "id": "pid-control-intro"
+        }
       ]
+    },
+    {
+      "type": "exercise-box",
+      "title": "FRC Programming Readiness",
+      "description": "Before starting FRC programming, assess your readiness:",
+      "tasks": [
+        "Do you have access to FRC robot hardware or simulation tools?",
+        "Are you comfortable with Java programming and object-oriented concepts?",
+        "Have you set up the WPILib development environment?",
+        "How much time can you dedicate to learning and practice?",
+        "What are your goals (competition, learning, career development)?",
+        "Are you comfortable working with industrial-grade hardware?",
+        "Do you have a team or mentor to work with?",
+        "Are you ready to learn professional software development practices?"
+      ],
+      "content": "// FRC programming is about building competitive robots\n// Start with the fundamentals and build your skills systematically\n// Remember: professional practices and thorough testing lead to success!"
     }
   ]
-} 
+}
+

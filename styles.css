@@ -1124,6 +1124,74 @@
     max-width: 100%;
   }
   
+  /* Java Syntax Highlighting - Light Theme */
+  .code-block code .java-keyword {
+    color: #0066cc;
+    font-weight: 600;
+  }
+  
+  .code-block code .java-type {
+    color: #008080;
+    font-weight: 500;
+  }
+  
+  .code-block code .java-literal {
+    color: #cc0066;
+    font-weight: 500;
+  }
+  
+  .code-block code .java-string {
+    color: #008000;
+  }
+  
+  .code-block code .java-number {
+    color: #0066cc;
+  }
+  
+  .code-block code .java-comment {
+    color: #808080;
+    font-style: italic;
+  }
+  
+  .code-block code .java-annotation {
+    color: #808000;
+    font-weight: 500;
+  }
+  
+  /* Java Syntax Highlighting - Dark Theme */
+  html[data-theme="dark"] .code-block code .java-keyword {
+    color: #4fc3f7;
+    font-weight: 600;
+  }
+  
+  html[data-theme="dark"] .code-block code .java-type {
+    color: #81c784;
+    font-weight: 500;
+  }
+  
+  html[data-theme="dark"] .code-block code .java-literal {
+    color: #f48fb1;
+    font-weight: 500;
+  }
+  
+  html[data-theme="dark"] .code-block code .java-string {
+    color: #a5d6a7;
+  }
+  
+  html[data-theme="dark"] .code-block code .java-number {
+    color: #90caf9;
+  }
+  
+  html[data-theme="dark"] .code-block code .java-comment {
+    color: #9e9e9e;
+    font-style: italic;
+  }
+  
+  html[data-theme="dark"] .code-block code .java-annotation {
+    color: #ffcc80;
+    font-weight: 500;
+  }
+  
   /* Code header styles for minimize/maximize functionality */
   .code-header {
     display: flex;
@@ -2601,4 +2669,181 @@
           transform: translateY(0);
       }
   }
+
+/* Page Navigation Buttons */
+.page-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-background-border);
+    gap: 1rem;
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--color-background-primary);
+    border: 2px solid var(--color-background-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-foreground-primary);
+    font-family: var(--font-stack);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    max-width: 48%;
+    min-width: 0;
+    flex: 1;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+}
+
+.nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(var(--color-brand-primary-rgb), 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-button:hover {
+    background-color: var(--color-background-primary);
+    border-color: var(--color-brand-primary);
+    color: var(--color-brand-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.nav-button:hover::before {
+    left: 100%;
+}
+
+.nav-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-button-prev {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.nav-button-next {
+    justify-content: flex-end;
+    margin-left: auto;
+    text-align: right;
+}
+
+.nav-button-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    flex: 1;
+    gap: 0.25rem;
+    text-align: left;
+}
+
+.nav-button-next .nav-button-content {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.nav-button-label {
+    font-family: var(--font-stack);
+    font-size: var(--font-size--small--2);
+    color: var(--color-foreground-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: inherit;
+    display: block;
+}
+
+.nav-button-prev .nav-button-label {
+    text-align: left;
+}
+
+.nav-button-next .nav-button-label {
+    text-align: right;
+}
+
+.nav-button-title {
+    font-family: var(--font-stack);
+    font-size: 0.95rem;
+    color: var(--color-foreground-primary);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    line-height: 1.4;
+    text-align: inherit;
+    display: block;
+}
+
+.nav-button-prev .nav-button-title {
+    text-align: left;
+}
+
+.nav-button-next .nav-button-title {
+    text-align: right;
+}
+
+.nav-button:hover .nav-button-title {
+    color: var(--color-brand-primary);
+}
+
+.nav-button-icon {
+    font-size: 1.5rem;
+    color: var(--color-brand-primary);
+    font-weight: normal;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.nav-button-prev:hover .nav-button-icon {
+    transform: translateX(-4px);
+}
+
+.nav-button-next:hover .nav-button-icon {
+    transform: translateX(4px);
+}
+
+/* Mobile responsive styles for navigation buttons */
+@media (max-width: 768px) {
+    .page-navigation {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .nav-button {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .nav-button-next {
+        margin-left: 0;
+    }
+    
+    .nav-button-next .nav-button-content {
+        align-items: flex-start;
+        text-align: left;
+    }
+}
    

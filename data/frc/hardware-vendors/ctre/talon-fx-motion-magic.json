@@ -1,0 +1,115 @@
+{
+  "title": "Talon FX Motion Magic",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Motion Magic",
+      "content": "Motion Magic is CTRE's motion profiling feature that provides smooth, controlled motion to target positions. Unlike basic PID position control, Motion Magic automatically generates a motion profile (acceleration, cruise velocity, deceleration) that results in smooth, predictable motion.<br><br>Motion Magic is ideal for mechanisms that need to move quickly and smoothly to positions, such as arms, elevators, and turrets. It combines motion profiling with PID control to achieve both speed and precision."
+    },
+    {
+      "type": "rules-box",
+      "title": "Motion Magic Advantages",
+      "subtitle": "Why use Motion Magic:",
+      "items": [
+        "Smooth, controlled motion (no jerky movements)",
+        "Automatic acceleration and deceleration",
+        "Faster than basic PID (can use higher speeds)",
+        "Predictable motion profiles",
+        "Reduces mechanical stress on mechanisms",
+        "Better for mechanisms with significant inertia",
+        "Configurable cruise velocity and acceleration"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Motion Magic vs Basic PID",
+      "content": "Understanding the difference between Motion Magic and basic PID helps you choose the right control method:<br><br><strong>Basic PID Position Control:</strong><br>- Moves directly toward target<br>- Constant output until target reached<br>- Can be jerky, especially with high kP<br>- May overshoot or oscillate<br>- Simpler configuration<br><br><strong>Motion Magic:</strong><br>- Generates smooth motion profile<br>- Accelerates, cruises, then decelerates<br>- Smooth, predictable motion<br>- Less mechanical stress<br>- More configuration required<br><br><strong>When to Use Each:</strong><br>- <strong>Basic PID:</strong> Simple mechanisms, slow movements, tight spaces<br>- <strong>Motion Magic:</strong> Mechanisms with inertia, fast movements, smooth motion required"
+    },
+    {
+      "type": "text",
+      "title": "Motion Magic Parameters",
+      "content": "Motion Magic requires several parameters to be configured. These control the shape and speed of the motion profile:<br><br><strong>Cruise Velocity:</strong><br>- Maximum speed during motion (rotations per second)<br>- Higher = faster motion, but may cause overshoot<br>- Typical values: 5-20 rotations/second<br><br><strong>Acceleration:</strong><br>- How quickly to reach cruise velocity (rotations per second squared)<br>- Higher = faster acceleration, but more mechanical stress<br>- Typical values: 5-20 rotations/second²<br><br><strong>Jerk:</strong><br>- Rate of change of acceleration (rotations per second cubed)<br>- Controls smoothness of acceleration/deceleration<br>- Higher = smoother motion (less jerk)<br>- Typical values: 50-200 rotations/second³<br><br><strong>Note:</strong> In Phoenix 6, Motion Magic uses rotations/second units instead of encoder units per 100ms, making it more intuitive to work with."
+    },
+    {
+      "type": "code",
+      "title": "Configuring Motion Magic Parameters",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class MotionMagicConfig {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // Motion Magic parameters (in rotations/second)\n    private static final double CRUISE_VELOCITY = 10.0;  // rotations per second\n    private static final double ACCELERATION = 10.0;     // rotations per second squared\n    private static final double JERK = 100.0;            // rotations per second cubed\n    \n    public MotionMagicConfig() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID for Motion Magic (Slot0)\n        config.Slot0.kP = 0.1;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.01;\n        config.Slot0.kV = 0.0;\n        \n        // Configure Motion Magic parameters\n        config.MotionMagic.MotionMagicCruiseVelocity = CRUISE_VELOCITY;\n        config.MotionMagic.MotionMagicAcceleration = ACCELERATION;\n        config.MotionMagic.MotionMagicJerk = JERK;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Using Motion Magic",
+      "content": "Using Motion Magic is similar to position control - you set a target position, and the Talon FX automatically generates and follows a motion profile to reach that position smoothly.<br><br><strong>Control Request:</strong> Use <code>MotionMagicVoltage</code> control request when setting the target position. The Talon FX will:<br>1. Calculate motion profile based on current position and target<br>2. Accelerate to cruise velocity<br>3. Maintain cruise velocity<br>4. Decelerate to target<br>5. Use PID to hold at target<br><br><strong>Target Setting:</strong> Set the target position in rotations, just like position control. Motion Magic handles the rest automatically."
+    },
+    {
+      "type": "code",
+      "title": "Basic Motion Magic Usage",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.MotionMagicVoltage;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class ArmWithMotionMagic extends SubsystemBase {\n    private final TalonFX m_armMotor = new TalonFX(3);\n    \n    // Control request (reusable)\n    private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);\n    \n    // Conversion: rotations to degrees\n    private static final double ROTATIONS_PER_DEGREE = 1.0 / 360.0;\n    \n    // Motion Magic parameters (rotations/second)\n    private static final double CRUISE_VELOCITY = 10.0;\n    private static final double ACCELERATION = 10.0;\n    private static final double JERK = 100.0;\n    \n    public ArmWithMotionMagic() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID\n        config.Slot0.kP = 0.1;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.01;\n        config.Slot0.kV = 0.0;\n        \n        // Configure Motion Magic\n        config.MotionMagic.MotionMagicCruiseVelocity = CRUISE_VELOCITY;\n        config.MotionMagic.MotionMagicAcceleration = ACCELERATION;\n        config.MotionMagic.MotionMagicJerk = JERK;\n        \n        // Reset encoder position to zero\n        m_armMotor.setPosition(0);\n        \n        // Apply configuration\n        m_armMotor.getConfigurator().apply(config);\n    }\n    \n    public void setAngle(double degrees) {\n        // Convert degrees to rotations\n        double targetRotations = degrees * ROTATIONS_PER_DEGREE;\n        \n        // Use MotionMagicVoltage control request\n        m_armMotor.setControl(m_motionMagicRequest.withPosition(targetRotations));\n    }\n    \n    public double getAngle() {\n        double position = m_armMotor.getPosition().getValue();\n        return position / ROTATIONS_PER_DEGREE;\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Monitoring Motion Status",
+      "content": "You can monitor Motion Magic status to determine when motion is complete or to display telemetry. The Talon FX provides status information about the motion profile.<br><br><strong>Available Status Information:</strong><br>- <strong>Position:</strong> Current encoder position (rotations)<br>- <strong>Velocity:</strong> Current velocity (rotations per second)<br>- <strong>Duty Cycle:</strong> Current motor output<br>- <strong>Control Request:</strong> Current control request being executed<br><br><strong>Motion Completion:</strong> Motion is typically considered complete when the position error is within tolerance and velocity is near zero. Calculate error by comparing the target position (from your control request) with the current position."
+    },
+    {
+      "type": "code",
+      "title": "Monitoring Motion Magic Status",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport com.ctre.phoenix6.controls.MotionMagicVoltage;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class MotionMagicStatus {\n    private final TalonFX m_motor = new TalonFX(1);\n    private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_motor.getPosition(),\n        m_motor.getVelocity(),\n        m_motor.getDutyCycle()\n    };\n    \n    public void updateStatus() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Current position and velocity\n        double position = m_motor.getPosition().getValue();\n        double velocity = m_motor.getVelocity().getValue();\n        \n        // Motor output\n        double output = m_motor.getDutyCycle().getValue();\n        \n        // Calculate error (target - current)\n        // Note: In Phoenix 6, you track the target yourself\n        double targetPosition = m_motionMagicRequest.Position;\n        double error = targetPosition - position;\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Position\", position);\n        SmartDashboard.putNumber(\"Velocity\", velocity);\n        SmartDashboard.putNumber(\"Target Position\", targetPosition);\n        SmartDashboard.putNumber(\"Error\", error);\n        SmartDashboard.putNumber(\"Output\", output);\n        \n        // Check if motion is complete (tolerance in rotations)\n        boolean isComplete = Math.abs(error) < 0.1 && Math.abs(velocity) < 0.5;\n        SmartDashboard.putBoolean(\"Motion Complete\", isComplete);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Motion Magic Tuning",
+      "content": "Tuning Motion Magic involves adjusting both the motion profile parameters and the underlying PID parameters. Follow this process:<br><br><strong>Step 1: Tune PID First</strong><br>- Start with basic PID position control<br>- Tune kP, kI, kD until position control works well<br>- This ensures Motion Magic has good PID to follow the profile<br><br><strong>Step 2: Set Cruise Velocity</strong><br>- Start with a moderate cruise velocity (e.g., 10 rotations/second)<br>- Increase until motion is fast but still smooth<br>- Too high = overshoot or instability<br><br><strong>Step 3: Set Acceleration</strong><br>- Start with acceleration = cruise velocity<br>- Increase for faster acceleration, decrease for smoother<br>- Too high = mechanical stress, too low = slow motion<br><br><strong>Step 4: Adjust Jerk</strong><br>- Start with moderate jerk (e.g., 100 rotations/second³)<br>- Increase for smoother motion (less jerk)<br>- Higher values = smoother but may be slower to start<br><br><strong>Step 5: Test and Refine</strong><br>- Test with different distances<br>- Test with different loads<br>- Adjust parameters based on results"
+    },
+    {
+      "type": "code",
+      "title": "Motion Magic Tuning Helper",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.MotionMagicConfigs;\nimport com.ctre.phoenix6.configs.Slot0Configs;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class MotionMagicTuning {\n    private final TalonFX m_motor;\n    \n    public MotionMagicTuning(TalonFX motor) {\n        m_motor = motor;\n    }\n    \n    public void updateFromDashboard() {\n        // Read parameters from dashboard\n        double cruiseVel = SmartDashboard.getNumber(\"MM Cruise Velocity\", 10.0);\n        double accel = SmartDashboard.getNumber(\"MM Acceleration\", 10.0);\n        double jerk = SmartDashboard.getNumber(\"MM Jerk\", 100.0);\n        \n        // Update Motion Magic parameters\n        MotionMagicConfigs mmConfig = new MotionMagicConfigs();\n        mmConfig.MotionMagicCruiseVelocity = cruiseVel;\n        mmConfig.MotionMagicAcceleration = accel;\n        mmConfig.MotionMagicJerk = jerk;\n        m_motor.getConfigurator().apply(mmConfig);\n        \n        // Update PID from dashboard\n        double kP = SmartDashboard.getNumber(\"PID kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"PID kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"PID kD\", 0.01);\n        \n        Slot0Configs slotConfig = new Slot0Configs();\n        slotConfig.kP = kP;\n        slotConfig.kI = kI;\n        slotConfig.kD = kD;\n        m_motor.getConfigurator().apply(slotConfig);\n    }\n    \n    public void displayStatus() {\n        SmartDashboard.putNumber(\"MM Position\", m_motor.getPosition().getValue());\n        SmartDashboard.putNumber(\"MM Velocity\", m_motor.getVelocity().getValue());\n        SmartDashboard.putNumber(\"MM Output\", m_motor.getDutyCycle().getValue());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "S-Curve Profiles",
+      "content": "Motion Magic uses jerk to control the smoothness of acceleration and deceleration. Jerk is the rate of change of acceleration, which creates smoother motion profiles.<br><br><strong>Low Jerk:</strong><br>- More linear acceleration and deceleration<br>- Faster to reach cruise velocity<br>- May feel slightly jerky<br>- Simpler motion profile<br><br><strong>High Jerk:</strong><br>- Very smooth acceleration and deceleration<br>- Acceleration rate changes smoothly<br>- More comfortable motion<br>- Reduces mechanical stress<br>- Slightly slower to reach cruise velocity<br><br><strong>Jerk Values:</strong><br>- Typical range: 50-200 rotations/second³<br>- Lower values (50-100) = faster, less smooth<br>- Higher values (150-200) = smoother, slightly slower<br>- Very high values may make motion feel sluggish<br><br><strong>Choosing Jerk:</strong> Start with moderate jerk (100), then adjust based on your mechanism's needs. Higher values reduce jerk (the physical phenomenon) but may make motion feel slower to start."
+    },
+    {
+      "type": "text",
+      "title": "Advanced Motion Magic Features",
+      "content": "Motion Magic has several advanced features for specialized applications:<br><br><strong>Motion Magic with Heading:</strong><br>- Control both position and heading simultaneously<br>- Useful for swerve modules or holonomic drivetrains<br>- Requires additional configuration<br><br><strong>Custom Motion Profiles:</strong><br>- Generate custom motion profiles externally<br>- Load profiles into Talon FX<br>- More control over motion shape<br>- Advanced use case<br><br><strong>Trajectory Following:</strong><br>- Follow pre-calculated trajectories<br>- Useful for autonomous path following<br>- Requires external trajectory generation<br><br><strong>Motion Magic Auxiliary:</strong><br>- Use Motion Magic for primary axis, PID for auxiliary<br>- Advanced multi-axis control<br><br>These advanced features are typically used in specialized applications and may require additional setup and configuration."
+    },
+    {
+      "type": "code",
+      "title": "Complete Motion Magic Example",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.MotionMagicVoltage;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Elevator extends SubsystemBase {\n    private final TalonFX m_elevatorMotor = new TalonFX(4);\n    \n    // Control request (reusable)\n    private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);\n    \n    // Conversion: rotations to inches (assuming 4\" diameter spool)\n    private static final double SPOOL_CIRCUMFERENCE = 4.0 * Math.PI;  // inches\n    private static final double ROTATIONS_PER_INCH = 1.0 / SPOOL_CIRCUMFERENCE;\n    \n    // Motion Magic parameters (rotations/second)\n    private static final double CRUISE_VELOCITY = 15.0;\n    private static final double ACCELERATION = 15.0;\n    private static final double JERK = 150.0;\n    \n    // Preset positions (in inches)\n    public static final double BOTTOM = 0.0;\n    public static final double MID = 24.0;\n    public static final double TOP = 48.0;\n    \n    public Elevator() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID\n        config.Slot0.kP = 0.15;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.02;\n        config.Slot0.kV = 0.0;\n        \n        // Configure Motion Magic\n        config.MotionMagic.MotionMagicCruiseVelocity = CRUISE_VELOCITY;\n        config.MotionMagic.MotionMagicAcceleration = ACCELERATION;\n        config.MotionMagic.MotionMagicJerk = JERK;\n        \n        // Configure soft limits (in rotations)\n        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;\n        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = TOP * ROTATIONS_PER_INCH;\n        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;\n        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = BOTTOM * ROTATIONS_PER_INCH;\n        \n        // Reset encoder position to zero\n        m_elevatorMotor.setPosition(0);\n        \n        // Apply configuration\n        m_elevatorMotor.getConfigurator().apply(config);\n    }\n    \n    public void setHeight(double inches) {\n        double targetRotations = inches * ROTATIONS_PER_INCH;\n        m_elevatorMotor.setControl(m_motionMagicRequest.withPosition(targetRotations));\n    }\n    \n    public double getHeight() {\n        double position = m_elevatorMotor.getPosition().getValue();\n        return position / ROTATIONS_PER_INCH;\n    }\n    \n    public boolean isAtHeight(double targetHeight, double tolerance) {\n        double currentHeight = getHeight();\n        return Math.abs(currentHeight - targetHeight) < tolerance;\n    }\n    \n    public boolean isMotionComplete() {\n        double target = m_motionMagicRequest.Position;\n        double current = m_elevatorMotor.getPosition().getValue();\n        double error = Math.abs(target - current);\n        double velocity = Math.abs(m_elevatorMotor.getVelocity().getValue());\n        return error < 0.1 && velocity < 0.5;  // Tolerance in rotations\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Elevator Height\", getHeight());\n        SmartDashboard.putBoolean(\"Motion Complete\", isMotionComplete());\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Motion Magic Best Practices",
+      "subtitle": "Tips for effective Motion Magic usage:",
+      "items": [
+        "Tune PID first before tuning Motion Magic",
+        "Start with moderate cruise velocity and acceleration",
+        "Use moderate jerk (100-150) for most applications",
+        "Test with different distances and loads",
+        "Monitor motion status to verify smooth motion",
+        "Use soft limits to prevent overtravel",
+        "Document your Motion Magic parameters",
+        "Consider mechanism inertia when setting parameters",
+        "Balance speed vs smoothness based on application"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting Motion Magic",
+      "content": "Common Motion Magic issues and solutions:<br><br><strong>Motion is Jerky:</strong><br>- Increase jerk value<br>- Reduce cruise velocity<br>- Check PID tuning (may be too aggressive)<br><br><strong>Motion is Too Slow:</strong><br>- Increase cruise velocity<br>- Increase acceleration<br>- Reduce jerk value<br><br><strong>Overshoots Target:</strong><br>- Reduce cruise velocity<br>- Increase acceleration (faster deceleration)<br>- Improve PID tuning (better following)<br>- Check for mechanical issues (backlash, etc.)<br><br><strong>Doesn't Reach Target:</strong><br>- Check configuration is applied correctly<br>- Verify PID tuning<br>- Check for mechanical binding<br>- Increase cruise velocity or acceleration<br><br><strong>Motion Profile Not Following:</strong><br>- Verify PID is tuned correctly<br>- Check sensor configuration<br>- Verify feedback sensor is configured correctly"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Talon FX PID Control", "id": "talon-fx-pid-control" },
+        { "label": "Talon FX Configuration", "id": "talon-fx-configuration" },
+        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" }
+      ]
+    }
+  ]
+}
+

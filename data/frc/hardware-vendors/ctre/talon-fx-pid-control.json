@@ -1,0 +1,129 @@
+{
+  "title": "Talon FX PID Control",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to PID Control on Talon FX",
+      "content": "PID (Proportional-Integral-Derivative) control is a feedback control algorithm that allows precise control of motor position or velocity. The Talon FX has built-in PID controllers that run on the device itself, providing fast, accurate control without burdening the roboRIO.<br><br>PID control on Talon FX is essential for mechanisms that need precise positioning (arms, elevators) or consistent velocity (flywheels, intakes). Understanding how to configure and tune PID on Talon FX is a critical skill for FRC programming."
+    },
+    {
+      "type": "rules-box",
+      "title": "PID Control Benefits",
+      "subtitle": "Why use PID control:",
+      "items": [
+        "Precise position control (move to exact position)",
+        "Consistent velocity control (maintain speed)",
+        "Automatic correction of errors",
+        "Handles load variations",
+        "Runs on device (fast response, low latency)",
+        "Multiple PID slots for different scenarios"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "How Talon FX PID Works",
+      "content": "The Talon FX implements PID control on the device itself. Here's how it works:<br><br><strong>Control Loop:</strong><br>1. You set a target (setpoint) - position or velocity<br>2. Talon FX reads the current sensor value<br>3. Calculates error (difference between target and current)<br>4. PID algorithm calculates output to reduce error<br>5. Motor output is adjusted automatically<br>6. Process repeats continuously<br><br><strong>On-Device Processing:</strong> Because PID runs on the Talon FX, it responds very quickly (typically 1ms update rate) without adding load to the roboRIO. This makes it ideal for high-performance control applications."
+    },
+    {
+      "type": "text",
+      "title": "PID Slots",
+      "content": "The Talon FX supports multiple PID configurations. In Phoenix 6, PID parameters are configured in the <code>TalonFXConfiguration</code> object. You can have different PID configurations for different control types (position, velocity, etc.) by using different control request objects.<br><br><strong>Common Use Cases:</strong><br>- <strong>Position Control:</strong> Use <code>PositionVoltage</code> control request with position PID gains<br>- <strong>Velocity Control:</strong> Use <code>VelocityVoltage</code> control request with velocity PID gains<br>- <strong>Motion Magic:</strong> Use <code>MotionMagicVoltage</code> control request (covered in Motion Magic lesson)<br><br><strong>Control Request Pattern:</strong> Each control request type uses its own PID configuration. You configure PID gains in the configuration object, then use the appropriate control request."
+    },
+    {
+      "type": "code",
+      "title": "Configuring PID for Different Control Types",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class MultiplePIDConfigs {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public MultiplePIDConfigs() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Position PID gains (for PositionVoltage control)\n        config.Slot0.kP = 0.1;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.01;\n        config.Slot0.kV = 0.0;  // Feedforward (voltage)\n        config.Slot0.kS = 0.0;   // Static feedforward\n        config.Slot0.kA = 0.0;   // Acceleration feedforward\n        \n        // Velocity PID gains (for VelocityVoltage control)\n        config.Slot1.kP = 0.05;\n        config.Slot1.kI = 0.0;\n        config.Slot1.kD = 0.0;\n        config.Slot1.kV = 0.05;  // Feedforward for velocity\n        config.Slot1.kS = 0.0;\n        config.Slot1.kA = 0.0;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "PID Parameters Explained",
+      "content": "PID control uses four parameters to calculate motor output. Understanding what each parameter does helps with tuning:<br><br><strong>kP (Proportional Gain):</strong><br>- Responds to current error<br>- Larger kP = faster response, but may overshoot<br>- Too large = oscillation<br>- Start tuning here<br><br><strong>kI (Integral Gain):</strong><br>- Responds to accumulated error over time<br>- Eliminates steady-state error<br>- Too large = oscillation and windup<br>- Often set to 0 for many applications<br><br><strong>kD (Derivative Gain):</strong><br>- Responds to rate of error change<br>- Dampens oscillations<br>- Reduces overshoot<br>- Helps stabilize the system<br><br><strong>kF (Feedforward Gain):</strong><br>- Open-loop compensation<br>- Predicts needed output based on setpoint<br>- Reduces error before it occurs<br>- Especially useful for velocity control"
+    },
+    {
+      "type": "code",
+      "title": "Configuring PID Parameters",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class PIDConfiguration {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    // PID constants for position control\n    private static final double POSITION_KP = 0.1;\n    private static final double POSITION_KI = 0.0;\n    private static final double POSITION_KD = 0.01;\n    private static final double POSITION_KV = 0.0;  // Feedforward\n    \n    public PIDConfiguration() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID parameters for Slot0 (used by PositionVoltage)\n        config.Slot0.kP = POSITION_KP;\n        config.Slot0.kI = POSITION_KI;\n        config.Slot0.kD = POSITION_KD;\n        config.Slot0.kV = POSITION_KV;\n        config.Slot0.kS = 0.0;  // Static feedforward\n        config.Slot0.kA = 0.0;  // Acceleration feedforward\n        \n        // Configure closed loop settings\n        config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;  // Ramp time (seconds)\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Position Control",
+      "content": "Position control uses PID to move the motor to a specific encoder position and hold it there. This is useful for arms, elevators, and other mechanisms that need to move to precise positions.<br><br><strong>How It Works:</strong><br>1. Set target position in encoder units<br>2. Talon FX calculates error (target - current position)<br>3. PID algorithm adjusts motor output to reduce error<br>4. Motor moves toward target position<br>5. Once at target, motor holds position<br><br><strong>Use Cases:</strong><br>- Moving arm to specific angle<br>- Elevator to specific height<br>- Turret to specific rotation<br>- Any mechanism requiring precise positioning"
+    },
+    {
+      "type": "code",
+      "title": "Position Control Example",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.PositionVoltage;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\nimport edu.wpi.first.math.util.Units;\nimport edu.wpi.first.units.measure.Angle;\nimport edu.wpi.first.units.Units;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Arm extends SubsystemBase {\n    private final TalonFX m_armMotor = new TalonFX(3);\n    \n    // Control request (reusable)\n    private final PositionVoltage m_positionRequest = new PositionVoltage(0);\n    \n    // Conversion: rotations to degrees\n    private static final double ROTATIONS_PER_DEGREE = 1.0 / 360.0;\n    \n    public Arm() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID for position control (Slot0)\n        config.Slot0.kP = 0.1;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.01;\n        config.Slot0.kV = 0.0;\n        \n        // Reset encoder position to zero\n        m_armMotor.setPosition(0);\n        \n        // Apply configuration\n        m_armMotor.getConfigurator().apply(config);\n    }\n    \n    public void setAngle(double degrees) {\n        // Convert degrees to rotations\n        double targetRotations = degrees * ROTATIONS_PER_DEGREE;\n        \n        // Use PositionVoltage control request with Slot0\n        m_armMotor.setControl(m_positionRequest.withPosition(targetRotations).withSlot(0));\n    }\n    \n    public double getAngle() {\n        // Convert rotations to degrees\n        double position = m_armMotor.getPosition().getValue();\n        return position / ROTATIONS_PER_DEGREE;\n    }\n    \n    public boolean isAtAngle(double targetAngle, double tolerance) {\n        double currentAngle = getAngle();\n        return Math.abs(currentAngle - targetAngle) < tolerance;\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Arm Angle\", getAngle());\n        // Error is calculated from control request target vs current position\n        double error = m_positionRequest.Position - m_armMotor.getPosition().getValue();\n        SmartDashboard.putNumber(\"Arm Error\", error);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Velocity Control",
+      "content": "Velocity control uses PID to maintain a specific motor speed (rotations per second). This is useful for flywheels, intakes, and other mechanisms that need consistent speed.<br><br><strong>How It Works:</strong><br>1. Set target velocity in rotations per second<br>2. Talon FX calculates error (target velocity - current velocity)<br>3. PID algorithm adjusts motor output to maintain target speed<br>4. Motor speed is maintained even with load changes<br><br><strong>Use Cases:</strong><br>- Maintaining flywheel speed for shooting<br>- Consistent intake speed<br>- Conveyor belt speed control<br>- Any mechanism requiring constant velocity"
+    },
+    {
+      "type": "code",
+      "title": "Velocity Control Example",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.VelocityVoltage;\nimport com.ctre.phoenix6.controls.DutyCycleOut;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\nimport edu.wpi.first.units.measure.AngularVelocity;\nimport edu.wpi.first.units.Units;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Flywheel extends SubsystemBase {\n    private final TalonFX m_flywheelMotor = new TalonFX(5);\n    \n    // Control requests (reusable)\n    private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);\n    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);\n    \n    // Target velocity in rotations per second\n    private static final double TARGET_VELOCITY_RPS = 10.0;  // 10 rotations per second\n    \n    public Flywheel() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID for velocity control (Slot1)\n        config.Slot1.kP = 0.05;\n        config.Slot1.kI = 0.0;\n        config.Slot1.kD = 0.0;\n        config.Slot1.kV = 0.05;  // Feedforward for velocity\n        config.Slot1.kS = 0.0;\n        config.Slot1.kA = 0.0;\n        \n        // Apply configuration\n        m_flywheelMotor.getConfigurator().apply(config);\n    }\n    \n    public void spinUp() {\n        // Set target velocity using VelocityVoltage control request\n        m_flywheelMotor.setControl(\n            m_velocityRequest.withVelocity(TARGET_VELOCITY_RPS).withSlot(1)\n        );\n    }\n    \n    public void stop() {\n        m_flywheelMotor.setControl(m_dutyCycleRequest.withOutput(0.0));\n    }\n    \n    public double getVelocity() {\n        // Get velocity in rotations per second\n        return m_flywheelMotor.getVelocity().getValue();\n    }\n    \n    public boolean isAtSpeed(double tolerance) {\n        double currentVelocity = getVelocity();\n        return Math.abs(currentVelocity - TARGET_VELOCITY_RPS) < tolerance;\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Flywheel Velocity (RPS)\", getVelocity());\n        SmartDashboard.putNumber(\"Target Velocity (RPS)\", TARGET_VELOCITY_RPS);\n        SmartDashboard.putBoolean(\"At Speed\", isAtSpeed(0.5));\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "PID Tuning Process",
+      "content": "Tuning PID parameters is an iterative process. Follow these steps for effective tuning:<br><br><strong>Step 1: Start with kP</strong><br>- Set kI = 0, kD = 0, kF = 0<br>- Increase kP until system responds quickly but doesn't oscillate<br>- If it oscillates, reduce kP slightly<br><br><strong>Step 2: Add kD</strong><br>- Increase kD to reduce overshoot and oscillation<br>- kD dampens the response<br>- Too much kD can cause slow response<br><br><strong>Step 3: Add kI (if needed)</strong><br>- Only if there's steady-state error (doesn't reach target)<br>- Start with small kI values<br>- Too much kI causes oscillation<br><br><strong>Step 4: Add kF (for velocity control)</strong><br>- kF predicts needed output<br>- Useful for velocity control<br>- Set kF = (max output) / (max velocity)<br><br><strong>Testing:</strong> Test with different loads and conditions to ensure robust performance."
+    },
+    {
+      "type": "code",
+      "title": "PID Tuning Helper Code",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.Slot0Configs;\nimport com.ctre.phoenix6.configs.Slot1Configs;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class PIDTuningHelper {\n    private final TalonFX m_motor;\n    \n    public PIDTuningHelper(TalonFX motor) {\n        m_motor = motor;\n    }\n    \n    public void updatePIDFromDashboard(int slot) {\n        // Read PID values from dashboard for tuning\n        double kP = SmartDashboard.getNumber(\"PID kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"PID kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"PID kD\", 0.01);\n        double kV = SmartDashboard.getNumber(\"PID kV\", 0.0);\n        \n        // Update PID parameters based on slot\n        if (slot == 0) {\n            Slot0Configs slotConfig = new Slot0Configs();\n            slotConfig.kP = kP;\n            slotConfig.kI = kI;\n            slotConfig.kD = kD;\n            slotConfig.kV = kV;\n            m_motor.getConfigurator().apply(slotConfig);\n        } else if (slot == 1) {\n            Slot1Configs slotConfig = new Slot1Configs();\n            slotConfig.kP = kP;\n            slotConfig.kI = kI;\n            slotConfig.kD = kD;\n            slotConfig.kV = kV;\n            m_motor.getConfigurator().apply(slotConfig);\n        }\n    }\n    \n    public void displayPIDInfo() {\n        // Read current configuration\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        m_motor.getConfigurator().refresh(config);\n        \n        // Display current PID values\n        SmartDashboard.putNumber(\"Current kP\", config.Slot0.kP);\n        SmartDashboard.putNumber(\"Current kI\", config.Slot0.kI);\n        SmartDashboard.putNumber(\"Current kD\", config.Slot0.kD);\n        \n        // Display PID performance\n        SmartDashboard.putNumber(\"Motor Output\", m_motor.getDutyCycle().getValue());\n        SmartDashboard.putNumber(\"Current Position\", m_motor.getPosition().getValue());\n        SmartDashboard.putNumber(\"Current Velocity\", m_motor.getVelocity().getValue());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Closed Loop Configuration",
+      "content": "In addition to PID parameters, there are other closed loop settings that affect PID performance:<br><br><strong>Closed Loop Ramp Period:</strong><br>- Time to ramp to target output<br>- Smooths control response<br>- Prevents sudden changes in output<br><br><strong>Feedforward Gains:</strong><br>- <strong>kV:</strong> Velocity feedforward (voltage per velocity unit)<br>- <strong>kS:</strong> Static feedforward (overcome static friction)<br>- <strong>kA:</strong> Acceleration feedforward (overcome inertia)<br><br><strong>Control Request Options:</strong><br>- Control requests can specify feedforward values<br>- Can override slot selection<br>- Can set output limits per request<br><br><strong>Status Signals:</strong><br>- Use status signals to read current values<br>- Refresh signals efficiently for monitoring<br>- Check error by comparing target vs current"
+    },
+    {
+      "type": "code",
+      "title": "Complete Closed Loop Configuration",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class ClosedLoopConfig {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public ClosedLoopConfig() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID parameters (Slot0)\n        config.Slot0.kP = 0.1;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.01;\n        config.Slot0.kV = 0.0;  // Velocity feedforward\n        config.Slot0.kS = 0.0;  // Static feedforward\n        config.Slot0.kA = 0.0;  // Acceleration feedforward\n        \n        // Closed loop ramp settings\n        config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;  // Ramp time (seconds)\n        config.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.5;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Reading PID Status",
+      "content": "The Talon FX provides status information about PID control that you can read in your code. This is useful for monitoring, debugging, and determining when motion is complete.<br><br><strong>Available Status Information:</strong><br>- <strong>Position:</strong> Current encoder position (rotations)<br>- <strong>Velocity:</strong> Current velocity (rotations per second)<br>- <strong>Duty Cycle:</strong> Current motor output (-1.0 to 1.0)<br>- <strong>Control Request:</strong> Current control request being executed<br><br><strong>Status Signals:</strong> In Phoenix 6, status information is read through <code>StatusSignal</code> objects. These can be refreshed efficiently and provide asynchronous data reading.<br><br>Use this information to monitor PID performance and determine when mechanisms have reached their targets."
+    },
+    {
+      "type": "code",
+      "title": "Reading PID Status Information",
+      "content": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport com.ctre.phoenix6.controls.PositionVoltage;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class PIDStatus {\n    private final TalonFX m_motor = new TalonFX(1);\n    private final PositionVoltage m_positionRequest = new PositionVoltage(0);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_motor.getPosition(),\n        m_motor.getVelocity(),\n        m_motor.getDutyCycle()\n    };\n    \n    public void updateStatus() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Current sensor values\n        double position = m_motor.getPosition().getValue();\n        double velocity = m_motor.getVelocity().getValue();\n        double output = m_motor.getDutyCycle().getValue();\n        \n        // Calculate error (target - current)\n        // Note: In Phoenix 6, you track the target yourself\n        double target = m_positionRequest.Position;\n        double error = target - position;\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"PID Error\", error);\n        SmartDashboard.putNumber(\"PID Target\", target);\n        SmartDashboard.putNumber(\"PID Output\", output);\n        SmartDashboard.putNumber(\"Position\", position);\n        SmartDashboard.putNumber(\"Velocity\", velocity);\n        \n        // Check if at target (tolerance in rotations)\n        boolean atTarget = Math.abs(error) < 0.1;  // Within 0.1 rotations\n        SmartDashboard.putBoolean(\"At Target\", atTarget);\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "PID Tuning Tips",
+      "subtitle": "Best practices for tuning:",
+      "items": [
+        "Start with kP only (set kI=0, kD=0, kV=0)",
+        "Increase kP until system responds quickly",
+        "Add kD to reduce overshoot and oscillation",
+        "Add kI only if there's steady-state error",
+        "Use kV for velocity control (feedforward)",
+        "Test with different loads and conditions",
+        "Use dashboard for real-time tuning",
+        "Document your final PID values",
+        "Test edge cases (max speed, different loads)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Troubleshooting PID Issues",
+      "content": "Common PID issues and solutions:<br><br><strong>Oscillation (motor shakes back and forth):</strong><br>- Reduce kP<br>- Increase kD<br>- Check sensor configuration (may be inverted)<br><br><strong>Slow Response:</strong><br>- Increase kP<br>- Check configuration is applied correctly<br>- Verify sensor is reading correctly<br><br><strong>Steady-State Error (doesn't reach target):</strong><br>- Add small kI value<br>- Check for mechanical binding<br>- Verify configuration allows enough power<br><br><strong>Overshoot:</strong><br>- Reduce kP<br>- Increase kD<br>- Check if acceleration is too high<br><br><strong>Motor Doesn't Move:</strong><br>- Check control request is set correctly<br>- Verify sensor is configured<br>- Check configuration is applied<br>- Verify motor is enabled"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Talon FX Motion Magic", "id": "talon-fx-motion-magic" },
+        { "label": "Talon FX Configuration", "id": "talon-fx-configuration" },
+        { "label": "Control Theory - PID", "id": "pid-control-intro" }
+      ]
+    }
+  ]
+}
+
