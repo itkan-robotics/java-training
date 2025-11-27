@@ -97,9 +97,20 @@
       ]
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Network Troubleshooting",
-      "content": "Network issues are common when setting up robot communication. Here are steps to diagnose and fix network problems:<br><br><strong>1. Verify IP Address:</strong> Check that the robot's IP address matches your team number pattern (<code>10.TE.AM.2</code>). You can verify this in Driver Station or by pinging the IP address.<br><br><strong>2. Ping Test:</strong> Open a command prompt/terminal and ping the robot's IP address:<br><code>ping 10.12.34.2</code> (replace with your team's IP)<br><br><strong>3. Check Network Adapter:</strong> Ensure your computer's network adapter is active and configured correctly. For wireless, ensure you're connected to the correct network.<br><br><strong>4. Firewall Settings:</strong> Windows Firewall or other security software may block robot communication. Temporarily disable firewall to test, then configure exceptions if needed.<br><br><strong>5. USB Fallback:</strong> If network connection fails, try USB connection to verify robot code is working, then troubleshoot network separately.<br><br><strong>6. Windows Fast Startup:</strong> Ensure Windows Fast Startup is disabled, as it can cause issues with NI drivers required for roboRIO communication."
+      "subtitle": "Steps to diagnose network problems:",
+      "items": [
+        "Verify robot IP address matches team number pattern (10.TE.AM.2)",
+        "Ping robot IP address from command prompt to test connectivity",
+        "Check network adapter is active and connected to correct network",
+        "Temporarily disable firewall to test, then configure exceptions",
+        "Try USB connection to verify robot code works, then troubleshoot network",
+        "Ensure Windows Fast Startup is disabled (causes NI driver issues)",
+        "Check network cable connections and quality (for wired)",
+        "Verify radio is properly configured and powered (for wireless)",
+        "Restart network adapter or computer if connection is unstable"
+      ]
     },
     {
       "type": "text",
@@ -107,9 +118,20 @@
       "content": "During competitions, Driver Station usage follows a specific workflow:<br><br><strong>Pre-Match:</strong><br>1. Power on robot<br>2. Connect Driver Station to robot<br>3. Verify connection and robot status<br>4. Check that correct code is deployed<br>5. Test basic robot functions<br><br><strong>Match Start:</strong><br>1. FMS automatically starts match timer<br>2. Autonomous mode begins automatically<br>3. Monitor robot during autonomous<br>4. Transition to teleop when autonomous ends<br><br><strong>During Match:</strong><br>1. Monitor robot status and telemetry<br>2. Watch for connection issues<br>3. Use E-Stop if safety issue arises<br>4. Track match time remaining<br><br><strong>Post-Match:</strong><br>1. Robot automatically enters disabled mode<br>2. Review telemetry and logs if needed<br>3. Prepare for next match"
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Best Practices",
-      "content": "Following best practices ensures reliable robot operation:<br><br><strong>Installation:</strong><br>- Uninstall old versions before installing new season's tools<br>- Disable Windows Fast Startup to prevent driver issues<br>- Ensure .NET Framework is up to date<br>- Reboot after installation if prompted<br><br><strong>Connection:</strong><br>- Always verify connection before matches<br>- Test both wired and wireless connections<br>- Keep network configuration consistent<br><br><strong>Code Deployment:</strong><br>- Deploy code well before matches<br>- Verify code is running correctly<br>- Keep backup of working code versions<br><br><strong>Monitoring:</strong><br>- Watch telemetry during operation<br>- Monitor connection status<br>- Check logs for errors<br><br><strong>Safety:</strong><br>- Know where E-Stop button is located<br>- Test E-Stop functionality<br>- Never disable safety features"
+      "subtitle": "For reliable robot operation:",
+      "items": [
+        "Uninstall old versions before installing new season's tools",
+        "Disable Windows Fast Startup to prevent driver issues",
+        "Always verify connection before matches",
+        "Test both wired and wireless connections",
+        "Deploy code well before matches and verify it's running",
+        "Keep backup of working code versions",
+        "Monitor telemetry and connection status during operation",
+        "Know where E-Stop button is located and test functionality",
+        "Never disable safety features"
+      ]
     },
     {
       "type": "link-grid",

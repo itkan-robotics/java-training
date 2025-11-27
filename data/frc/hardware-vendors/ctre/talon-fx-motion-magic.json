@@ -97,9 +97,20 @@
       ]
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Troubleshooting Motion Magic",
-      "content": "Common Motion Magic issues and solutions:<br><br><strong>Motion is Jerky:</strong><br>- Increase jerk value<br>- Reduce cruise velocity<br>- Check PID tuning (may be too aggressive)<br><br><strong>Motion is Too Slow:</strong><br>- Increase cruise velocity<br>- Increase acceleration<br>- Reduce jerk value<br><br><strong>Overshoots Target:</strong><br>- Reduce cruise velocity<br>- Increase acceleration (faster deceleration)<br>- Improve PID tuning (better following)<br>- Check for mechanical issues (backlash, etc.)<br><br><strong>Doesn't Reach Target:</strong><br>- Check configuration is applied correctly<br>- Verify PID tuning<br>- Check for mechanical binding<br>- Increase cruise velocity or acceleration<br><br><strong>Motion Profile Not Following:</strong><br>- Verify PID is tuned correctly<br>- Check sensor configuration<br>- Verify feedback sensor is configured correctly"
+      "subtitle": "Common problems and solutions:",
+      "items": [
+        "<strong>Motion is Jerky:</strong> Increase jerk value, reduce cruise velocity",
+        "<strong>Motion is Too Slow:</strong> Increase cruise velocity and acceleration",
+        "<strong>Overshoots Target:</strong> Reduce cruise velocity, improve PID tuning",
+        "<strong>Doesn't Reach Target:</strong> Check configuration, verify PID tuning",
+        "<strong>Motion Profile Not Following:</strong> Verify PID is tuned correctly",
+        "<strong>Inconsistent Motion:</strong> Check sensor configuration, verify feedback",
+        "<strong>Too Aggressive:</strong> Reduce cruise velocity, increase jerk",
+        "<strong>Mechanical Issues:</strong> Check for binding, backlash, or damage",
+        "<strong>Configuration Not Applied:</strong> Verify configuration is applied correctly"
+      ]
     },
     {
       "type": "link-grid",

@@ -100,9 +100,20 @@
       ]
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Best Practices for Pigeon Usage",
-      "content": "Following best practices ensures reliable Pigeon operation:<br><br><strong>Calibration:</strong><br>- Always calibrate before first use<br>- Keep robot stationary during calibration<br>- Calibrate in robot initialization<br>- Recalibrate if readings seem incorrect<br><br><strong>Usage:</strong><br>- Reset heading at start of autonomous<br>- Use heading for field-relative driving<br>- Combine with encoders for odometry<br>- Monitor heading for drift<br><br><strong>Mounting:</strong><br>- Mount Pigeon securely and level<br>- Away from sources of vibration<br>- Document mounting orientation<br>- Protect from mechanical damage<br><br><strong>Integration:</strong><br>- Use with odometry for better accuracy<br>- Combine with vision for heading correction<br>- Filter sensor data if needed<br>- Test thoroughly before competition"
+      "subtitle": "Tips for reliable operation:",
+      "items": [
+        "Always calibrate before first use (keep robot stationary)",
+        "Reset heading at start of autonomous",
+        "Mount Pigeon securely and level, away from vibration",
+        "Use heading for field-relative driving",
+        "Combine with encoders for odometry accuracy",
+        "Monitor heading for drift and reset as needed",
+        "Document mounting orientation and CAN ID",
+        "Test thoroughly before competition",
+        "Use with vision for heading correction if available"
+      ]
     },
     {
       "type": "link-grid",

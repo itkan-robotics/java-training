@@ -468,6 +468,7 @@ class ContentManager {
             'text': this.renderTextSection.bind(this),
             'list': this.renderListSection.bind(this),
             'code': this.renderCodeSection.bind(this),
+            'code-tabs': this.renderCodeTabsSection.bind(this),
             'rules-box': this.renderRulesBox.bind(this),
             'exercise-box': this.renderExerciseBox.bind(this),
             'data-types-grid': this.renderDataTypesGrid.bind(this),
@@ -635,6 +636,142 @@ class ContentManager {
         });
         
         container.appendChild(codeBlock);
+    }
+
+    renderCodeTabsSection(container, data) {
+        this.createSectionTitle(container, data.title);
+        
+        // Render content as HTML if provided (explanation text)
+        if (data.content && data.content !== '') {
+            const contentDiv = document.createElement('div');
+            contentDiv.innerHTML = data.content;
+            contentDiv.style.marginBottom = '1rem';
+            container.appendChild(contentDiv);
+        }
+        
+        // Create tabs container
+        const tabsContainer = this.createStyledElement('div', 'code-tabs-container', {
+            border: '1px solid var(--color-background-border)',
+            borderRadius: '6px',
+            overflow: 'hidden',
+            marginBottom: '1rem'
+        });
+        
+        // Create tabs header
+        const tabsHeader = this.createStyledElement('div', 'code-tabs-header', {
+            display: 'flex',
+            background: 'var(--color-background-secondary)',
+            borderBottom: '1px solid var(--color-background-border)',
+            overflowX: 'auto'
+        });
+        
+        // Create tabs content container
+        const tabsContent = this.createStyledElement('div', 'code-tabs-content');
+        
+        // Validate tabs data
+        if (!data.tabs || !Array.isArray(data.tabs) || data.tabs.length === 0) {
+            console.warn('code-tabs section requires a tabs array with at least one tab');
+            return;
+        }
+        
+        // Create tabs and content
+        let activeTabIndex = 0;
+        data.tabs.forEach((tab, index) => {
+            // Create tab button
+            const tabButton = this.createStyledElement('button', 'code-tab-button', {
+                padding: '10px 16px',
+                background: index === 0 ? 'var(--color-background)' : 'transparent',
+                border: 'none',
+                borderBottom: index === 0 ? '2px solid var(--color-brand-primary)' : '2px solid transparent',
+                color: index === 0 ? 'var(--color-brand-primary)' : 'var(--color-foreground-secondary)',
+                cursor: 'pointer',
+                fontSize: '0.9em',
+                fontWeight: index === 0 ? '600' : '400',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s',
+                fontFamily: 'var(--font-stack--monospace)'
+            });
+            
+            tabButton.textContent = tab.label || `Tab ${index + 1}`;
+            
+            // Create tab content
+            const tabContent = this.createStyledElement('div', 'code-tab-content', {
+                display: index === 0 ? 'block' : 'none',
+                padding: '0'
+            });
+            
+            // Create code block for this tab (reuse code section rendering logic)
+            const codeBlock = this.createStyledElement('div', 'code-block', {
+                border: 'none',
+                borderRadius: '0',
+                margin: '0'
+            });
+            
+            // Determine code to render
+            const codeToRender = tab.code || tab.content || '';
+            const language = tab.language || 'java';
+            
+            // Create code element
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            code.className = `language-${language}`;
+            
+            // Apply syntax highlighting
+            if (language === 'java' || !tab.language) {
+                code.innerHTML = this.highlightJava(codeToRender);
+            } else {
+                code.textContent = codeToRender;
+            }
+            
+            pre.appendChild(code);
+            codeBlock.appendChild(pre);
+            tabContent.appendChild(codeBlock);
+            
+            // Tab click handler
+            tabButton.addEventListener('click', () => {
+                // Update all tabs
+                data.tabs.forEach((_, i) => {
+                    const otherButton = tabsHeader.children[i];
+                    const otherContent = tabsContent.children[i];
+                    
+                    if (i === index) {
+                        // Activate this tab
+                        otherButton.style.background = 'var(--color-background)';
+                        otherButton.style.borderBottomColor = 'var(--color-brand-primary)';
+                        otherButton.style.color = 'var(--color-brand-primary)';
+                        otherButton.style.fontWeight = '600';
+                        otherContent.style.display = 'block';
+                    } else {
+                        // Deactivate other tabs
+                        otherButton.style.background = 'transparent';
+                        otherButton.style.borderBottomColor = 'transparent';
+                        otherButton.style.color = 'var(--color-foreground-secondary)';
+                        otherButton.style.fontWeight = '400';
+                        otherContent.style.display = 'none';
+                    }
+                });
+                activeTabIndex = index;
+            });
+            
+            // Add hover effect
+            tabButton.addEventListener('mouseenter', () => {
+                if (index !== activeTabIndex) {
+                    tabButton.style.background = 'var(--color-background-tertiary)';
+                }
+            });
+            tabButton.addEventListener('mouseleave', () => {
+                if (index !== activeTabIndex) {
+                    tabButton.style.background = 'transparent';
+                }
+            });
+            
+            tabsHeader.appendChild(tabButton);
+            tabsContent.appendChild(tabContent);
+        });
+        
+        tabsContainer.appendChild(tabsHeader);
+        tabsContainer.appendChild(tabsContent);
+        container.appendChild(tabsContainer);
     }
 
     renderRulesBox(container, data) {

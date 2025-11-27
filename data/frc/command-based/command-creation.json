@@ -1,0 +1,121 @@
+{
+  "title": "Command Creation",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Commands",
+      "content": "Commands are discrete actions that the robot can perform. They use subsystems to accomplish tasks and have a well-defined lifecycle. Commands are the building blocks of command-based programming - they represent what the robot should do, not how the hardware works.<br><br>Commands encapsulate robot behaviors, making them reusable and composable. You can combine commands into sequences for autonomous routines, run them in parallel for simultaneous operations, and trigger them from user input. Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/commands.html' target='_blank'>WPILib: Commands</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Command Structure",
+      "subtitle": "Essential components of every command:",
+      "items": [
+        "Extend Command or use command base classes",
+        "Require subsystems using addRequirements()",
+        "Implement initialize() for setup",
+        "Implement execute() for main logic",
+        "Implement isFinished() to determine completion",
+        "Implement end() for cleanup",
+        "Use constructor to accept parameters",
+        "Store subsystem references as final fields"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Command Lifecycle Methods",
+      "content": "Every command implements four lifecycle methods that define its behavior:<br><br><strong>initialize():</strong> Called once when the command is scheduled. Use this to set up initial state, reset sensors, or prepare for execution. This is where you perform one-time setup tasks.<br><br><strong>execute():</strong> Called repeatedly (every 20ms) while the command is active. This is where the command's main logic runs. The command should interact with subsystems here to accomplish its goal. This method runs continuously until the command finishes.<br><br><strong>isFinished():</strong> Called repeatedly to check if the command should end. Return <code>true</code> when the command has completed its task, or <code>false</code> to keep running. Commands that run until interrupted should always return <code>false</code>.<br><br><strong>end(boolean interrupted):</strong> Called once when the command ends, either because <code>isFinished()</code> returned <code>true</code> or because the command was interrupted. The <code>interrupted</code> parameter indicates whether the command was interrupted. Use this method to clean up, stop motors, or reset state."
+    },
+    {
+      "type": "code",
+      "title": "Basic Command Structure",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DriveForwardCommand extends Command {\n    // Store subsystem reference\n    private final Drivetrain m_drivetrain;\n    private final double m_speed;\n    \n    public DriveForwardCommand(Drivetrain drivetrain, double speed) {\n        m_drivetrain = drivetrain;\n        m_speed = speed;\n        \n        // Require the subsystem (prevents conflicts)\n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        // Called once when command starts\n        System.out.println(\"DriveForwardCommand: Starting at speed \" + m_speed);\n    }\n    \n    @Override\n    public void execute() {\n        // Called repeatedly while command is active\n        m_drivetrain.drive(m_speed, m_speed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Return true when command should end\n        // This command runs until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Called once when command ends\n        m_drivetrain.stop();\n        \n        if (interrupted) {\n            System.out.println(\"DriveForwardCommand: Interrupted\");\n        } else {\n            System.out.println(\"DriveForwardCommand: Completed\");\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Command Requirements",
+      "content": "Commands must declare which subsystems they require using <code>addRequirements()</code>. This tells the scheduler which subsystems the command needs exclusive access to.<br><br><strong>Why Requirements Matter:</strong> When a command requires a subsystem, it gets exclusive access to that subsystem. If another command tries to use the same subsystem, the scheduler will interrupt the first command. This prevents conflicts and ensures only one command controls each subsystem at a time.<br><br><strong>Adding Requirements:</strong> Call <code>addRequirements(subsystem)</code> in the constructor for each subsystem the command needs. You can require multiple subsystems if needed.<br><br><strong>No Requirements:</strong> Commands that don't require any subsystems can run in parallel with other commands without conflicts. This is useful for commands that only read sensor data or perform non-conflicting operations."
+    },
+    {
+      "type": "text",
+      "title": "Types of Commands",
+      "content": "There are several types of commands, each suited for different use cases:<br><br><strong>Instant Commands:</strong> Complete immediately. They perform an action once and finish. Use for toggling mechanisms, setting states, or one-time actions. Implement by returning <code>true</code> from <code>isFinished()</code> immediately.<br><br><strong>Timed Commands:</strong> Run for a specific duration. They execute for a set amount of time then finish. Use for actions that need to run for a known duration. WPILib provides <code>WaitCommand</code> and you can create custom timed commands.<br><br><strong>Conditional Commands:</strong> Complete based on a condition. They check a condition each loop and finish when the condition is met. Use for moving to positions, waiting for sensors, or any action that completes when a condition is satisfied.<br><br><strong>Continuous Commands:</strong> Run until interrupted. They never finish on their own and run until another command requires their subsystem or they're manually cancelled. Use for teleop control, default behaviors, or actions that run continuously."
+    },
+    {
+      "type": "code",
+      "title": "Timed Command Example",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj.Timer;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DriveForTimeCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final double m_speed;\n    private final double m_duration;\n    \n    private Timer m_timer;\n    \n    public DriveForTimeCommand(Drivetrain drivetrain, double speed, double duration) {\n        m_drivetrain = drivetrain;\n        m_speed = speed;\n        m_duration = duration;\n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        // Start timer when command begins\n        m_timer = new Timer();\n        m_timer.start();\n    }\n    \n    @Override\n    public void execute() {\n        // Drive while timer is running\n        m_drivetrain.drive(m_speed, m_speed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Finish when duration is reached\n        return m_timer.hasElapsed(m_duration);\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_drivetrain.stop();\n        m_timer.stop();\n        m_timer.reset();\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Conditional Command Example",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Arm;\n\npublic class MoveArmToPositionCommand extends Command {\n    private final Arm m_arm;\n    private final double m_targetAngle;\n    private final double m_tolerance;\n    private final double m_speed;\n    \n    public MoveArmToPositionCommand(Arm arm, double targetAngle, double tolerance, double speed) {\n        m_arm = arm;\n        m_targetAngle = targetAngle;\n        m_tolerance = tolerance;\n        m_speed = speed;\n        addRequirements(arm);\n    }\n    \n    @Override\n    public void initialize() {\n        // Set target when command starts\n        m_arm.setTargetAngle(m_targetAngle);\n    }\n    \n    @Override\n    public void execute() {\n        // Move arm toward target\n        double currentAngle = m_arm.getAngle();\n        double error = m_targetAngle - currentAngle;\n        \n        // Determine direction and speed\n        if (Math.abs(error) > m_tolerance) {\n            double speed = error > 0 ? m_speed : -m_speed;\n            m_arm.setSpeed(speed);\n        } else {\n            m_arm.setSpeed(0);\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Finish when arm reaches target\n        return m_arm.isAtTarget(m_tolerance);\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_arm.stop();\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Instant Command Example",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Intake;\n\npublic class ToggleIntakeCommand extends Command {\n    private final Intake m_intake;\n    private boolean m_isRunning = false;\n    \n    public ToggleIntakeCommand(Intake intake) {\n        m_intake = intake;\n        addRequirements(intake);\n    }\n    \n    @Override\n    public void initialize() {\n        // Toggle intake state\n        m_isRunning = !m_isRunning;\n        \n        if (m_isRunning) {\n            m_intake.run(0.5);\n        } else {\n            m_intake.stop();\n        }\n    }\n    \n    @Override\n    public void execute() {\n        // Nothing to do - command completes immediately\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Complete immediately\n        return true;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Cleanup if needed\n    }\n}\n\n// Alternative: Use InstantCommand base class\nimport edu.wpi.first.wpilibj2.command.InstantCommand;\n\npublic class ToggleIntakeCommand2 extends InstantCommand {\n    public ToggleIntakeCommand2(Intake intake) {\n        super(() -> {\n            // Toggle logic here\n            if (intake.isRunning()) {\n                intake.stop();\n            } else {\n                intake.run(0.5);\n            }\n        }, intake);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Command Parameters",
+      "content": "Commands can accept parameters through their constructors. This makes commands flexible and reusable. Common parameters include:<br><br><strong>Subsystem References:</strong> Commands need references to subsystems they control. Pass these as constructor parameters.<br><br><strong>Target Values:</strong> For commands that move to positions or set speeds, pass target values as parameters (e.g., target angle, target speed, duration).<br><br><strong>Configuration:</strong> Pass configuration values like tolerances, speeds, or timeouts as parameters. This allows the same command to work in different scenarios.<br><br><strong>Best Practice:</strong> Store parameters as <code>final</code> fields. This makes commands immutable and easier to reason about."
+    },
+    {
+      "type": "code",
+      "title": "Command with Parameters",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Elevator;\n\npublic class MoveElevatorCommand extends Command {\n    // Store parameters as final fields\n    private final Elevator m_elevator;\n    private final double m_targetHeight;\n    private final double m_speed;\n    private final double m_tolerance;\n    \n    public MoveElevatorCommand(Elevator elevator, double targetHeight, double speed, double tolerance) {\n        m_elevator = elevator;\n        m_targetHeight = targetHeight;\n        m_speed = speed;\n        m_tolerance = tolerance;\n        \n        addRequirements(elevator);\n    }\n    \n    @Override\n    public void initialize() {\n        m_elevator.setTargetHeight(m_targetHeight);\n    }\n    \n    @Override\n    public void execute() {\n        double currentHeight = m_elevator.getHeight();\n        double error = m_targetHeight - currentHeight;\n        \n        if (Math.abs(error) > m_tolerance) {\n            double speed = error > 0 ? m_speed : -m_speed;\n            m_elevator.setSpeed(speed);\n        } else {\n            m_elevator.setSpeed(0);\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return m_elevator.isAtTarget(m_tolerance);\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_elevator.stop();\n    }\n}\n\n// Usage: Create command with different parameters\n// new MoveElevatorCommand(elevator, 24.0, 0.5, 0.5);  // Move to 24 inches at 0.5 speed\n// new MoveElevatorCommand(elevator, 12.0, 0.3, 1.0);  // Move to 12 inches at 0.3 speed"
+    },
+    {
+      "type": "text",
+      "title": "Command Examples",
+      "content": "Here are common command patterns you'll use in FRC robots:<br><br><strong>Drive Forward:</strong> A continuous command that drives the robot forward at a set speed until interrupted. Used in autonomous routines or as a default command.<br><br><strong>Move Arm to Position:</strong> A conditional command that moves an arm to a target angle and finishes when the arm reaches the target. Uses encoder feedback to determine completion.<br><br><strong>Intake Game Piece:</strong> A command that runs the intake motor until a game piece is detected (using sensors) or until interrupted. Combines motor control with sensor reading.<br><br>Each command follows the same lifecycle pattern but implements different logic based on its purpose."
+    },
+    {
+      "type": "code",
+      "title": "Intake Game Piece Command",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Intake;\n\npublic class IntakeGamePieceCommand extends Command {\n    private final Intake m_intake;\n    private final double m_intakeSpeed;\n    \n    public IntakeGamePieceCommand(Intake intake, double intakeSpeed) {\n        m_intake = intake;\n        m_intakeSpeed = intakeSpeed;\n        addRequirements(intake);\n    }\n    \n    @Override\n    public void initialize() {\n        // Start intake when command begins\n        m_intake.run(m_intakeSpeed);\n    }\n    \n    @Override\n    public void execute() {\n        // Keep intake running\n        // Could check sensors here to detect game piece\n        m_intake.run(m_intakeSpeed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Finish when game piece is detected\n        // This example always returns false (runs until interrupted)\n        // In practice, check sensor: return m_intake.hasGamePiece();\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Stop intake when command ends\n        m_intake.stop();\n        \n        if (!interrupted) {\n            System.out.println(\"Game piece intaken successfully\");\n        }\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Command Best Practices",
+      "subtitle": "Tips for effective command design:",
+      "items": [
+        "Always require subsystems you control using addRequirements()",
+        "Store subsystem references and parameters as final fields",
+        "Perform one-time setup in initialize(), not execute()",
+        "Keep execute() focused on the main command logic",
+        "Return true from isFinished() when command completes",
+        "Always clean up in end() (stop motors, reset state)",
+        "Use descriptive command names that indicate the action",
+        "Accept parameters through constructor for flexibility",
+        "Handle interruption gracefully in end() method"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Command Issues",
+      "subtitle": "Common problems and solutions:",
+      "items": [
+        "<strong>Command Not Running:</strong> Check if command is scheduled, verify requirements are set correctly",
+        "<strong>Command Runs Once Then Stops:</strong> Check isFinished() - it may be returning true immediately",
+        "<strong>Subsystem Conflicts:</strong> Verify only one command requires each subsystem at a time",
+        "<strong>Command Never Finishes:</strong> Check isFinished() logic - ensure it returns true when appropriate",
+        "<strong>Motors Don't Stop:</strong> Ensure end() method stops motors and resets state",
+        "<strong>Command Interrupts Unexpectedly:</strong> Check for other commands requiring the same subsystem",
+        "<strong>State Not Resetting:</strong> Verify initialize() resets state properly",
+        "<strong>Parameters Not Working:</strong> Check constructor parameters are stored as fields and used correctly"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Command Scheduler", "id": "command-scheduler" },
+        { "label": "Command Groups", "id": "command-groups" },
+        { "label": "Subsystem Design", "id": "subsystem-design" }
+      ]
+    }
+  ]
+}
+

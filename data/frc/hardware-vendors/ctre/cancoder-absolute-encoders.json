@@ -92,9 +92,20 @@
       ]
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Troubleshooting Absolute Encoder Issues",
-      "content": "Common issues with CANcoder absolute encoders and solutions:<br><br><strong>Position is Wrong:</strong><br>- Check magnet offset calibration<br>- Verify magnet is mounted correctly<br>- Check sensor direction configuration<br><br><strong>Position Jumps or is Unstable:</strong><br>- Check magnet strength (should be > 50)<br>- Verify magnet distance is correct<br>- Check for electrical interference<br>- Ensure magnet is properly aligned<br><br><strong>Doesn't Remember Position:</strong><br>- Verify you're using <code>getAbsolutePosition()</code> or <code>getPosition()</code><br>- Check that CANcoder is actually an absolute encoder (it is)<br>- Verify configuration is correct<br><br><strong>Offset Not Working:</strong><br>- Verify offset is configured correctly<br>- Check that you're using <code>getPosition()</code> (not <code>getAbsolutePosition()</code>)<br>- Re-calibrate offset if needed"
+      "subtitle": "Common problems and solutions:",
+      "items": [
+        "<strong>Position is Wrong:</strong> Check magnet offset calibration, verify mounting",
+        "<strong>Position Jumps:</strong> Check magnet strength (>50), verify distance",
+        "<strong>Unstable Readings:</strong> Check for electrical interference, verify alignment",
+        "<strong>Doesn't Remember Position:</strong> Verify using getAbsolutePosition() or getPosition()",
+        "<strong>Offset Not Working:</strong> Verify offset configured, use getPosition() not getAbsolutePosition()",
+        "<strong>Wrong Direction:</strong> Check sensor direction configuration",
+        "<strong>No Reading:</strong> Check CAN bus connection, verify power",
+        "<strong>Inconsistent Values:</strong> Re-calibrate offset, check magnet mounting",
+        "<strong>Configuration Issues:</strong> Verify configuration is applied correctly"
+      ]
     },
     {
       "type": "link-grid",

@@ -1,0 +1,129 @@
+{
+  "title": "Trigger Bindings",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Triggers",
+      "content": "Triggers are a powerful way to bind commands to user input (buttons, joysticks, etc.). They provide an event-driven approach to command scheduling, making it easy to connect user actions to robot behaviors. Triggers abstract input handling and provide a clean interface for binding commands to various input sources.<br><br>Triggers are the recommended way to schedule commands from user input in command-based programming. They handle edge cases, provide multiple binding options, and integrate seamlessly with the command scheduler. Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/binding-commands-to-triggers.html' target='_blank'>WPILib: Binding Commands to Triggers</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Trigger Benefits",
+      "subtitle": "Why use triggers:",
+      "items": [
+        "Event-driven command scheduling (commands run on input events)",
+        "Multiple binding options (onTrue, onFalse, whileTrue, toggleOnTrue)",
+        "Clean input handling (abstracts away input details)",
+        "Trigger combinations (and, or, negate for complex conditions)",
+        "Works with various input sources (buttons, joysticks, POV, etc.)",
+        "Automatic command management (scheduler handles execution)",
+        "Reduces code complexity (less manual input checking)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Trigger Types",
+      "content": "WPILib provides several types of triggers for different input sources:<br><br><strong>Button Triggers:</strong> Created from buttons on gamepads or joysticks. Most common trigger type. Can detect button press, release, or continuous press.<br><br><strong>POV Triggers:</strong> Created from directional pad (POV hat) on gamepads. Useful for directional input (up, down, left, right, or combinations).<br><br><strong>Axis Triggers:</strong> Created from analog axes (joystick axes, triggers). Can detect when axis exceeds a threshold or is within a range. Useful for analog input conditions.<br><br>Each trigger type provides the same binding methods (<code>onTrue</code>, <code>whileTrue</code>, etc.), making them consistent to use regardless of input source."
+    },
+    {
+      "type": "text",
+      "title": "Creating Triggers",
+      "content": "Triggers are created from input sources like buttons, joysticks, or other trigger sources:<br><br><strong>From Buttons:</strong> Use <code>CommandXboxController</code> or <code>CommandPS4Controller</code> which provide button triggers directly. For generic buttons, use <code>CommandGenericHID</code> or create triggers from <code>JoystickButton</code>.<br><br><strong>From Joysticks:</strong> Create triggers from joystick buttons or axes. Use <code>JoystickButton</code> for buttons or create custom triggers from axis values.<br><br><strong>From Other Sources:</strong> You can create triggers from any boolean condition, sensor readings, or other input sources. This makes triggers very flexible."
+    },
+    {
+      "type": "code",
+      "title": "Basic Button Trigger",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport edu.wpi.first.wpilibj2.command.button.Trigger;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.subsystems.Arm;\n\npublic class RobotContainer {\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    private final Arm m_arm = new Arm();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // Create trigger from button and bind command\n        // When button A is pressed, schedule MoveArmCommand\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 45.0, 0.3, 2.0));\n        \n        // Button triggers are automatically created from CommandXboxController\n        // No need to manually create Trigger objects\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Trigger Bindings",
+      "content": "Triggers provide several binding methods that determine when commands are scheduled:<br><br><strong>onTrue():</strong> Schedules command when trigger becomes true (e.g., when button is pressed). Command runs once per trigger activation.<br><br><strong>onFalse():</strong> Schedules command when trigger becomes false (e.g., when button is released). Less common but useful for release actions.<br><br><strong>whileTrue():</strong> Schedules command when trigger becomes true and cancels it when trigger becomes false. Command runs continuously while trigger is active.<br><br><strong>toggleOnTrue():</strong> Toggles command on/off when trigger becomes true. First press schedules command, second press cancels it. Useful for toggle behaviors."
+    },
+    {
+      "type": "code",
+      "title": "Multiple Trigger Types",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\n\npublic class RobotContainer {\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // onTrue: Run command when button is pressed\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 45.0, 0.3, 2.0));\n        \n        // whileTrue: Run command while button is held\n        m_operatorController.b()\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // toggleOnTrue: Toggle command on/off\n        m_operatorController.x()\n            .toggleOnTrue(new ToggleIntakeCommand(m_intake));\n        \n        // onFalse: Run command when button is released\n        m_operatorController.y()\n            .onFalse(new StopIntakeCommand(m_intake));\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Trigger Combinations",
+      "content": "Triggers can be combined using logical operations to create complex conditions:<br><br><strong>and():</strong> Creates a trigger that is true when both triggers are true. Useful for requiring multiple buttons to be pressed simultaneously.<br><br><strong>or():</strong> Creates a trigger that is true when either trigger is true. Useful for allowing multiple ways to trigger the same action.<br><br><strong>negate():</strong> Creates a trigger that is true when the original trigger is false. Useful for inverting conditions.<br><br>Combinations can be chained to create complex trigger conditions."
+    },
+    {
+      "type": "code",
+      "title": "Trigger Combinations",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.EmergencyStopCommand;\nimport frc.robot.commands.ScoreCommand;\n\npublic class RobotContainer {\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    public void configureButtonBindings() {\n        // AND: Both buttons must be pressed\n        m_driverController.a()\n            .and(m_operatorController.a())\n            .onTrue(new EmergencyStopCommand());\n        \n        // OR: Either button can trigger action\n        m_driverController.b()\n            .or(m_operatorController.b())\n            .onTrue(new ScoreCommand());\n        \n        // NEGATE: Trigger when button is NOT pressed\n        m_driverController.x()\n            .negate()\n            .whileTrue(new SomeCommand());\n        \n        // Chain combinations\n        m_driverController.y()\n            .and(m_operatorController.y())\n            .or(m_driverController.start())\n            .onTrue(new ComplexCommand());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "POV Hat Triggers",
+      "content": "POV (Point of View) hat triggers are created from the directional pad on gamepads. They're useful for directional input:<br><br><strong>POV Directions:</strong> POV hat provides 8 directions (up, down, left, right, and diagonals) plus center (no direction). Each direction can be used as a trigger.<br><br><strong>Use Cases:</strong> Directional control (move arm up/down, select autonomous routine), menu navigation, or any scenario where directional input is needed.<br><br><strong>Creating POV Triggers:</strong> Use <code>CommandXboxController.povUp()</code>, <code>povDown()</code>, etc., or create triggers from POV angle values."
+    },
+    {
+      "type": "code",
+      "title": "POV Hat Triggers",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.MoveElevatorCommand;\nimport frc.robot.subsystems.Elevator;\n\npublic class RobotContainer {\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    private final Elevator m_elevator = new Elevator();\n    \n    public void configureButtonBindings() {\n        // POV up: Move elevator up\n        m_operatorController.povUp()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 48.0, 0.5, 0.5));\n        \n        // POV down: Move elevator down\n        m_operatorController.povDown()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 0.0, 0.5, 0.5));\n        \n        // POV left/right: Other actions\n        m_operatorController.povLeft()\n            .onTrue(new SomeCommand());\n        \n        m_operatorController.povRight()\n            .onTrue(new AnotherCommand());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Joystick Axis Triggers",
+      "content": "Axis triggers are created from analog joystick axes. They can detect when an axis exceeds a threshold or is within a range:<br><br><strong>Axis Thresholds:</strong> Create triggers that activate when an axis value exceeds a threshold (e.g., trigger axis > 0.5). Useful for analog buttons or gradual input.<br><br><strong>Use Cases:</strong> Analog button detection (trigger buttons), gradual input detection, or any scenario where you need to detect analog input conditions.<br><br><strong>Creating Axis Triggers:</strong> Use methods like <code>CommandXboxController.rightTrigger()</code> which provides a trigger, or create custom triggers from axis values using threshold conditions."
+    },
+    {
+      "type": "code",
+      "title": "Joystick Axis Triggers",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport edu.wpi.first.wpilibj2.command.button.Trigger;\nimport frc.robot.commands.RunIntakeCommand;\nimport frc.robot.subsystems.Intake;\n\npublic class RobotContainer {\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    private final Intake m_intake = new Intake();\n    \n    public void configureButtonBindings() {\n        // Right trigger axis as button (when pressed beyond threshold)\n        m_operatorController.rightTrigger(0.5)  // Threshold: 0.5\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // Left trigger axis\n        m_operatorController.leftTrigger(0.5)\n            .whileTrue(new RunIntakeCommand(m_intake, -0.6));  // Reverse\n        \n        // Custom axis trigger (example)\n        Trigger customAxisTrigger = new Trigger(() -> {\n            double axisValue = m_operatorController.getLeftX();\n            return Math.abs(axisValue) > 0.5;  // Trigger when axis exceeds 0.5\n        });\n        \n        customAxisTrigger.onTrue(new SomeCommand());\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Organizing Triggers",
+      "content": "Triggers are typically organized in the RobotContainer's <code>configureButtonBindings()</code> method. This centralizes all input-to-command bindings in one place:<br><br><strong>Organization Pattern:</strong> Create a <code>configureButtonBindings()</code> method in RobotContainer that sets up all trigger bindings. Call this method from the RobotContainer constructor.<br><br><strong>Grouping:</strong> Group related bindings together (e.g., all drivetrain bindings, all mechanism bindings). Use comments to document bindings.<br><br><strong>Documentation:</strong> Document which buttons/triggers are bound to which commands. This helps drivers and other programmers understand the control scheme."
+    },
+    {
+      "type": "code",
+      "title": "Organizing Triggers in RobotContainer",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\n\npublic class RobotContainer {\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // Driver Controller Bindings\n        // A: Emergency stop\n        m_driverController.a().onTrue(new EmergencyStopCommand());\n        \n        // B: Toggle intake\n        m_driverController.b().toggleOnTrue(new ToggleIntakeCommand(m_intake));\n        \n        // Operator Controller Bindings\n        // A: Move arm to low position\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 30.0, 0.3, 2.0));\n        \n        // B: Move arm to high position\n        m_operatorController.b()\n            .onTrue(new MoveArmCommand(m_arm, 60.0, 0.3, 2.0));\n        \n        // X: Run intake (while held)\n        m_operatorController.x()\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // Y: Reverse intake (while held)\n        m_operatorController.y()\n            .whileTrue(new RunIntakeCommand(m_intake, -0.4));\n        \n        // Right trigger: Intake (analog)\n        m_operatorController.rightTrigger(0.5)\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // POV: Elevator control\n        m_operatorController.povUp()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 48.0, 0.5, 0.5));\n        m_operatorController.povDown()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 0.0, 0.5, 0.5));\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Trigger Best Practices",
+      "subtitle": "Tips for effective trigger usage:",
+      "items": [
+        "Organize all trigger bindings in configureButtonBindings() method",
+        "Use descriptive button assignments (document which button does what)",
+        "Use onTrue for one-time actions (button press triggers action)",
+        "Use whileTrue for continuous actions (button held runs command)",
+        "Use toggleOnTrue for toggle behaviors (press to toggle on/off)",
+        "Use trigger combinations for complex conditions (and, or)",
+        "Test trigger bindings to ensure they work as expected",
+        "Document button assignments for drivers and team members"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Triggers",
+      "subtitle": "Common problems and solutions:",
+      "items": [
+        "<strong>Command Not Scheduling:</strong> Verify trigger binding syntax, check command is created correctly",
+        "<strong>Command Runs Multiple Times:</strong> Use onTrue instead of whileTrue, or check trigger activation",
+        "<strong>Command Not Stopping:</strong> Verify whileTrue vs onTrue usage, check command can be interrupted",
+        "<strong>Trigger Not Activating:</strong> Check input source is correct, verify button/axis is working",
+        "<strong>Combination Not Working:</strong> Verify and/or logic, check both triggers are activating",
+        "<strong>POV Not Working:</strong> Check POV direction method, verify gamepad POV is functioning",
+        "<strong>Axis Trigger Not Working:</strong> Verify threshold value, check axis reading is correct",
+        "<strong>Binding Conflicts:</strong> Ensure buttons aren't bound to multiple conflicting commands"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Robot Container", "id": "robot-container" },
+        { "label": "Command Creation", "id": "command-creation" },
+        { "label": "Default Commands", "id": "default-commands" }
+      ]
+    }
+  ]
+}
+

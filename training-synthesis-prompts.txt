@@ -29,3 +29,33 @@ Once you have verified that each section has a thorough and pertinent explanatio
 Do NOT stop until ALL files for ALL folders are FULLY rewritten and CHECKED for formatting errors.
 After that, update the @ftc-specific-config.json file to reflect the new files made.
 
+--- FRC Generation Prompt ---
+Continue from the curriculum plan you built for wpilib-setup. Now, write in new files into data\frc\hardware-vendors\ctre to follow the curriculum in @plan.plan.md AS CLOSELY AS POSSIBLE while still adhering to the documentation. Incorporate the topics, explanations, and references you described. Also incorporate relevant information where APPROPRIATE in the form of HTML reference links (for example, <a href="link.com" target="_blank">Link</a>). If a link is not pertinent and/or not necessary for understanding the content, OMIT it. For all links, ensure they are referring to WPILib Java.
+
+Be sure to format the lesson pages in JSON-compatible text or valid HTML, ready for by @script.js managers. When including code, use the appropriate code section type. If the code is too short to be meaningful, expand it to a medium-length snippet that helps students grasp the concept more thoroughly. If a large code block is truly necessary to demonstrate a complete working concept, include it, but only if absolutely required and explain why. Additionally, if you believe you need a large code file, prefer to separate it into more manageable chunks with thorough explanation then assemble the large file at the end of the page, rather than having multiple long code blocks in one file.
+
+Once you finish rewriting ALL of the lesson files, go back and compare the freshly written files to the curriculum. If needed, add any content that is missing from the actual pages.
+
+Once you have verified that each section has a thorough and pertinent explanation, go back through each one and convert any markdown formatting into valid json formatting. Confirm all lesson pages have:
+- consistent explanations
+- proper json elements
+- correct and relevant links
+- well-structured code sections
+- good logical flow
+- only use section types found in @README.md  and do not hallucinate new types.
+
+Do NOT stop until ALL files for ALL folders are FULLY rewritten and CHECKED for formatting errors.
+After that, update the @frc-specific-config.json  file to reflect the new files made, using the same patterns as in @ftc-specific-config.json 
+--- FRC Planning Prompt ---
+create a detailed plan for each lesson in ctre.
+
+├── ctre/
+│   │   ├── ctre-intro.json
+│   │   ├── talon-fx-setup.json
+│   │   ├── talon-fx-configuration.json
+│   │   ├── talon-fx-pid-control.json
+│   │   ├── talon-fx-motion-magic.json
+│   │   ├── cancoder-setup.json
+│   │   ├── cancoder-absolute-encoders.json
+│   │   ├── ctre-sensors.json
+│   │   └── ctre-current-limiting.json

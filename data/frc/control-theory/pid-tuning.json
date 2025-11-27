@@ -1,0 +1,96 @@
+{
+  "title": "PID Tuning",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to PID Tuning",
+      "content": "PID tuning is the process of finding the optimal values for kP, kI, and kD gains to achieve the desired system response. Proper tuning is critical for PID control to work effectively - poorly tuned PID controllers can oscillate, overshoot, respond slowly, or fail to eliminate steady-state error.<br><br>Good tuning results in a system that responds quickly to changes, reaches the setpoint accurately, and maintains stability without oscillation. The tuning process involves systematically adjusting parameters and observing the system's response until optimal performance is achieved.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html' target='_blank'>WPILib: Introduction to PID</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Tuning Goals",
+      "subtitle": "What good tuning achieves:",
+      "items": [
+        "Fast response (reaches setpoint quickly)",
+        "Minimal overshoot (doesn't go past target)",
+        "Stability (no oscillation or hunting)",
+        "Accuracy (reaches and maintains exact setpoint)",
+        "Smooth operation (no jerky motion)",
+        "Handles disturbances (compensates for load changes)",
+        "Consistent performance (works reliably every time)",
+        "No steady-state error (eliminates persistent offset)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Manual Tuning Process",
+      "content": "The most common tuning method is manual tuning, which involves systematically adjusting parameters and observing the system response. The standard approach is:<br><br><strong>1. Start with P only:</strong> Set kI and kD to zero. Increase kP until the system oscillates, then reduce it slightly.<br><br><strong>2. Add D to reduce oscillations:</strong> If the system oscillates or overshoots, add kD to dampen the response. Increase kD until oscillations are reduced, but be careful not to make it too large (can cause slow response).<br><br><strong>3. Add I to eliminate steady-state error:</strong> If there's a persistent error (system doesn't reach setpoint), add kI. Start with a small value and increase gradually. Too much I causes oscillation and windup.<br><br><strong>4. Fine-tune all parameters:</strong> Make small adjustments to all three parameters to optimize performance. Test under different conditions (different loads, speeds, positions)."
+    },
+    {
+      "type": "text",
+      "title": "Step-by-Step Tuning Guide",
+      "content": "Follow this systematic process for tuning any PID controller:<br><br><strong>Step 1: Set I and D to Zero</strong><br>Start with only proportional control. This gives you a baseline and helps you understand how the system responds to P alone.<br><br><strong>Step 2: Increase P Until Oscillation</strong><br>Gradually increase kP and observe the system. When it starts to oscillate (overshoots and undershoots repeatedly), you've found the upper limit.<br><br><strong>Step 3: Reduce P Slightly</strong><br>Set kP to about 50-70% of the oscillating value. This provides good response without excessive overshoot.<br><br><strong>Step 4: Add D to Dampen Oscillations</strong><br>If there's still oscillation or overshoot, add kD. Start with a small value (0.01-0.05 times kP) and increase until oscillations are reduced.<br><br><strong>Step 5: Add I if Steady-State Error Exists</strong><br>If the system doesn't reach the setpoint (persistent offset), add kI. Start very small (0.001-0.01 times kP) and increase gradually. Watch for oscillation or windup.<br><br><strong>Step 6: Fine-Tune All Parameters</strong><br>Make small adjustments to all three parameters. Test with different setpoints, loads, and conditions. Document your final values."
+    },
+    {
+      "type": "text",
+      "title": "Parameter Effects",
+      "content": "Understanding how each parameter affects system behavior is crucial for effective tuning:<br><br><strong>kP Too High:</strong> System oscillates, overshoots significantly, may become unstable. Response is too aggressive.<br><br><strong>kP Too Low:</strong> System responds slowly, may not reach setpoint, steady-state error persists. Response is too weak.<br><br><strong>kI Too High:</strong> System oscillates, integral windup occurs, overshoot increases. Accumulated error causes excessive correction.<br><br><strong>kI Too Low (or Zero):</strong> Steady-state error may persist, system doesn't eliminate constant offset. Fine if no steady-state error exists.<br><br><strong>kD Too High:</strong> System responds slowly, sensitive to noise, may become unstable. Damping is excessive.<br><br><strong>kD Too Low (or Zero):</strong> Oscillations and overshoot may occur, system takes longer to settle. No damping effect."
+    },
+    {
+      "type": "text",
+      "title": "Tuning Tools",
+      "content": "Several tools can help with PID tuning:<br><br><strong>SmartDashboard/Shuffleboard:</strong> Display real-time sensor values, error, and PID output. Essential for observing system response during tuning. Add plots to visualize position, velocity, and error over time.<br><br><strong>Vendor Tools:</strong> REV Hardware Client and Phoenix Tuner allow you to tune PID parameters directly on motor controllers and see real-time feedback. Useful for on-controller PID tuning.<br><br><strong>AdvantageScope:</strong> Advanced logging and analysis tool that can record and replay robot behavior, making it easier to analyze tuning results.<br><br><strong>Code-Based Tuning:</strong> Create tuning helper code that allows you to adjust PID values in real-time using SmartDashboard inputs, making it easy to test different values without recompiling."
+    },
+    {
+      "type": "code",
+      "title": "Tuning Helper Code with SmartDashboard",
+      "content": "This example shows how to create a tuning interface using SmartDashboard:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport edu.wpi.first.math.controller.PIDController;\n\npublic class TunableArm extends SubsystemBase {\n    private final PIDController m_pidController = new PIDController(0.1, 0.0, 0.01);\n    private double m_targetAngle = 0.0;\n    private double m_currentAngle = 0.0;  // From encoder\n    \n    public TunableArm() {\n        // Initialize SmartDashboard with default values\n        SmartDashboard.putNumber(\"Arm kP\", 0.1);\n        SmartDashboard.putNumber(\"Arm kI\", 0.0);\n        SmartDashboard.putNumber(\"Arm kD\", 0.01);\n        SmartDashboard.putNumber(\"Arm Setpoint\", 0.0);\n    }\n    \n    @Override\n    public void periodic() {\n        // Read PID values from SmartDashboard (allows real-time tuning)\n        double kP = SmartDashboard.getNumber(\"Arm kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"Arm kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"Arm kD\", 0.01);\n        \n        // Update PID controller with new values\n        m_pidController.setP(kP);\n        m_pidController.setI(kI);\n        m_pidController.setD(kD);\n        \n        // Read setpoint from SmartDashboard\n        m_targetAngle = SmartDashboard.getNumber(\"Arm Setpoint\", 0.0);\n        \n        // Calculate PID output\n        double output = m_pidController.calculate(m_currentAngle, m_targetAngle);\n        \n        // Apply to motor (implementation depends on your motor controller)\n        // m_armMotor.set(output);\n        \n        // Display tuning information\n        SmartDashboard.putNumber(\"Arm Current Angle\", m_currentAngle);\n        SmartDashboard.putNumber(\"Arm Error\", m_targetAngle - m_currentAngle);\n        SmartDashboard.putNumber(\"Arm Output\", output);\n        SmartDashboard.putBoolean(\"Arm At Setpoint\", m_pidController.atSetpoint());\n    }\n    \n    public void setAngle(double angle) {\n        m_targetAngle = angle;\n        SmartDashboard.putNumber(\"Arm Setpoint\", angle);\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Tuning Best Practices",
+      "subtitle": "Tips for effective PID tuning:",
+      "items": [
+        "Test incrementally (change one parameter at a time)",
+        "Document your values (write down what works and what doesn't)",
+        "Test under load (tune with actual mechanism loads, not unloaded)",
+        "Test multiple setpoints (verify tuning works across full range)",
+        "Start conservative (begin with lower values, increase gradually)",
+        "Use visualization (plots help understand system response)",
+        "Test edge cases (minimum/maximum positions, rapid changes)",
+        "Verify stability (ensure system doesn't oscillate over time)",
+        "Re-tune if mechanism changes (new load, different gearing, etc.)"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Common Tuning Issues",
+      "subtitle": "Troubleshooting tuning problems:",
+      "items": [
+        "<strong>Oscillation:</strong> Reduce kP, increase kD, or reduce kI",
+        "<strong>Overshoot:</strong> Reduce kP or increase kD to add damping",
+        "<strong>Slow Response:</strong> Increase kP, but watch for oscillation",
+        "<strong>Steady-State Error:</strong> Add small kI value, increase gradually",
+        "<strong>Windup:</strong> Reduce kI, add integral limits or reset logic",
+        "<strong>Noise Sensitivity:</strong> Reduce kD, add filtering to sensor readings",
+        "<strong>Inconsistent Behavior:</strong> Check for mechanical issues, verify sensor readings",
+        "<strong>Works at One Setpoint but Not Others:</strong> May need different PID values for different ranges, or check for nonlinearities"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Tuning for Different Mechanisms",
+      "content": "Different mechanisms require different tuning approaches:<br><br><strong>Position Control (Arms, Elevators):</strong> Typically needs higher kP for fast response, kD to prevent overshoot, and sometimes kI to eliminate steady-state error. Test with mechanism at different positions and loads.<br><br><strong>Velocity Control (Flywheels, Intakes):</strong> Often works well with just kP and feedforward (kV). kD is usually not needed. kI may be needed if speed varies significantly. Tune at target operating speed.<br><br><strong>Angle Control (Turrets, Swerve Modules):</strong> Similar to position control but must handle angle wraparound (0° = 360°). May need continuous input mode. Test at various angles.<br><br><strong>High-Inertia Mechanisms:</strong> Require more damping (higher kD) to prevent oscillation. May need lower kP to avoid overshoot.<br><br><strong>Low-Friction Mechanisms:</strong> May oscillate more easily, requiring careful kD tuning. May need higher kP for responsiveness."
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "PID Control Introduction", "id": "pid-control-intro" },
+        { "label": "PID On Controller", "id": "pid-on-controller" },
+        { "label": "PID In Code", "id": "pid-in-code" }
+      ]
+    }
+  ]
+}
+

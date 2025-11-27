@@ -1,0 +1,221 @@
+{
+  "title": "Motor Controller Configuration",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Motor Controller Configuration",
+      "content": "Motor controllers (SPARK MAX and Talon FX) have many configurable parameters that control their behavior. Understanding and properly configuring these parameters is essential for optimal performance. Configuration can be done using vendor-specific tools (REV Hardware Client or Phoenix Tuner) or programmatically in code. This lesson covers all the important configuration options that apply to both motor controller types."
+    },
+    {
+      "type": "text",
+      "title": "Configuration Methods",
+      "content": "There are two main ways to configure motor controller parameters:<br><br><strong>Vendor Tools (Graphical):</strong><br>- REV Hardware Client for SPARK MAX<br>- Phoenix Tuner for Talon FX<br>- Visual interface for configuring devices<br>- Good for initial setup and testing<br>- Configuration is saved to device's non-volatile memory<br>- Easy to see all parameters at once<br><br><strong>Code-Based Configuration:</strong><br>- Configure in your robot code<br>- Ensures consistent configuration across deployments<br>- Can be version controlled<br>- Recommended for production code<br><br><strong>Best Practice:</strong> Use vendor tools for initial setup and testing, but configure everything in code for your final robot program. This ensures your configuration is documented and consistent."
+    },
+    {
+      "type": "rules-box",
+      "title": "Essential Configuration Parameters",
+      "subtitle": "Parameters you should always configure:",
+      "items": [
+        "<strong>Motor Inversion:</strong> Correct motor direction",
+        "<strong>Idle/Neutral Mode:</strong> Brake or coast behavior when stopped",
+        "<strong>Current Limits:</strong> Protect motor and battery",
+        "<strong>Voltage Compensation:</strong> Consistent performance as battery drains",
+        "<strong>Encoder/Sensor Configuration:</strong> Which encoder to use (built-in or external)",
+        "<strong>Sensor Phase:</strong> Match encoder direction to motor direction"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Motor Inversion",
+      "content": "Motor inversion determines whether positive power makes the motor spin forward or backward. This is important for ensuring your robot moves in the correct direction.<br><br><strong>When to Invert:</strong><br>- Motor spins backwards when given positive power<br>- Motors on opposite sides of drivetrain need opposite directions<br>- Mechanism needs to move in opposite direction<br><br><strong>Configuration:</strong> Configure inversion using vendor-specific methods. Inversion can be set per-motor or can be handled by inverting the control signal."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Configuring Motor Inversion",
+      "content": "Motor inversion is configured differently for SPARK MAX and Talon FX:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\n\npublic class MotorInversion {\n    private final CANSparkMax m_leftMotor = new CANSparkMax(1, MotorType.kBrushless);\n    private final CANSparkMax m_rightMotor = new CANSparkMax(2, MotorType.kBrushless);\n    \n    public MotorInversion() {\n        // Left motor: normal direction\n        m_leftMotor.setInverted(false);\n        \n        // Right motor: inverted (spins opposite to left)\n        m_rightMotor.setInverted(true);\n        \n        // Alternative: Invert the control signal instead\n        // double leftPower = gamepad.getLeftY();\n        // double rightPower = -gamepad.getRightY();  // Inverted here\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.InvertedValue;\n\npublic class MotorInversion {\n    private final TalonFX m_leftMotor = new TalonFX(1);\n    private final TalonFX m_rightMotor = new TalonFX(2);\n    \n    public MotorInversion() {\n        // Left motor: normal direction\n        TalonFXConfiguration leftConfig = new TalonFXConfiguration();\n        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;\n        m_leftMotor.getConfigurator().apply(leftConfig);\n        \n        // Right motor: inverted (spins opposite to left)\n        TalonFXConfiguration rightConfig = new TalonFXConfiguration();\n        rightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;\n        m_rightMotor.getConfigurator().apply(rightConfig);\n        \n        // Alternative: Invert the control signal instead\n        // double leftPower = gamepad.getLeftY();\n        // double rightPower = -gamepad.getRightY();  // Inverted here\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Idle/Neutral Mode",
+      "content": "Idle mode (SPARK MAX) or neutral mode (Talon FX) determines what happens when the motor receives zero power (0.0).<br><br><strong>Brake Mode:</strong><br>- Motor actively resists rotation<br>- Useful for holding position<br>- Better for precision control<br>- Uses more power (motor is actively braking)<br><br><strong>Coast Mode:</strong><br>- Motor free-spins (no resistance)<br>- Useful for mechanisms that should move freely<br>- Less power consumption<br>- May drift when stopped<br><br><strong>When to Use Each:</strong><br>- <strong>Brake:</strong> Drivetrains, arms, elevators (where you want to hold position)<br>- <strong>Coast:</strong> Intakes, flywheels (where free-spinning is acceptable)"
+    },
+    {
+      "type": "code-tabs",
+      "title": "Configuring Idle/Neutral Mode",
+      "content": "Idle mode configuration differs between SPARK MAX and Talon FX:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkBase.IdleMode;\n\npublic class IdleModeConfig {\n    private final CANSparkMax m_drivetrainMotor = new CANSparkMax(1, MotorType.kBrushless);\n    private final CANSparkMax m_intakeMotor = new CANSparkMax(2, MotorType.kBrushless);\n    \n    public IdleModeConfig() {\n        // Drivetrain: brake mode (hold position)\n        m_drivetrainMotor.setIdleMode(IdleMode.kBrake);\n        \n        // Intake: coast mode (free-spin when stopped)\n        m_intakeMotor.setIdleMode(IdleMode.kCoast);\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\n\npublic class NeutralModeConfig {\n    private final TalonFX m_drivetrainMotor = new TalonFX(1);\n    private final TalonFX m_intakeMotor = new TalonFX(2);\n    \n    public NeutralModeConfig() {\n        // Drivetrain: brake mode (hold position)\n        TalonFXConfiguration drivetrainConfig = new TalonFXConfiguration();\n        drivetrainConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_drivetrainMotor.getConfigurator().apply(drivetrainConfig);\n        \n        // Intake: coast mode (free-spin when stopped)\n        TalonFXConfiguration intakeConfig = new TalonFXConfiguration();\n        intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;\n        m_intakeMotor.getConfigurator().apply(intakeConfig);\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Current Limiting",
+      "content": "Current limiting protects your motors and battery from damage due to excessive current draw. Both SPARK MAX and Talon FX support sophisticated current limiting (covered in detail in the current limiting lesson).<br><br><strong>SPARK MAX:</strong> Uses smart current limiting and secondary current limiting<br><br><strong>Talon FX:</strong> Uses stator current limiting (motor protection) and supply current limiting (battery protection)<br><br><strong>Configuration:</strong> Set current limits based on your motor's specifications and mechanism requirements. Typical values range from 20-60 amps depending on the motor and application."
+    },
+    {
+      "type": "text",
+      "title": "Voltage Compensation",
+      "content": "As your robot battery drains during a match, the voltage decreases. This can cause inconsistent motor performance. Voltage compensation automatically adjusts motor output to maintain consistent performance regardless of battery voltage.<br><br><strong>How It Works:</strong><br>- You specify a nominal voltage (typically 12.0V)<br>- Motor controller measures actual battery voltage<br>- Motor output is scaled to compensate for voltage difference<br><br><strong>Benefits:</strong><br>- Consistent performance throughout match<br>- Predictable behavior<br>- Better autonomous repeatability<br><br><strong>When to Use:</strong> Enable voltage compensation for most applications, especially drivetrains and mechanisms where consistent performance is important."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Configuring Voltage Compensation",
+      "content": "Voltage compensation is configured differently for each motor controller:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\n\npublic class VoltageCompensation {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    \n    public VoltageCompensation() {\n        // Enable voltage compensation with nominal voltage of 12.0V\n        m_motor.enableVoltageCompensation(12.0);\n        \n        // Now motor output will be automatically adjusted\n        // to maintain consistent performance as battery drains\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\npublic class VoltageCompensation {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public VoltageCompensation() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Set peak forward and reverse voltages (nominal battery voltage)\n        config.Voltage.PeakForwardVoltage = 12.0;\n        config.Voltage.PeakReverseVoltage = -12.0;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n        \n        // Now motor output will be automatically adjusted\n        // to maintain consistent performance as battery drains\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Encoder/Sensor Configuration",
+      "content": "Motor controllers can use different encoders for closed-loop control (PID, motion profiling). You need to configure which encoder to use.<br><br><strong>SPARK MAX:</strong><br>- Built-in encoder (NEO motors: 42 counts per revolution)<br>- External encoder via data port<br>- Alternate encoder via alternate encoder port<br><br><strong>Talon FX:</strong><br>- Integrated sensor (built-in encoder: 2048 counts per revolution)<br>- External encoder (CANcoder or other)<br>- Analog sensor (potentiometer or other)<br><br><strong>Configuration:</strong> Configure the encoder type when setting up feedback. The built-in/integrated encoder is the most common choice and requires no additional wiring."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Configuring Encoder/Sensor",
+      "content": "Encoder configuration differs between SPARK MAX and Talon FX:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\n\npublic class EncoderConfig {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    \n    // Get built-in encoder (for NEO motors)\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    public EncoderConfig() {\n        // Reset encoder position to zero\n        m_encoder.setPosition(0);\n        \n        // Set encoder position conversion factor (if needed)\n        // For example, if gear ratio is 10:1, position is in motor rotations\n        // To get mechanism rotations: m_encoder.setPositionConversionFactor(1.0 / 10.0);\n        \n        // Set velocity conversion factor (if needed)\n        // m_encoder.setVelocityConversionFactor(1.0 / 10.0);\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "import com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class FeedbackSensorConfig {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public FeedbackSensorConfig() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure integrated encoder as feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Reset encoder position to zero\n        m_motor.setPosition(0);\n        \n        // Configure sensor phase (if encoder reads backwards)\n        // Set to true if encoder counts decrease when motor moves forward\n        config.Feedback.FeedbackRotorOffset = 0.0;  // Offset in rotations\n        config.Feedback.SensorToMechanismRatio = 1.0;  // Gear ratio\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Advanced Configuration Parameters",
+      "content": "Both motor controllers have many advanced configuration options for fine-tuning performance:<br><br><strong>Common Advanced Settings:</strong><br>- Closed loop settings (PID parameters, ramp rates)<br>- Open loop settings (ramp rates, output limits)<br>- Status frame periods (CAN bus update rates)<br>- Soft limits (software-based position limits)<br><br><strong>Vendor-Specific Features:</strong><br>- SPARK MAX: Smart Motion parameters, closed loop output range<br>- Talon FX: Motion Magic parameters, integral accumulator limits<br><br>These advanced settings are typically configured when setting up PID control or motion profiling."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Advanced Configuration Example",
+      "content": "Complete configuration examples for both motor controllers:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "package frc.robot.subsystems;\n\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkBase.IdleMode;\nimport com.revrobotics.RelativeEncoder;\n\npublic class AdvancedConfig {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    public AdvancedConfig() {\n        // Basic settings\n        m_motor.setIdleMode(IdleMode.kBrake);\n        m_motor.setInverted(false);\n        \n        // Current limiting\n        m_motor.setSmartCurrentLimit(40);\n        \n        // Voltage compensation\n        m_motor.enableVoltageCompensation(12.0);\n        \n        // Open loop ramp rate (seconds to reach full output)\n        m_motor.setOpenLoopRampRate(0.5);\n        \n        // Closed loop ramp rate (for PID control)\n        m_motor.setClosedLoopRampRate(0.5);\n        \n        // Soft limits (position limits in encoder units)\n        m_encoder.setPosition(0);\n        m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 100.0f);\n        m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0.0f);\n        m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);\n        m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class AdvancedConfig {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public AdvancedConfig() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure soft limits (position limits in rotations)\n        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;\n        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 100.0;  // Max position (rotations)\n        \n        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;\n        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;  // Min position (rotations)\n        \n        // Configure closed loop settings (for PID control)\n        config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;  // Ramp time (seconds)\n        config.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.5;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Using Vendor Tools for Configuration",
+      "content": "Vendor tools provide graphical interfaces for configuring motor controller parameters. They're useful for initial setup and testing.<br><br><strong>REV Hardware Client (SPARK MAX):</strong><br>- Visual interface for configuring SPARK MAX devices<br>- Configuration tabs: General, Current, Voltage, Encoder, Closed Loop, Smart Motion<br>- Configuration is saved to device's non-volatile memory<br><br><strong>Phoenix Tuner (Talon FX):</strong><br>- Visual interface for configuring Talon FX devices<br>- Configuration tabs: General, Current, Voltage, Sensor, Closed Loop, Motion Magic<br>- Configuration is saved to device's non-volatile memory<br><br><strong>Best Practice:</strong> Use vendor tools for initial setup and testing, but configure everything in code for production."
+    },
+    {
+      "type": "text",
+      "title": "Code-Based Configuration",
+      "content": "Configuring motor controllers in code ensures your configuration is documented, version-controlled, and consistent across deployments. This is the recommended approach for production code.<br><br><strong>Configuration Timing:</strong><br>- Configure devices in subsystem constructors<br>- Configure immediately after creating motor controller instances<br>- Use configuration methods/objects to set all parameters<br><br><strong>Configuration Methods:</strong><br>- SPARK MAX: Use setter methods for each parameter<br>- Talon FX: Create configuration object, set parameters, apply with <code>getConfigurator().apply()</code><br><br><strong>Best Practice:</strong> Always configure in code so your configuration is explicit and version-controlled."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Complete Configuration Example",
+      "content": "Complete configuration examples showing all essential settings:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "package frc.robot.subsystems;\n\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkBase.IdleMode;\nimport com.revrobotics.RelativeEncoder;\n\npublic class FullyConfiguredSparkMax {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    public FullyConfiguredSparkMax() {\n        // Basic settings\n        m_motor.setIdleMode(IdleMode.kBrake);\n        m_motor.setInverted(false);\n        \n        // Current limiting\n        m_motor.setSmartCurrentLimit(40);\n        m_motor.setSecondaryCurrentLimit(60);\n        \n        // Voltage compensation\n        m_motor.enableVoltageCompensation(12.0);\n        \n        // Ramp rates\n        m_motor.setOpenLoopRampRate(0.5);\n        m_motor.setClosedLoopRampRate(0.5);\n        \n        // Encoder configuration\n        m_encoder.setPosition(0);\n        \n        // Soft limits (optional)\n        m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 100.0f);\n        m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0.0f);\n        m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);\n        m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);\n        \n        // Burn configuration to flash (persists after power cycle)\n        // Only needed if you want settings to persist\n        // m_motor.burnFlash();\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class FullyConfiguredTalonFX {\n    private final TalonFX m_motor = new TalonFX(1);\n    \n    public FullyConfiguredTalonFX() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Basic settings\n        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;\n        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        \n        // Current limiting\n        config.CurrentLimits.StatorCurrentLimitEnable = true;\n        config.CurrentLimits.StatorCurrentLimit = 40.0;\n        config.CurrentLimits.StatorCurrentLimitThreshold = 45.0;\n        config.CurrentLimits.StatorCurrentLimitThresholdTime = 0.5;\n        \n        config.CurrentLimits.SupplyCurrentLimitEnable = true;\n        config.CurrentLimits.SupplyCurrentLimit = 40.0;\n        config.CurrentLimits.SupplyCurrentLimitThreshold = 45.0;\n        config.CurrentLimits.SupplyCurrentLimitThresholdTime = 0.5;\n        \n        // Voltage compensation\n        config.Voltage.PeakForwardVoltage = 12.0;\n        config.Voltage.PeakReverseVoltage = -12.0;\n        \n        // Feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        config.Feedback.FeedbackRotorOffset = 0.0;\n        config.Feedback.SensorToMechanismRatio = 1.0;\n        \n        // Reset encoder position to zero\n        m_motor.setPosition(0);\n        \n        // Soft limits (optional)\n        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;\n        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;\n        \n        // Apply all configuration at once\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Configuration Persistence",
+      "content": "Motor controller configuration can be stored in the device's non-volatile memory. This means:<br><br><strong>Persistent Storage:</strong><br>- Configuration survives power cycles<br>- Configuration survives code deployments<br>- Settings remain until explicitly changed<br><br><strong>Configuration Priority:</strong><br>- Code configuration overrides stored configuration<br>- Last configuration applied takes effect<br>- Vendor tools and code can both configure devices<br><br><strong>SPARK MAX:</strong> Use <code>burnFlash()</code> to make configuration persistent. Can only be called once per boot cycle.<br><br><strong>Talon FX:</strong> Configuration is automatically persistent when applied via <code>getConfigurator().apply()</code>.<br><br><strong>Best Practice:</strong> Always configure in code so your configuration is explicit and version-controlled."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Configuration with Constants",
+      "content": "Using constants for configuration values makes code more maintainable:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "package frc.robot.subsystems;\n\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkBase.IdleMode;\n\npublic class ConfigWithConstants {\n    // Configuration constants\n    private static final int CAN_ID = 1;\n    private static final int CURRENT_LIMIT = 40;\n    private static final int SECONDARY_CURRENT_LIMIT = 60;\n    private static final double VOLTAGE_COMPENSATION = 12.0;\n    private static final double RAMP_RATE = 0.5;\n    \n    private final CANSparkMax m_motor = new CANSparkMax(CAN_ID, MotorType.kBrushless);\n    \n    public ConfigWithConstants() {\n        // Use constants for configuration\n        m_motor.setIdleMode(IdleMode.kBrake);\n        \n        m_motor.setSmartCurrentLimit(CURRENT_LIMIT);\n        m_motor.setSecondaryCurrentLimit(SECONDARY_CURRENT_LIMIT);\n        \n        m_motor.enableVoltageCompensation(VOLTAGE_COMPENSATION);\n        \n        m_motor.setOpenLoopRampRate(RAMP_RATE);\n        m_motor.setClosedLoopRampRate(RAMP_RATE);\n    }\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\n\npublic class ConfigWithConstants {\n    // Configuration constants\n    private static final int CAN_ID = 1;\n    private static final double CURRENT_LIMIT = 40.0;\n    private static final double CURRENT_THRESHOLD = 45.0;\n    private static final double CURRENT_TIME = 0.5;\n    private static final double VOLTAGE_PEAK = 12.0;\n    \n    private final TalonFX m_motor = new TalonFX(CAN_ID);\n    \n    public ConfigWithConstants() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Use constants for configuration\n        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        \n        config.CurrentLimits.SupplyCurrentLimitEnable = true;\n        config.CurrentLimits.SupplyCurrentLimit = CURRENT_LIMIT;\n        config.CurrentLimits.SupplyCurrentLimitThreshold = CURRENT_THRESHOLD;\n        config.CurrentLimits.SupplyCurrentLimitThresholdTime = CURRENT_TIME;\n        \n        config.Voltage.PeakForwardVoltage = VOLTAGE_PEAK;\n        config.Voltage.PeakReverseVoltage = -VOLTAGE_PEAK;\n        \n        // Apply configuration\n        m_motor.getConfigurator().apply(config);\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Configuration Best Practices",
+      "subtitle": "Tips for reliable configuration:",
+      "items": [
+        "Configure all devices in subsystem constructors",
+        "Use constants for configuration values",
+        "Use same configuration for similar devices",
+        "Document non-obvious configuration choices",
+        "Test configuration changes incrementally",
+        "Verify behavior matches expectations",
+        "Commit configuration code to version control",
+        "Document why certain settings were chosen",
+        "Use vendor tools to monitor device status"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Configuration Checklist",
+      "subtitle": "Essential configuration for each motor controller:",
+      "items": [
+        "Configure motor inversion (if needed)",
+        "Configure idle/neutral mode (brake or coast)",
+        "Set current limits (protect motor and battery)",
+        "Enable voltage compensation",
+        "Configure encoder/sensor (if using)",
+        "Reset encoder position (if using built-in encoder)",
+        "Set sensor phase (if needed)",
+        "Set output limits (for safety)",
+        "Test configuration with vendor tools"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Motor PID Control", "id": "motor-pid-control" },
+        { "label": "Motor Current Limiting", "id": "motor-current-limiting" },
+        { "label": "SPARK MAX Setup", "id": "spark-max-setup" },
+        { "label": "Talon FX Setup", "id": "talon-fx-setup" }
+      ]
+    }
+  ]
+}
+

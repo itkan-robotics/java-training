@@ -23,11 +23,14 @@
 │   │   ├── spark-max-configuration.json
 │   │   ├── spark-max-pid-control.json
 │   │   ├── spark-max-smart-motion.json
-│   │   ├── spark-setup.json
 │   │   ├── rev-encoders.json
 │   │   ├── rev-sensors.json
 │   │   ├── rev-current-limiting.json
-│   │   └── rev-ph-pneumatics.json
+│   │   └── rev-hardware-client.json
+│   ├── overlap/
+│   │   ├── motor-controller-configuration.json
+│   │   ├── motor-pid-control.json
+│   │   └── motor-current-limiting.json
 ├── command-based/
 │   ├── command-based-intro.json
 │   ├── subsystem-design.json
@@ -36,8 +39,7 @@
 │   ├── command-groups.json
 │   ├── default-commands.json
 │   ├── trigger-bindings.json
-│   ├── robot-container.json
-│   └── command-requirements.json
+│   └── robot-container.json
 ├── control-theory/
 │   ├── pid-control-intro.json
 │   ├── pid-tuning.json

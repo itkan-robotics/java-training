@@ -79,20 +79,6 @@
           "duration": "30 min"
         },
         {
-          "id": "talon-fx-configuration",
-          "label": "Talon FX Configuration",
-          "file": "data/frc/hardware-vendors/ctre/talon-fx-configuration.json",
-          "difficulty": "intermediate",
-          "duration": "40 min"
-        },
-        {
-          "id": "talon-fx-pid-control",
-          "label": "Talon FX PID Control",
-          "file": "data/frc/hardware-vendors/ctre/talon-fx-pid-control.json",
-          "difficulty": "intermediate",
-          "duration": "50 min"
-        },
-        {
           "id": "talon-fx-motion-magic",
           "label": "Talon FX Motion Magic",
           "file": "data/frc/hardware-vendors/ctre/talon-fx-motion-magic.json",
@@ -119,13 +105,220 @@
           "file": "data/frc/hardware-vendors/ctre/ctre-sensors.json",
           "difficulty": "intermediate",
           "duration": "35 min"
+        }
+      ]
+    },
+    {
+      "id": "frc-hardware-vendors-rev",
+      "label": "REV Hardware",
+      "description": "REV Robotics motor controllers, sensors, and hardware",
+      "icon": "🔧",
+      "items": [
+        {
+          "id": "rev-intro",
+          "label": "REV Introduction",
+          "file": "data/frc/hardware-vendors/rev/rev-intro.json",
+          "difficulty": "beginner",
+          "duration": "25 min"
         },
         {
-          "id": "ctre-current-limiting",
-          "label": "CTRE Current Limiting",
-          "file": "data/frc/hardware-vendors/ctre/ctre-current-limiting.json",
+          "id": "spark-max-setup",
+          "label": "SPARK MAX Setup",
+          "file": "data/frc/hardware-vendors/rev/spark-max-setup.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
+        },
+        {
+          "id": "spark-max-smart-motion",
+          "label": "SPARK MAX Smart Motion",
+          "file": "data/frc/hardware-vendors/rev/spark-max-smart-motion.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
+        },
+        {
+          "id": "rev-encoders",
+          "label": "REV Encoders",
+          "file": "data/frc/hardware-vendors/rev/rev-encoders.json",
           "difficulty": "intermediate",
           "duration": "35 min"
+        },
+        {
+          "id": "rev-sensors",
+          "label": "REV Sensors",
+          "file": "data/frc/hardware-vendors/rev/rev-sensors.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        },
+        {
+          "id": "rev-hardware-client",
+          "label": "REV Hardware Client",
+          "file": "data/frc/hardware-vendors/rev/rev-hardware-client.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
+        }
+      ]
+    },
+    {
+      "id": "frc-hardware-vendors-overlap",
+      "label": "Vendor Generic",
+      "description": "Common motor controller topics for both REV and CTRE",
+      "icon": "🔀",
+      "items": [
+        {
+          "id": "motor-controller-configuration",
+          "label": "Motor Controller Configuration",
+          "file": "data/frc/hardware-vendors/overlap/motor-controller-configuration.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "motor-pid-control",
+          "label": "Motor PID Control",
+          "file": "data/frc/hardware-vendors/overlap/motor-pid-control.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
+        },
+        {
+          "id": "motor-current-limiting",
+          "label": "Motor Current Limiting",
+          "file": "data/frc/hardware-vendors/overlap/motor-current-limiting.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        }
+      ]
+    },
+    {
+      "id": "frc-command-based",
+      "label": "Command-Based Programming",
+      "description": "WPILib command-based programming architecture",
+      "icon": "🎮",
+      "items": [
+        {
+          "id": "command-based-intro",
+          "label": "Command-Based Introduction",
+          "file": "data/frc/command-based/command-based-intro.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
+        },
+        {
+          "id": "subsystem-design",
+          "label": "Subsystem Design",
+          "file": "data/frc/command-based/subsystem-design.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "command-creation",
+          "label": "Command Creation",
+          "file": "data/frc/command-based/command-creation.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
+        },
+        {
+          "id": "command-scheduler",
+          "label": "Command Scheduler",
+          "file": "data/frc/command-based/command-scheduler.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        },
+        {
+          "id": "command-groups",
+          "label": "Command Groups",
+          "file": "data/frc/command-based/command-groups.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
+        },
+        {
+          "id": "default-commands",
+          "label": "Default Commands",
+          "file": "data/frc/command-based/default-commands.json",
+          "difficulty": "intermediate",
+          "duration": "30 min"
+        },
+        {
+          "id": "trigger-bindings",
+          "label": "Trigger Bindings",
+          "file": "data/frc/command-based/trigger-bindings.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "robot-container",
+          "label": "Robot Container",
+          "file": "data/frc/command-based/robot-container.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        }
+      ]
+    },
+    {
+      "id": "frc-control-theory",
+      "label": "Control Theory",
+      "description": "PID control, motion profiling, feedforward, and advanced control techniques",
+      "icon": "📊",
+      "items": [
+        {
+          "id": "pid-control-intro",
+          "label": "PID Control Introduction",
+          "file": "data/frc/control-theory/pid-control-intro.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
+        },
+        {
+          "id": "pid-tuning",
+          "label": "PID Tuning",
+          "file": "data/frc/control-theory/pid-tuning.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
+        },
+        {
+          "id": "pid-on-controller",
+          "label": "PID On Motor Controllers",
+          "file": "data/frc/control-theory/pid-on-controller.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        },
+        {
+          "id": "pid-in-code",
+          "label": "PID In Robot Code",
+          "file": "data/frc/control-theory/pid-in-code.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "motion-profiling-basics",
+          "label": "Motion Profiling Basics",
+          "file": "data/frc/control-theory/motion-profiling-basics.json",
+          "difficulty": "intermediate",
+          "duration": "35 min"
+        },
+        {
+          "id": "trapezoidal-profiles",
+          "label": "Trapezoidal Profiles",
+          "file": "data/frc/control-theory/trapezoidal-profiles.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "exponential-profiles",
+          "label": "Exponential Profiles",
+          "file": "data/frc/control-theory/exponential-profiles.json",
+          "difficulty": "intermediate",
+          "duration": "30 min"
+        },
+        {
+          "id": "feedforward-control",
+          "label": "Feedforward Control",
+          "file": "data/frc/control-theory/feedforward-control.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
+        },
+        {
+          "id": "advanced-control-theory",
+          "label": "Advanced Control Theory",
+          "file": "data/frc/control-theory/advanced-control-theory.json",
+          "difficulty": "advanced",
+          "duration": "40 min"
         }
       ]
     }
@@ -133,14 +326,14 @@
   "metadata": {
     "version": "1.0.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 15,
+    "totalLessons": 39,
     "difficultyLevels": {
-      "beginner": 8,
-      "intermediate": 6,
-      "advanced": 1
+      "beginner": 14,
+      "intermediate": 23,
+      "advanced": 4
     },
-    "estimatedDuration": "6.5 hours",
+    "estimatedDuration": "18.2 hours",
     "prerequisites": ["java-training"],
-    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting"]
+    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting", "rev", "spark-max", "neo", "smart-motion", "revlib", "command-based", "commands", "subsystems", "scheduler", "triggers", "control-theory", "motion-profiling", "feedforward", "trapezoidal-profiles", "exponential-profiles"]
   }
 }

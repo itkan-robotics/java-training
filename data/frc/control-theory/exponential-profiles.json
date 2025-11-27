@@ -1,0 +1,108 @@
+{
+  "title": "Exponential Motion Profiles",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Exponential Profiles",
+      "content": "Exponential motion profiles use exponential functions to create smooth acceleration and deceleration. Unlike trapezoidal profiles with distinct phases, exponential profiles provide continuous, natural-feeling motion with gradually changing acceleration.<br><br>Exponential profiles are simpler to implement than trapezoidal profiles and work well for mechanisms that don't need precise timing or maximum speed. They're excellent for input smoothing, simple mechanisms, and applications where natural-feeling motion is more important than optimal performance.<br><br>Exponential profiles are particularly useful for smoothing joystick inputs, creating gradual motor responses, and simple position control where trapezoidal profiles might be overkill."
+    },
+    {
+      "type": "rules-box",
+      "title": "Exponential Profile Benefits",
+      "subtitle": "Advantages of exponential profiles:",
+      "items": [
+        "Smooth acceleration (natural, gradual motion)",
+        "Simple implementation (easier than trapezoidal)",
+        "Natural feel (comfortable, predictable motion)",
+        "Simple tuning (one parameter: time constant)",
+        "Good for input smoothing (joystick inputs, gradual changes)",
+        "Works well for simple mechanisms (less complex than trapezoidal)",
+        "Continuous motion (no distinct phases)",
+        "Computationally efficient (simple calculations)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Exponential vs Trapezoidal Profiles",
+      "content": "Understanding when to use each profile type helps you choose the right solution:<br><br><strong>Use Exponential Profiles When:</strong> You need simple, natural motion; you're smoothing inputs (joysticks); you don't need precise timing; you want easy implementation; or you're controlling simple mechanisms.<br><br><strong>Use Trapezoidal Profiles When:</strong> You need maximum speed; you need precise timing; you have complex mechanisms; you need to respect strict constraints; or you need optimal performance.<br><br><strong>Trade-offs:</strong> Exponential profiles are simpler but may not reach maximum speed as quickly. Trapezoidal profiles are more complex but provide better performance for demanding applications. Choose based on your mechanism's requirements."
+    },
+    {
+      "type": "text",
+      "title": "Exponential Profile Math",
+      "content": "Exponential profiles use exponential decay/growth functions:<br><br><strong>Exponential Decay:</strong> Output approaches target gradually: <code>output = target - (target - current) × e^(-t/τ)</code> where τ (tau) is the time constant.<br><br><strong>Time Constant (τ):</strong> Determines how quickly the output approaches the target. Smaller τ = faster response, larger τ = slower response. Typically 0.1 to 1.0 seconds for FRC mechanisms.<br><br><strong>Response Time:</strong> The time constant represents the time it takes for the output to reach about 63% of the way to the target. Full response takes about 3-5 time constants.<br><br><strong>Continuous Motion:</strong> Unlike trapezoidal profiles with distinct phases, exponential profiles provide smooth, continuous motion from start to finish."
+    },
+    {
+      "type": "text",
+      "title": "ExponentialProfile Class",
+      "content": "WPILib provides the ExponentialProfile class for creating exponential motion profiles:<br><br><strong>Creating Profiles:</strong> Create an ExponentialProfile with a time constant. The time constant determines how quickly the profile approaches the target.<br><br><strong>Setting Time Constant:</strong> The time constant (τ) controls the response speed. Smaller values create faster response, larger values create slower, smoother response.<br><br><strong>Calculating Output:</strong> Use calculate() with the current value, target value, and elapsed time to get the desired output at the current time.<br><br><strong>Simple Interface:</strong> ExponentialProfile has a simpler interface than TrapezoidProfile, making it easier to use for simple applications."
+    },
+    {
+      "type": "code",
+      "title": "Basic ExponentialProfile Creation",
+      "content": "This example shows how to create and use an ExponentialProfile:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.trajectory.ExponentialProfile;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class ExponentialProfileExample extends SubsystemBase {\n    // Time constant (seconds) - smaller = faster, larger = slower\n    private static final double TIME_CONSTANT = 0.3;  // 300ms time constant\n    \n    private final ExponentialProfile m_profile = new ExponentialProfile(TIME_CONSTANT);\n    \n    private double m_currentValue = 0.0;\n    private double m_targetValue = 0.0;\n    private double m_profileStartTime = 0.0;\n    private boolean m_profileActive = false;\n    \n    public void setTarget(double target) {\n        m_targetValue = target;\n        m_profileStartTime = System.currentTimeMillis() / 1000.0;\n        m_profileActive = true;\n    }\n    \n    public double getDesiredValue(double currentTime) {\n        if (!m_profileActive) {\n            return m_currentValue;\n        }\n        \n        // Calculate elapsed time\n        double elapsedTime = currentTime - m_profileStartTime;\n        \n        // Calculate desired value using exponential profile\n        return m_profile.calculate(m_targetValue, m_currentValue, elapsedTime);\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "ExponentialProfile for Drivetrain Control",
+      "content": "This example shows exponential profiles for smoothing drivetrain inputs:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.trajectory.ExponentialProfile;\nimport edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;\nimport edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class SmoothedDrivetrain extends SubsystemBase {\n    private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);\n    private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);\n    private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMotor);\n    private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMotor);\n    \n    // Exponential profiles for smoothing inputs\n    private static final double TIME_CONSTANT = 0.2;  // 200ms smoothing\n    private final ExponentialProfile m_leftProfile = new ExponentialProfile(TIME_CONSTANT);\n    private final ExponentialProfile m_rightProfile = new ExponentialProfile(TIME_CONSTANT);\n    \n    private double m_currentLeftOutput = 0.0;\n    private double m_currentRightOutput = 0.0;\n    private double m_targetLeftOutput = 0.0;\n    private double m_targetRightOutput = 0.0;\n    private double m_lastUpdateTime = 0.0;\n    \n    public SmoothedDrivetrain() {\n        m_rightGroup.setInverted(true);\n        m_lastUpdateTime = System.currentTimeMillis() / 1000.0;\n    }\n    \n    public void drive(double leftSpeed, double rightSpeed) {\n        m_targetLeftOutput = leftSpeed;\n        m_targetRightOutput = rightSpeed;\n    }\n    \n    @Override\n    public void periodic() {\n        // Get current time\n        double currentTime = System.currentTimeMillis() / 1000.0;\n        double deltaTime = currentTime - m_lastUpdateTime;\n        \n        // Update smoothed outputs using exponential profiles\n        m_currentLeftOutput = m_leftProfile.calculate(\n            m_targetLeftOutput, m_currentLeftOutput, deltaTime);\n        m_currentRightOutput = m_rightProfile.calculate(\n            m_targetRightOutput, m_currentRightOutput, deltaTime);\n        \n        // Apply smoothed outputs to motors\n        m_leftGroup.set(m_currentLeftOutput);\n        m_rightGroup.set(m_currentRightOutput);\n        \n        m_lastUpdateTime = currentTime;\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "ExponentialProfile for Joystick Input Smoothing",
+      "content": "This example shows how to smooth joystick inputs using exponential profiles:\n\npackage frc.robot.commands;\n\nimport edu.wpi.first.math.trajectory.ExponentialProfile;\nimport edu.wpi.first.wpilibj.XboxController;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class SmoothArcadeDrive extends Command {\n    private final Drivetrain m_drivetrain;\n    private final XboxController m_controller;\n    \n    // Exponential profiles for smoothing joystick inputs\n    private static final double TIME_CONSTANT = 0.15;  // 150ms smoothing\n    private final ExponentialProfile m_forwardProfile = new ExponentialProfile(TIME_CONSTANT);\n    private final ExponentialProfile m_rotationProfile = new ExponentialProfile(TIME_CONSTANT);\n    \n    private double m_currentForward = 0.0;\n    private double m_currentRotation = 0.0;\n    private double m_lastUpdateTime = 0.0;\n    \n    public SmoothArcadeDrive(Drivetrain drivetrain, XboxController controller) {\n        m_drivetrain = drivetrain;\n        m_controller = controller;\n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        m_lastUpdateTime = System.currentTimeMillis() / 1000.0;\n    }\n    \n    @Override\n    public void execute() {\n        // Read raw joystick inputs\n        double rawForward = -m_controller.getLeftY();\n        double rawRotation = -m_controller.getRightX();\n        \n        // Get current time\n        double currentTime = System.currentTimeMillis() / 1000.0;\n        double deltaTime = currentTime - m_lastUpdateTime;\n        \n        // Smooth inputs using exponential profiles\n        m_currentForward = m_forwardProfile.calculate(\n            rawForward, m_currentForward, deltaTime);\n        m_currentRotation = m_rotationProfile.calculate(\n            rawRotation, m_currentRotation, deltaTime);\n        \n        // Drive with smoothed inputs\n        m_drivetrain.arcadeDrive(m_currentForward, m_currentRotation);\n        \n        m_lastUpdateTime = currentTime;\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return false;  // Run until interrupted\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Using ExponentialProfile",
+      "content": "Using ExponentialProfile involves several steps:<br><br><strong>Setting Time Constant:</strong> Choose a time constant based on your mechanism's needs. Smaller values (0.1-0.2s) for fast response, larger values (0.5-1.0s) for smoother, slower motion.<br><br><strong>Calculating Output:</strong> Call calculate() with the target value, current value, and elapsed time. The profile returns the desired value at the current time, smoothly transitioning from current to target.<br><br><strong>Applying to Mechanisms:</strong> Use the calculated output to control your mechanism. The exponential profile ensures smooth transitions without sudden changes.<br><br><strong>Continuous Updates:</strong> Update the profile calculation every robot loop (20ms) to ensure smooth motion. Track elapsed time since the profile started."
+    },
+    {
+      "type": "text",
+      "title": "Profile Integration",
+      "content": "ExponentialProfile integrates with mechanisms and commands:<br><br><strong>With Mechanisms:</strong> Use exponential profiles in subsystems to smooth motor outputs or sensor-based control. Update the profile calculation in periodic().<br><br><strong>With Commands:</strong> Commands can use exponential profiles to smooth inputs or create gradual motion. Useful for teleop control and simple autonomous behaviors.<br><br><strong>Input Smoothing:</strong> Exponential profiles excel at smoothing joystick inputs, creating more comfortable and predictable robot control.<br><br><strong>Simple Position Control:</strong> For mechanisms that don't need precise timing, exponential profiles provide simple, effective motion control."
+    },
+    {
+      "type": "text",
+      "title": "Tuning Exponential Profiles",
+      "content": "Finding the optimal time constant requires testing:<br><br><strong>Start with Default:</strong> Begin with a time constant around 0.2-0.3 seconds. This provides reasonable response for most mechanisms.<br><br><strong>Test Response:</strong> Observe how quickly the mechanism responds to changes. If too slow, decrease time constant. If too jerky, increase time constant.<br><br><strong>Balance Speed and Smoothness:</strong> Smaller time constants provide faster response but may feel less smooth. Larger time constants provide smoother motion but slower response.<br><br><strong>Mechanism-Specific:</strong> Different mechanisms may need different time constants. Test and tune for each mechanism individually.<br><br><strong>User Preference:</strong> For input smoothing, time constant is often a matter of driver preference. Test with drivers to find what feels best."
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices for Exponential Profiles",
+      "subtitle": "Tips for effective exponential profile usage:",
+      "items": [
+        "Choose appropriate time constant (test to find optimal value)",
+        "Update profile every robot loop (for smooth motion)",
+        "Track elapsed time accurately (for correct calculations)",
+        "Use for input smoothing (excellent for joystick inputs)",
+        "Test with actual mechanism (verify time constant works well)",
+        "Consider mechanism characteristics (fast vs slow mechanisms)",
+        "Document your time constants (write down what works)",
+        "Use for simple mechanisms (trapezoidal may be overkill)"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Exponential Profiles",
+      "subtitle": "Common issues and solutions:",
+      "items": [
+        "<strong>Motion Too Slow:</strong> Decrease time constant for faster response",
+        "<strong>Motion Too Jerky:</strong> Increase time constant for smoother motion",
+        "<strong>Not Reaching Target:</strong> Check time constant, verify profile is updating",
+        "<strong>Inconsistent Behavior:</strong> Ensure time tracking is accurate",
+        "<strong>Wrong Direction:</strong> Check sign of target vs current value",
+        "<strong>Profile Not Updating:</strong> Verify calculate() is called every loop"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" },
+        { "label": "Trapezoidal Profiles", "id": "trapezoidal-profiles" },
+        { "label": "PID Control Introduction", "id": "pid-control-intro" }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,114 @@
+{
+  "title": "Default Commands",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Default Commands",
+      "content": "Default commands are commands that run automatically when no other command requires a subsystem. They provide safe, continuous behavior for subsystems during teleop and other robot modes. Default commands are essential for mechanisms that need to respond to user input continuously.<br><br>When a subsystem has a default command set, that command runs whenever the subsystem is not being used by another command. This allows subsystems to have continuous behavior (like drivetrain responding to joystick input) while still allowing other commands to take control when needed."
+    },
+    {
+      "type": "rules-box",
+      "title": "Default Command Benefits",
+      "subtitle": "Why use default commands:",
+      "items": [
+        "Continuous subsystem behavior (responds to user input automatically)",
+        "Simplified teleop code (no need to manually run commands)",
+        "Safe default behavior (subsystem has defined state when idle)",
+        "Automatic execution (runs without explicit scheduling)",
+        "Interruptible (other commands can take control when needed)",
+        "Consistent behavior (same default behavior across robot modes)",
+        "Reduces code complexity (less manual command management)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "When Default Commands Run",
+      "content": "Default commands run automatically under specific conditions:<br><br><strong>When No Other Command Requires Subsystem:</strong> The default command runs when no other command is using the subsystem. As soon as another command requires the subsystem, the default command is interrupted.<br><br><strong>Continuously During Teleop:</strong> Default commands typically run continuously during teleop, providing responsive control to user input. They run every loop, checking for input and updating subsystem state.<br><br><strong>Automatic Execution:</strong> Once set, default commands run automatically without needing to be scheduled manually. The scheduler manages their execution based on subsystem availability."
+    },
+    {
+      "type": "text",
+      "title": "Setting Default Commands",
+      "content": "Default commands are set using the <code>setDefaultCommand()</code> method on subsystems. This is typically done in the RobotContainer constructor or in subsystem initialization.<br><br><strong>Method:</strong> Call <code>subsystem.setDefaultCommand(command)</code> to set a default command for a subsystem. The command should be an instance that can run continuously.<br><br><strong>Timing:</strong> Set default commands during robot initialization, typically in RobotContainer. They should be set before the robot enters teleop or autonomous mode.<br><br><strong>Replacement:</strong> You can change default commands at runtime if needed, but this is uncommon. Usually, default commands are set once during initialization."
+    },
+    {
+      "type": "code",
+      "title": "Setting Default Command",
+      "content": "package frc.robot;\n\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    \n    public RobotContainer() {\n        // Set default command for drivetrain\n        // This command will run automatically when no other command requires drivetrain\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(\n                m_drivetrain,\n                () -> m_driverController.getLeftY(),\n                () -> m_driverController.getRightX()\n            )\n        );\n        \n        // Now drivetrain will respond to joystick input automatically\n        // Other commands can still take control when needed\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Default Command Design",
+      "content": "Default commands should be designed to run continuously and handle user input:<br><br><strong>Run Continuously:</strong> Default commands should have <code>isFinished()</code> return <code>false</code> so they run until interrupted. They should be designed to run indefinitely.<br><br><strong>Handle User Input:</strong> Default commands typically read user input (joysticks, buttons) and control subsystems accordingly. They should be responsive to input changes.<br><br><strong>Be Interruptible:</strong> Default commands must handle interruption gracefully. When another command requires the subsystem, the default command's <code>end(true)</code> is called, and it should clean up appropriately.<br><br><strong>Safe Behavior:</strong> Default commands should provide safe, predictable behavior. They should not cause unexpected robot movement or unsafe states."
+    },
+    {
+      "type": "code",
+      "title": "Default Command Implementation",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\nimport java.util.function.DoubleSupplier;\n\npublic class ArcadeDriveCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final DoubleSupplier m_forwardSupplier;\n    private final DoubleSupplier m_rotationSupplier;\n    \n    public ArcadeDriveCommand(\n            Drivetrain drivetrain,\n            DoubleSupplier forwardSupplier,\n            DoubleSupplier rotationSupplier) {\n        m_drivetrain = drivetrain;\n        m_forwardSupplier = forwardSupplier;\n        m_rotationSupplier = rotationSupplier;\n        \n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        // Called once when command starts (or when resuming after interruption)\n    }\n    \n    @Override\n    public void execute() {\n        // Called every loop - read joystick input and drive\n        double forward = m_forwardSupplier.getAsDouble();\n        double rotation = m_rotationSupplier.getAsDouble();\n        \n        m_drivetrain.arcadeDrive(forward, rotation);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Always return false - command runs until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Called when command is interrupted (another command takes control)\n        // Stop drivetrain when interrupted\n        m_drivetrain.stop();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Default Command Examples",
+      "content": "Different subsystems have different default command patterns:<br><br><strong>Drivetrain Default:</strong> Typically an arcade drive or tank drive command that reads joystick input and drives the robot. This provides continuous, responsive control during teleop.<br><br><strong>Intake Default:</strong> May be a command that reads a button and runs the intake when pressed, or a command that holds the intake stopped. Depends on the desired behavior.<br><br><strong>Arm Default:</strong> Often a command that holds the arm at its current position using PID control, or a command that allows manual control via joystick. Provides safe holding behavior when not actively moving the arm."
+    },
+    {
+      "type": "code",
+      "title": "Multiple Default Commands",
+      "content": "package frc.robot;\n\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    public RobotContainer() {\n        // Drivetrain default: Arcade drive from joystick\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(\n                m_drivetrain,\n                () -> m_driverController.getLeftY(),\n                () -> m_driverController.getRightX()\n            )\n        );\n        \n        // Arm default: Hold current position\n        m_arm.setDefaultCommand(\n            new HoldArmPositionCommand(m_arm)\n        );\n        \n        // Intake default: Manual control from button\n        m_intake.setDefaultCommand(\n            new ManualIntakeCommand(\n                m_intake,\n                () -> m_operatorController.getRightTriggerAxis() > 0.5\n            )\n        );\n        \n        // Each subsystem now has continuous behavior\n        // Commands can still take control when needed\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Default Command with User Input",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Intake;\nimport java.util.function.BooleanSupplier;\n\npublic class ManualIntakeCommand extends Command {\n    private final Intake m_intake;\n    private final BooleanSupplier m_runSupplier;\n    \n    public ManualIntakeCommand(Intake intake, BooleanSupplier runSupplier) {\n        m_intake = intake;\n        m_runSupplier = runSupplier;\n        addRequirements(intake);\n    }\n    \n    @Override\n    public void initialize() {\n        // Setup if needed\n    }\n    \n    @Override\n    public void execute() {\n        // Read button input and control intake\n        if (m_runSupplier.getAsBoolean()) {\n            m_intake.run(0.6);  // Run intake when button pressed\n        } else {\n            m_intake.stop();    // Stop when button released\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Run continuously until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Stop intake when interrupted\n        m_intake.stop();\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Default Command Conflicts",
+      "content": "When another command requires a subsystem that has a default command, the default command is automatically interrupted. This is handled by the scheduler:<br><br><strong>Automatic Interruption:</strong> When a command is scheduled that requires a subsystem with a default command, the scheduler automatically interrupts the default command and gives control to the new command.<br><br><strong>Resuming Default:</strong> When the interrupting command finishes, the default command automatically resumes if no other command requires the subsystem.<br><br><strong>No Manual Management:</strong> You don't need to manually cancel or reschedule default commands. The scheduler handles this automatically based on subsystem requirements."
+    },
+    {
+      "type": "code",
+      "title": "Default Command Conflict Handling",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DefaultCommandConflictExample {\n    private Drivetrain m_drivetrain;\n    \n    public void demonstrateConflict() {\n        // Set default command\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(m_drivetrain, () -> 0.0, () -> 0.0)\n        );\n        \n        // Default command is now running (responding to joystick)\n        \n        // Schedule another command requiring drivetrain\n        Command autonomousCommand = new DriveForwardCommand(m_drivetrain, 0.5);\n        CommandScheduler.getInstance().schedule(autonomousCommand);\n        \n        // Scheduler automatically:\n        // 1. Interrupts ArcadeDriveCommand (calls end(true))\n        // 2. Schedules DriveForwardCommand (calls initialize())\n        // 3. DriveForwardCommand now controls drivetrain\n        \n        // When DriveForwardCommand finishes:\n        // 1. DriveForwardCommand ends (calls end(false))\n        // 2. ArcadeDriveCommand automatically resumes\n        // 3. Drivetrain responds to joystick again\n    }\n}"
+    },
+    {
+      "type": "rules-box",
+      "title": "Default Command Best Practices",
+      "subtitle": "Tips for effective default commands:",
+      "items": [
+        "Set default commands in RobotContainer constructor",
+        "Design default commands to run continuously (isFinished() returns false)",
+        "Make default commands responsive to user input",
+        "Handle interruption gracefully in end() method",
+        "Use default commands for teleop control patterns",
+        "Ensure default commands provide safe behavior",
+        "Test default commands with other commands to verify interruption",
+        "Document default command behavior for team members"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Default Commands",
+      "subtitle": "Common problems and solutions:",
+      "items": [
+        "<strong>Default Command Not Running:</strong> Verify setDefaultCommand() was called, check no other command requires subsystem",
+        "<strong>Default Command Stops Unexpectedly:</strong> Check for other commands requiring the subsystem, verify command isn't finishing",
+        "<strong>Default Command Not Interrupting:</strong> Verify other commands have correct requirements, check scheduler is running",
+        "<strong>Subsystem Not Responding:</strong> Check default command is reading input correctly, verify command is executing",
+        "<strong>Default Command Conflicts:</strong> Ensure only one default command per subsystem, verify command requirements",
+        "<strong>Command Not Resuming:</strong> Check interrupting command finishes properly, verify scheduler is managing correctly",
+        "<strong>Input Not Working:</strong> Verify input suppliers are correct, check command is reading input in execute()",
+        "<strong>Unexpected Behavior:</strong> Test default command in isolation, verify it handles interruption correctly"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Command Creation", "id": "command-creation" },
+        { "label": "Command Scheduler", "id": "command-scheduler" },
+        { "label": "Trigger Bindings", "id": "trigger-bindings" }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,85 @@
+{
+  "title": "Introduction to Command-Based Programming",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is Command-Based Programming?",
+      "content": "Command-based programming is a software architecture pattern used by WPILib for FRC robot programming. It breaks down robot operations into discrete, reusable commands that interact with subsystems (hardware abstractions) through a centralized scheduler. This architecture promotes modularity, reusability, and maintainability in robot code.<br><br>WPILib's command-based framework is the recommended approach for FRC programming because it provides a structured way to organize robot code, making it easier to build complex autonomous routines, handle multiple simultaneous operations, and manage robot state effectively.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/what-is-command-based.html' target='_blank'>WPILib: What is Command-Based Programming?</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Command-Based Architecture Benefits",
+      "subtitle": "Why use command-based programming:",
+      "items": [
+        "Modular code structure (commands and subsystems are reusable)",
+        "Separation of concerns (hardware logic separate from control logic)",
+        "Easy autonomous routine creation (compose commands into sequences)",
+        "Built-in resource management (subsystem ownership prevents conflicts)",
+        "Parallel operation support (multiple commands can run simultaneously)",
+        "Testable code (commands and subsystems can be tested independently)",
+        "Maintainable codebase (clear organization and structure)",
+        "Scalable architecture (easy to add new features and mechanisms)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Core Components",
+      "content": "Command-based programming consists of four main components that work together:<br><br><strong>Commands:</strong> Discrete actions that the robot can perform. Commands use subsystems to accomplish tasks and have a well-defined lifecycle (initialize, execute, end). Examples: drive forward, move arm to position, intake game piece.<br><br><strong>Subsystems:</strong> Hardware abstractions that encapsulate robot mechanisms. Subsystems provide methods for commands to interact with hardware and manage subsystem state. Examples: Drivetrain, Arm, Elevator, Intake.<br><br><strong>Command Scheduler:</strong> The execution manager that runs commands, handles scheduling, and manages subsystem ownership. The scheduler runs continuously, calling command lifecycle methods and managing command execution.<br><br><strong>Robot Container:</strong> An organizational class that creates subsystems, configures commands, sets up trigger bindings, and organizes the robot's command-based structure. It serves as the central configuration point for the robot."
+    },
+    {
+      "type": "code",
+      "title": "Simple Command Example",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DriveForwardCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final double m_speed;\n    \n    public DriveForwardCommand(Drivetrain drivetrain, double speed) {\n        m_drivetrain = drivetrain;\n        m_speed = speed;\n        \n        // Require the drivetrain subsystem\n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        // Called once when command starts\n        System.out.println(\"DriveForwardCommand: Starting\");\n    }\n    \n    @Override\n    public void execute() {\n        // Called repeatedly while command is active\n        m_drivetrain.drive(m_speed, m_speed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Return true when command should end\n        // This command runs until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Called once when command ends\n        m_drivetrain.stop();\n        if (interrupted) {\n            System.out.println(\"DriveForwardCommand: Interrupted\");\n        } else {\n            System.out.println(\"DriveForwardCommand: Completed\");\n        }\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Simple Subsystem Example",
+      "content": "package frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;\nimport edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n    private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);\n    private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);\n    private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMotor);\n    private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMotor);\n    \n    public Drivetrain() {\n        // Configure hardware\n        m_rightGroup.setInverted(true);\n    }\n    \n    public void drive(double leftSpeed, double rightSpeed) {\n        m_leftGroup.set(leftSpeed);\n        m_rightGroup.set(rightSpeed);\n    }\n    \n    public void stop() {\n        m_leftGroup.set(0);\n        m_rightGroup.set(0);\n    }\n    \n    @Override\n    public void periodic() {\n        // Called every robot loop (20ms)\n        // Use for periodic tasks like updating sensors\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Command Lifecycle",
+      "content": "Every command follows a well-defined lifecycle with four key methods:<br><br><strong>initialize():</strong> Called once when the command is scheduled. Use this to set up initial state, reset sensors, or prepare the command for execution.<br><br><strong>execute():</strong> Called repeatedly (every 20ms) while the command is active. This is where the command's main logic runs. The command should interact with subsystems here to accomplish its goal.<br><br><strong>isFinished():</strong> Called repeatedly to check if the command should end. Return <code>true</code> when the command has completed its task, or <code>false</code> to keep running. Commands that run until interrupted should always return <code>false</code>.<br><br><strong>end(boolean interrupted):</strong> Called once when the command ends, either because <code>isFinished()</code> returned <code>true</code> or because the command was interrupted. The <code>interrupted</code> parameter indicates whether the command was interrupted. Use this method to clean up, stop motors, or reset state."
+    },
+    {
+      "type": "code",
+      "title": "Command Lifecycle Demonstration",
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Arm;\n\npublic class MoveArmCommand extends Command {\n    private final Arm m_arm;\n    private final double m_targetAngle;\n    private int m_loopCount = 0;\n    \n    public MoveArmCommand(Arm arm, double targetAngle) {\n        m_arm = arm;\n        m_targetAngle = targetAngle;\n        addRequirements(arm);\n    }\n    \n    @Override\n    public void initialize() {\n        // Called ONCE when command starts\n        System.out.println(\"MoveArmCommand: Initializing - target: \" + m_targetAngle);\n        m_loopCount = 0;\n        // Reset any state, prepare for execution\n    }\n    \n    @Override\n    public void execute() {\n        // Called REPEATEDLY (every 20ms) while command is active\n        m_loopCount++;\n        double currentAngle = m_arm.getAngle();\n        double error = m_targetAngle - currentAngle;\n        \n        // Move arm toward target\n        if (Math.abs(error) > 2.0) {\n            double speed = error > 0 ? 0.3 : -0.3;\n            m_arm.setSpeed(speed);\n        } else {\n            m_arm.setSpeed(0);\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Called REPEATEDLY to check if command should end\n        double currentAngle = m_arm.getAngle();\n        double error = Math.abs(m_targetAngle - currentAngle);\n        \n        // Command finishes when arm is close enough to target\n        return error < 2.0;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Called ONCE when command ends\n        m_arm.setSpeed(0);\n        \n        if (interrupted) {\n            System.out.println(\"MoveArmCommand: Interrupted after \" + m_loopCount + \" loops\");\n        } else {\n            System.out.println(\"MoveArmCommand: Completed after \" + m_loopCount + \" loops\");\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Command-Based vs Other Patterns",
+      "content": "WPILib supports multiple robot programming patterns. Understanding the differences helps you choose the right approach:<br><br><strong>Iterative Robot:</strong><br>- Simple, linear code structure<br>- All logic in <code>teleopPeriodic()</code> and <code>autonomousPeriodic()</code><br>- Difficult to manage complex autonomous routines<br>- Hard to reuse code<br>- Suitable for very simple robots<br><br><strong>Timed Robot:</strong><br>- Similar to Iterative but with timing utilities<br>- Still linear and difficult to scale<br>- Limited reusability<br><br><strong>Command-Based (Recommended):</strong><br>- Modular, reusable components<br>- Easy autonomous routine composition<br>- Built-in resource management<br>- Supports parallel operations<br>- Scales well to complex robots<br>- Recommended for most FRC robots<br><br>For most FRC applications, command-based programming is the best choice because it provides structure, reusability, and maintainability that other patterns lack."
+    },
+    {
+      "type": "code",
+      "title": "Comparison: Iterative vs Command-Based",
+      "content": "// Iterative Robot Pattern (Simple but limited)\npublic class Robot extends IterativeRobotBase {\n    private PWMSparkMax m_leftMotor = new PWMSparkMax(0);\n    private PWMSparkMax m_rightMotor = new PWMSparkMax(1);\n    \n    @Override\n    public void teleopPeriodic() {\n        // All teleop logic here - hard to organize\n        double leftSpeed = m_joystick.getY();\n        double rightSpeed = m_joystick.getY();\n        m_leftMotor.set(leftSpeed);\n        m_rightMotor.set(rightSpeed);\n        \n        // Autonomous logic mixed in - hard to reuse\n        if (m_button.get()) {\n            // Drive forward for 2 seconds\n            m_leftMotor.set(0.5);\n            m_rightMotor.set(0.5);\n            Timer.delay(2.0);\n            m_leftMotor.set(0);\n            m_rightMotor.set(0);\n        }\n    }\n}\n\n// Command-Based Pattern (Modular and reusable)\npublic class Robot extends TimedRobot {\n    private RobotContainer m_robotContainer;\n    \n    @Override\n    public void robotInit() {\n        m_robotContainer = new RobotContainer();\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        // Scheduler handles all command execution\n        CommandScheduler.getInstance().run();\n    }\n}\n\n// Commands are reusable and composable\npublic class DriveForwardCommand extends Command {\n    // Can be used in autonomous, teleop, or anywhere\n    // Easy to compose into sequences\n}"
+    },
+    {
+      "type": "text",
+      "title": "When to Use Command-Based",
+      "content": "Command-based programming is recommended for most FRC robots, but understanding when it's most beneficial helps you make informed decisions:<br><br><strong>Use Command-Based When:</strong><br>- Building autonomous routines (easy command composition)<br>- Managing multiple mechanisms simultaneously<br>- Creating reusable robot behaviors<br>- Building complex robot systems<br>- Working with teams (clear code organization)<br>- Needing to test robot code<br><br><strong>Consider Alternatives When:</strong><br>- Building very simple robots (single mechanism, basic control)<br>- Prototyping quickly (though command-based can still work)<br>- Learning FRC programming basics (start simple, then move to command-based)<br><br><strong>Best Practice:</strong> Even for simple robots, command-based programming provides benefits in code organization and maintainability. The learning curve is worth it for most teams."
+    },
+    {
+      "type": "text",
+      "title": "WPILib Command-Based Structure",
+      "content": "WPILib's command-based framework follows a standard package structure that helps organize robot code:<br><br><strong>Recommended Package Structure:</strong><br>- <code>frc.robot.subsystems</code> - All subsystem classes<br>- <code>frc.robot.commands</code> - All command classes<br>- <code>frc.robot.commands.auto</code> - Autonomous command groups<br>- <code>frc.robot</code> - Robot class and RobotContainer<br><br><strong>Naming Conventions:</strong><br>- Subsystems: Descriptive names ending with subsystem type (e.g., <code>Drivetrain</code>, <code>ArmSubsystem</code>)<br>- Commands: Action names ending with \"Command\" (e.g., <code>DriveForwardCommand</code>, <code>MoveArmCommand</code>)<br>- Use descriptive, clear names that indicate purpose<br><br>This structure makes it easy to find code and understand the robot's organization. Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html' target='_blank'>WPILib: Structuring Command-Based Projects</a>"
+    },
+    {
+      "type": "text",
+      "title": "Documentation Resources",
+      "content": "WPILib provides comprehensive documentation for command-based programming. Here are key resources:<br><br><strong>Official Documentation:</strong><br>- <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html' target='_blank'>WPILib Command-Based Programming</a> - Complete guide to command-based architecture<br>- <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/commands.html' target='_blank'>Commands Documentation</a> - Detailed command reference<br>- <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html' target='_blank'>Subsystems Documentation</a> - Subsystem implementation guide<br>- <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/command-groups.html' target='_blank'>Command Groups Documentation</a> - Composing commands<br>- <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/binding-commands-to-triggers.html' target='_blank'>Trigger Bindings Documentation</a> - Binding commands to inputs<br><br><strong>Learning Path:</strong> Start with this introduction, then proceed through subsystem design, command creation, and advanced topics in order."
+    },
+    {
+      "type": "link-grid",
+      "title": "Next Steps",
+      "links": [
+        { "label": "Subsystem Design", "id": "subsystem-design" },
+        { "label": "Command Creation", "id": "command-creation" },
+        { "label": "Command Scheduler", "id": "command-scheduler" }
+      ]
+    }
+  ]
+}
+

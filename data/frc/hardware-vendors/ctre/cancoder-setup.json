@@ -94,9 +94,20 @@
       ]
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Best Practices for CANcoder Setup",
-      "content": "Following best practices ensures reliable CANcoder operation:<br><br><strong>Mounting:</strong><br>- Mount CANcoder securely to prevent movement<br>- Ensure magnet is properly aligned<br>- Maintain correct magnet distance<br>- Protect from mechanical damage<br><br><strong>Wiring:</strong><br>- Use proper CAN bus wiring<br>- Ensure CAN bus is terminated<br>- Keep CAN bus wires away from power wires<br>- Verify CAN bus connections<br><br><strong>Configuration:</strong><br>- Configure in code for consistency<br>- Calibrate magnet offset during setup<br>- Document CAN ID assignments<br>- Test configuration thoroughly<br><br><strong>Calibration:</strong><br>- Calibrate magnet offset for each mechanism<br>- Test at multiple positions<br>- Verify readings are consistent<br>- Document calibration values"
+      "subtitle": "Tips for reliable operation:",
+      "items": [
+        "Mount CANcoder securely to prevent movement",
+        "Ensure magnet is properly aligned and at correct distance",
+        "Use proper CAN bus wiring with termination",
+        "Configure in code for consistency",
+        "Calibrate magnet offset during setup",
+        "Test configuration thoroughly at multiple positions",
+        "Document CAN ID assignments and calibration values",
+        "Keep CAN bus wires away from power wires",
+        "Protect from mechanical damage"
+      ]
     },
     {
       "type": "link-grid",

@@ -95,9 +95,20 @@
       "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.DutyCycleOut;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.signals.NeutralModeValue;\n\npublic class DrivetrainWithFollowers {\n    // Leader motors (front)\n    private final TalonFX m_leftFront = new TalonFX(1);\n    private final TalonFX m_rightFront = new TalonFX(3);\n    \n    // Follower motors (back)\n    private final TalonFX m_leftBack = new TalonFX(2);\n    private final TalonFX m_rightBack = new TalonFX(4);\n    \n    // Control requests\n    private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);\n    \n    public DrivetrainWithFollowers() {\n        // Configure left side\n        TalonFXConfiguration leftConfig = new TalonFXConfiguration();\n        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;\n        leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_leftFront.getConfigurator().apply(leftConfig);\n        m_leftBack.getConfigurator().apply(leftConfig);\n        \n        // Configure right side\n        TalonFXConfiguration rightConfig = new TalonFXConfiguration();\n        rightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;\n        rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;\n        m_rightFront.getConfigurator().apply(rightConfig);\n        m_rightBack.getConfigurator().apply(rightConfig);\n        \n        // Configure followers - back motors follow front motors\n        m_leftBack.setControl(new DutyCycleOut(0).withMasterOutput(m_leftFront));\n        m_rightBack.setControl(new DutyCycleOut(0).withMasterOutput(m_rightFront));\n    }\n    \n    public void drive(double leftPower, double rightPower) {\n        // Only set leader motors\n        // Followers automatically match\n        m_leftFront.setControl(m_dutyCycleRequest.withOutput(leftPower));\n        m_rightFront.setControl(m_dutyCycleRequest.withOutput(rightPower));\n    }\n}"
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Best Practices for Talon FX Setup",
-      "content": "Following best practices ensures reliable operation and easier troubleshooting:<br><br><strong>CAN ID Management:</strong><br>- Use sequential IDs for related devices<br>- Document all CAN ID assignments<br>- Keep a consistent numbering scheme<br>- Avoid using CAN ID 0 (reserved)<br><br><strong>Configuration:</strong><br>- Configure settings in code (not just Phoenix Tuner)<br>- Use consistent configuration across similar devices<br>- Set appropriate current limits<br>- Enable voltage compensation<br><br><strong>Code Organization:</strong><br>- Create Talon FX instances in subsystem constructors<br>- Configure devices immediately after creation<br>- Group related motors together<br>- Use descriptive variable names"
+      "subtitle": "Tips for reliable operation:",
+      "items": [
+        "Use sequential CAN IDs for related devices",
+        "Document all CAN ID assignments",
+        "Configure settings in code (not just Phoenix Tuner)",
+        "Set appropriate current limits for motor protection",
+        "Enable voltage compensation for consistent performance",
+        "Create Talon FX instances in subsystem constructors",
+        "Configure devices immediately after creation",
+        "Use consistent configuration across similar devices",
+        "Use descriptive variable names for clarity"
+      ]
     },
     {
       "type": "link-grid",

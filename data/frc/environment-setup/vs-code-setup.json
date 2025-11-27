@@ -121,7 +121,8 @@
         "Use Git for version control",
         "Install recommended extensions for better experience",
         "Customize settings to match your preferences",
-        "Use multi-root workspaces for multiple projects"
+        "Use multi-root workspaces for multiple projects",
+        "Learn and use code navigation features (Go to Definition, Find References)"
       ]
     },
     {

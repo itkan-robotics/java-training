@@ -87,9 +87,20 @@
       "content": "One of Elastic's key advantages is that multiple devices can access the dashboard simultaneously. This is useful for teams where multiple people need to monitor the robot.<br><br><strong>Accessing from Multiple Devices:</strong><br>- Open a web browser on any device connected to the same network<br>- Navigate to the robot's IP address<br>- Each device gets its own view of the dashboard<br>- Changes to the dashboard layout are typically per-device (browser-based)<br><br><strong>Use Cases:</strong><br>- Driver and operator can each have their own dashboard view<br>- Programming team can monitor robot during testing<br>- Strategy team can view robot state during matches<br>- Multiple team members can debug simultaneously<br><br><strong>Network Considerations:</strong> Ensure your network can handle multiple connections. Elastic is designed to be efficient, but very high update rates from multiple devices may impact network performance."
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Best Practices for Elastic",
-      "content": "Following best practices ensures efficient dashboard usage and good performance.<br><br><strong>Update Frequency:</strong><br>- Update dashboard in <code>periodic()</code> methods, not in tight loops<br>- Use reasonable update rates (10-20 Hz is typical for most data)<br>- High-frequency data (like motor currents) can update more frequently<br>- Low-frequency data (like robot state) can update less frequently<br><br><strong>Key Naming:</strong><br>- Use descriptive, consistent key names<br>- Follow a naming convention (e.g., \"Subsystem/Value\")<br>- Use namespaces to organize related data<br>- Avoid special characters that might cause issues<br><br><strong>Dashboard Organization:</strong><br>- Create multiple tabs for different purposes (Driver, Tuning, Debugging)<br>- Group related widgets together<br>- Use clear labels and titles<br>- Keep dashboards focused and uncluttered<br><br><strong>Performance:</strong><br>- Don't send excessive amounts of data (network bandwidth)<br>- Use efficient data types (numbers vs strings when possible)<br>- Limit the number of widgets updating simultaneously<br>- Consider update frequency for each widget type"
+      "subtitle": "For efficient dashboard usage:",
+      "items": [
+        "Update dashboard in periodic() methods, not in tight loops",
+        "Use reasonable update rates (10-20 Hz typical for most data)",
+        "Use descriptive, consistent key names with naming convention",
+        "Create multiple tabs for different purposes (Driver, Tuning, Debugging)",
+        "Group related widgets together with clear labels",
+        "Don't send excessive amounts of data (network bandwidth)",
+        "Use efficient data types (numbers vs strings when possible)",
+        "Limit number of widgets updating simultaneously",
+        "Test dashboard performance with actual robot code"
+      ]
     },
     {
       "type": "code",
@@ -111,12 +122,14 @@
       "title": "Troubleshooting Elastic",
       "subtitle": "Common issues and solutions:",
       "items": [
-        "<strong>Dashboard Not Loading:</strong> Verify robot is powered and connected, check IP address is correct, ensure browser can reach robot's network",
-        "<strong>Widgets Not Updating:</strong> Verify key names match exactly (case-sensitive), check robot code is running and publishing data, ensure NetworkTables connection",
-        "<strong>Connection Issues:</strong> Verify team number is correct, check robot is on same network, ensure firewall isn't blocking HTTP traffic",
-        "<strong>Performance Problems:</strong> Reduce update frequency, send less data, close unnecessary browser tabs, limit number of widgets",
-        "<strong>Data Not Appearing:</strong> Check that NetworkTables data is being published, verify key names match, check browser console for errors",
-        "<strong>Multiple Devices Not Working:</strong> Ensure all devices are on same network, check network bandwidth, verify robot can handle multiple connections"
+        "<strong>Dashboard Not Loading:</strong> Verify robot is powered and connected, check IP address, ensure browser can reach robot's network",
+        "<strong>Widgets Not Updating:</strong> Verify key names match exactly (case-sensitive), check robot code is publishing data",
+        "<strong>Connection Issues:</strong> Verify team number is correct, check robot is on same network, check firewall",
+        "<strong>Performance Problems:</strong> Reduce update frequency, send less data, limit number of widgets",
+        "<strong>Data Not Appearing:</strong> Check NetworkTables data is being published, verify key names match",
+        "<strong>Multiple Devices Not Working:</strong> Ensure all devices are on same network, check network bandwidth",
+        "<strong>Browser Errors:</strong> Check browser console for errors, try different browser, clear browser cache",
+        "<strong>NetworkTables Not Connected:</strong> Verify robot code is running, check NetworkTables server is active"
       ]
     },
     {

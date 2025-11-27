@@ -25,7 +25,7 @@
     {
       "type": "text",
       "title": "Project Structure Overview",
-      "content": "A WPILib project has a specific directory structure that organizes your code and configuration files. Understanding this structure helps you navigate and organize your robot code effectively.<br><br><strong>Root Directory:</strong> Contains configuration files and project metadata<br><strong>src/main/java/:</strong> Your Java source code goes here<br><strong>src/main/deploy/:</strong> Configuration files for robot hardware<br><strong>vendordeps/:</strong> Third-party library dependencies (CTRE, REV, etc.)<br><strong>.wpilib/:</strong> WPILib-specific configuration<br><strong>build.gradle:</strong> Build configuration and dependencies<br><strong>settings.gradle:</strong> Gradle project settings"
+      "content": "A WPILib project has a specific directory structure that organizes your code and configuration files. Understanding this structure helps you navigate and organize your robot code effectively.<br><br><strong>Root Directory:</strong> Contains configuration files and project metadata<br><strong>src/main/java/:</strong> Your Java source code goes here<br><strong>vendordeps/:</strong> Third-party library dependencies (CTRE, REV, etc.)<br><strong>.wpilib/:</strong> WPILib-specific configuration<br><strong>build.gradle:</strong> Build configuration and dependencies<br><strong>settings.gradle:</strong> Gradle project settings"
     },
     {
       "type": "code",
@@ -83,7 +83,9 @@
         "Use a Constants class for configuration values",
         "Keep build.gradle updated with correct WPILib version",
         "Use version control (Git) to track changes",
-        "Document your code with comments"
+        "Document your code with comments",
+        "Keep project structure consistent across team members",
+        "Test project creation and deployment before competition"
       ]
     },
     {
@@ -92,9 +94,20 @@
       "content": "Understanding the project lifecycle helps you work efficiently:<br><br><strong>1. Create:</strong> Use WPILib template to create project structure<br><strong>2. Develop:</strong> Write and modify code in the <code>src/main/java/</code> directory<br><strong>3. Build:</strong> Compile code to check for errors<br><strong>4. Deploy:</strong> Upload code to robot for testing<br><strong>5. Test:</strong> Run code on robot and verify behavior<br><strong>6. Iterate:</strong> Make changes and repeat the cycle<br><br>This cycle repeats throughout development. Building frequently catches errors early, and deploying regularly ensures your code works on the actual robot hardware."
     },
     {
-      "type": "text",
+      "type": "rules-box",
       "title": "Troubleshooting Project Issues",
-      "content": "Common issues when creating or working with projects:<br><br><strong>Project Creation Fails:</strong> Ensure WPILib is properly installed and VS Code extension is active. Try restarting VS Code.<br><br><strong>Build Errors:</strong> Check that your Java code has no syntax errors. Review the error messages in the build output for specific issues.<br><br><strong>Deployment Fails:</strong> Verify robot is powered on and connected to the network. Check that team number is correct. Ensure firewall isn't blocking communication.<br><br><strong>Code Not Running:</strong> Verify deployment was successful. Check Driver Station for robot status. Ensure robot code matches the selected mode (autonomous/teleop).<br><br><strong>Dependencies Missing:</strong> If using vendor libraries, ensure they're properly added to <code>build.gradle</code> and vendordeps folder."
+      "subtitle": "Common problems and solutions:",
+      "items": [
+        "<strong>Project Creation Fails:</strong> Ensure WPILib is installed, VS Code extension is active, restart VS Code",
+        "<strong>Build Errors:</strong> Check Java syntax, review error messages in build output",
+        "<strong>Deployment Fails:</strong> Verify robot is powered and connected, check team number, check firewall",
+        "<strong>Code Not Running:</strong> Verify deployment succeeded, check Driver Station status, verify robot mode",
+        "<strong>Dependencies Missing:</strong> Ensure vendor libraries are in build.gradle and vendordeps folder",
+        "<strong>Team Number Wrong:</strong> Update team number in .wpilib/wpilib_preferences.json",
+        "<strong>Network Issues:</strong> Verify robot IP address matches team number pattern",
+        "<strong>Build Cache Issues:</strong> Run ./gradlew clean and rebuild",
+        "<strong>Java Version Mismatch:</strong> Verify Java version in build.gradle matches installed JDK"
+      ]
     },
     {
       "type": "link-grid",

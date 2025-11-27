@@ -1,0 +1,108 @@
+{
+  "title": "Trapezoidal Motion Profiles",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Trapezoidal Profiles",
+      "content": "Trapezoidal motion profiles generate smooth motion with three distinct phases: acceleration (constant positive acceleration), cruise (constant velocity), and deceleration (constant negative acceleration). The velocity-time graph forms a trapezoid shape, giving these profiles their name.<br><br>Trapezoidal profiles are the most common motion profile type in FRC because they're simple to understand, easy to implement, and provide excellent performance for most mechanisms. They enable fast, smooth, predictable motion while respecting velocity and acceleration constraints.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/trapezoidal-profiles.html' target='_blank'>WPILib: Trapezoidal Motion Profiles</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "Trapezoidal Profile Benefits",
+      "subtitle": "Advantages of trapezoidal profiles:",
+      "items": [
+        "Smooth motion (controlled acceleration and deceleration)",
+        "Predictable timing (know exactly when mechanism reaches target)",
+        "Respects constraints (velocity and acceleration limits)",
+        "Simple to implement (well-understood algorithm)",
+        "Fast movement (can move quickly while staying safe)",
+        "Reduced wear (gentle on mechanical components)",
+        "Widely used (standard in FRC, lots of examples)",
+        "Flexible (works for various mechanism types)"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Profile Phases",
+      "content": "Trapezoidal profiles consist of three phases:<br><br><strong>Acceleration Phase:</strong> Mechanism accelerates at maximum acceleration until reaching maximum velocity. During this phase, velocity increases linearly, and position increases quadratically.<br><br><strong>Cruise Phase:</strong> Mechanism moves at constant maximum velocity. This phase only occurs if the distance is long enough to reach maximum velocity. During cruise, velocity is constant, and position increases linearly.<br><br><strong>Deceleration Phase:</strong> Mechanism decelerates at maximum (negative) acceleration until reaching zero velocity at the target. During this phase, velocity decreases linearly, and position approaches the target.<br><br><strong>Short Distances:</strong> For short distances, the profile may not reach maximum velocity, resulting in only acceleration and deceleration phases (triangular profile)."
+    },
+    {
+      "type": "text",
+      "title": "Profile Parameters",
+      "content": "Trapezoidal profiles require several parameters:<br><br><strong>Maximum Velocity (Cruise Velocity):</strong> The highest velocity the mechanism will reach. This should be based on your mechanism's capabilities and safety requirements. Too high can cause overshoot or mechanical stress; too low makes motion unnecessarily slow.<br><br><strong>Maximum Acceleration:</strong> How quickly the mechanism can change velocity. This determines how fast the mechanism accelerates and decelerates. Based on motor torque, gearing, and mechanism inertia.<br><br><strong>Constraints:</strong> Together, maximum velocity and acceleration form the profile constraints. The profile ensures the mechanism never exceeds these limits, creating safe, controlled motion.<br><br><strong>Start and End States:</strong> Initial position/velocity and target position/velocity. Typically, you start and end at zero velocity (stopped)."
+    },
+    {
+      "type": "text",
+      "title": "TrapezoidProfile Class",
+      "content": "WPILib provides the TrapezoidProfile class for creating and using trapezoidal profiles:<br><br><strong>Creating Profiles:</strong> Create a TrapezoidProfile with constraints (maximum velocity and acceleration). Then create a State object with start position/velocity and end position/velocity.<br><br><strong>Setting Constraints:</strong> Use TrapezoidProfile.Constraints to specify maximum velocity and acceleration. These constraints apply to the entire profile.<br><br><strong>Calculating States:</strong> Use calculate(time) to get the desired position and velocity at a specific time. The profile automatically handles all three phases (acceleration, cruise, deceleration).<br><br><strong>State Objects:</strong> TrapezoidProfile.State contains position and velocity. Use this to represent start states, end states, and current desired states."
+    },
+    {
+      "type": "code",
+      "title": "Basic TrapezoidProfile Creation",
+      "content": "This example shows how to create and use a TrapezoidProfile:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.trajectory.TrapezoidProfile;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class TrapezoidalProfileExample extends SubsystemBase {\n    // Profile constraints\n    private static final double MAX_VELOCITY = 100.0;  // units per second\n    private static final double MAX_ACCELERATION = 50.0;  // units per second squared\n    \n    private final TrapezoidProfile.Constraints m_constraints = \n        new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION);\n    \n    private TrapezoidProfile m_profile;\n    private TrapezoidProfile.State m_startState;\n    private TrapezoidProfile.State m_endState;\n    private double m_profileStartTime = 0.0;\n    \n    public void generateProfile(double startPosition, double endPosition) {\n        // Create start state (current position, zero velocity)\n        m_startState = new TrapezoidProfile.State(startPosition, 0.0);\n        \n        // Create end state (target position, zero velocity)\n        m_endState = new TrapezoidProfile.State(endPosition, 0.0);\n        \n        // Create profile with constraints and states\n        m_profile = new TrapezoidProfile(m_constraints, m_endState, m_startState);\n        \n        // Record start time\n        m_profileStartTime = System.currentTimeMillis() / 1000.0;\n    }\n    \n    public TrapezoidProfile.State getDesiredState(double currentTime) {\n        if (m_profile == null) {\n            return m_startState;\n        }\n        \n        // Calculate elapsed time\n        double elapsedTime = currentTime - m_profileStartTime;\n        \n        // Get desired state at current time\n        return m_profile.calculate(elapsedTime);\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "TrapezoidProfile with PIDController",
+      "content": "This example shows how to follow a trapezoidal profile using PIDController:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.controller.PIDController;\nimport edu.wpi.first.math.trajectory.TrapezoidProfile;\nimport edu.wpi.first.wpilibj.Encoder;\nimport edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class ProfiledArm extends SubsystemBase {\n    private final PWMSparkMax m_armMotor = new PWMSparkMax(0);\n    private final Encoder m_encoder = new Encoder(0, 1);\n    private final PIDController m_pidController = new PIDController(0.1, 0.0, 0.01);\n    \n    // Profile constraints\n    private static final double MAX_VELOCITY = 90.0;  // degrees per second\n    private static final double MAX_ACCELERATION = 180.0;  // degrees per second squared\n    \n    private final TrapezoidProfile.Constraints m_constraints = \n        new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION);\n    \n    private TrapezoidProfile m_profile;\n    private TrapezoidProfile.State m_startState;\n    private TrapezoidProfile.State m_endState;\n    private double m_profileStartTime = 0.0;\n    private boolean m_profileActive = false;\n    \n    public void moveToAngle(double targetAngle) {\n        // Get current position\n        double currentAngle = m_encoder.getDistance();\n        \n        // Create start state\n        m_startState = new TrapezoidProfile.State(currentAngle, 0.0);\n        \n        // Create end state\n        m_endState = new TrapezoidProfile.State(targetAngle, 0.0);\n        \n        // Create profile\n        m_profile = new TrapezoidProfile(m_constraints, m_endState, m_startState);\n        \n        // Start profile\n        m_profileStartTime = System.currentTimeMillis() / 1000.0;\n        m_profileActive = true;\n    }\n    \n    @Override\n    public void periodic() {\n        if (m_profileActive && m_profile != null) {\n            // Get current time\n            double currentTime = System.currentTimeMillis() / 1000.0;\n            double elapsedTime = currentTime - m_profileStartTime;\n            \n            // Get desired state from profile\n            TrapezoidProfile.State desiredState = m_profile.calculate(elapsedTime);\n            \n            // Get current position\n            double currentPosition = m_encoder.getDistance();\n            \n            // Use PID to follow profile position\n            double output = m_pidController.calculate(currentPosition, desiredState.position);\n            \n            // Apply to motor\n            m_armMotor.set(output);\n            \n            // Check if profile complete (at end state)\n            if (elapsedTime >= m_profile.totalTime()) {\n                m_profileActive = false;\n            }\n        }\n    }\n    \n    public boolean isProfileComplete() {\n        return !m_profileActive;\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "TrapezoidProfile in a Command",
+      "content": "This example shows how to use TrapezoidProfile in a command:\n\npackage frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.ProfiledArm;\n\npublic class MoveArmWithProfile extends Command {\n    private final ProfiledArm m_arm;\n    private final double m_targetAngle;\n    \n    public MoveArmWithProfile(ProfiledArm arm, double targetAngle) {\n        m_arm = arm;\n        m_targetAngle = targetAngle;\n        addRequirements(arm);\n    }\n    \n    @Override\n    public void initialize() {\n        // Start profile when command begins\n        m_arm.moveToAngle(m_targetAngle);\n    }\n    \n    @Override\n    public void execute() {\n        // Profile following happens in ProfiledArm.periodic()\n        // Command just needs to check completion\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Command finishes when profile completes\n        return m_arm.isProfileComplete();\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Optional: stop motor or hold position\n        // Arm's PIDController will continue holding if setpoint remains\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Profile States",
+      "content": "TrapezoidProfile generates states (position and velocity) at any point in time:<br><br><strong>Position:</strong> The desired position at the current time. This is what your mechanism should be at. Use this as the setpoint for position control.<br><br><strong>Velocity:</strong> The desired velocity at the current time. This represents how fast the mechanism should be moving. Can be used for feedforward control or velocity monitoring.<br><br><strong>Time-Based:</strong> States are calculated based on elapsed time since the profile started. Query the profile with the current time to get the desired state.<br><br><strong>Automatic Phases:</strong> The profile automatically transitions between acceleration, cruise, and deceleration phases. You don't need to manage phases manually - just query the profile for the current desired state."
+    },
+    {
+      "type": "text",
+      "title": "Profile Integration",
+      "content": "TrapezoidProfile integrates with other WPILib control components:<br><br><strong>With PIDController:</strong> Use the profile's desired position as the PIDController setpoint. The PIDController ensures your mechanism follows the profile accurately.<br><br><strong>With Subsystems:</strong> Generate and follow profiles in your subsystem's periodic() method. Provide methods for commands to start profiles and check completion.<br><br><strong>With Commands:</strong> Commands can start profiles, wait for completion, and coordinate multiple profiles for complex behaviors.<br><br><strong>With Feedforward:</strong> Use the profile's desired velocity for feedforward control, improving profile following performance."
+    },
+    {
+      "type": "text",
+      "title": "Tuning Profile Parameters",
+      "content": "Finding optimal profile parameters requires testing:<br><br><strong>Start Conservative:</strong> Begin with lower maximum velocity and acceleration values. Test to ensure the mechanism can achieve these safely.<br><br><strong>Increase Gradually:</strong> Slowly increase maximum velocity and acceleration, testing after each change. Stop if you see overshoot, mechanical stress, or instability.<br><br><strong>Test Full Range:</strong> Test profiles across the full range of motion, not just one position. Some mechanisms behave differently at different positions.<br><br><strong>Consider Load:</strong> Test with actual mechanism loads. Unloaded testing may give unrealistic results.<br><br><strong>Balance Speed and Safety:</strong> Higher constraints enable faster motion but increase risk. Find the balance that provides good performance while maintaining safety and reliability."
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices for Trapezoidal Profiles",
+      "subtitle": "Tips for effective trapezoidal profile usage:",
+      "items": [
+        "Set realistic constraints (based on mechanism capabilities)",
+        "Test profiles with actual mechanism (verify constraints are correct)",
+        "Use PIDController to follow profile (ensures accurate tracking)",
+        "Handle profile completion (check when profile finishes)",
+        "Test edge cases (very short and very long distances)",
+        "Monitor profile following (verify mechanism tracks profile well)",
+        "Adjust constraints based on performance (tune for your mechanism)",
+        "Document your constraints (write down what works)"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Trapezoidal Profiles",
+      "subtitle": "Common issues and solutions:",
+      "items": [
+        "<strong>Mechanism Doesn't Follow Profile:</strong> Check PID tuning, verify constraints are achievable",
+        "<strong>Overshoot Still Occurs:</strong> Reduce maximum velocity or acceleration, improve PID tuning",
+        "<strong>Motion Too Slow:</strong> Increase constraints if mechanism can handle it",
+        "<strong>Profile Calculation Errors:</strong> Verify start/end states are correct, check constraint values",
+        "<strong>Inconsistent Timing:</strong> Ensure time tracking is accurate, check for timing issues",
+        "<strong>Jerky Motion:</strong> Verify profile is being followed correctly, check PID tuning"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" },
+        { "label": "Exponential Profiles", "id": "exponential-profiles" },
+        { "label": "Feedforward Control", "id": "feedforward-control" }
+      ]
+    }
+  ]
+}
+
