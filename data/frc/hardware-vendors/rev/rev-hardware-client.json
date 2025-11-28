@@ -47,48 +47,18 @@
       "content": "REV Hardware Client can save and load device configurations:<br><br><strong>Saving Configurations:</strong><br>- Save device configuration to file<br>- Useful for backup and version control<br>- Share configurations with team members<br>- Document device settings<br><br><strong>Loading Configurations:</strong><br>- Load saved configuration file<br>- Apply configuration to device<br>- Useful for restoring settings<br>- Quick setup of multiple devices<br><br><strong>Configuration Files:</strong><br>- Configuration files are typically JSON format<br>- Can be edited manually if needed<br>- Can be version controlled<br><br><strong>Best Practice:</strong> Save configurations for all devices and keep them in version control. This ensures you can restore settings if needed and share configurations with team members."
     },
     {
-      "type": "text",
-      "title": "Troubleshooting with Hardware Client",
-      "content": "REV Hardware Client is an essential tool for troubleshooting REV devices:<br><br><strong>Diagnostic Features:</strong><br>- Real-time data monitoring helps identify issues<br>- Fault codes provide specific error information<br>- Status indicators show device health<br><br><strong>Common Troubleshooting Tasks:</strong><br>- Verify device is detected and connected<br>- Check CAN ID matches code<br>- Verify configuration is applied correctly<br>- Monitor current and voltage during operation<br>- Check for fault codes<br>- Verify encoder readings<br>- Test motor output<br><br><strong>Using Diagnostics:</strong> Use REV Hardware Client to monitor device status, identify problems, and verify fixes. The real-time data display is invaluable for debugging."
-    },
-    {
-      "type": "rules-box",
-      "title": "Best Practices",
-      "subtitle": "Tips for effective REV Hardware Client usage:",
-      "items": [
-        "Use REV Hardware Client for initial device setup",
-        "Save configurations for all devices",
-        "Keep firmware up to date",
-        "Use diagnostics to monitor device health",
-        "Document CAN ID assignments",
-        "Test configuration changes incrementally",
-        "Use bulk configuration for similar devices",
-        "Keep configuration files in version control",
-        "Verify configuration is applied correctly"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Connection Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Devices Not Found:</strong> Check USB/CAN connection, verify robot is powered, check network settings",
-        "<strong>Connection Timeout:</strong> Verify network connection, check firewall settings, restart robot",
-        "<strong>Configuration Not Applying:</strong> Verify device is selected, check for errors, try applying again",
-        "<strong>Firmware Update Fails:</strong> Check connection, verify firmware file, try again",
-        "<strong>Device Disconnects:</strong> Check USB/CAN connection, verify power, check for interference",
-        "<strong>Wrong Device Selected:</strong> Verify CAN ID matches, check device list",
-        "<strong>Configuration Lost:</strong> Check if burnFlash() was called, verify non-volatile memory",
-        "<strong>Interface Not Responding:</strong> Restart REV Hardware Client, check for updates"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "SPARK MAX Configuration", "id": "spark-max-configuration" },
-        { "label": "SPARK MAX Setup", "id": "spark-max-setup" },
-        { "label": "REV Introduction", "id": "rev-intro" }
+        {
+		  "label": "SPARK MAX Configuration", 
+		  "url": "spark-max-configuration"},
+        {
+		  "label": "SPARK MAX Setup", 
+		  "url": "spark-max-setup"},
+        {
+		  "label": "REV Introduction", 
+		  "url": "rev-intro"}
       ]
     }
   ]

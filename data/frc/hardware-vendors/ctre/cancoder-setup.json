@@ -81,41 +81,18 @@
       "content": "import com.ctre.phoenix6.hardware.CANcoder;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class MagnetStatus {\n    private final CANcoder m_encoder = new CANcoder(10);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_encoder.getMagnetFieldStrength()\n    };\n    \n    public void checkMagnet() {\n        // Refresh signal\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Get magnet strength (0-100, higher is better)\n        double magnetStrength = m_encoder.getMagnetFieldStrength().getValue();\n        \n        // Check if magnet is detected\n        boolean magnetDetected = magnetStrength > 50;  // Threshold\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"CANcoder Magnet Strength\", magnetStrength);\n        SmartDashboard.putBoolean(\"CANcoder Magnet Detected\", magnetDetected);\n        \n        // Warning if magnet is weak\n        if (magnetStrength < 50) {\n            System.out.println(\"WARNING: CANcoder magnet strength is low: \" + magnetStrength);\n        }\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting CANcoder Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Device Not Found:</strong> Check CAN ID, verify CAN bus wiring, ensure device is powered",
-        "<strong>Incorrect Readings:</strong> Check magnet mounting, verify magnet strength, check magnet offset",
-        "<strong>Position Jumps:</strong> Weak magnet, magnet too far from sensor, electrical interference",
-        "<strong>Wrong Direction:</strong> Configure sensor direction, check magnet orientation",
-        "<strong>No Reading:</strong> Check CAN bus connection, verify power, check status LED",
-        "<strong>Inconsistent Readings:</strong> Check magnet mounting, verify distance, check for interference"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Best Practices for CANcoder Setup",
-      "subtitle": "Tips for reliable operation:",
-      "items": [
-        "Mount CANcoder securely to prevent movement",
-        "Ensure magnet is properly aligned and at correct distance",
-        "Use proper CAN bus wiring with termination",
-        "Configure in code for consistency",
-        "Calibrate magnet offset during setup",
-        "Test configuration thoroughly at multiple positions",
-        "Document CAN ID assignments and calibration values",
-        "Keep CAN bus wires away from power wires",
-        "Protect from mechanical damage"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "CANcoder Absolute Encoders", "id": "cancoder-absolute-encoders" },
-        { "label": "Talon FX Setup", "id": "talon-fx-setup" },
-        { "label": "CTRE Introduction", "id": "ctre-intro" }
+        {
+		  "label": "CANcoder Absolute Encoders", 
+		  "url": "cancoder-absolute-encoders"},
+        {
+		  "label": "Talon FX Setup", 
+		  "url": "talon-fx-setup"},
+        {
+		  "label": "CTRE Introduction", 
+		  "url": "ctre-intro"}
       ]
     }
   ]

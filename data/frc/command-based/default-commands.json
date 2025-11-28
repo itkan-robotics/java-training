@@ -7,20 +7,6 @@
       "content": "Default commands are commands that run automatically when no other command requires a subsystem. They provide safe, continuous behavior for subsystems during teleop and other robot modes. Default commands are essential for mechanisms that need to respond to user input continuously.<br><br>When a subsystem has a default command set, that command runs whenever the subsystem is not being used by another command. This allows subsystems to have continuous behavior (like drivetrain responding to joystick input) while still allowing other commands to take control when needed."
     },
     {
-      "type": "rules-box",
-      "title": "Default Command Benefits",
-      "subtitle": "Why use default commands:",
-      "items": [
-        "Continuous subsystem behavior (responds to user input automatically)",
-        "Simplified teleop code (no need to manually run commands)",
-        "Safe default behavior (subsystem has defined state when idle)",
-        "Automatic execution (runs without explicit scheduling)",
-        "Interruptible (other commands can take control when needed)",
-        "Consistent behavior (same default behavior across robot modes)",
-        "Reduces code complexity (less manual command management)"
-      ]
-    },
-    {
       "type": "text",
       "title": "When Default Commands Run",
       "content": "Default commands run automatically under specific conditions:<br><br><strong>When No Other Command Requires Subsystem:</strong> The default command runs when no other command is using the subsystem. As soon as another command requires the subsystem, the default command is interrupted.<br><br><strong>Continuously During Teleop:</strong> Default commands typically run continuously during teleop, providing responsive control to user input. They run every loop, checking for input and updating subsystem state.<br><br><strong>Automatic Execution:</strong> Once set, default commands run automatically without needing to be scheduled manually. The scheduler manages their execution based on subsystem availability."
@@ -71,42 +57,18 @@
       "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DefaultCommandConflictExample {\n    private Drivetrain m_drivetrain;\n    \n    public void demonstrateConflict() {\n        // Set default command\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(m_drivetrain, () -> 0.0, () -> 0.0)\n        );\n        \n        // Default command is now running (responding to joystick)\n        \n        // Schedule another command requiring drivetrain\n        Command autonomousCommand = new DriveForwardCommand(m_drivetrain, 0.5);\n        CommandScheduler.getInstance().schedule(autonomousCommand);\n        \n        // Scheduler automatically:\n        // 1. Interrupts ArcadeDriveCommand (calls end(true))\n        // 2. Schedules DriveForwardCommand (calls initialize())\n        // 3. DriveForwardCommand now controls drivetrain\n        \n        // When DriveForwardCommand finishes:\n        // 1. DriveForwardCommand ends (calls end(false))\n        // 2. ArcadeDriveCommand automatically resumes\n        // 3. Drivetrain responds to joystick again\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Default Command Best Practices",
-      "subtitle": "Tips for effective default commands:",
-      "items": [
-        "Set default commands in RobotContainer constructor",
-        "Design default commands to run continuously (isFinished() returns false)",
-        "Make default commands responsive to user input",
-        "Handle interruption gracefully in end() method",
-        "Use default commands for teleop control patterns",
-        "Ensure default commands provide safe behavior",
-        "Test default commands with other commands to verify interruption",
-        "Document default command behavior for team members"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Default Commands",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Default Command Not Running:</strong> Verify setDefaultCommand() was called, check no other command requires subsystem",
-        "<strong>Default Command Stops Unexpectedly:</strong> Check for other commands requiring the subsystem, verify command isn't finishing",
-        "<strong>Default Command Not Interrupting:</strong> Verify other commands have correct requirements, check scheduler is running",
-        "<strong>Subsystem Not Responding:</strong> Check default command is reading input correctly, verify command is executing",
-        "<strong>Default Command Conflicts:</strong> Ensure only one default command per subsystem, verify command requirements",
-        "<strong>Command Not Resuming:</strong> Check interrupting command finishes properly, verify scheduler is managing correctly",
-        "<strong>Input Not Working:</strong> Verify input suppliers are correct, check command is reading input in execute()",
-        "<strong>Unexpected Behavior:</strong> Test default command in isolation, verify it handles interruption correctly"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Command Creation", "id": "command-creation" },
-        { "label": "Command Scheduler", "id": "command-scheduler" },
-        { "label": "Trigger Bindings", "id": "trigger-bindings" }
+        {
+		  "label": "Command Creation", 
+		  "url": "command-creation"},
+        {
+		  "label": "Command Scheduler", 
+		  "url": "command-scheduler"},
+        {
+		  "label": "Trigger Bindings", 
+		  "url": "trigger-bindings"}
       ]
     }
   ]

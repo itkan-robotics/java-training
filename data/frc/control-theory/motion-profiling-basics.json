@@ -7,21 +7,6 @@
       "content": "Motion profiling is a technique for generating smooth, predictable motion paths for robot mechanisms. Instead of instantly changing from one state to another (which causes jerky motion and overshoot), motion profiles generate a series of intermediate states that create smooth acceleration, constant velocity, and smooth deceleration.<br><br>Motion profiling is essential for mechanisms that need to move quickly and accurately, such as arms moving to scoring positions, elevators moving between levels, or drivetrains following autonomous paths. By controlling how the mechanism accelerates and decelerates, motion profiles enable faster, smoother, and more accurate movement.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/index.html' target='_blank'>WPILib: Trajectories and Motion Profiling</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Motion Profiling Benefits",
-      "subtitle": "Why use motion profiling:",
-      "items": [
-        "Smooth motion (no jerky starts or stops)",
-        "Predictable timing (know exactly when mechanism reaches target)",
-        "Reduced wear (gentle on mechanical components)",
-        "Better control (mechanism follows planned path)",
-        "Faster movement (can move faster safely with smooth deceleration)",
-        "Consistent performance (same motion every time)",
-        "Reduced overshoot (controlled deceleration prevents overshoot)",
-        "Professional appearance (smooth motion looks better)"
-      ]
-    },
-    {
       "type": "text",
       "title": "The Problem Without Profiling",
       "content": "Without motion profiling, mechanisms exhibit several problems:<br><br><strong>Jerky Motion:</strong> Instantly applying full power causes sudden acceleration, creating jerky, uncomfortable motion. The mechanism lurches to life and slams to a stop.<br><br><strong>Overshoot:</strong> Without controlled deceleration, mechanisms overshoot their targets. An arm moving to 45° might overshoot to 50° before settling back, wasting time and energy.<br><br><strong>Inconsistent Timing:</strong> Without a planned motion path, the time to reach a target varies based on starting conditions, load, and other factors. This makes autonomous routines unreliable.<br><br><strong>Mechanical Stress:</strong> Sudden starts and stops stress mechanical components, leading to wear, breakage, and reduced robot lifespan.<br><br><strong>Solution:</strong> Motion profiles generate smooth acceleration and deceleration curves, eliminating these problems and enabling fast, accurate, repeatable motion."
@@ -62,40 +47,18 @@
       "content": "Motion profiles can be applied to various FRC mechanisms:<br><br><strong>Arm Movement:</strong> Move arm smoothly from current angle to target angle. Profile controls acceleration and deceleration, preventing overshoot and reducing mechanical stress.<br><br><strong>Elevator:</strong> Move elevator smoothly between levels. Profile ensures smooth acceleration and controlled deceleration at target height.<br><br><strong>Drivetrain:</strong> Follow autonomous paths smoothly. Profiles generate velocity and acceleration commands for smooth driving and turning.<br><br><strong>Turret:</strong> Rotate turret smoothly to target angle. Profile prevents sudden starts/stops that could affect aim.<br><br><strong>Any Mechanism:</strong> Any mechanism that needs to move from one position to another can benefit from motion profiling for smoother, faster, more accurate motion."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for Motion Profiling",
-      "subtitle": "Tips for effective motion profiling:",
-      "items": [
-        "Set realistic constraints (based on mechanism capabilities)",
-        "Test profiles with actual mechanism (verify constraints are correct)",
-        "Use appropriate profile type (trapezoidal for most, exponential for simple)",
-        "Follow profile with PID (ensures mechanism tracks profile accurately)",
-        "Handle profile completion (check when profile finishes)",
-        "Test edge cases (very short distances, maximum distances)",
-        "Monitor profile following (verify mechanism tracks profile well)",
-        "Adjust constraints based on performance (tune for your mechanism)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Motion Profiles",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Mechanism Doesn't Follow Profile:</strong> Check PID tuning, verify constraints are achievable, check for mechanical issues",
-        "<strong>Overshoot Still Occurs:</strong> Reduce maximum velocity or acceleration, improve PID tuning",
-        "<strong>Motion Too Slow:</strong> Increase maximum velocity or acceleration constraints (if mechanism can handle it)",
-        "<strong>Jerky Motion:</strong> Verify profile is being followed correctly, check for discontinuities in profile",
-        "<strong>Inconsistent Timing:</strong> Ensure profile time tracking is accurate, check for timing issues",
-        "<strong>Profile Calculation Errors:</strong> Verify start/end states are correct, check constraint values"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Trapezoidal Profiles", "id": "trapezoidal-profiles" },
-        { "label": "Exponential Profiles", "id": "exponential-profiles" },
-        { "label": "PID Control Introduction", "id": "pid-control-intro" }
+        {
+		  "label": "Trapezoidal Profiles", 
+		  "url": "trapezoidal-profiles"},
+        {
+		  "label": "Exponential Profiles", 
+		  "url": "exponential-profiles"},
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"}
       ]
     }
   ]

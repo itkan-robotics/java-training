@@ -73,43 +73,18 @@
       "content": "The SPARK MAX data port breakout board allows you to connect multiple sensors to a single SPARK MAX controller. This simplifies wiring and reduces the number of connections needed.<br><br><strong>Breakout Board Features:</strong><br>- Multiple sensor connections on one board<br>- Easy wiring and organization<br>- Support for analog and digital sensors<br>- Power distribution for sensors<br><br><strong>Wiring:</strong> Connect sensors to the breakout board according to REV documentation. The breakout board then connects to the SPARK MAX data port.<br><br><strong>Configuration:</strong> Sensors connected via data port may need configuration in code to specify sensor type and parameters."
     },
     {
-      "type": "rules-box",
-      "title": "Sensor Best Practices",
-      "subtitle": "Tips for effective sensor usage:",
-      "items": [
-        "Use appropriate sensor for application (color for color detection, distance for ranging)",
-        "Calibrate sensors during setup and verify readings",
-        "Use sensors for safety interlocks (limit switches)",
-        "Test sensors at multiple positions and conditions",
-        "Document sensor wiring and configuration",
-        "Handle sensor failures gracefully in code",
-        "Use sensor data for state machine transitions",
-        "Monitor sensor values during operation",
-        "Keep sensor wiring organized and protected"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Sensor Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>No Reading:</strong> Check wiring, verify sensor is powered, check I2C/DIO port configuration",
-        "<strong>Incorrect Values:</strong> Check sensor calibration, verify sensor type, check for interference",
-        "<strong>Intermittent Readings:</strong> Check connections, verify wiring is secure, check for electrical interference",
-        "<strong>Sensor Not Detected:</strong> Check I2C address, verify wiring, check roboRIO port configuration",
-        "<strong>Wrong Sensor Type:</strong> Verify sensor matches code configuration, check sensor model",
-        "<strong>Calibration Issues:</strong> Recalibrate sensor, verify calibration procedure, check sensor documentation",
-        "<strong>Data Port Issues:</strong> Check breakout board connections, verify data port wiring",
-        "<strong>Sensor Range Problems:</strong> Check sensor range settings, verify sensor is within range"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "SPARK MAX Configuration", "id": "spark-max-configuration" },
-        { "label": "SPARK MAX Setup", "id": "spark-max-setup" },
-        { "label": "REV Introduction", "id": "rev-intro" }
+        {
+		  "label": "SPARK MAX Configuration", 
+		  "url": "spark-max-configuration"},
+        {
+		  "label": "SPARK MAX Setup", 
+		  "url": "spark-max-setup"},
+        {
+		  "label": "REV Introduction", 
+		  "url": "rev-intro"}
       ]
     }
   ]

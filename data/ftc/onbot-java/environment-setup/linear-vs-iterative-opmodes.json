@@ -64,8 +64,12 @@
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "Telemetry Logging", "id": "telemetry-logging" },
-        { "label": "Basic Robot Control", "id": "basic-robot-control" }
+        {
+		  "label": "Telemetry Logging", 
+		  "url": "telemetry-logging"},
+        {
+		  "label": "Basic Robot Control", 
+		  "url": "basic-robot-control"}
       ]
     },
     {

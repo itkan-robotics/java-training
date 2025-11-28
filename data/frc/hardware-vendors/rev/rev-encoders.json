@@ -72,43 +72,18 @@
       "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\n\npublic class EncoderConfiguration {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Gear ratio: 10:1 (motor rotates 10 times for 1 mechanism rotation)\n    private static final double GEAR_RATIO = 10.0;\n    \n    public EncoderConfiguration() {\n        // Set position conversion factor\n        // Position will now be in mechanism rotations instead of motor rotations\n        m_encoder.setPositionConversionFactor(1.0 / GEAR_RATIO);\n        \n        // Set velocity conversion factor\n        // Velocity will now be in mechanism rotations per second\n        m_encoder.setVelocityConversionFactor(1.0 / GEAR_RATIO);\n        \n        // Set average depth for velocity (number of samples to average)\n        // Higher = smoother but slower response\n        m_encoder.setAverageDepth(4);\n        \n        // Set measurement period for velocity (milliseconds)\n        // Lower = faster updates but may be noisier\n        m_encoder.setMeasurementPeriod(10);\n        \n        // Reset encoder position\n        m_encoder.setPosition(0);\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Encoder Best Practices",
-      "subtitle": "Tips for effective encoder usage:",
-      "items": [
-        "Use NEO built-in encoder when possible (no extra wiring)",
-        "Reset encoder position at known positions (e.g., limit switches)",
-        "Use consistent conversion factors throughout code",
-        "Document encoder specifications and conversion factors",
-        "Test encoder readings at multiple positions",
-        "Use conversion factors for cleaner code",
-        "Monitor encoder values during operation",
-        "Handle encoder wrapping if mechanism rotates multiple times",
-        "Verify encoder direction matches motor direction"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Encoder Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>No Reading:</strong> Check encoder is configured, verify motor type, check wiring for external encoders",
-        "<strong>Wrong Values:</strong> Check conversion factors, verify encoder type, check sensor phase",
-        "<strong>Position Jumps:</strong> Check for loose connections, verify encoder mounting, check for electrical interference",
-        "<strong>Wrong Direction:</strong> Configure sensor phase, check encoder wiring",
-        "<strong>Velocity Not Updating:</strong> Check measurement period, verify encoder is reading correctly",
-        "<strong>Inconsistent Readings:</strong> Check encoder mounting, verify connections, check for mechanical issues",
-        "<strong>Conversion Errors:</strong> Verify conversion factors are correct, check units match",
-        "<strong>External Encoder Not Working:</strong> Check data port wiring, verify encoder type configuration"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "SPARK MAX PID Control", "id": "spark-max-pid-control" },
-        { "label": "SPARK MAX Configuration", "id": "spark-max-configuration" },
-        { "label": "SPARK MAX Setup", "id": "spark-max-setup" }
+        {
+		  "label": "SPARK MAX PID Control", 
+		  "url": "spark-max-pid-control"},
+        {
+		  "label": "SPARK MAX Configuration", 
+		  "url": "spark-max-configuration"},
+        {
+		  "label": "SPARK MAX Setup", 
+		  "url": "spark-max-setup"}
       ]
     }
   ]

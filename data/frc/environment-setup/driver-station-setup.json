@@ -81,65 +81,23 @@
       "content": "The Emergency Stop (E-Stop) is a critical safety feature that immediately stops all robot movement.<br><br><strong>How to E-Stop:</strong><br>- Click the large red E-Stop button in Driver Station<br>- Or press the physical E-Stop button on the robot (if equipped)<br><br><strong>What E-Stop Does:</strong><br>- Immediately stops all motors and actuators<br>- Disables robot code execution<br>- Requires manual reset to resume operation<br><br><strong>When to Use:</strong><br>- Robot is moving unexpectedly<br>- Safety hazard detected<br>- Robot needs immediate stopping<br><br><strong>Resetting E-Stop:</strong> After E-Stopping, you must manually reset the E-Stop before the robot can operate again. This is a safety feature to prevent accidental resumption."
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Connection Issues",
-      "subtitle": "If robot doesn't connect:",
-      "items": [
-        "Verify robot is powered on and roboRIO has power",
-        "Check that team number is correct in Driver Station",
-        "Ensure computer and robot are on the same network",
-        "Try USB connection first to verify basic connectivity",
-        "Check firewall settings (may block robot communication)",
-        "Verify network cable is connected (for wired connection)",
-        "Check radio configuration (for wireless connection)",
-        "Restart Driver Station and robot if connection is lost",
-        "Verify Windows Fast Startup is disabled (can cause driver issues)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Network Troubleshooting",
-      "subtitle": "Steps to diagnose network problems:",
-      "items": [
-        "Verify robot IP address matches team number pattern (10.TE.AM.2)",
-        "Ping robot IP address from command prompt to test connectivity",
-        "Check network adapter is active and connected to correct network",
-        "Temporarily disable firewall to test, then configure exceptions",
-        "Try USB connection to verify robot code works, then troubleshoot network",
-        "Ensure Windows Fast Startup is disabled (causes NI driver issues)",
-        "Check network cable connections and quality (for wired)",
-        "Verify radio is properly configured and powered (for wireless)",
-        "Restart network adapter or computer if connection is unstable"
-      ]
-    },
-    {
       "type": "text",
       "title": "Competition Workflow",
       "content": "During competitions, Driver Station usage follows a specific workflow:<br><br><strong>Pre-Match:</strong><br>1. Power on robot<br>2. Connect Driver Station to robot<br>3. Verify connection and robot status<br>4. Check that correct code is deployed<br>5. Test basic robot functions<br><br><strong>Match Start:</strong><br>1. FMS automatically starts match timer<br>2. Autonomous mode begins automatically<br>3. Monitor robot during autonomous<br>4. Transition to teleop when autonomous ends<br><br><strong>During Match:</strong><br>1. Monitor robot status and telemetry<br>2. Watch for connection issues<br>3. Use E-Stop if safety issue arises<br>4. Track match time remaining<br><br><strong>Post-Match:</strong><br>1. Robot automatically enters disabled mode<br>2. Review telemetry and logs if needed<br>3. Prepare for next match"
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices",
-      "subtitle": "For reliable robot operation:",
-      "items": [
-        "Uninstall old versions before installing new season's tools",
-        "Disable Windows Fast Startup to prevent driver issues",
-        "Always verify connection before matches",
-        "Test both wired and wireless connections",
-        "Deploy code well before matches and verify it's running",
-        "Keep backup of working code versions",
-        "Monitor telemetry and connection status during operation",
-        "Know where E-Stop button is located and test functionality",
-        "Never disable safety features"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Elastic Basics", "id": "elastic-basics" },
-        { "label": "Project Creation", "id": "project-creation" },
-        { "label": "WPILib Setup", "id": "wpilib-setup" }
+        {
+		  "label": "Elastic Basics", 
+		  "url": "elastic-basics"},
+        {
+		  "label": "Project Creation", 
+		  "url": "project-creation"},
+        {
+		  "label": "WPILib Setup", 
+		  "url": "wpilib-setup"}
       ]
     }
   ]

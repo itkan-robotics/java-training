@@ -145,44 +145,18 @@
       ]
     },
     {
-      "type": "rules-box",
-      "title": "Current Limiting Best Practices",
-      "subtitle": "Tips for effective current limiting:",
-      "items": [
-        "Always configure current limits for all motors",
-        "Use both motor and battery protection limits for maximum protection",
-        "Set limits based on motor specifications, not maximum possible",
-        "Leave safety margin (don't set at absolute maximum)",
-        "Set trigger threshold 5-10 amps above limit (Talon FX)",
-        "Set trigger time 0.1-0.5 seconds (Talon FX, prevents spike triggers)",
-        "Test limits with actual mechanism loads",
-        "Monitor current during operation and adjust as needed",
-        "Document your current limit settings"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Current Limiting Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Motors Not Reaching Full Power:</strong> Current limits may be too low, increase within specs",
-        "<strong>Circuit Breakers Tripping:</strong> Reduce battery protection limits, check total robot draw",
-        "<strong>Motors Overheating:</strong> Reduce motor protection limits, check motor specifications",
-        "<strong>Current Limiting Not Working:</strong> Verify limits are enabled, check configuration",
-        "<strong>Limits Too Restrictive:</strong> Test with actual load, adjust based on performance",
-        "<strong>Protection Not Activating:</strong> Check trigger threshold and time settings (Talon FX), verify configuration",
-        "<strong>Inconsistent Behavior:</strong> Verify configuration is applied correctly",
-        "<strong>Wrong Limit Type:</strong> Use motor protection for motor, battery protection for battery/PDH",
-        "<strong>Configuration Issues:</strong> Test with known load, verify settings in vendor tools"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Motor Controller Configuration", "id": "motor-controller-configuration" },
-        { "label": "SPARK MAX Setup", "id": "spark-max-setup" },
-        { "label": "Talon FX Setup", "id": "talon-fx-setup" }
+        {
+		  "label": "Motor Controller Configuration", 
+		  "url": "motor-controller-configuration"},
+        {
+		  "label": "SPARK MAX Setup", 
+		  "url": "spark-max-setup"},
+        {
+		  "label": "Talon FX Setup", 
+		  "url": "talon-fx-setup"}
       ]
     }
   ]

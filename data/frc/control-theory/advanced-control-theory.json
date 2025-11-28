@@ -57,21 +57,6 @@
       "content": "Deciding when to use advanced control techniques:<br><br><strong>Use Advanced Control When:</strong> Basic PID doesn't provide sufficient performance, you have a well-defined system model, you need to optimize multiple objectives, you're controlling coupled systems, or optimal performance is critical.<br><br><strong>Stick with PID When:</strong> PID provides adequate performance, system is simple or well-behaved, development time is limited, or you don't have system models. PID is sufficient for most FRC applications.<br><br><strong>Hybrid Approach:</strong> Use PID for most mechanisms, advanced control for specific challenging systems. Don't over-engineer - use the simplest solution that meets your requirements."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for Advanced Control",
-      "subtitle": "Tips for using advanced control techniques:",
-      "items": [
-        "Start simple (try PID first, only use advanced if needed)",
-        "Understand the theory (know what you're implementing)",
-        "Have system models (advanced control requires good models)",
-        "Test thoroughly (advanced control can be less forgiving)",
-        "Document your approach (explain why you chose advanced control)",
-        "Consider complexity (ensure benefits outweigh added complexity)",
-        "Use WPILib classes (don't implement from scratch)",
-        "Get help if needed (advanced control benefits from expertise)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Resources for Advanced Control",
       "content": "Further learning and tools for advanced control:<br><br><strong>WPILib Documentation:</strong> WPILib provides state-space control classes and examples. The documentation includes tutorials and API references for advanced control.<br><br><strong>Control Theory Courses:</strong> Online courses and textbooks on control theory provide deeper understanding. Topics include state-space methods, optimal control, and system identification.<br><br><strong>Characterization Tools:</strong> WPILib's characterization tools help you build accurate system models needed for advanced control. Good models are essential for advanced techniques.<br><br><strong>Simulation:</strong> Test advanced control in simulation before deploying to hardware. Simulation helps verify correctness and tune parameters safely."
@@ -80,9 +65,15 @@
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "PID Control Introduction", "id": "pid-control-intro" },
-        { "label": "Feedforward Control", "id": "feedforward-control" },
-        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" }
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"},
+        {
+		  "label": "Feedforward Control", 
+		  "url": "feedforward-control"},
+        {
+		  "label": "Motion Profiling Basics", 
+		  "url": "motion-profiling-basics"}
       ]
     }
   ]

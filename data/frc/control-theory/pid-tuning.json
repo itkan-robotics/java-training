@@ -48,22 +48,6 @@
     },
     {
       "type": "rules-box",
-      "title": "Tuning Best Practices",
-      "subtitle": "Tips for effective PID tuning:",
-      "items": [
-        "Test incrementally (change one parameter at a time)",
-        "Document your values (write down what works and what doesn't)",
-        "Test under load (tune with actual mechanism loads, not unloaded)",
-        "Test multiple setpoints (verify tuning works across full range)",
-        "Start conservative (begin with lower values, increase gradually)",
-        "Use visualization (plots help understand system response)",
-        "Test edge cases (minimum/maximum positions, rapid changes)",
-        "Verify stability (ensure system doesn't oscillate over time)",
-        "Re-tune if mechanism changes (new load, different gearing, etc.)"
-      ]
-    },
-    {
-      "type": "rules-box",
       "title": "Common Tuning Issues",
       "subtitle": "Troubleshooting tuning problems:",
       "items": [
@@ -86,9 +70,15 @@
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "PID Control Introduction", "id": "pid-control-intro" },
-        { "label": "PID On Controller", "id": "pid-on-controller" },
-        { "label": "PID In Code", "id": "pid-in-code" }
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"},
+        {
+		  "label": "PID On Controller", 
+		  "url": "pid-on-controller"},
+        {
+		  "label": "PID In Code", 
+		  "url": "pid-in-code"}
       ]
     }
   ]

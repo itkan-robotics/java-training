@@ -7,21 +7,6 @@
       "content": "Feedforward control is a control technique that predicts the required output based on the desired setpoint, rather than reacting to error like feedback control (PID). Feedforward uses a mathematical model of the system to calculate the output needed to achieve a target, reducing error before it occurs.<br><br>Feedforward is often combined with PID feedback control for optimal performance. Feedforward provides the predicted output, while PID corrects for any remaining error. This combination enables faster response, better accuracy, and improved disturbance rejection.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/feedforward.html' target='_blank'>WPILib: Feedforward Control</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Feedforward Control Benefits",
-      "subtitle": "Advantages of feedforward control:",
-      "items": [
-        "Predictive (reduces error before it occurs)",
-        "Faster response (doesn't wait for error to develop)",
-        "Reduces steady-state error (model-based compensation)",
-        "Handles known disturbances (gravity, friction, etc.)",
-        "Improves PID performance (works with PID, not replaces it)",
-        "Model-based (uses system understanding for control)",
-        "Efficient (reduces PID workload)",
-        "Professional approach (used in advanced control systems)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Feedforward vs Feedback",
       "content": "Understanding the difference between feedforward and feedback helps you use both effectively:<br><br><strong>Feedback Control (PID):</strong> Reacts to error after it occurs. Measures the difference between desired and actual, then adjusts output to reduce error. Excellent for handling unknown disturbances and ensuring accuracy.<br><br><strong>Feedforward Control:</strong> Predicts required output before error occurs. Uses a model of the system to calculate output needed for the desired setpoint. Excellent for known system characteristics and faster response.<br><br><strong>Why Combine Them:</strong> Feedforward provides the predicted output, but the model may not be perfect. PID corrects for modeling errors and unknown disturbances. Together, they provide optimal control: feedforward for speed, PID for accuracy."
@@ -72,40 +57,18 @@
       "content": "Feedforward gains are determined through mechanism characterization:<br><br><strong>Characterization Process:</strong> Measure how your mechanism responds to different inputs. For velocity feedforward, measure velocity at different voltages. For gravity feedforward, measure holding voltage at different angles.<br><br><strong>Finding kV:</strong> Apply different voltages and measure resulting velocity. kV = voltage / velocity (volts per unit per second). Use linear regression to find the best fit.<br><br><strong>Finding kS:</strong> Measure the minimum voltage needed to overcome static friction. kS = that voltage (volts).<br><br><strong>Finding kG:</strong> For arms, measure voltage needed to hold arm at different angles. kG = voltage at horizontal position (volts).<br><br><strong>Tools:</strong> Use WPILib's characterization tools, AdvantageKit logging, or manual testing to determine feedforward gains."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for Feedforward",
-      "subtitle": "Tips for effective feedforward usage:",
-      "items": [
-        "Characterize your mechanism (measure to find accurate gains)",
-        "Combine with PID (feedforward + PID is better than either alone)",
-        "Use appropriate feedforward type (SimpleMotor vs Arm)",
-        "Tune PID with feedforward enabled (they work together)",
-        "Test across full range (verify gains work everywhere)",
-        "Document your gains (write down characterization results)",
-        "Re-characterize if mechanism changes (new load, gearing, etc.)",
-        "Use for velocity control (especially effective for flywheels)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Feedforward",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Overcompensation:</strong> Reduce feedforward gains, verify characterization data",
-        "<strong>Undercompensation:</strong> Increase feedforward gains, re-characterize mechanism",
-        "<strong>Oscillation with Feedforward:</strong> Reduce feedforward gains, adjust PID tuning",
-        "<strong>Not Working:</strong> Verify feedforward is being calculated and added correctly",
-        "<strong>Wrong Direction:</strong> Check sign of feedforward gains, verify mechanism model",
-        "<strong>Inconsistent Performance:</strong> Re-characterize mechanism, check for mechanical issues"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "PID Control Introduction", "id": "pid-control-intro" },
-        { "label": "Trapezoidal Profiles", "id": "trapezoidal-profiles" },
-        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" }
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"},
+        {
+		  "label": "Trapezoidal Profiles", 
+		  "url": "trapezoidal-profiles"},
+        {
+		  "label": "Motion Profiling Basics", 
+		  "url": "motion-profiling-basics"}
       ]
     }
   ]

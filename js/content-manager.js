@@ -696,8 +696,9 @@ class ContentManager {
             
             // Create tab content
             const tabContent = this.createStyledElement('div', 'code-tab-content', {
-                display: index === 0 ? 'block' : 'none',
-                padding: '0'
+                display: index === 0 ? 'flex' : 'none',
+                padding: '0',
+                flexDirection: 'column'
             });
             
             // Create code block for this tab (reuse code section rendering logic)
@@ -740,7 +741,8 @@ class ContentManager {
                         otherButton.style.borderBottomColor = 'var(--color-brand-primary)';
                         otherButton.style.color = 'var(--color-brand-primary)';
                         otherButton.style.fontWeight = '600';
-                        otherContent.style.display = 'block';
+                        otherContent.style.display = 'flex';
+                        otherContent.style.flexDirection = 'column';
                     } else {
                         // Deactivate other tabs
                         otherButton.style.background = 'transparent';

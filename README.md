@@ -261,6 +261,21 @@ All content files follow a standardized JSON format:
       "code": "public class Example {\n    // Code here\n}"
     },
     {
+      "type": "code-tabs",
+      "title": "Code Tabs Example",
+      "content": "Optional explanation text above the tabs",
+      "tabs": [
+        {
+          "label": "Option A",
+          "code": "public class OptionA {\n    // Code for Option A\n}"
+        },
+        {
+          "label": "Option B",
+          "code": "public class OptionB {\n    // Code for Option B\n}"
+        }
+      ]
+    },
+    {
       "type": "table",
       "title": "Comparison Table",
       "headers": ["Feature", "Option A", "Option B"],
@@ -288,6 +303,7 @@ All content files follow a standardized JSON format:
 
 - `text`: Regular paragraphs with HTML formatting
 - `code`: Syntax-highlighted code blocks
+- `code-tabs`: Tabbed code examples showing multiple implementations (e.g., SPARK MAX vs Talon FX, PhotonVision vs Limelight vs WPILib)
 - `rules-box`: Important rules and guidelines
 - `exercise-box`: Interactive practice problems
 - `list`: Key points and bullet lists

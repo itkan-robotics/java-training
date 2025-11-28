@@ -85,9 +85,15 @@
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "SPARK MAX Setup", "id": "spark-max-setup" },
-        { "label": "Gradle Build System", "id": "gradle-build-system" },
-        { "label": "REV Hardware Client", "id": "rev-hardware-client" }
+        {
+		  "label": "SPARK MAX Setup", 
+		  "url": "spark-max-setup"},
+        {
+		  "label": "Gradle Build System", 
+		  "url": "gradle-build-system"},
+        {
+		  "label": "REV Hardware Client", 
+		  "url": "rev-hardware-client"}
       ]
     }
   ]

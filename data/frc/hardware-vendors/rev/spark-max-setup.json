@@ -73,20 +73,6 @@
       "content": "REV Hardware Client is REV's configuration tool for setting up and diagnosing SPARK MAX controllers. It's essential for initial setup and troubleshooting.<br><br><strong>Connecting to Robot:</strong><br>1. Open REV Hardware Client<br>2. Ensure robot is powered and connected (USB or CAN bus)<br>3. Click \"Scan for Devices\" or connect via USB<br>4. REV Hardware Client will discover all REV devices on the CAN bus<br><br><strong>Configuring SPARK MAX:</strong><br>1. Select the SPARK MAX from the device list<br>2. Configure parameters in the configuration panel:<br>   - CAN ID<br>   - Motor type<br>   - Motor inversion<br>   - Idle mode<br>   - Current limits<br>   - Other settings<br>3. Click \"Apply\" to save configuration to device<br>4. Configuration is stored in the SPARK MAX's non-volatile memory<br><br><strong>Monitoring:</strong> REV Hardware Client can display real-time data from SPARK MAX, including current, voltage, position, velocity, and status information."
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Common Setup Issues",
-      "subtitle": "If SPARK MAX isn't working:",
-      "items": [
-        "<strong>Device Not Found:</strong> Check CAN ID matches code, verify CAN bus wiring, ensure device is powered",
-        "<strong>Motor Not Moving:</strong> Check motor wiring, verify power connections, check if motor is enabled",
-        "<strong>Wrong Direction:</strong> Configure inversion using setInverted() or REV Hardware Client",
-        "<strong>CAN Bus Errors:</strong> Check CAN bus wiring, verify termination resistors, check for CAN ID conflicts",
-        "<strong>Status LED Red:</strong> Check REV Hardware Client for fault codes, verify configuration",
-        "<strong>No Communication:</strong> Verify robot is connected, check USB/CAN connection, restart robot",
-        "<strong>Motor Type Mismatch:</strong> Verify MotorType matches actual motor (kBrushless vs kBrushed)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Follower Configuration",
       "content": "In many drivetrains, you have multiple motors on the same side. The SPARK MAX supports follower mode, where one SPARK MAX follows another, reducing the number of control signals needed.<br><br><strong>Follower Setup:</strong><br>- One SPARK MAX is the leader (you control it directly)<br>- Other SPARK MAX controllers are followers (they mirror the leader)<br>- Followers automatically match the leader's output<br>- Followers can be inverted relative to the leader<br><br><strong>Benefits:</strong><br>- Simpler code (only control leader motors)<br>- Reduced CAN bus traffic<br>- Automatic synchronization<br><br><strong>Limitations:</strong><br>- Followers can't have independent control<br>- All followers on same side should have same gearing"
@@ -97,28 +83,18 @@
       "content": "package frc.robot.subsystems;\n\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkBase.IdleMode;\n\npublic class DrivetrainWithFollowers {\n    // Leader motors (front)\n    private final CANSparkMax m_leftFront = new CANSparkMax(1, MotorType.kBrushless);\n    private final CANSparkMax m_rightFront = new CANSparkMax(3, MotorType.kBrushless);\n    \n    // Follower motors (back)\n    private final CANSparkMax m_leftBack = new CANSparkMax(2, MotorType.kBrushless);\n    private final CANSparkMax m_rightBack = new CANSparkMax(4, MotorType.kBrushless);\n    \n    public DrivetrainWithFollowers() {\n        // Configure all motors\n        m_leftFront.setIdleMode(IdleMode.kBrake);\n        m_leftBack.setIdleMode(IdleMode.kBrake);\n        m_rightFront.setIdleMode(IdleMode.kBrake);\n        m_rightBack.setIdleMode(IdleMode.kBrake);\n        \n        // Set motor inversion\n        m_leftFront.setInverted(false);\n        m_leftBack.setInverted(false);\n        m_rightFront.setInverted(true);\n        m_rightBack.setInverted(true);\n        \n        // Configure followers - back motors follow front motors\n        // Followers automatically match leader's output\n        m_leftBack.follow(m_leftFront);\n        m_rightBack.follow(m_rightFront);\n    }\n    \n    public void drive(double leftPower, double rightPower) {\n        // Only set leader motors\n        // Followers automatically match\n        m_leftFront.set(leftPower);\n        m_rightFront.set(rightPower);\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for SPARK MAX Setup",
-      "subtitle": "Tips for reliable operation:",
-      "items": [
-        "Use sequential CAN IDs for related devices",
-        "Document all CAN ID assignments",
-        "Configure settings in code (not just REV Hardware Client)",
-        "Set appropriate current limits for motor protection",
-        "Enable voltage compensation for consistent performance",
-        "Create SPARK MAX instances in subsystem constructors",
-        "Configure devices immediately after creation",
-        "Use consistent configuration across similar devices",
-        "Use descriptive variable names for clarity"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "SPARK MAX Configuration", "id": "spark-max-configuration" },
-        { "label": "SPARK MAX PID Control", "id": "spark-max-pid-control" },
-        { "label": "REV Introduction", "id": "rev-intro" }
+        {
+		  "label": "SPARK MAX Configuration", 
+		  "url": "spark-max-configuration"},
+        {
+		  "label": "SPARK MAX PID Control", 
+		  "url": "spark-max-pid-control"},
+        {
+		  "label": "REV Introduction", 
+		  "url": "rev-intro"}
       ]
     }
   ]

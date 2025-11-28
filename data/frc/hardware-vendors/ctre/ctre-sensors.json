@@ -88,40 +88,18 @@
       "content": "import com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.configs.Pigeon2Configuration;\nimport com.ctre.phoenix6.signals.MountPoseYawValue;\n\npublic class PigeonConfiguration {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    public PigeonConfiguration() {\n        // Create configuration object\n        Pigeon2Configuration config = new Pigeon2Configuration();\n        \n        // Configure mounting orientation (if Pigeon is mounted at angle)\n        // Options: Top, Bottom, Front, Back, Left, Right, etc.\n        config.MountPose.MountPoseYaw = MountPoseYawValue.Top;\n        \n        // Apply configuration\n        m_pigeon.getConfigurator().apply(config);\n        \n        // In Phoenix 6, calibration typically happens automatically\n        // Reset heading to zero\n        m_pigeon.setYaw(0);\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Pigeon Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Device Not Found:</strong> Check CAN ID, verify CAN bus wiring, ensure device is powered",
-        "<strong>Incorrect Readings:</strong> Recalibrate Pigeon, check mounting orientation, verify robot is stationary during calibration",
-        "<strong>Heading Drifts:</strong> Normal for gyroscopes, reset heading periodically, use odometry to correct",
-        "<strong>No Reading:</strong> Check CAN bus connection, verify power, check status in Phoenix Tuner",
-        "<strong>Calibration Fails:</strong> Ensure robot is stationary, wait for calibration to complete, check CAN bus connection"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Best Practices for Pigeon Usage",
-      "subtitle": "Tips for reliable operation:",
-      "items": [
-        "Always calibrate before first use (keep robot stationary)",
-        "Reset heading at start of autonomous",
-        "Mount Pigeon securely and level, away from vibration",
-        "Use heading for field-relative driving",
-        "Combine with encoders for odometry accuracy",
-        "Monitor heading for drift and reset as needed",
-        "Document mounting orientation and CAN ID",
-        "Test thoroughly before competition",
-        "Use with vision for heading correction if available"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Odometry Basics", "id": "odometry-basics" },
-        { "label": "Field-Relative Driving", "id": "frc-drivetrain-control" },
-        { "label": "CTRE Introduction", "id": "ctre-intro" }
+        {
+		  "label": "Odometry Basics", 
+		  "url": "odometry-basics"},
+        {
+		  "label": "Field-Relative Driving", 
+		  "url": "frc-drivetrain-control"},
+        {
+		  "label": "CTRE Introduction", 
+		  "url": "ctre-intro"}
       ]
     }
   ]

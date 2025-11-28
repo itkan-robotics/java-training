@@ -7,21 +7,6 @@
       "content": "Trapezoidal motion profiles generate smooth motion with three distinct phases: acceleration (constant positive acceleration), cruise (constant velocity), and deceleration (constant negative acceleration). The velocity-time graph forms a trapezoid shape, giving these profiles their name.<br><br>Trapezoidal profiles are the most common motion profile type in FRC because they're simple to understand, easy to implement, and provide excellent performance for most mechanisms. They enable fast, smooth, predictable motion while respecting velocity and acceleration constraints.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/trapezoidal-profiles.html' target='_blank'>WPILib: Trapezoidal Motion Profiles</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Trapezoidal Profile Benefits",
-      "subtitle": "Advantages of trapezoidal profiles:",
-      "items": [
-        "Smooth motion (controlled acceleration and deceleration)",
-        "Predictable timing (know exactly when mechanism reaches target)",
-        "Respects constraints (velocity and acceleration limits)",
-        "Simple to implement (well-understood algorithm)",
-        "Fast movement (can move quickly while staying safe)",
-        "Reduced wear (gentle on mechanical components)",
-        "Widely used (standard in FRC, lots of examples)",
-        "Flexible (works for various mechanism types)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Profile Phases",
       "content": "Trapezoidal profiles consist of three phases:<br><br><strong>Acceleration Phase:</strong> Mechanism accelerates at maximum acceleration until reaching maximum velocity. During this phase, velocity increases linearly, and position increases quadratically.<br><br><strong>Cruise Phase:</strong> Mechanism moves at constant maximum velocity. This phase only occurs if the distance is long enough to reach maximum velocity. During cruise, velocity is constant, and position increases linearly.<br><br><strong>Deceleration Phase:</strong> Mechanism decelerates at maximum (negative) acceleration until reaching zero velocity at the target. During this phase, velocity decreases linearly, and position approaches the target.<br><br><strong>Short Distances:</strong> For short distances, the profile may not reach maximum velocity, resulting in only acceleration and deceleration phases (triangular profile)."
@@ -67,40 +52,18 @@
       "content": "Finding optimal profile parameters requires testing:<br><br><strong>Start Conservative:</strong> Begin with lower maximum velocity and acceleration values. Test to ensure the mechanism can achieve these safely.<br><br><strong>Increase Gradually:</strong> Slowly increase maximum velocity and acceleration, testing after each change. Stop if you see overshoot, mechanical stress, or instability.<br><br><strong>Test Full Range:</strong> Test profiles across the full range of motion, not just one position. Some mechanisms behave differently at different positions.<br><br><strong>Consider Load:</strong> Test with actual mechanism loads. Unloaded testing may give unrealistic results.<br><br><strong>Balance Speed and Safety:</strong> Higher constraints enable faster motion but increase risk. Find the balance that provides good performance while maintaining safety and reliability."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for Trapezoidal Profiles",
-      "subtitle": "Tips for effective trapezoidal profile usage:",
-      "items": [
-        "Set realistic constraints (based on mechanism capabilities)",
-        "Test profiles with actual mechanism (verify constraints are correct)",
-        "Use PIDController to follow profile (ensures accurate tracking)",
-        "Handle profile completion (check when profile finishes)",
-        "Test edge cases (very short and very long distances)",
-        "Monitor profile following (verify mechanism tracks profile well)",
-        "Adjust constraints based on performance (tune for your mechanism)",
-        "Document your constraints (write down what works)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Trapezoidal Profiles",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Mechanism Doesn't Follow Profile:</strong> Check PID tuning, verify constraints are achievable",
-        "<strong>Overshoot Still Occurs:</strong> Reduce maximum velocity or acceleration, improve PID tuning",
-        "<strong>Motion Too Slow:</strong> Increase constraints if mechanism can handle it",
-        "<strong>Profile Calculation Errors:</strong> Verify start/end states are correct, check constraint values",
-        "<strong>Inconsistent Timing:</strong> Ensure time tracking is accurate, check for timing issues",
-        "<strong>Jerky Motion:</strong> Verify profile is being followed correctly, check PID tuning"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" },
-        { "label": "Exponential Profiles", "id": "exponential-profiles" },
-        { "label": "Feedforward Control", "id": "feedforward-control" }
+        {
+		  "label": "Motion Profiling Basics", 
+		  "url": "motion-profiling-basics"},
+        {
+		  "label": "Exponential Profiles", 
+		  "url": "exponential-profiles"},
+        {
+		  "label": "Feedforward Control", 
+		  "url": "feedforward-control"}
       ]
     }
   ]

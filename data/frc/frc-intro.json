@@ -115,19 +115,19 @@
       "links": [
         {
           "label": "WPILib Setup",
-          "id": "wpilib-setup"
+          "url": "wpilib-setup"
         },
         {
           "label": "Project Creation",
-          "id": "project-creation"
+          "url": "project-creation"
         },
         {
           "label": "Command-Based Intro",
-          "id": "command-based-intro"
+          "url": "command-based-intro"
         },
         {
           "label": "PID Control Intro",
-          "id": "pid-control-intro"
+          "url": "pid-control-intro"
         }
       ]
     },

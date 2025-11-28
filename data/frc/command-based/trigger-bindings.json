@@ -7,20 +7,6 @@
       "content": "Triggers are a powerful way to bind commands to user input (buttons, joysticks, etc.). They provide an event-driven approach to command scheduling, making it easy to connect user actions to robot behaviors. Triggers abstract input handling and provide a clean interface for binding commands to various input sources.<br><br>Triggers are the recommended way to schedule commands from user input in command-based programming. They handle edge cases, provide multiple binding options, and integrate seamlessly with the command scheduler. Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/binding-commands-to-triggers.html' target='_blank'>WPILib: Binding Commands to Triggers</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Trigger Benefits",
-      "subtitle": "Why use triggers:",
-      "items": [
-        "Event-driven command scheduling (commands run on input events)",
-        "Multiple binding options (onTrue, onFalse, whileTrue, toggleOnTrue)",
-        "Clean input handling (abstracts away input details)",
-        "Trigger combinations (and, or, negate for complex conditions)",
-        "Works with various input sources (buttons, joysticks, POV, etc.)",
-        "Automatic command management (scheduler handles execution)",
-        "Reduces code complexity (less manual input checking)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Trigger Types",
       "content": "WPILib provides several types of triggers for different input sources:<br><br><strong>Button Triggers:</strong> Created from buttons on gamepads or joysticks. Most common trigger type. Can detect button press, release, or continuous press.<br><br><strong>POV Triggers:</strong> Created from directional pad (POV hat) on gamepads. Useful for directional input (up, down, left, right, or combinations).<br><br><strong>Axis Triggers:</strong> Created from analog axes (joystick axes, triggers). Can detect when axis exceeds a threshold or is within a range. Useful for analog input conditions.<br><br>Each trigger type provides the same binding methods (<code>onTrue</code>, <code>whileTrue</code>, etc.), making them consistent to use regardless of input source."
@@ -86,42 +72,18 @@
       "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\n\npublic class RobotContainer {\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // Driver Controller Bindings\n        // A: Emergency stop\n        m_driverController.a().onTrue(new EmergencyStopCommand());\n        \n        // B: Toggle intake\n        m_driverController.b().toggleOnTrue(new ToggleIntakeCommand(m_intake));\n        \n        // Operator Controller Bindings\n        // A: Move arm to low position\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 30.0, 0.3, 2.0));\n        \n        // B: Move arm to high position\n        m_operatorController.b()\n            .onTrue(new MoveArmCommand(m_arm, 60.0, 0.3, 2.0));\n        \n        // X: Run intake (while held)\n        m_operatorController.x()\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // Y: Reverse intake (while held)\n        m_operatorController.y()\n            .whileTrue(new RunIntakeCommand(m_intake, -0.4));\n        \n        // Right trigger: Intake (analog)\n        m_operatorController.rightTrigger(0.5)\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // POV: Elevator control\n        m_operatorController.povUp()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 48.0, 0.5, 0.5));\n        m_operatorController.povDown()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 0.0, 0.5, 0.5));\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Trigger Best Practices",
-      "subtitle": "Tips for effective trigger usage:",
-      "items": [
-        "Organize all trigger bindings in configureButtonBindings() method",
-        "Use descriptive button assignments (document which button does what)",
-        "Use onTrue for one-time actions (button press triggers action)",
-        "Use whileTrue for continuous actions (button held runs command)",
-        "Use toggleOnTrue for toggle behaviors (press to toggle on/off)",
-        "Use trigger combinations for complex conditions (and, or)",
-        "Test trigger bindings to ensure they work as expected",
-        "Document button assignments for drivers and team members"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Triggers",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Command Not Scheduling:</strong> Verify trigger binding syntax, check command is created correctly",
-        "<strong>Command Runs Multiple Times:</strong> Use onTrue instead of whileTrue, or check trigger activation",
-        "<strong>Command Not Stopping:</strong> Verify whileTrue vs onTrue usage, check command can be interrupted",
-        "<strong>Trigger Not Activating:</strong> Check input source is correct, verify button/axis is working",
-        "<strong>Combination Not Working:</strong> Verify and/or logic, check both triggers are activating",
-        "<strong>POV Not Working:</strong> Check POV direction method, verify gamepad POV is functioning",
-        "<strong>Axis Trigger Not Working:</strong> Verify threshold value, check axis reading is correct",
-        "<strong>Binding Conflicts:</strong> Ensure buttons aren't bound to multiple conflicting commands"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Robot Container", "id": "robot-container" },
-        { "label": "Command Creation", "id": "command-creation" },
-        { "label": "Default Commands", "id": "default-commands" }
+        {
+		  "label": "Robot Container", 
+		  "url": "robot-container"},
+        {
+		  "label": "Command Creation", 
+		  "url": "command-creation"},
+        {
+		  "label": "Default Commands", 
+		  "url": "default-commands"}
       ]
     }
   ]

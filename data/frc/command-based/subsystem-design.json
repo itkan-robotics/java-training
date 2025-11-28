@@ -77,22 +77,6 @@
       "content": "package frc.robot.subsystems;\n\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\n// Intake subsystem\npublic class Intake extends SubsystemBase {\n    private final CANSparkMax m_motor = new CANSparkMax(7, MotorType.kBrushless);\n    \n    public Intake() {\n        m_motor.setIdleMode(CANSparkMax.IdleMode.kCoast);\n        m_motor.setSmartCurrentLimit(30);\n    }\n    \n    public void run(double speed) {\n        m_motor.set(speed);\n    }\n    \n    public void stop() {\n        m_motor.set(0);\n    }\n}\n\n// Shooter subsystem\npublic class Shooter extends SubsystemBase {\n    private final CANSparkMax m_motor = new CANSparkMax(8, MotorType.kBrushless);\n    \n    public Shooter() {\n        m_motor.setIdleMode(CANSparkMax.IdleMode.kCoast);\n        m_motor.setSmartCurrentLimit(40);\n    }\n    \n    public void setSpeed(double speed) {\n        m_motor.set(speed);\n    }\n    \n    public void stop() {\n        m_motor.set(0);\n    }\n    \n    public double getVelocity() {\n        return m_motor.getEncoder().getVelocity();\n    }\n}\n\n// Complete robot with multiple subsystems\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Elevator m_elevator = new Elevator();\n    private final Intake m_intake = new Intake();\n    private final Shooter m_shooter = new Shooter();\n    \n    // Each subsystem is independent and can be used by commands\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Subsystem Best Practices",
-      "subtitle": "Tips for effective subsystem design:",
-      "items": [
-        "Initialize all hardware in constructor",
-        "Use final for hardware objects to prevent reassignment",
-        "Keep hardware objects private (encapsulation)",
-        "Provide clear, descriptive method names",
-        "Track state internally and update in periodic()",
-        "Implement safety limits and checks",
-        "Set default commands for safe behavior",
-        "Document complex methods and state variables",
-        "Keep subsystems focused on one mechanism"
-      ]
-    },
-    {
       "type": "text",
       "title": "Common Subsystem Patterns",
       "content": "There are several common patterns for organizing subsystems:<br><br><strong>Singleton Pattern:</strong> Some teams use singleton subsystems (one instance globally accessible). This can be useful but isn't required - RobotContainer typically manages subsystem instances.<br><br><strong>Multiple Instances:</strong> For mechanisms that exist in multiple places (e.g., swerve modules), you might create multiple subsystem instances. Each instance manages its own hardware.<br><br><strong>Organization:</strong> Keep all subsystems in the <code>subsystems</code> package. Use descriptive names that indicate the mechanism. Group related subsystems if needed (e.g., <code>subsystems.drivetrain</code> for swerve modules)."
@@ -101,9 +85,15 @@
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Command Creation", "id": "command-creation" },
-        { "label": "Default Commands", "id": "default-commands" },
-        { "label": "Command-Based Introduction", "id": "command-based-intro" }
+        {
+		  "label": "Command Creation", 
+		  "url": "command-creation"},
+        {
+		  "label": "Default Commands", 
+		  "url": "default-commands"},
+        {
+		  "label": "Command-Based Introduction", 
+		  "url": "command-based-intro"}
       ]
     }
   ]

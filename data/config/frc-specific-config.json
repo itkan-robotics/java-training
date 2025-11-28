@@ -167,21 +167,21 @@
         {
           "id": "motor-controller-configuration",
           "label": "Motor Controller Configuration",
-          "file": "data/frc/hardware-vendors/overlap/motor-controller-configuration.json",
+          "file": "data/frc/hardware-vendors/vendor-generic/motor-controller-configuration.json",
           "difficulty": "intermediate",
           "duration": "40 min"
         },
         {
           "id": "motor-pid-control",
           "label": "Motor PID Control",
-          "file": "data/frc/hardware-vendors/overlap/motor-pid-control.json",
+          "file": "data/frc/hardware-vendors/vendor-generic/motor-pid-control.json",
           "difficulty": "intermediate",
           "duration": "50 min"
         },
         {
           "id": "motor-current-limiting",
           "label": "Motor Current Limiting",
-          "file": "data/frc/hardware-vendors/overlap/motor-current-limiting.json",
+          "file": "data/frc/hardware-vendors/vendor-generic/motor-current-limiting.json",
           "difficulty": "intermediate",
           "duration": "35 min"
         }
@@ -321,19 +321,76 @@
           "duration": "40 min"
         }
       ]
+    },
+    {
+      "id": "frc-pose-estimation",
+      "label": "Pose Estimation",
+      "description": "Odometry, vision-based pose estimation, sensor fusion, and tuning",
+      "icon": "📍",
+      "items": [
+        {
+          "id": "pose-estimation-intro",
+          "label": "Pose Estimation Introduction",
+          "file": "data/frc/pose-estimation/pose-estimation-intro.json",
+          "difficulty": "beginner",
+          "duration": "30 min"
+        },
+        {
+          "id": "odometry-basics",
+          "label": "Odometry Basics",
+          "file": "data/frc/pose-estimation/odometry-basics.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "swerve-odometry",
+          "label": "Swerve Odometry",
+          "file": "data/frc/pose-estimation/swerve-odometry.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
+        },
+        {
+          "id": "vision-based-pose",
+          "label": "Vision-Based Pose Estimation",
+          "file": "data/frc/pose-estimation/vision-based-pose.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
+        },
+        {
+          "id": "apriltag-pose-estimation",
+          "label": "AprilTag Pose Estimation",
+          "file": "data/frc/pose-estimation/apriltag-pose-estimation.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
+        },
+        {
+          "id": "pose-estimation-fusion",
+          "label": "Pose Estimation Sensor Fusion",
+          "file": "data/frc/pose-estimation/pose-estimation-fusion.json",
+          "difficulty": "advanced",
+          "duration": "50 min"
+        },
+        {
+          "id": "pose-estimation-tuning",
+          "label": "Pose Estimation Tuning",
+          "file": "data/frc/pose-estimation/pose-estimation-tuning.json",
+          "difficulty": "advanced",
+          "duration": "45 min"
+        }
+      ]
     }
   ],
   "metadata": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 39,
+    "totalLessons": 46,
     "difficultyLevels": {
       "beginner": 14,
-      "intermediate": 23,
-      "advanced": 4
+      "intermediate": 28,
+      "advanced": 6
     },
-    "estimatedDuration": "18.2 hours",
+    "estimatedDuration": "22.2 hours",
     "prerequisites": ["java-training"],
-    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting", "rev", "spark-max", "neo", "smart-motion", "revlib", "command-based", "commands", "subsystems", "scheduler", "triggers", "control-theory", "motion-profiling", "feedforward", "trapezoidal-profiles", "exponential-profiles"]
+    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting", "rev", "spark-max", "neo", "smart-motion", "revlib", "command-based", "commands", "subsystems", "scheduler", "triggers", "control-theory", "motion-profiling", "feedforward", "trapezoidal-profiles", "exponential-profiles", "pose-estimation", "odometry", "vision", "apriltag", "sensor-fusion", "localization"]
   }
 }

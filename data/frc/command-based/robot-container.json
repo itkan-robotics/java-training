@@ -7,20 +7,6 @@
       "content": "RobotContainer is a design pattern used in WPILib command-based programming to organize robot code. It serves as the central configuration point for subsystems, commands, trigger bindings, and default commands. The RobotContainer pattern provides a clean, organized structure for command-based robots.<br><br>RobotContainer is not a WPILib class - it's a pattern you implement yourself. It's a container class that holds all robot components and configures how they work together. This pattern makes robot code more maintainable and easier to understand."
     },
     {
-      "type": "rules-box",
-      "title": "RobotContainer Benefits",
-      "subtitle": "Why use RobotContainer:",
-      "items": [
-        "Centralized configuration (all robot setup in one place)",
-        "Clear code organization (subsystems, commands, bindings together)",
-        "Easy to find and modify robot behavior",
-        "Simplifies Robot class (Robot class becomes very simple)",
-        "Better testability (can test RobotContainer independently)",
-        "Consistent structure across projects",
-        "Makes codebase more maintainable"
-      ]
-    },
-    {
       "type": "text",
       "title": "RobotContainer Structure",
       "content": "RobotContainer typically contains several key components:<br><br><strong>Subsystem Creation:</strong> RobotContainer creates and stores all subsystem instances. These are typically stored as private final fields.<br><br><strong>Command Creation:</strong> RobotContainer can create command instances, either directly or through factory methods. Commands are often created on-demand rather than stored.<br><br><strong>Trigger Binding Configuration:</strong> RobotContainer has a <code>configureButtonBindings()</code> method that sets up all trigger bindings, connecting user input to commands.<br><br><strong>Default Command Setup:</strong> RobotContainer sets default commands for subsystems in the constructor, ensuring subsystems have safe default behavior."
@@ -96,21 +82,6 @@
       "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class Robot extends TimedRobot {\n    private RobotContainer m_robotContainer;\n    private Command m_autonomousCommand;\n    \n    @Override\n    public void robotInit() {\n        // Create RobotContainer (sets up everything)\n        m_robotContainer = new RobotContainer();\n    }\n    \n    @Override\n    public void robotPeriodic() {\n        // Run scheduler (handles all command execution)\n        CommandScheduler.getInstance().run();\n    }\n    \n    @Override\n    public void autonomousInit() {\n        // Get autonomous command from RobotContainer\n        m_autonomousCommand = m_robotContainer.getAutonomousCommand();\n        \n        // Schedule autonomous command\n        if (m_autonomousCommand != null) {\n            m_autonomousCommand.schedule();\n        }\n    }\n    \n    @Override\n    public void autonomousPeriodic() {\n        // Scheduler runs in robotPeriodic, but can also run here\n    }\n    \n    @Override\n    public void teleopInit() {\n        // Cancel autonomous command if still running\n        if (m_autonomousCommand != null) {\n            m_autonomousCommand.cancel();\n        }\n    }\n    \n    @Override\n    public void teleopPeriodic() {\n        // Scheduler runs in robotPeriodic\n        // Default commands and trigger bindings handle teleop\n    }\n    \n    @Override\n    public void testPeriodic() {\n        CommandScheduler.getInstance().run();\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "RobotContainer Best Practices",
-      "subtitle": "Tips for effective RobotContainer design:",
-      "items": [
-        "Create all subsystems as private final fields",
-        "Organize configuration into separate methods (configureDefaultCommands, configureButtonBindings)",
-        "Use factory methods for command creation when helpful",
-        "Provide getter methods for subsystems needed by Robot class",
-        "Document button bindings with comments",
-        "Use constants for tunable parameters",
-        "Keep RobotContainer focused on configuration (not business logic)",
-        "Test RobotContainer independently when possible"
-      ]
-    },
-    {
       "type": "text",
       "title": "Alternative Patterns",
       "content": "While RobotContainer is the recommended pattern, there are alternatives:<br><br><strong>No RobotContainer:</strong> You can organize code differently, but RobotContainer provides clear structure and is widely used in the FRC community.<br><br><strong>Multiple Containers:</strong> For very large robots, you might split configuration into multiple container classes (e.g., <code>DrivetrainContainer</code>, <code>MechanismContainer</code>), though this is usually unnecessary.<br><br><strong>Best Practice:</strong> Use RobotContainer for most robots. It provides excellent organization and is the standard pattern in WPILib examples and documentation."
@@ -119,9 +90,15 @@
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Trigger Bindings", "id": "trigger-bindings" },
-        { "label": "Default Commands", "id": "default-commands" },
-        { "label": "Subsystem Design", "id": "subsystem-design" }
+        {
+		  "label": "Trigger Bindings", 
+		  "url": "trigger-bindings"},
+        {
+		  "label": "Default Commands", 
+		  "url": "default-commands"},
+        {
+		  "label": "Subsystem Design", 
+		  "url": "subsystem-design"}
       ]
     }
   ]

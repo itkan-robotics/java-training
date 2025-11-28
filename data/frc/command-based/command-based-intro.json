@@ -7,21 +7,6 @@
       "content": "Command-based programming is a software architecture pattern used by WPILib for FRC robot programming. It breaks down robot operations into discrete, reusable commands that interact with subsystems (hardware abstractions) through a centralized scheduler. This architecture promotes modularity, reusability, and maintainability in robot code.<br><br>WPILib's command-based framework is the recommended approach for FRC programming because it provides a structured way to organize robot code, making it easier to build complex autonomous routines, handle multiple simultaneous operations, and manage robot state effectively.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/what-is-command-based.html' target='_blank'>WPILib: What is Command-Based Programming?</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Command-Based Architecture Benefits",
-      "subtitle": "Why use command-based programming:",
-      "items": [
-        "Modular code structure (commands and subsystems are reusable)",
-        "Separation of concerns (hardware logic separate from control logic)",
-        "Easy autonomous routine creation (compose commands into sequences)",
-        "Built-in resource management (subsystem ownership prevents conflicts)",
-        "Parallel operation support (multiple commands can run simultaneously)",
-        "Testable code (commands and subsystems can be tested independently)",
-        "Maintainable codebase (clear organization and structure)",
-        "Scalable architecture (easy to add new features and mechanisms)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Core Components",
       "content": "Command-based programming consists of four main components that work together:<br><br><strong>Commands:</strong> Discrete actions that the robot can perform. Commands use subsystems to accomplish tasks and have a well-defined lifecycle (initialize, execute, end). Examples: drive forward, move arm to position, intake game piece.<br><br><strong>Subsystems:</strong> Hardware abstractions that encapsulate robot mechanisms. Subsystems provide methods for commands to interact with hardware and manage subsystem state. Examples: Drivetrain, Arm, Elevator, Intake.<br><br><strong>Command Scheduler:</strong> The execution manager that runs commands, handles scheduling, and manages subsystem ownership. The scheduler runs continuously, calling command lifecycle methods and managing command execution.<br><br><strong>Robot Container:</strong> An organizational class that creates subsystems, configures commands, sets up trigger bindings, and organizes the robot's command-based structure. It serves as the central configuration point for the robot."
@@ -75,9 +60,15 @@
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "Subsystem Design", "id": "subsystem-design" },
-        { "label": "Command Creation", "id": "command-creation" },
-        { "label": "Command Scheduler", "id": "command-scheduler" }
+        {
+		  "label": "Subsystem Design", 
+		  "url": "subsystem-design"},
+        {
+		  "label": "Command Creation", 
+		  "url": "command-creation"},
+        {
+		  "label": "Command Scheduler", 
+		  "url": "command-scheduler"}
       ]
     }
   ]

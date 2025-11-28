@@ -81,44 +81,18 @@
       "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.MotionMagicVoltage;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Elevator extends SubsystemBase {\n    private final TalonFX m_elevatorMotor = new TalonFX(4);\n    \n    // Control request (reusable)\n    private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);\n    \n    // Conversion: rotations to inches (assuming 4\" diameter spool)\n    private static final double SPOOL_CIRCUMFERENCE = 4.0 * Math.PI;  // inches\n    private static final double ROTATIONS_PER_INCH = 1.0 / SPOOL_CIRCUMFERENCE;\n    \n    // Motion Magic parameters (rotations/second)\n    private static final double CRUISE_VELOCITY = 15.0;\n    private static final double ACCELERATION = 15.0;\n    private static final double JERK = 150.0;\n    \n    // Preset positions (in inches)\n    public static final double BOTTOM = 0.0;\n    public static final double MID = 24.0;\n    public static final double TOP = 48.0;\n    \n    public Elevator() {\n        TalonFXConfiguration config = new TalonFXConfiguration();\n        \n        // Configure feedback sensor\n        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;\n        \n        // Configure PID\n        config.Slot0.kP = 0.15;\n        config.Slot0.kI = 0.0;\n        config.Slot0.kD = 0.02;\n        config.Slot0.kV = 0.0;\n        \n        // Configure Motion Magic\n        config.MotionMagic.MotionMagicCruiseVelocity = CRUISE_VELOCITY;\n        config.MotionMagic.MotionMagicAcceleration = ACCELERATION;\n        config.MotionMagic.MotionMagicJerk = JERK;\n        \n        // Configure soft limits (in rotations)\n        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;\n        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = TOP * ROTATIONS_PER_INCH;\n        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;\n        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = BOTTOM * ROTATIONS_PER_INCH;\n        \n        // Reset encoder position to zero\n        m_elevatorMotor.setPosition(0);\n        \n        // Apply configuration\n        m_elevatorMotor.getConfigurator().apply(config);\n    }\n    \n    public void setHeight(double inches) {\n        double targetRotations = inches * ROTATIONS_PER_INCH;\n        m_elevatorMotor.setControl(m_motionMagicRequest.withPosition(targetRotations));\n    }\n    \n    public double getHeight() {\n        double position = m_elevatorMotor.getPosition().getValue();\n        return position / ROTATIONS_PER_INCH;\n    }\n    \n    public boolean isAtHeight(double targetHeight, double tolerance) {\n        double currentHeight = getHeight();\n        return Math.abs(currentHeight - targetHeight) < tolerance;\n    }\n    \n    public boolean isMotionComplete() {\n        double target = m_motionMagicRequest.Position;\n        double current = m_elevatorMotor.getPosition().getValue();\n        double error = Math.abs(target - current);\n        double velocity = Math.abs(m_elevatorMotor.getVelocity().getValue());\n        return error < 0.1 && velocity < 0.5;  // Tolerance in rotations\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Elevator Height\", getHeight());\n        SmartDashboard.putBoolean(\"Motion Complete\", isMotionComplete());\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Motion Magic Best Practices",
-      "subtitle": "Tips for effective Motion Magic usage:",
-      "items": [
-        "Tune PID first before tuning Motion Magic",
-        "Start with moderate cruise velocity and acceleration",
-        "Use moderate jerk (100-150) for most applications",
-        "Test with different distances and loads",
-        "Monitor motion status to verify smooth motion",
-        "Use soft limits to prevent overtravel",
-        "Document your Motion Magic parameters",
-        "Consider mechanism inertia when setting parameters",
-        "Balance speed vs smoothness based on application"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Motion Magic",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Motion is Jerky:</strong> Increase jerk value, reduce cruise velocity",
-        "<strong>Motion is Too Slow:</strong> Increase cruise velocity and acceleration",
-        "<strong>Overshoots Target:</strong> Reduce cruise velocity, improve PID tuning",
-        "<strong>Doesn't Reach Target:</strong> Check configuration, verify PID tuning",
-        "<strong>Motion Profile Not Following:</strong> Verify PID is tuned correctly",
-        "<strong>Inconsistent Motion:</strong> Check sensor configuration, verify feedback",
-        "<strong>Too Aggressive:</strong> Reduce cruise velocity, increase jerk",
-        "<strong>Mechanical Issues:</strong> Check for binding, backlash, or damage",
-        "<strong>Configuration Not Applied:</strong> Verify configuration is applied correctly"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Talon FX PID Control", "id": "talon-fx-pid-control" },
-        { "label": "Talon FX Configuration", "id": "talon-fx-configuration" },
-        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" }
+        {
+		  "label": "Talon FX PID Control", 
+		  "url": "talon-fx-pid-control"},
+        {
+		  "label": "Talon FX Configuration", 
+		  "url": "talon-fx-configuration"},
+        {
+		  "label": "Motion Profiling Basics", 
+		  "url": "motion-profiling-basics"}
       ]
     }
   ]

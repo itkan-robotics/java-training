@@ -1,0 +1,69 @@
+{
+  "title": "Swerve Odometry",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Swerve Odometry",
+      "content": "Swerve odometry is similar to differential drive odometry but accounts for the unique movement characteristics of swerve drivetrains. Swerve robots can move in any direction (holonomic movement) and rotate independently, requiring odometry that tracks individual module positions and angles.<br><br>Swerve odometry uses encoders on each swerve module to track both the module's drive wheel rotation (distance) and the module's angle (steering). By combining all four module states, swerve odometry calculates the robot's overall movement and pose. This provides highly accurate pose estimation, often more accurate than differential drive odometry due to multiple measurement points.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html' target='_blank'>WPILib: Swerve Drive Kinematics and Odometry</a>"
+    },
+    {
+      "type": "text",
+      "title": "Swerve Kinematics",
+      "content": "Swerve kinematics describes how individual module movements combine to create robot movement:<br><br><strong>How Swerve Modules Move:</strong> Each swerve module has two degrees of freedom: drive wheel rotation (forward/backward) and steering angle (module direction). The module can move in any direction by combining drive rotation with steering angle.<br><br><strong>Calculating Robot Movement from Module States:</strong> Given the state of all four modules (positions, velocities, angles), swerve kinematics calculates the overall robot movement. This involves:<br>- Converting each module's movement into robot-relative movement<br>- Combining all module movements to get net robot translation and rotation<br>- Accounting for module positions relative to robot center<br><br>WPILib's <code>SwerveDriveKinematics</code> class handles these calculations automatically."
+    },
+    {
+      "type": "text",
+      "title": "Swerve Module States",
+      "content": "Each swerve module has a state that describes its current movement:<br><br><strong>Module Positions:</strong> How far each module's drive wheel has rotated (distance traveled). Measured by drive encoders. Converted to meters (or consistent units).<br><br><strong>Module Velocities:</strong> How fast each module is moving (drive wheel velocity). Measured by drive encoders (rate of change). Used for velocity-based control and path following.<br><br><strong>Module Angles:</strong> The direction each module is pointing (steering angle). Measured by steering encoders (often absolute encoders). Critical for accurate odometry - module angle affects how drive movement translates to robot movement."
+    },
+    {
+      "type": "code",
+      "title": "SwerveDriveOdometry Setup",
+      "content": "This example demonstrates setting up swerve odometry:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.math.geometry.Translation2d;\nimport edu.wpi.first.math.kinematics.SwerveDriveKinematics;\nimport edu.wpi.first.math.kinematics.SwerveDriveOdometry;\nimport edu.wpi.first.math.kinematics.SwerveModulePosition;\n\npublic class SwerveDrivetrainOdometry {\n    // Kinematics: converts module states to robot movement\n    private final SwerveDriveKinematics m_kinematics;\n    \n    // Odometry: tracks robot pose\n    private SwerveDriveOdometry m_odometry;\n    \n    // Module positions (for odometry)\n    private SwerveModulePosition[] m_modulePositions;\n    \n    // Gyro for heading\n    private final ADXRS450_Gyro m_gyro;\n    \n    // Robot dimensions: module positions relative to robot center (in meters)\n    private static final double kTrackWidth = 0.5;  // Distance between left/right modules\n    private static final double kWheelBase = 0.5;    // Distance between front/rear modules\n    \n    public SwerveDrivetrainOdometry() {\n        // Define module positions relative to robot center\n        Translation2d frontLeft = new Translation2d(kWheelBase / 2, kTrackWidth / 2);\n        Translation2d frontRight = new Translation2d(kWheelBase / 2, -kTrackWidth / 2);\n        Translation2d rearLeft = new Translation2d(-kWheelBase / 2, kTrackWidth / 2);\n        Translation2d rearRight = new Translation2d(-kWheelBase / 2, -kTrackWidth / 2);\n        \n        // Initialize kinematics with module positions\n        m_kinematics = new SwerveDriveKinematics(\n            frontLeft, frontRight, rearLeft, rearRight\n        );\n        \n        // Initialize gyro\n        m_gyro = new ADXRS450_Gyro();\n        m_gyro.calibrate();\n        \n        // Initialize module positions array\n        m_modulePositions = new SwerveModulePosition[4];\n        for (int i = 0; i < 4; i++) {\n            m_modulePositions[i] = new SwerveModulePosition();\n        }\n        \n        // Initialize odometry at starting position\n        m_odometry = new SwerveDriveOdometry(\n            m_kinematics,\n            m_gyro.getRotation2d(),\n            m_modulePositions,\n            new Pose2d()  // Start at origin (0, 0) facing forward\n        );\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "SwerveDriveOdometry Class",
+      "content": "WPILib's <code>SwerveDriveOdometry</code> class simplifies swerve odometry implementation:<br><br><strong>Setup and Usage:</strong> Requires <code>SwerveDriveKinematics</code> (defines module positions). Takes gyro heading and module positions. Automatically calculates pose updates from module states. Provides current pose estimate.<br><br><strong>Key Methods:</strong> <code>update()</code> - updates odometry with new sensor readings. <code>getPoseMeters()</code> - returns current pose estimate. <code>resetPosition()</code> - resets odometry to known pose. The class handles all the complex kinematics math internally."
+    },
+    {
+      "type": "text",
+      "title": "Swerve Kinematics Classes",
+      "content": "WPILib provides kinematics classes for swerve systems:<br><br><strong>SwerveDriveKinematics:</strong> Converts module states to robot movement. Requires module positions relative to robot center. Used for both odometry and path following. Handles forward and inverse kinematics.<br><br><strong>Module State Classes:</strong> <code>SwerveModulePosition</code> - module position (distance, angle) for odometry. <code>SwerveModuleState</code> - module state (velocity, angle) for control. These classes encapsulate module state information."
+    },
+    {
+      "type": "code",
+      "title": "Swerve Odometry Update in periodic()",
+      "content": "This example shows how to update swerve odometry every robot loop:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.math.kinematics.SwerveDriveOdometry;\nimport edu.wpi.first.math.kinematics.SwerveModulePosition;\n\npublic class SwerveDrivetrainOdometry {\n    private SwerveDriveOdometry m_odometry;\n    private SwerveModulePosition[] m_modulePositions;\n    private final ADXRS450_Gyro m_gyro;\n    \n    // Reference to swerve modules (you would have actual module objects)\n    private SwerveModule[] m_modules;\n    \n    // ... initialization code from previous example ...\n    \n    /**\n     * Update odometry - call this in periodic()\n     */\n    public void updateOdometry() {\n        // Get current module positions from each module\n        // In real code, these would come from your SwerveModule objects\n        m_modulePositions[0] = m_modules[0].getPosition();  // Front left\n        m_modulePositions[1] = m_modules[1].getPosition();  // Front right\n        m_modulePositions[2] = m_modules[2].getPosition();  // Rear left\n        m_modulePositions[3] = m_modules[3].getPosition();  // Rear right\n        \n        // Get current gyro heading\n        Rotation2d heading = m_gyro.getRotation2d();\n        \n        // Update odometry with new sensor readings\n        m_odometry.update(heading, m_modulePositions);\n    }\n    \n    /**\n     * Get current robot pose\n     */\n    public Pose2d getPose() {\n        return m_odometry.getPoseMeters();\n    }\n    \n    /**\n     * Reset odometry to a specific pose\n     */\n    public void resetOdometry(Pose2d pose) {\n        // Update module positions first\n        updateOdometry();\n        \n        // Reset odometry\n        m_odometry.resetPosition(\n            m_gyro.getRotation2d(),\n            m_modulePositions,\n            pose\n        );\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Reading Swerve Module States",
+      "content": "This example shows how to read module states for odometry:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.math.kinematics.SwerveModulePosition;\n\npublic class SwerveModule {\n    // Encoders for drive and steering\n    private final Encoder m_driveEncoder;\n    private final Encoder m_steeringEncoder;  // Or absolute encoder\n    \n    // Module configuration\n    private static final double kDriveEncoderCPR = 2048.0;\n    private static final double kDriveWheelDiameter = 0.1016;  // 4 inches in meters\n    private static final double kDriveDistancePerPulse = \n        (kDriveWheelDiameter * Math.PI) / kDriveEncoderCPR;\n    \n    public SwerveModule(int driveEncoderChannelA, int driveEncoderChannelB, \n                       int steeringEncoderChannel) {\n        // Initialize drive encoder\n        m_driveEncoder = new Encoder(driveEncoderChannelA, driveEncoderChannelB);\n        m_driveEncoder.setDistancePerPulse(kDriveDistancePerPulse);\n        \n        // Initialize steering encoder (simplified - real code would use absolute encoder)\n        m_steeringEncoder = new Encoder(steeringEncoderChannel, steeringEncoderChannel + 1);\n        // Configure steering encoder for angle measurement\n    }\n    \n    /**\n     * Get current module position for odometry\n     */\n    public SwerveModulePosition getPosition() {\n        double distance = m_driveEncoder.getDistance();\n        Rotation2d angle = Rotation2d.fromDegrees(\n            m_steeringEncoder.getDistance() * 360.0 / kSteeringEncoderCPR\n        );\n        \n        return new SwerveModulePosition(distance, angle);\n    }\n    \n    /**\n     * Get current module state (velocity and angle) for control\n     */\n    public SwerveModuleState getState() {\n        double velocity = m_driveEncoder.getRate();\n        Rotation2d angle = Rotation2d.fromDegrees(\n            m_steeringEncoder.getDistance() * 360.0 / kSteeringEncoderCPR\n        );\n        \n        return new SwerveModuleState(velocity, angle);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Swerve-Specific Considerations",
+      "content": "Swerve odometry has unique considerations compared to differential drive:<br><br><strong>Module Offsets:</strong> Module positions must be accurately measured relative to robot center. Incorrect offsets cause odometry errors. Measure track width and wheelbase carefully.<br><br><strong>Center of Rotation:</strong> Swerve robots can rotate around any point (not just center). Odometry assumes rotation around robot center, which is accurate for most cases. For very precise applications, center of rotation can be specified.<br><br><strong>Accuracy Factors:</strong> Swerve odometry is typically more accurate than differential drive because it uses four measurement points instead of two. However, it requires accurate module angle measurements (absolute encoders recommended). Module angle errors directly affect odometry accuracy."
+    },
+    {
+      "type": "link-grid",
+      "title": "Documentation Resources",
+      "links": [
+        {
+          "label": "Swerve Drive Kinematics",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html"
+        },
+        {
+          "label": "SwerveDriveOdometry",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html"
+        },
+        {
+          "label": "Swerve Module Position",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html"
+        }
+      ]
+    }
+  ]
+}
+

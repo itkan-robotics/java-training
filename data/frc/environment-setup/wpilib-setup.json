@@ -67,21 +67,6 @@
       "content": "WPILib uses semantic versioning (major.minor.patch) and is tied to FRC seasons. Understanding version numbers helps ensure compatibility:<br><br><strong>Version Format:</strong> <code>[Year].[Major].[Minor]</code> (e.g., 2024.1.1)<br>- <strong>Year:</strong> The FRC competition season<br>- <strong>Major:</strong> Major feature releases during the season<br>- <strong>Minor:</strong> Bug fixes and minor updates<br><br><strong>Season Compatibility:</strong> Each FRC season has its own WPILib version. Code written for one season's WPILib may not be compatible with another season's version. Always use the WPILib version that matches your competition season.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/getting-started/index.html' target='_blank'>WPILib Getting Started Guide</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Common Issues",
-      "subtitle": "If you encounter problems:",
-      "items": [
-        "<strong>Installation Fails:</strong> Ensure administrator privileges and sufficient disk space",
-        "<strong>VS Code Extension Not Found:</strong> Manually install WPILib extension from VS Code marketplace",
-        "<strong>Java Not Found:</strong> Check installation directory, installer should install Java automatically",
-        "<strong>Gradle Errors:</strong> Ensure Gradle wrapper is properly installed in your project",
-        "<strong>Network Issues:</strong> Check firewall settings, some components require internet access",
-        "<strong>Permission Errors:</strong> On Linux/Mac, make installer executable with chmod +x",
-        "<strong>Components Missing:</strong> Re-run installer, ensure all components are selected",
-        "<strong>Version Conflicts:</strong> Uninstall old WPILib versions before installing new season"
-      ]
-    },
-    {
       "type": "text",
       "title": "Component Dependencies",
       "content": "WPILib components have dependencies on each other. Understanding these relationships helps when troubleshooting:<br><br><strong>WPILib Libraries</strong> depend on:<br>- Java Development Kit (JDK)<br>- Gradle build system<br><br><strong>VS Code Extension</strong> depends on:<br>- Visual Studio Code<br>- WPILib libraries (for IntelliSense and code completion)"
@@ -95,9 +80,15 @@
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Project Creation", "id": "project-creation" },
-        { "label": "VS Code Setup", "id": "vs-code-setup" },
-        { "label": "Gradle Build System", "id": "gradle-build-system" }
+        {
+		  "label": "Project Creation", 
+		  "url": "project-creation"},
+        {
+		  "label": "VS Code Setup", 
+		  "url": "vs-code-setup"},
+        {
+		  "label": "Gradle Build System", 
+		  "url": "gradle-build-system"}
       ]
     }
   ]

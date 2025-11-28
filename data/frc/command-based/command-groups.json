@@ -89,43 +89,18 @@
       "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.SequentialCommandGroup;\nimport edu.wpi.first.wpilibj2.command.ParallelCommandGroup;\nimport edu.wpi.first.wpilibj2.command.ParallelRaceGroup;\nimport edu.wpi.first.wpilibj2.command.WaitCommand;\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\n\npublic class CompleteAutonomousRoutine extends SequentialCommandGroup {\n    public CompleteAutonomousRoutine(\n            Drivetrain drivetrain,\n            Elevator elevator,\n            Arm arm,\n            Intake intake) {\n        \n        addCommands(\n            // Phase 1: Drive to game piece while preparing mechanism\n            new ParallelCommandGroup(\n                new DriveForwardCommand(drivetrain, 0.5).withTimeout(3.0),\n                new MoveElevatorCommand(elevator, 12.0, 0.5, 0.5),\n                new MoveArmCommand(arm, 30.0, 0.3, 2.0)\n            ),\n            \n            // Phase 2: Intake game piece (drive until detected)\n            new ParallelRaceGroup(\n                new DriveForwardCommand(drivetrain, 0.3),\n                new IntakeGamePieceCommand(intake, 0.6)\n            ),\n            \n            // Phase 3: Wait and prepare for scoring\n            new WaitCommand(0.5),\n            \n            new ParallelCommandGroup(\n                new MoveElevatorCommand(elevator, 36.0, 0.5, 0.5),\n                new MoveArmCommand(arm, 60.0, 0.3, 2.0)\n            ),\n            \n            // Phase 4: Drive to scoring position\n            new TurnCommand(drivetrain, 90),\n            new DriveForwardCommand(drivetrain, 0.4).withTimeout(2.0),\n            \n            // Phase 5: Score game piece\n            new ScoreGamePieceCommand(intake, 0.8).withTimeout(1.0)\n        );\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Command Group Best Practices",
-      "subtitle": "Tips for effective command group usage:",
-      "items": [
-        "Use sequential groups for actions that must happen in order",
-        "Use parallel groups for independent simultaneous actions",
-        "Ensure parallel commands don't require the same subsystems",
-        "Use race groups for timeout or first-to-finish scenarios",
-        "Use deadline groups for timed coordinated actions",
-        "Break complex routines into smaller, reusable groups",
-        "Use command decorators for timeouts and conditions",
-        "Document complex group structures for clarity",
-        "Test groups incrementally (test simple groups before complex ones)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Command Groups",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Commands Not Running:</strong> Check group is scheduled, verify command requirements",
-        "<strong>Parallel Commands Conflict:</strong> Ensure parallel commands use different subsystems",
-        "<strong>Group Finishes Too Early:</strong> Check race/deadline group logic, verify command completion",
-        "<strong>Group Never Finishes:</strong> Check all commands in group can finish, verify isFinished() logic",
-        "<strong>Commands Interrupt Unexpectedly:</strong> Check for subsystem conflicts, verify requirements",
-        "<strong>Nested Groups Not Working:</strong> Verify nested group structure, check requirements",
-        "<strong>Timeout Not Working:</strong> Verify withTimeout() is applied correctly, check timeout value",
-        "<strong>Complex Groups Hard to Debug:</strong> Break into smaller groups, test components separately"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Command Creation", "id": "command-creation" },
-        { "label": "Command Scheduler", "id": "command-scheduler" },
-        { "label": "Robot Container", "id": "robot-container" }
+        {
+		  "label": "Command Creation", 
+		  "url": "command-creation"},
+        {
+		  "label": "Command Scheduler", 
+		  "url": "command-scheduler"},
+        {
+		  "label": "Robot Container", 
+		  "url": "robot-container"}
       ]
     }
   ]

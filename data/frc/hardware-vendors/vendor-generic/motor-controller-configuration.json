@@ -175,45 +175,21 @@
       ]
     },
     {
-      "type": "rules-box",
-      "title": "Configuration Best Practices",
-      "subtitle": "Tips for reliable configuration:",
-      "items": [
-        "Configure all devices in subsystem constructors",
-        "Use constants for configuration values",
-        "Use same configuration for similar devices",
-        "Document non-obvious configuration choices",
-        "Test configuration changes incrementally",
-        "Verify behavior matches expectations",
-        "Commit configuration code to version control",
-        "Document why certain settings were chosen",
-        "Use vendor tools to monitor device status"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Configuration Checklist",
-      "subtitle": "Essential configuration for each motor controller:",
-      "items": [
-        "Configure motor inversion (if needed)",
-        "Configure idle/neutral mode (brake or coast)",
-        "Set current limits (protect motor and battery)",
-        "Enable voltage compensation",
-        "Configure encoder/sensor (if using)",
-        "Reset encoder position (if using built-in encoder)",
-        "Set sensor phase (if needed)",
-        "Set output limits (for safety)",
-        "Test configuration with vendor tools"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Motor PID Control", "id": "motor-pid-control" },
-        { "label": "Motor Current Limiting", "id": "motor-current-limiting" },
-        { "label": "SPARK MAX Setup", "id": "spark-max-setup" },
-        { "label": "Talon FX Setup", "id": "talon-fx-setup" }
+        {
+		  "label": "Motor PID Control", 
+		  "url": "motor-pid-control"},
+        {
+		  "label": "Motor Current Limiting", 
+		  "url": "motor-current-limiting"},
+        {
+		  "label": "SPARK MAX Setup", 
+		  "url": "spark-max-setup"},
+        {
+		  "label": "Talon FX Setup", 
+		  "url": "talon-fx-setup"}
       ]
     }
   ]

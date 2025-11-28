@@ -7,21 +7,6 @@
       "content": "PID (Proportional-Integral-Derivative) control is a feedback control algorithm used to maintain a desired output by continuously adjusting control inputs based on the difference between the desired value (setpoint) and the actual value (process variable). PID controllers are essential in robotics for achieving precise control of position, velocity, angle, and other physical quantities.<br><br>In FRC robotics, PID control enables mechanisms to move to exact positions, maintain consistent speeds, and hold angles accurately. Without PID control, mechanisms would overshoot targets, oscillate, or fail to reach desired states. PID control automatically corrects errors and handles disturbances, making it a fundamental tool for competitive robotics.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/index.html' target='_blank'>WPILib: Control System Basics</a>"
     },
     {
-      "type": "rules-box",
-      "title": "PID Control Benefits",
-      "subtitle": "Why PID control is essential:",
-      "items": [
-        "Precise control (moves to exact position or maintains exact speed)",
-        "Automatic error correction (continuously adjusts to reduce error)",
-        "Handles disturbances (compensates for load changes, friction, etc.)",
-        "Stable operation (prevents oscillation and overshoot when tuned correctly)",
-        "Versatile (works for position, velocity, angle, and other control types)",
-        "Industry standard (widely used in robotics and automation)",
-        "Predictable behavior (well-understood algorithm with established tuning methods)",
-        "Real-time response (adjusts output continuously based on current error)"
-      ]
-    },
-    {
       "type": "text",
       "title": "The Control Problem",
       "content": "To understand why PID control is necessary, consider what happens without it:<br><br><strong>Simple On/Off Control:</strong> If you try to move an arm to a specific angle using simple on/off control, you might turn the motor on when the arm is below the target and off when it's above. This results in oscillation around the target - the arm overshoots, then undershoots, never settling at the desired position.<br><br><strong>Open-Loop Control:</strong> Setting a fixed motor power might work in some cases, but it doesn't account for variations in load, battery voltage, or friction. The mechanism won't reach the same position consistently.<br><br><strong>Feedback Control Solution:</strong> PID control uses feedback from sensors (encoders, gyros, etc.) to continuously measure the error and adjust motor output accordingly. This creates a closed-loop system that automatically corrects itself, achieving precise and stable control."
@@ -65,9 +50,15 @@
       "type": "link-grid",
       "title": "Documentation Resources",
       "links": [
-        { "label": "WPILib Control System Basics", "id": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/index.html" },
-        { "label": "WPILib PIDController", "id": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html" },
-        { "label": "WPILib Introduction to PID", "id": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html" }
+        {
+		  "label": "WPILib Control System Basics", 
+		  "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/index.html"},
+        {
+		  "label": "WPILib PIDController", 
+		  "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html"},
+        {
+		  "label": "WPILib Introduction to PID", 
+		  "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html"}
       ]
     }
   ]

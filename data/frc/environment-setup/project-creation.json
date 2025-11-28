@@ -73,49 +73,23 @@
       "content": "Deploying uploads your compiled code to the roboRIO (robot controller). The robot must be powered on and connected to the same network as your computer.<br><br><strong>Deployment Methods:</strong><br><br><strong>1. Using VS Code Command:</strong><br>- Press <code>Ctrl+Shift+P</code> and type 'WPILib: Deploy Robot Code'<br>- Or use the keyboard shortcut <code>Ctrl+F5</code><br><br><strong>2. Using Terminal:</strong><br>- Run <code>./gradlew deploy</code> (Windows: <code>gradlew.bat deploy</code>)<br><br><strong>Deployment Process:</strong><br>1. Builds your project (if not already built)<br>2. Connects to the robot over the network<br>3. Uploads the compiled code<br>4. Restarts the robot code on the roboRIO<br><br><strong>Verification:</strong> After deployment, check the Driver Station to see if the robot code is running. You should see your robot's status indicators active.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/getting-started/getting-started-frc-control-system/roborio-introduction.html' target='_blank'>WPILib Documentation: roboRIO Introduction</a>"
     },
     {
-      "type": "rules-box",
-      "title": "Project Configuration Best Practices",
-      "subtitle": "For well-organized projects:",
-      "items": [
-        "Use descriptive project names that indicate the season or purpose",
-        "Set your team number correctly during project creation",
-        "Organize code into packages (subsystems, commands, etc.)",
-        "Use a Constants class for configuration values",
-        "Keep build.gradle updated with correct WPILib version",
-        "Use version control (Git) to track changes",
-        "Document your code with comments",
-        "Keep project structure consistent across team members",
-        "Test project creation and deployment before competition"
-      ]
-    },
-    {
       "type": "text",
       "title": "Project Lifecycle",
       "content": "Understanding the project lifecycle helps you work efficiently:<br><br><strong>1. Create:</strong> Use WPILib template to create project structure<br><strong>2. Develop:</strong> Write and modify code in the <code>src/main/java/</code> directory<br><strong>3. Build:</strong> Compile code to check for errors<br><strong>4. Deploy:</strong> Upload code to robot for testing<br><strong>5. Test:</strong> Run code on robot and verify behavior<br><strong>6. Iterate:</strong> Make changes and repeat the cycle<br><br>This cycle repeats throughout development. Building frequently catches errors early, and deploying regularly ensures your code works on the actual robot hardware."
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Project Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Project Creation Fails:</strong> Ensure WPILib is installed, VS Code extension is active, restart VS Code",
-        "<strong>Build Errors:</strong> Check Java syntax, review error messages in build output",
-        "<strong>Deployment Fails:</strong> Verify robot is powered and connected, check team number, check firewall",
-        "<strong>Code Not Running:</strong> Verify deployment succeeded, check Driver Station status, verify robot mode",
-        "<strong>Dependencies Missing:</strong> Ensure vendor libraries are in build.gradle and vendordeps folder",
-        "<strong>Team Number Wrong:</strong> Update team number in .wpilib/wpilib_preferences.json",
-        "<strong>Network Issues:</strong> Verify robot IP address matches team number pattern",
-        "<strong>Build Cache Issues:</strong> Run ./gradlew clean and rebuild",
-        "<strong>Java Version Mismatch:</strong> Verify Java version in build.gradle matches installed JDK"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "VS Code Setup", "id": "vs-code-setup" },
-        { "label": "Gradle Build System", "id": "gradle-build-system" },
-        { "label": "Basic Robot Structure", "id": "frc-basic-robot-structure" }
+        {
+		  "label": "VS Code Setup", 
+		  "url": "vs-code-setup"},
+        {
+		  "label": "Gradle Build System", 
+		  "url": "gradle-build-system"},
+        {
+		  "label": "Basic Robot Structure", 
+		  "url": "frc-basic-robot-structure"}
       ]
     }
   ]

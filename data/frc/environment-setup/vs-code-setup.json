@@ -110,28 +110,18 @@
       "content": "Learning keyboard shortcuts makes development faster. Here are essential shortcuts for FRC development:<br><br><strong>General:</strong><br>- <code>Ctrl+Shift+P</code> - Command Palette<br>- <code>Ctrl+`</code> - Toggle Terminal<br>- <code>Ctrl+B</code> - Toggle Sidebar<br><br><strong>Editing:</strong><br>- <code>Ctrl+Space</code> - Trigger IntelliSense<br>- <code>Shift+Alt+F</code> - Format Document<br>- <code>Ctrl+/</code> - Toggle Line Comment<br>- <code>Ctrl+D</code> - Select Next Occurrence<br><br><strong>Navigation:</strong><br>- <code>Ctrl+P</code> - Quick Open File<br>- <code>Ctrl+Shift+O</code> - Go to Symbol in File<br>- <code>F12</code> - Go to Definition<br>- <code>Ctrl+T</code> - Go to Symbol in Workspace<br><br><strong>Build/Deploy:</strong><br>- <code>Ctrl+Shift+B</code> - Build<br>- <code>Ctrl+F5</code> - Deploy (WPILib extension)"
     },
     {
-      "type": "rules-box",
-      "title": "VS Code Best Practices",
-      "subtitle": "For efficient FRC development:",
-      "items": [
-        "Use the Command Palette for WPILib commands",
-        "Enable format on save for consistent code style",
-        "Use keyboard shortcuts to speed up workflow",
-        "Keep the integrated terminal open for Gradle commands",
-        "Use Git for version control",
-        "Install recommended extensions for better experience",
-        "Customize settings to match your preferences",
-        "Use multi-root workspaces for multiple projects",
-        "Learn and use code navigation features (Go to Definition, Find References)"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Project Creation", "id": "project-creation" },
-        { "label": "Gradle Build System", "id": "gradle-build-system" },
-        { "label": "WPILib Setup", "id": "wpilib-setup" }
+        {
+		  "label": "Project Creation", 
+		  "url": "project-creation"},
+        {
+		  "label": "Gradle Build System", 
+		  "url": "gradle-build-system"},
+        {
+		  "label": "WPILib Setup", 
+		  "url": "wpilib-setup"}
       ]
     }
   ]

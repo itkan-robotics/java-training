@@ -7,21 +7,6 @@
       "content": "Exponential motion profiles use exponential functions to create smooth acceleration and deceleration. Unlike trapezoidal profiles with distinct phases, exponential profiles provide continuous, natural-feeling motion with gradually changing acceleration.<br><br>Exponential profiles are simpler to implement than trapezoidal profiles and work well for mechanisms that don't need precise timing or maximum speed. They're excellent for input smoothing, simple mechanisms, and applications where natural-feeling motion is more important than optimal performance.<br><br>Exponential profiles are particularly useful for smoothing joystick inputs, creating gradual motor responses, and simple position control where trapezoidal profiles might be overkill."
     },
     {
-      "type": "rules-box",
-      "title": "Exponential Profile Benefits",
-      "subtitle": "Advantages of exponential profiles:",
-      "items": [
-        "Smooth acceleration (natural, gradual motion)",
-        "Simple implementation (easier than trapezoidal)",
-        "Natural feel (comfortable, predictable motion)",
-        "Simple tuning (one parameter: time constant)",
-        "Good for input smoothing (joystick inputs, gradual changes)",
-        "Works well for simple mechanisms (less complex than trapezoidal)",
-        "Continuous motion (no distinct phases)",
-        "Computationally efficient (simple calculations)"
-      ]
-    },
-    {
       "type": "text",
       "title": "Exponential vs Trapezoidal Profiles",
       "content": "Understanding when to use each profile type helps you choose the right solution:<br><br><strong>Use Exponential Profiles When:</strong> You need simple, natural motion; you're smoothing inputs (joysticks); you don't need precise timing; you want easy implementation; or you're controlling simple mechanisms.<br><br><strong>Use Trapezoidal Profiles When:</strong> You need maximum speed; you need precise timing; you have complex mechanisms; you need to respect strict constraints; or you need optimal performance.<br><br><strong>Trade-offs:</strong> Exponential profiles are simpler but may not reach maximum speed as quickly. Trapezoidal profiles are more complex but provide better performance for demanding applications. Choose based on your mechanism's requirements."
@@ -67,40 +52,18 @@
       "content": "Finding the optimal time constant requires testing:<br><br><strong>Start with Default:</strong> Begin with a time constant around 0.2-0.3 seconds. This provides reasonable response for most mechanisms.<br><br><strong>Test Response:</strong> Observe how quickly the mechanism responds to changes. If too slow, decrease time constant. If too jerky, increase time constant.<br><br><strong>Balance Speed and Smoothness:</strong> Smaller time constants provide faster response but may feel less smooth. Larger time constants provide smoother motion but slower response.<br><br><strong>Mechanism-Specific:</strong> Different mechanisms may need different time constants. Test and tune for each mechanism individually.<br><br><strong>User Preference:</strong> For input smoothing, time constant is often a matter of driver preference. Test with drivers to find what feels best."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for Exponential Profiles",
-      "subtitle": "Tips for effective exponential profile usage:",
-      "items": [
-        "Choose appropriate time constant (test to find optimal value)",
-        "Update profile every robot loop (for smooth motion)",
-        "Track elapsed time accurately (for correct calculations)",
-        "Use for input smoothing (excellent for joystick inputs)",
-        "Test with actual mechanism (verify time constant works well)",
-        "Consider mechanism characteristics (fast vs slow mechanisms)",
-        "Document your time constants (write down what works)",
-        "Use for simple mechanisms (trapezoidal may be overkill)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Exponential Profiles",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Motion Too Slow:</strong> Decrease time constant for faster response",
-        "<strong>Motion Too Jerky:</strong> Increase time constant for smoother motion",
-        "<strong>Not Reaching Target:</strong> Check time constant, verify profile is updating",
-        "<strong>Inconsistent Behavior:</strong> Ensure time tracking is accurate",
-        "<strong>Wrong Direction:</strong> Check sign of target vs current value",
-        "<strong>Profile Not Updating:</strong> Verify calculate() is called every loop"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" },
-        { "label": "Trapezoidal Profiles", "id": "trapezoidal-profiles" },
-        { "label": "PID Control Introduction", "id": "pid-control-intro" }
+        {
+		  "label": "Motion Profiling Basics", 
+		  "url": "motion-profiling-basics"},
+        {
+		  "label": "Trapezoidal Profiles", 
+		  "url": "trapezoidal-profiles"},
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"}
       ]
     }
   ]

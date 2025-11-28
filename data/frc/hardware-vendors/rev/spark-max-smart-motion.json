@@ -76,44 +76,18 @@
       "content": "package frc.robot.subsystems;\n\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkPIDController;\nimport com.revrobotics.CANSparkBase.ControlType;\nimport com.revrobotics.RelativeEncoder;\nimport com.revrobotics.SparkBase.IdleMode;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Elevator extends SubsystemBase {\n    private final CANSparkMax m_elevatorMotor = new CANSparkMax(4, MotorType.kBrushless);\n    private final SparkPIDController m_pidController = m_elevatorMotor.getPIDController();\n    private final RelativeEncoder m_encoder = m_elevatorMotor.getEncoder();\n    \n    // Conversion: encoder counts to inches (assuming 4\" diameter spool, 42 counts/rev)\n    private static final double COUNTS_PER_REVOLUTION = 42.0;\n    private static final double SPOOL_CIRCUMFERENCE = 4.0 * Math.PI;  // inches\n    private static final double COUNTS_PER_INCH = COUNTS_PER_REVOLUTION / SPOOL_CIRCUMFERENCE;\n    \n    // Smart Motion parameters (encoder counts per second)\n    private static final double MAX_VELOCITY = 3000.0;\n    private static final double MAX_ACCELERATION = 2000.0;\n    private static final double MIN_VELOCITY = 0.0;\n    private static final double ALLOWED_ERROR = 5.0;\n    \n    // Preset positions (in inches)\n    public static final double BOTTOM = 0.0;\n    public static final double MID = 24.0;\n    public static final double TOP = 48.0;\n    \n    public Elevator() {\n        // Basic configuration\n        m_elevatorMotor.setIdleMode(IdleMode.kBrake);\n        \n        // Configure PID\n        m_pidController.setP(0.15, 0);\n        m_pidController.setI(0.0, 0);\n        m_pidController.setD(0.02, 0);\n        m_pidController.setFF(0.0, 0);\n        \n        // Configure Smart Motion\n        m_pidController.setSmartMotionMaxVelocity(MAX_VELOCITY, 0);\n        m_pidController.setSmartMotionMaxAccel(MAX_ACCELERATION, 0);\n        m_pidController.setSmartMotionMinOutputVelocity(MIN_VELOCITY, 0);\n        m_pidController.setSmartMotionAllowedClosedLoopError(ALLOWED_ERROR, 0);\n        \n        // Configure soft limits (in encoder counts)\n        m_encoder.setPosition(0);\n        m_elevatorMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float)(TOP * COUNTS_PER_INCH));\n        m_elevatorMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float)(BOTTOM * COUNTS_PER_INCH));\n        m_elevatorMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);\n        m_elevatorMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);\n    }\n    \n    public void setHeight(double inches) {\n        double targetCounts = inches * COUNTS_PER_INCH;\n        m_pidController.setReference(targetCounts, ControlType.kSmartMotion, 0);\n    }\n    \n    public double getHeight() {\n        double position = m_encoder.getPosition();\n        return position / COUNTS_PER_INCH;\n    }\n    \n    public boolean isAtHeight(double targetHeight, double tolerance) {\n        double currentHeight = getHeight();\n        return Math.abs(currentHeight - targetHeight) < tolerance;\n    }\n    \n    public boolean isMotionComplete() {\n        // Check if within allowed error and velocity is low\n        double currentPos = m_encoder.getPosition();\n        double velocity = Math.abs(m_encoder.getVelocity());\n        // Note: You need to track target position yourself\n        return velocity < 10.0;  // Simplified check\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Elevator Height\", getHeight());\n        SmartDashboard.putBoolean(\"Motion Complete\", isMotionComplete());\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Smart Motion Best Practices",
-      "subtitle": "Tips for effective Smart Motion usage:",
-      "items": [
-        "Tune PID first before tuning Smart Motion",
-        "Start with moderate max velocity and acceleration",
-        "Use moderate allowed error (5-10 encoder counts) for most applications",
-        "Test with different distances and loads",
-        "Monitor motion status to verify smooth motion",
-        "Use soft limits to prevent overtravel",
-        "Document your Smart Motion parameters",
-        "Consider mechanism inertia when setting parameters",
-        "Balance speed vs smoothness based on application"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Smart Motion",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Motion is Jerky:</strong> Reduce max acceleration, improve PID tuning",
-        "<strong>Motion is Too Slow:</strong> Increase max velocity and acceleration",
-        "<strong>Overshoots Target:</strong> Reduce max velocity, improve PID tuning",
-        "<strong>Doesn't Reach Target:</strong> Check configuration, verify PID tuning",
-        "<strong>Motion Profile Not Following:</strong> Verify PID is tuned correctly",
-        "<strong>Inconsistent Motion:</strong> Check encoder configuration, verify feedback",
-        "<strong>Too Aggressive:</strong> Reduce max velocity, increase allowed error",
-        "<strong>Mechanical Issues:</strong> Check for binding, backlash, or damage",
-        "<strong>Configuration Not Applied:</strong> Verify configuration is applied correctly"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "SPARK MAX PID Control", "id": "spark-max-pid-control" },
-        { "label": "SPARK MAX Configuration", "id": "spark-max-configuration" },
-        { "label": "Motion Profiling Basics", "id": "motion-profiling-basics" }
+        {
+		  "label": "SPARK MAX PID Control", 
+		  "url": "spark-max-pid-control"},
+        {
+		  "label": "SPARK MAX Configuration", 
+		  "url": "spark-max-configuration"},
+        {
+		  "label": "Motion Profiling Basics", 
+		  "url": "motion-profiling-basics"}
       ]
     }
   ]

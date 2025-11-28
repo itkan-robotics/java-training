@@ -7,19 +7,6 @@
       "content": "PID (Proportional-Integral-Derivative) control is a feedback control algorithm that allows precise control of motor position or velocity. Both SPARK MAX and Talon FX have built-in PID controllers that run on the device itself, providing fast, accurate control without burdening the roboRIO.<br><br>PID control on motor controllers is essential for mechanisms that need precise positioning (arms, elevators) or consistent velocity (flywheels, intakes). Understanding how to configure and tune PID on both motor controller types is a critical skill for FRC programming."
     },
     {
-      "type": "rules-box",
-      "title": "PID Control Benefits",
-      "subtitle": "Why use PID control:",
-      "items": [
-        "Precise position control (move to exact position)",
-        "Consistent velocity control (maintain speed)",
-        "Automatic correction of errors",
-        "Handles load variations",
-        "Runs on device (fast response, low latency)",
-        "Multiple PID slots/configurations for different scenarios"
-      ]
-    },
-    {
       "type": "text",
       "title": "How Motor Controller PID Works",
       "content": "Both SPARK MAX and Talon FX implement PID control on the device itself. Here's how it works:<br><br><strong>Control Loop:</strong><br>1. You set a target (setpoint) - position or velocity<br>2. Motor controller reads the current sensor value<br>3. Calculates error (difference between target and current)<br>4. PID algorithm calculates output to reduce error<br>5. Motor output is adjusted automatically<br>6. Process repeats continuously<br><br><strong>On-Device Processing:</strong> Because PID runs on the motor controller, it responds very quickly (typically 1ms update rate) without adding load to the roboRIO. This makes it ideal for high-performance control applications."
@@ -165,45 +152,21 @@
       ]
     },
     {
-      "type": "rules-box",
-      "title": "PID Tuning Tips",
-      "subtitle": "Best practices for tuning:",
-      "items": [
-        "Start with kP only (set kI=0, kD=0, kF/kV=0)",
-        "Increase kP until system responds quickly",
-        "Add kD to reduce overshoot and oscillation",
-        "Add kI only if there's steady-state error",
-        "Use kF/kV for velocity control (feedforward)",
-        "Test with different loads and conditions",
-        "Use dashboard for real-time tuning",
-        "Document your final PID values",
-        "Test edge cases (max speed, different loads)"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting PID Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Oscillation:</strong> Reduce kP, increase kD, check sensor configuration",
-        "<strong>Slow Response:</strong> Increase kP, verify configuration is applied",
-        "<strong>Steady-State Error:</strong> Add small kI value, check for binding",
-        "<strong>Overshoot:</strong> Reduce kP, increase kD, check acceleration",
-        "<strong>Motor Doesn't Move:</strong> Check setReference/control request, verify sensor configured",
-        "<strong>Inconsistent Behavior:</strong> Verify sensor is reading correctly",
-        "<strong>Too Aggressive:</strong> Reduce kP and kD, check output limits",
-        "<strong>Doesn't Hold Position:</strong> Increase kD, check idle/neutral mode",
-        "<strong>Drift Over Time:</strong> Add small kI, check for mechanical issues"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Motor Controller Configuration", "id": "motor-controller-configuration" },
-        { "label": "SPARK MAX Smart Motion", "id": "spark-max-smart-motion" },
-        { "label": "Talon FX Motion Magic", "id": "talon-fx-motion-magic" },
-        { "label": "Control Theory - PID", "id": "pid-control-intro" }
+        {
+		  "label": "Motor Controller Configuration", 
+		  "url": "motor-controller-configuration"},
+        {
+		  "label": "SPARK MAX Smart Motion", 
+		  "url": "spark-max-smart-motion"},
+        {
+		  "label": "Talon FX Motion Magic", 
+		  "url": "talon-fx-motion-magic"},
+        {
+		  "label": "Control Theory - PID", 
+		  "url": "pid-control-intro"}
       ]
     }
   ]

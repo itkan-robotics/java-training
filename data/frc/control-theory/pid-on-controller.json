@@ -7,21 +7,6 @@
       "content": "On-controller PID refers to PID control that runs directly on the motor controller hardware (SPARK MAX or Talon FX) rather than in robot code. The PID algorithm executes on the motor controller's processor, providing extremely fast response times (typically 1ms update rate) and offloading computation from the roboRIO.<br><br>On-controller PID is ideal for mechanisms that require high-performance control, such as flywheels maintaining precise RPM, arms moving to exact positions, or elevators holding specific heights. The fast update rate and dedicated processing make it superior to in-code PID for many applications.<br><br>For vendor-specific implementation details, refer to the <a href='#motor-pid-control' target='_blank'>Motor PID Control</a> lesson in the hardware vendors section."
     },
     {
-      "type": "rules-box",
-      "title": "On-Controller PID Benefits",
-      "subtitle": "Advantages of on-controller PID:",
-      "items": [
-        "Fast response (1ms update rate vs 20ms in code)",
-        "Low latency (no network delay, direct sensor access)",
-        "Offloads roboRIO (frees up processing for other tasks)",
-        "Dedicated processing (motor controller focuses solely on control)",
-        "Multiple PID slots (different configurations for different control types)",
-        "Persistent configuration (saved to device, survives power cycles)",
-        "Hardware-optimized (designed specifically for motor control)",
-        "Consistent timing (predictable update rate regardless of roboRIO load)"
-      ]
-    },
-    {
       "type": "text",
       "title": "How On-Controller PID Works",
       "content": "On-controller PID operates differently from in-code PID:<br><br><strong>Control Loop on Device:</strong> The motor controller reads its connected sensor (encoder, CANcoder, etc.) directly, calculates the PID output, and applies it to the motor - all without communication with the roboRIO. This creates a tight control loop with minimal delay.<br><br><strong>Update Rates:</strong> Motor controllers typically update PID at 1ms intervals, compared to 20ms (50Hz) for roboRIO-based control. This 20x faster response enables better control of fast-moving mechanisms.<br><br><strong>Sensor Feedback:</strong> The motor controller reads sensor values directly via CAN bus or direct connections. For SPARK MAX, this is typically the built-in encoder. For Talon FX, this can be the integrated encoder or external sensors like CANcoder.<br><br><strong>Setpoint Communication:</strong> Your robot code sends setpoints (target position or velocity) to the motor controller, and the controller handles all PID calculations internally."
@@ -57,42 +42,18 @@
       "content": "Understanding when to use each approach helps you choose the best solution:<br><br><strong>Use On-Controller PID When:</strong> You need fast response (flywheels, high-speed mechanisms), you want to offload roboRIO processing, you're using position or velocity control, you need consistent timing, or you're using motor controller features (feedforward, ramps).<br><br><strong>Use In-Code PID When:</strong> You need custom control logic, you're controlling multiple mechanisms together, you need complex calculations, you're using non-standard sensors, or you need flexibility in control algorithms.<br><br><strong>Hybrid Approach:</strong> You can use both! Use on-controller PID for individual motor control, and in-code PID for higher-level coordination or complex control strategies."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for On-Controller PID",
-      "subtitle": "Tips for effective on-controller PID usage:",
-      "items": [
-        "Configure in code for consistency (not just vendor tools)",
-        "Use appropriate PID slots for different control types",
-        "Tune with actual mechanism loads (not unloaded)",
-        "Test across full range of motion (not just one position)",
-        "Use feedforward when available (improves performance)",
-        "Configure ramp rates for smooth motion",
-        "Set output limits to protect mechanisms",
-        "Monitor PID status for debugging",
-        "Document your PID values and slot usage"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting On-Controller PID",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Not Reaching Setpoint:</strong> Check PID values, verify sensor feedback, increase kP or add kI",
-        "<strong>Oscillation:</strong> Reduce kP, increase kD, or reduce kI",
-        "<strong>Slow Response:</strong> Increase kP, check for output limits, verify setpoint is being sent",
-        "<strong>Wrong Slot Used:</strong> Verify slot number in setpoint command matches configured slot",
-        "<strong>Configuration Not Applied:</strong> Ensure configuration is saved, check for errors in apply()",
-        "<strong>Sensor Issues:</strong> Verify encoder is connected and reading correctly",
-        "<strong>Inconsistent Behavior:</strong> Check for mechanical issues, verify consistent power supply"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "PID Control Introduction", "id": "pid-control-intro" },
-        { "label": "PID Tuning", "id": "pid-tuning" },
-        { "label": "Motor PID Control", "id": "motor-pid-control" }
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"},
+        {
+		  "label": "PID Tuning", 
+		  "url": "pid-tuning"},
+        {
+		  "label": "Motor PID Control", 
+		  "url": "motor-pid-control"}
       ]
     }
   ]

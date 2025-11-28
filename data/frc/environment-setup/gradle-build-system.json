@@ -80,21 +80,6 @@
       "content": "When you run a Gradle task, it produces output that shows what's happening and any errors that occur.<br><br><strong>Successful Build:</strong> You'll see 'BUILD SUCCESSFUL' at the end, along with a summary of tasks executed.<br><br><strong>Build Errors:</strong> Errors show the file, line number, and description of the problem. Common errors include:<br>- Syntax errors in Java code<br>- Missing dependencies<br>- Incorrect dependency versions<br>- Network issues downloading dependencies<br><br><strong>Reading Error Messages:</strong> Gradle error messages are usually clear about what went wrong. Look for file paths and line numbers to locate the issue in your code."
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Common Gradle Issues",
-      "subtitle": "Solutions for common problems:",
-      "items": [
-        "<strong>Build Fails with Dependency Error:</strong> Check repositories are correct, verify version numbers",
-        "<strong>Network/Download Errors:</strong> Check internet connection, try --refresh-dependencies flag",
-        "<strong>Cache Issues:</strong> Run ./gradlew clean and rebuild, clear Gradle cache if needed",
-        "<strong>Version Conflicts:</strong> Use ./gradlew :dependencies to see dependency tree",
-        "<strong>Gradle Wrapper Issues:</strong> Ensure gradlew is executable (Linux/Mac: chmod +x gradlew)",
-        "<strong>Java Version Mismatch:</strong> Verify Java version in build.gradle matches installed JDK",
-        "<strong>Build Hangs:</strong> Check for network issues, verify repositories are accessible",
-        "<strong>Out of Memory:</strong> Increase Gradle memory allocation in gradle.properties"
-      ]
-    },
-    {
       "type": "text",
       "title": "Gradle Wrapper vs System Gradle",
       "content": "It's important to understand the difference between the Gradle wrapper and a system-wide Gradle installation.<br><br><strong>Gradle Wrapper (<code>./gradlew</code>):</strong><br>- Included with every WPILib project<br>- Uses a specific Gradle version for the project<br>- Ensures consistent builds across team members<br>- Automatically downloads Gradle if needed<br>- <strong>Recommended for FRC projects</strong><br><br><strong>System Gradle (<code>gradle</code> command):</strong><br>- Installed globally on your computer<br>- May be a different version than your project needs<br>- Can cause version conflicts<br>- Not recommended for FRC projects<br><br><strong>Best Practice:</strong> Always use <code>./gradlew</code> (or <code>gradlew.bat</code> on Windows) instead of a system-wide <code>gradle</code> command."
@@ -125,29 +110,21 @@
       "content": "rootProject.name = 'Robot2024'  // Your project name\n\n// For most FRC projects, this is all you need"
     },
     {
-      "type": "rules-box",
-      "title": "Gradle Best Practices",
-      "subtitle": "For reliable builds:",
-      "items": [
-        "Always use the Gradle wrapper (./gradlew) instead of system Gradle",
-        "Keep WPILib version in build.gradle updated for your season",
-        "Use vendor dependency JSON files when available",
-        "Verify dependency versions match vendor documentation",
-        "Run ./gradlew clean if experiencing strange build issues",
-        "Check build output for warnings and errors",
-        "Keep repositories list minimal (only what you need)",
-        "Document any custom build configurations",
-        "Test builds on multiple team member computers"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Project Creation", "id": "project-creation" },
-        { "label": "VS Code Setup", "id": "vs-code-setup" },
-        { "label": "CTRE Setup", "id": "ctre-intro" },
-        { "label": "REV Setup", "id": "rev-intro" }
+        {
+		  "label": "Project Creation", 
+		  "url": "project-creation"},
+        {
+		  "label": "VS Code Setup", 
+		  "url": "vs-code-setup"},
+        {
+		  "label": "CTRE Setup", 
+		  "url": "ctre-intro"},
+        {
+		  "label": "REV Setup", 
+		  "url": "rev-intro"}
       ]
     }
   ]

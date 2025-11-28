@@ -77,43 +77,18 @@
       "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Intake;\n\npublic class IntakeGamePieceCommand extends Command {\n    private final Intake m_intake;\n    private final double m_intakeSpeed;\n    \n    public IntakeGamePieceCommand(Intake intake, double intakeSpeed) {\n        m_intake = intake;\n        m_intakeSpeed = intakeSpeed;\n        addRequirements(intake);\n    }\n    \n    @Override\n    public void initialize() {\n        // Start intake when command begins\n        m_intake.run(m_intakeSpeed);\n    }\n    \n    @Override\n    public void execute() {\n        // Keep intake running\n        // Could check sensors here to detect game piece\n        m_intake.run(m_intakeSpeed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Finish when game piece is detected\n        // This example always returns false (runs until interrupted)\n        // In practice, check sensor: return m_intake.hasGamePiece();\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Stop intake when command ends\n        m_intake.stop();\n        \n        if (!interrupted) {\n            System.out.println(\"Game piece intaken successfully\");\n        }\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Command Best Practices",
-      "subtitle": "Tips for effective command design:",
-      "items": [
-        "Always require subsystems you control using addRequirements()",
-        "Store subsystem references and parameters as final fields",
-        "Perform one-time setup in initialize(), not execute()",
-        "Keep execute() focused on the main command logic",
-        "Return true from isFinished() when command completes",
-        "Always clean up in end() (stop motors, reset state)",
-        "Use descriptive command names that indicate the action",
-        "Accept parameters through constructor for flexibility",
-        "Handle interruption gracefully in end() method"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Command Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Command Not Running:</strong> Check if command is scheduled, verify requirements are set correctly",
-        "<strong>Command Runs Once Then Stops:</strong> Check isFinished() - it may be returning true immediately",
-        "<strong>Subsystem Conflicts:</strong> Verify only one command requires each subsystem at a time",
-        "<strong>Command Never Finishes:</strong> Check isFinished() logic - ensure it returns true when appropriate",
-        "<strong>Motors Don't Stop:</strong> Ensure end() method stops motors and resets state",
-        "<strong>Command Interrupts Unexpectedly:</strong> Check for other commands requiring the same subsystem",
-        "<strong>State Not Resetting:</strong> Verify initialize() resets state properly",
-        "<strong>Parameters Not Working:</strong> Check constructor parameters are stored as fields and used correctly"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Command Scheduler", "id": "command-scheduler" },
-        { "label": "Command Groups", "id": "command-groups" },
-        { "label": "Subsystem Design", "id": "subsystem-design" }
+        {
+		  "label": "Command Scheduler", 
+		  "url": "command-scheduler"},
+        {
+		  "label": "Command Groups", 
+		  "url": "command-groups"},
+        {
+		  "label": "Subsystem Design", 
+		  "url": "subsystem-design"}
       ]
     }
   ]

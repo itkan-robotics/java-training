@@ -77,43 +77,18 @@
       "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.CANcoder;\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.PositionVoltage;\nimport com.ctre.phoenix6.configs.CANcoderConfiguration;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\nimport com.ctre.phoenix6.signals.FeedbackSensorSourceValue;\n\npublic class TalonFXWithCANcoder {\n    private final TalonFX m_motor = new TalonFX(3);\n    private final CANcoder m_encoder = new CANcoder(11);\n    \n    // Control request (reusable)\n    private final PositionVoltage m_positionRequest = new PositionVoltage(0);\n    \n    public TalonFXWithCANcoder() {\n        // Configure CANcoder\n        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();\n        encoderConfig.MagnetSensor.MagnetOffset = 0.0;\n        m_encoder.getConfigurator().apply(encoderConfig);\n        \n        // Configure Talon FX to use CANcoder as feedback\n        TalonFXConfiguration motorConfig = new TalonFXConfiguration();\n        motorConfig.Feedback.FeedbackRemoteSensorID = m_encoder.getDeviceID();\n        motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;\n        motorConfig.Feedback.RotorToSensorRatio = 1.0;  // 1:1 if no gearing\n        \n        // Configure PID\n        motorConfig.Slot0.kP = 0.1;\n        motorConfig.Slot0.kI = 0.0;\n        motorConfig.Slot0.kD = 0.01;\n        motorConfig.Slot0.kV = 0.0;\n        \n        m_motor.getConfigurator().apply(motorConfig);\n    }\n    \n    public void setPosition(double rotations) {\n        // Use PositionVoltage control request with CANcoder feedback\n        m_motor.setControl(m_positionRequest.withPosition(rotations));\n    }\n    \n    public double getPosition() {\n        // Read position from Talon FX (which reads from CANcoder)\n        // Position is in rotations\n        return m_motor.getPosition().getValue();\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Absolute Encoder Best Practices",
-      "subtitle": "Tips for effective CANcoder usage:",
-      "items": [
-        "Calibrate magnet offset for each mechanism",
-        "Test calibration at multiple positions",
-        "Use consistent conversion factors",
-        "Handle position wrapping when calculating differences",
-        "Verify magnet strength is adequate",
-        "Document CAN ID assignments and offsets",
-        "Use CANcoder as feedback for Talon FX when appropriate",
-        "Test mechanism immediately after power-up to verify absolute position"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Absolute Encoder Issues",
-      "subtitle": "Common problems and solutions:",
-      "items": [
-        "<strong>Position is Wrong:</strong> Check magnet offset calibration, verify mounting",
-        "<strong>Position Jumps:</strong> Check magnet strength (>50), verify distance",
-        "<strong>Unstable Readings:</strong> Check for electrical interference, verify alignment",
-        "<strong>Doesn't Remember Position:</strong> Verify using getAbsolutePosition() or getPosition()",
-        "<strong>Offset Not Working:</strong> Verify offset configured, use getPosition() not getAbsolutePosition()",
-        "<strong>Wrong Direction:</strong> Check sensor direction configuration",
-        "<strong>No Reading:</strong> Check CAN bus connection, verify power",
-        "<strong>Inconsistent Values:</strong> Re-calibrate offset, check magnet mounting",
-        "<strong>Configuration Issues:</strong> Verify configuration is applied correctly"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "CANcoder Setup", "id": "cancoder-setup" },
-        { "label": "Talon FX PID Control", "id": "talon-fx-pid-control" },
-        { "label": "Swerve Odometry", "id": "swerve-odometry" }
+        {
+		  "label": "CANcoder Setup", 
+		  "url": "cancoder-setup"},
+        {
+		  "label": "Talon FX PID Control", 
+		  "url": "talon-fx-pid-control"},
+        {
+		  "label": "Swerve Odometry", 
+		  "url": "swerve-odometry"}
       ]
     }
   ]

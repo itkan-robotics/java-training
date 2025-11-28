@@ -7,21 +7,6 @@
       "content": "In-code PID uses WPILib's PIDController class to implement PID control in your robot code, running on the roboRIO. This approach provides flexibility for custom control logic, complex calculations, and coordination between multiple mechanisms.<br><br>WPILib's PIDController is a powerful, easy-to-use class that handles all PID calculations. It's ideal for mechanisms that need custom control strategies, non-standard sensors, or coordination with other systems. While it runs at 20ms intervals (50Hz) compared to on-controller PID's 1ms rate, it's sufficient for most FRC applications.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html' target='_blank'>WPILib: PIDController</a>"
     },
     {
-      "type": "rules-box",
-      "title": "In-Code PID Benefits",
-      "subtitle": "Advantages of in-code PID:",
-      "items": [
-        "Flexibility (custom control logic and calculations)",
-        "Easy debugging (all code visible and debuggable)",
-        "Integration (works easily with commands and subsystems)",
-        "Custom sensors (can use any sensor, not just motor encoders)",
-        "Complex control (multi-axis control, coordination)",
-        "Educational (easier to understand and modify)",
-        "Standard API (consistent across all mechanisms)",
-        "Advanced features (continuous input, tolerance, output limits)"
-      ]
-    },
-    {
       "type": "text",
       "title": "WPILib PIDController Class",
       "content": "WPILib's PIDController class provides a complete PID implementation:<br><br><strong>Creating PIDController:</strong> Create a PIDController object with kP, kI, and kD values. You can also set tolerance, output limits, and continuous input mode.<br><br><strong>Setting Setpoints:</strong> Use setSetpoint() to specify the target value. The PIDController will calculate output to reach this target.<br><br><strong>Calculating Output:</strong> Call calculate() with the current sensor value to get the PID output. This should be called every robot loop (20ms) in your periodic() method.<br><br><strong>Checking Completion:</strong> Use atSetpoint() to check if the mechanism has reached the target within tolerance. Useful for commands that wait for completion."
@@ -77,42 +62,18 @@
       "content": "Choose the right approach for your application:<br><br><strong>Use In-Code PID When:</strong> You need custom control logic, you're coordinating multiple mechanisms, you're using non-standard sensors, you need complex calculations, or you want easier debugging and modification.<br><br><strong>Use On-Controller PID When:</strong> You need maximum speed (1ms updates), you want to offload roboRIO processing, you're using standard position/velocity control, or you need consistent timing regardless of roboRIO load.<br><br><strong>Hybrid Approach:</strong> Use on-controller PID for individual motor control and in-code PID for higher-level coordination. Both can work together in the same robot."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for In-Code PID",
-      "subtitle": "Tips for effective in-code PID usage:",
-      "items": [
-        "Call calculate() every robot loop (in periodic())",
-        "Set tolerance appropriately for your mechanism",
-        "Use continuous input for angle control",
-        "Limit integral range to prevent windup",
-        "Reset controller when changing setpoints significantly",
-        "Store setpoint in subsystem for commands to query",
-        "Use atSetpoint() for command completion checks",
-        "Test with actual mechanism loads",
-        "Document your PID values and usage"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting In-Code PID",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Not Reaching Setpoint:</strong> Check PID values, verify calculate() is called, increase kP or add kI",
-        "<strong>Oscillation:</strong> Reduce kP, increase kD, or reduce kI",
-        "<strong>Slow Response:</strong> Increase kP, verify calculate() is called every loop",
-        "<strong>Integral Windup:</strong> Set integrator range limits, reset controller when appropriate",
-        "<strong>Wrong Direction:</strong> Check sensor reading direction, invert if needed",
-        "<strong>Not Updating:</strong> Ensure calculate() is called in periodic(), check for exceptions",
-        "<strong>Angle Wraparound Issues:</strong> Enable continuous input mode for angles"
-      ]
-    },
-    {
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "PID Control Introduction", "id": "pid-control-intro" },
-        { "label": "PID Tuning", "id": "pid-tuning" },
-        { "label": "PID On Controller", "id": "pid-on-controller" }
+        {
+		  "label": "PID Control Introduction", 
+		  "url": "pid-control-intro"},
+        {
+		  "label": "PID Tuning", 
+		  "url": "pid-tuning"},
+        {
+		  "label": "PID On Controller", 
+		  "url": "pid-on-controller"}
       ]
     }
   ]

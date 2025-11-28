@@ -94,9 +94,15 @@
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "OpMode Structure", "id": "opmode-structure" },
-        { "label": "Basic Robot Control", "id": "basic-robot-control" },
-        { "label": "FTCDashboard Comprehensive Guide", "id": "ftc-dashboard-comprehensive" }
+        {
+		  "label": "OpMode Structure", 
+		  "url": "opmode-structure"},
+        {
+		  "label": "Basic Robot Control", 
+		  "url": "basic-robot-control"},
+        {
+		  "label": "FTCDashboard Comprehensive Guide", 
+		  "url": "ftc-dashboard-comprehensive"}
       ]
     },
     {

@@ -60,9 +60,15 @@
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "Linear vs Iterative OpModes", "id": "linear-vs-iterative-opmodes" },
-        { "label": "Telemetry Logging", "id": "telemetry-logging" },
-        { "label": "Basic Robot Control", "id": "basic-robot-control" }
+        {
+		  "label": "Linear vs Iterative OpModes", 
+		  "url": "linear-vs-iterative-opmodes"},
+        {
+		  "label": "Telemetry Logging", 
+		  "url": "telemetry-logging"},
+        {
+		  "label": "Basic Robot Control", 
+		  "url": "basic-robot-control"}
       ]
     },
     {

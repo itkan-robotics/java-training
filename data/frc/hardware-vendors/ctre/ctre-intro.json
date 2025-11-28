@@ -92,9 +92,15 @@
       "type": "link-grid",
       "title": "Next Steps",
       "links": [
-        { "label": "Talon FX Setup", "id": "talon-fx-setup" },
-        { "label": "CANcoder Setup", "id": "cancoder-setup" },
-        { "label": "Gradle Build System", "id": "gradle-build-system" }
+        {
+		  "label": "Talon FX Setup", 
+		  "url": "talon-fx-setup"},
+        {
+		  "label": "CANcoder Setup", 
+		  "url": "cancoder-setup"},
+        {
+		  "label": "Gradle Build System", 
+		  "url": "gradle-build-system"}
       ]
     }
   ]

@@ -91,10 +91,9 @@
           "id": "robot-hardware-overview"
         },
         {
-          "label": "Android Studio Environment",
-          "id": "android-studio-environment"
-        }
-      ]
+		  "label": "Android Studio Environment", 
+		  "url": "android-studio-environment"{
+	  }      ]
     },
     {
       "type": "exercise-box",

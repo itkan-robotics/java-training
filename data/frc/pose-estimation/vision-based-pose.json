@@ -1,0 +1,116 @@
+{
+  "title": "Vision-Based Pose Estimation",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to Vision-Based Pose",
+      "content": "Vision-based pose estimation uses cameras to observe field features and calculate the robot's pose from these observations. Unlike odometry, which accumulates error over time, vision provides absolute positioning - the robot knows exactly where it is relative to known field features, eliminating drift.<br><br>Vision pose estimation works by detecting field features (AprilTags, field elements, game pieces) with known positions, then calculating the robot's pose based on the camera's view of these features. The camera sees where these features are relative to the robot, and by knowing where the features are on the field, the system can calculate where the robot must be.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/vision/index.html' target='_blank'>WPILib: Vision Overview</a>"
+    },
+    {
+      "type": "text",
+      "title": "How Vision Pose Works",
+      "content": "Vision pose estimation follows this process:<br><br><strong>Camera Sees Field Features:</strong> The camera captures images of the field and detects features with known positions (AprilTags, field elements). These features have known locations on the field (from field layout documentation).<br><br><strong>Calculates Pose from Observations:</strong> By analyzing where features appear in the camera image, the system calculates the camera's position and orientation relative to those features. This involves:<br>- Detecting features in the image (AprilTag detection, feature recognition)<br>- Measuring feature positions in the image (pixel coordinates)<br>- Calculating camera pose relative to features (using camera calibration and geometry)<br>- Converting camera pose to robot pose (accounting for camera mounting position)<br><br>The result is an absolute pose estimate based on field features, with no accumulated error."
+    },
+    {
+      "type": "text",
+      "title": "Camera Setup",
+      "content": "Proper camera setup is essential for accurate vision pose estimation:<br><br><strong>Camera Selection:</strong> Use cameras suitable for FRC (USB cameras, network cameras). Consider resolution (higher resolution = better accuracy), frame rate (higher = more updates), and field of view (wider = see more features).<br><br><strong>Camera Mounting:</strong> Mount camera securely to avoid vibration. Position camera to see field features (AprilTags, field elements). Consider height and angle for optimal feature visibility. Ensure camera doesn't move relative to robot.<br><br><strong>Camera Calibration:</strong> Calibrate camera to correct for lens distortion and measure camera parameters. Calibration provides camera matrix and distortion coefficients. Essential for accurate pose calculation. WPILib and vision libraries provide calibration tools."
+    },
+    {
+      "type": "text",
+      "title": "Field Features",
+      "content": "Vision systems can detect various field features for pose estimation:<br><br><strong>AprilTags:</strong> Fiducial markers with known positions on FRC fields. Each tag has a unique ID and known field position. Highly reliable detection. Standard part of FRC field design. Most common feature for vision pose estimation.<br><br><strong>Field Elements:</strong> Game-specific field elements (scoring locations, barriers, etc.) with known positions. Can be used for pose estimation if detectable. Less reliable than AprilTags but still useful.<br><br><strong>Game Pieces:</strong> Game pieces can sometimes be used for localization if their positions are known. Less reliable than fixed field features. Typically used as supplementary information."
+    },
+    {
+      "type": "text",
+      "title": "WPILib Vision Classes",
+      "content": "WPILib provides vision integration support:<br><br><strong>PhotonVision:</strong> Popular vision library for FRC that integrates with WPILib. Provides AprilTag detection, pose estimation, and target tracking. Easy to use with WPILib robot code. Handles camera setup and calibration.<br><br><strong>Camera Integration:</strong> WPILib supports various camera types through vision libraries. Network cameras (PhotonVision, Limelight) communicate over network. USB cameras can be used with custom vision processing.<br><br><strong>Pose Estimation APIs:</strong> Vision libraries provide APIs to get pose estimates. Typically return <code>Pose2d</code> or similar pose representations. Can be integrated with WPILib odometry for sensor fusion."
+    },
+    {
+      "type": "code-tabs",
+      "title": "Basic Camera Setup",
+      "content": "Setting up cameras for vision-based pose estimation:",
+      "tabs": [
+        {
+          "label": "PhotonVision",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.cameraserver.CameraServer;\nimport edu.wpi.first.cscore.UsbCamera;\nimport org.photonvision.PhotonCamera;\nimport org.photonvision.PhotonUtils;\nimport edu.wpi.first.math.geometry.Pose2d;\nimport java.util.Optional;\n\npublic class VisionSystem {\n    private final PhotonCamera m_camera;\n    private UsbCamera m_usbCamera;\n    \n    // Camera position relative to robot center (in meters)\n    private static final edu.wpi.first.math.geometry.Transform3d kRobotToCamera = \n        new edu.wpi.first.math.geometry.Transform3d(\n            0.3, 0.0, 0.2,  // X, Y, Z position (meters)\n            new edu.wpi.first.math.geometry.Rotation3d()  // Rotation\n        );\n    \n    public VisionSystem() {\n        // Start camera server for PhotonVision\n        // PhotonVision will automatically detect and use the camera\n        m_usbCamera = CameraServer.startAutomaticCapture(0);\n        m_usbCamera.setResolution(640, 480);\n        m_usbCamera.setFPS(30);\n        \n        // Initialize PhotonVision camera\n        // Camera name must match the name configured in PhotonVision UI\n        m_camera = new PhotonCamera(\"MainCamera\");\n    }\n    \n    /**\n     * Get pose estimate from vision system\n     */\n    public Optional<Pose2d> getVisionPose() {\n        var result = m_camera.getLatestResult();\n        \n        if (result.hasTargets()) {\n            var poseEstimate = result.getEstimatedPose();\n            \n            if (poseEstimate.isPresent()) {\n                // Convert to Pose2d (2D pose)\n                return Optional.of(poseEstimate.get().toPose2d());\n            }\n        }\n        \n        return Optional.empty();\n    }\n}"
+        },
+        {
+          "label": "Limelight",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.networktables.NetworkTable;\nimport edu.wpi.first.networktables.NetworkTableInstance;\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport java.util.Optional;\n\npublic class VisionSystem {\n    private final NetworkTable m_limelight;\n    \n    public VisionSystem() {\n        // Get Limelight network table\n        // Use \"limelight\" for default, or your custom table name\n        m_limelight = NetworkTableInstance.getDefault().getTable(\"limelight\");\n        \n        // Configure Limelight pipeline (0-9)\n        // Set pipeline 0 for AprilTag detection, or your custom pipeline\n        m_limelight.getEntry(\"pipeline\").setNumber(0);\n        \n        // Note: Limelight is a network camera, no USB camera setup needed\n    }\n    \n    /**\n     * Get pose estimate from vision system\n     */\n    public Optional<Pose2d> getVisionPose() {\n        // Check if Limelight has valid targets\n        double tv = m_limelight.getEntry(\"tv\").getDouble(0);\n        \n        if (tv == 1.0) {  // Valid target detected\n            // Get robot pose from Limelight (in field coordinates)\n            double[] botpose = m_limelight.getEntry(\"botpose\").getDoubleArray(new double[6]);\n            \n            if (botpose.length >= 6) {\n                // botpose: [x, y, z, roll, pitch, yaw]\n                double x = botpose[0];\n                double y = botpose[1];\n                double yaw = botpose[5];  // Yaw is the heading\n                \n                return Optional.of(new Pose2d(x, y, Rotation2d.fromDegrees(yaw)));\n            }\n        }\n        \n        return Optional.empty();\n    }\n}"
+        },
+        {
+          "label": "WPILib",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.cameraserver.CameraServer;\nimport edu.wpi.first.cscore.UsbCamera;\nimport edu.wpi.first.math.geometry.Pose2d;\nimport java.util.Optional;\n\npublic class VisionSystem {\n    private final UsbCamera m_camera;\n    \n    public VisionSystem() {\n        // Start camera server for vision processing\n        m_camera = CameraServer.startAutomaticCapture(0);\n        m_camera.setResolution(640, 480);\n        m_camera.setFPS(30);\n        \n        // Note: WPILib's built-in vision support requires additional processing\n        // For AprilTag detection, you would typically use:\n        // - PhotonVision (recommended)\n        // - Limelight\n        // - Custom vision pipeline with OpenCV\n        \n        // This example shows basic camera setup\n        // Actual pose estimation would require vision processing\n    }\n    \n    /**\n     * Get pose estimate from vision system\n     * Note: This requires additional vision processing\n     */\n    public Optional<Pose2d> getVisionPose() {\n        // In a real implementation, you would:\n        // 1. Capture camera images\n        // 2. Process images to detect field features\n        // 3. Calculate pose from detected features\n        \n        // For actual implementation, use PhotonVision or Limelight\n        // which handle the vision processing\n        \n        return Optional.empty();\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "code-tabs",
+      "title": "Vision Pose Estimation Example",
+      "content": "Complete vision pose estimation implementation:",
+      "tabs": [
+        {
+          "label": "PhotonVision",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport org.photonvision.PhotonCamera;\nimport org.photonvision.targeting.PhotonPipelineResult;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Optional;\n\npublic class VisionPoseEstimation extends SubsystemBase {\n    private final VisionSystem m_vision;\n    \n    public VisionPoseEstimation() {\n        m_vision = new VisionSystem();\n    }\n    \n    /**\n     * Get latest vision pose estimate\n     */\n    public Optional<Pose2d> getVisionPose() {\n        return m_vision.getVisionPose();\n    }\n    \n    /**\n     * Check if vision pose is available\n     */\n    public boolean hasVisionPose() {\n        return getVisionPose().isPresent();\n    }\n    \n    /**\n     * Use vision pose to reset odometry\n     * This is a common pattern: use vision to correct odometry drift\n     */\n    public void updateOdometryWithVision(DrivetrainOdometry odometry) {\n        Optional<Pose2d> visionPose = getVisionPose();\n        if (visionPose.isPresent()) {\n            // Reset odometry to vision pose (corrects drift)\n            odometry.resetOdometry(visionPose.get());\n            \n            // For sensor fusion, use WPILib's PoseEstimator instead:\n            // double timestamp = Timer.getFPGATimestamp();\n            // m_poseEstimator.addVisionMeasurement(visionPose.get(), timestamp);\n        }\n    }\n}"
+        },
+        {
+          "label": "Limelight",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Optional;\n\npublic class VisionPoseEstimation extends SubsystemBase {\n    private final VisionSystem m_vision;\n    \n    public VisionPoseEstimation() {\n        m_vision = new VisionSystem();\n    }\n    \n    /**\n     * Get latest vision pose estimate\n     */\n    public Optional<Pose2d> getVisionPose() {\n        return m_vision.getVisionPose();\n    }\n    \n    /**\n     * Check if vision pose is available\n     */\n    public boolean hasVisionPose() {\n        return getVisionPose().isPresent();\n    }\n    \n    /**\n     * Use vision pose to reset odometry\n     */\n    public void updateOdometryWithVision(DrivetrainOdometry odometry) {\n        Optional<Pose2d> visionPose = getVisionPose();\n        if (visionPose.isPresent()) {\n            // Reset odometry to vision pose (corrects drift)\n            odometry.resetOdometry(visionPose.get());\n            \n            // For sensor fusion, use WPILib's PoseEstimator:\n            // double timestamp = Timer.getFPGATimestamp();\n            // m_poseEstimator.addVisionMeasurement(visionPose.get(), timestamp);\n        }\n    }\n}"
+        },
+        {
+          "label": "WPILib",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Optional;\n\npublic class VisionPoseEstimation extends SubsystemBase {\n    private final VisionSystem m_vision;\n    \n    public VisionPoseEstimation() {\n        m_vision = new VisionSystem();\n    }\n    \n    /**\n     * Get latest vision pose estimate\n     * Note: Requires vision processing pipeline\n     */\n    public Optional<Pose2d> getVisionPose() {\n        // In a real implementation, you would:\n        // 1. Process camera images\n        // 2. Detect field features\n        // 3. Calculate pose from features\n        \n        // For actual implementation, use PhotonVision or Limelight\n        return Optional.empty();\n    }\n    \n    /**\n     * Check if vision pose is available\n     */\n    public boolean hasVisionPose() {\n        return getVisionPose().isPresent();\n    }\n    \n    /**\n     * Use vision pose to reset odometry\n     */\n    public void updateOdometryWithVision(DrivetrainOdometry odometry) {\n        Optional<Pose2d> visionPose = getVisionPose();\n        if (visionPose.isPresent()) {\n            odometry.resetOdometry(visionPose.get());\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "code-tabs",
+      "title": "Reading Vision Pose Estimates",
+      "content": "Reading and using vision pose estimates in robot code:",
+      "tabs": [
+        {
+          "label": "PhotonVision",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Optional;\n\npublic class VisionPoseReader extends SubsystemBase {\n    private final VisionPoseEstimation m_vision;\n    \n    public VisionPoseReader(VisionPoseEstimation vision) {\n        m_vision = vision;\n    }\n    \n    @Override\n    public void periodic() {\n        // Get vision pose estimate\n        Optional<Pose2d> visionPose = m_vision.getVisionPose();\n        \n        if (visionPose.isPresent()) {\n            Pose2d pose = visionPose.get();\n            \n            // Display vision pose on SmartDashboard\n            SmartDashboard.putNumber(\"Vision X\", pose.getX());\n            SmartDashboard.putNumber(\"Vision Y\", pose.getY());\n            SmartDashboard.putNumber(\"Vision Heading\", \n                pose.getRotation().getDegrees());\n            \n            // Use vision pose for autonomous navigation\n            // For example, check if robot is at target position\n            Pose2d targetPose = new Pose2d(3.0, 2.0, Rotation2d.fromDegrees(90.0));\n            double distanceToTarget = pose.getTranslation()\n                .getDistance(targetPose.getTranslation());\n            \n            SmartDashboard.putNumber(\"Distance to Target (Vision)\", distanceToTarget);\n            SmartDashboard.putBoolean(\"Vision Available\", true);\n        } else {\n            SmartDashboard.putString(\"Vision Pose\", \"Not Available\");\n            SmartDashboard.putBoolean(\"Vision Available\", false);\n        }\n    }\n}"
+        },
+        {
+          "label": "Limelight",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Optional;\n\npublic class VisionPoseReader extends SubsystemBase {\n    private final VisionPoseEstimation m_vision;\n    \n    public VisionPoseReader(VisionPoseEstimation vision) {\n        m_vision = vision;\n    }\n    \n    @Override\n    public void periodic() {\n        // Get vision pose estimate\n        Optional<Pose2d> visionPose = m_vision.getVisionPose();\n        \n        if (visionPose.isPresent()) {\n            Pose2d pose = visionPose.get();\n            \n            // Display vision pose on SmartDashboard\n            SmartDashboard.putNumber(\"Vision X\", pose.getX());\n            SmartDashboard.putNumber(\"Vision Y\", pose.getY());\n            SmartDashboard.putNumber(\"Vision Heading\", \n                pose.getRotation().getDegrees());\n            \n            // Use vision pose for autonomous navigation\n            Pose2d targetPose = new Pose2d(3.0, 2.0, Rotation2d.fromDegrees(90.0));\n            double distanceToTarget = pose.getTranslation()\n                .getDistance(targetPose.getTranslation());\n            \n            SmartDashboard.putNumber(\"Distance to Target (Vision)\", distanceToTarget);\n            SmartDashboard.putBoolean(\"Vision Available\", true);\n        } else {\n            SmartDashboard.putString(\"Vision Pose\", \"Not Available\");\n            SmartDashboard.putBoolean(\"Vision Available\", false);\n        }\n    }\n}"
+        },
+        {
+          "label": "WPILib",
+          "code": "package frc.robot.subsystems;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport java.util.Optional;\n\npublic class VisionPoseReader extends SubsystemBase {\n    private final VisionPoseEstimation m_vision;\n    \n    public VisionPoseReader(VisionPoseEstimation vision) {\n        m_vision = vision;\n    }\n    \n    @Override\n    public void periodic() {\n        // Get vision pose estimate\n        Optional<Pose2d> visionPose = m_vision.getVisionPose();\n        \n        if (visionPose.isPresent()) {\n            Pose2d pose = visionPose.get();\n            \n            // Display vision pose on SmartDashboard\n            SmartDashboard.putNumber(\"Vision X\", pose.getX());\n            SmartDashboard.putNumber(\"Vision Y\", pose.getY());\n            SmartDashboard.putNumber(\"Vision Heading\", \n                pose.getRotation().getDegrees());\n            \n            // Use vision pose for autonomous navigation\n            Pose2d targetPose = new Pose2d(3.0, 2.0, Rotation2d.fromDegrees(90.0));\n            double distanceToTarget = pose.getTranslation()\n                .getDistance(targetPose.getTranslation());\n            \n            SmartDashboard.putNumber(\"Distance to Target (Vision)\", distanceToTarget);\n            SmartDashboard.putBoolean(\"Vision Available\", true);\n        } else {\n            SmartDashboard.putString(\"Vision Pose\", \"Not Available\");\n            SmartDashboard.putBoolean(\"Vision Available\", false);\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Vision Update Rate",
+      "content": "Understanding vision update characteristics is important:<br><br><strong>How Often Vision Updates:</strong> Vision systems typically update at 10-30 Hz (much slower than odometry's 50 Hz). Update rate depends on camera frame rate, processing time, and feature detection frequency. Updates are asynchronous - they arrive when features are detected, not every robot loop.<br><br><strong>Latency Considerations:</strong> Vision processing introduces latency (typically 20-100ms). This means vision pose estimates are slightly delayed compared to current robot position. For fast-moving robots, this latency must be accounted for. Sensor fusion algorithms can handle this latency by timestamping measurements."
+    },
+    {
+      "type": "text",
+      "title": "Vision Limitations",
+      "content": "Vision pose estimation has important limitations:<br><br><strong>Requires Visibility:</strong> Vision only works when field features are visible. If camera can't see AprilTags or field elements, no pose estimate is available. Obstacles, other robots, or camera positioning can block features.<br><br><strong>Lighting Conditions:</strong> Vision performance depends on lighting. Poor lighting can reduce detection reliability. Camera exposure and gain settings must be tuned for field conditions. Competition lighting can vary significantly.<br><br><strong>Field of View:</strong> Camera field of view limits which features can be seen. Narrow field of view may not see enough features for accurate pose estimation. Camera positioning and angle affect feature visibility."
+    },
+    {
+      "type": "link-grid",
+      "title": "Documentation Resources",
+      "links": [
+        {
+          "label": "WPILib Vision Overview",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/vision/index.html"
+        },
+        {
+          "label": "PhotonVision Documentation",
+          "url": "https://docs.photonvision.org/"
+        },
+        {
+          "label": "WPILib Camera Server",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/vision/camera-server.html"
+        }
+      ]
+    }
+  ]
+}
+

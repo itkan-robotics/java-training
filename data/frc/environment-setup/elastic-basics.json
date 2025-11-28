@@ -87,22 +87,6 @@
       "content": "One of Elastic's key advantages is that multiple devices can access the dashboard simultaneously. This is useful for teams where multiple people need to monitor the robot.<br><br><strong>Accessing from Multiple Devices:</strong><br>- Open a web browser on any device connected to the same network<br>- Navigate to the robot's IP address<br>- Each device gets its own view of the dashboard<br>- Changes to the dashboard layout are typically per-device (browser-based)<br><br><strong>Use Cases:</strong><br>- Driver and operator can each have their own dashboard view<br>- Programming team can monitor robot during testing<br>- Strategy team can view robot state during matches<br>- Multiple team members can debug simultaneously<br><br><strong>Network Considerations:</strong> Ensure your network can handle multiple connections. Elastic is designed to be efficient, but very high update rates from multiple devices may impact network performance."
     },
     {
-      "type": "rules-box",
-      "title": "Best Practices for Elastic",
-      "subtitle": "For efficient dashboard usage:",
-      "items": [
-        "Update dashboard in periodic() methods, not in tight loops",
-        "Use reasonable update rates (10-20 Hz typical for most data)",
-        "Use descriptive, consistent key names with naming convention",
-        "Create multiple tabs for different purposes (Driver, Tuning, Debugging)",
-        "Group related widgets together with clear labels",
-        "Don't send excessive amounts of data (network bandwidth)",
-        "Use efficient data types (numbers vs strings when possible)",
-        "Limit number of widgets updating simultaneously",
-        "Test dashboard performance with actual robot code"
-      ]
-    },
-    {
       "type": "code",
       "title": "Efficient Dashboard Update Pattern",
       "content": "public class Drivetrain extends SubsystemBase {\n    private final CANSparkMax m_leftMotor = new CANSparkMax(1, MotorType.kBrushless);\n    private final CANSparkMax m_rightMotor = new CANSparkMax(2, MotorType.kBrushless);\n    \n    // Update counter to limit update frequency\n    private int m_updateCounter = 0;\n    private static final int UPDATE_RATE = 10; // Update every 10 cycles (~2 Hz)\n    \n    @Override\n    public void periodic() {\n        // Only update dashboard periodically, not every cycle\n        if (m_updateCounter++ % UPDATE_RATE == 0) {\n            updateDashboard();\n        }\n    }\n    \n    private void updateDashboard() {\n        // Group related data with consistent naming\n        SmartDashboard.putNumber(\"Drivetrain/Left Speed\", m_leftMotor.get());\n        SmartDashboard.putNumber(\"Drivetrain/Right Speed\", m_rightMotor.get());\n        SmartDashboard.putNumber(\"Drivetrain/Left Current\", m_leftMotor.getOutputCurrent());\n        SmartDashboard.putNumber(\"Drivetrain/Right Current\", m_rightMotor.getOutputCurrent());\n    }\n}"
@@ -118,21 +102,6 @@
       "content": "public class ExampleCommand extends CommandBase {\n    @Override\n    public void execute() {\n        // Read button state from Elastic dashboard\n        boolean resetEncoders = SmartDashboard.getBoolean(\"Reset Encoders\", false);\n        \n        if (resetEncoders) {\n            // Reset encoders when button is pressed\n            resetAllEncoders();\n            \n            // Reset the button state (optional)\n            SmartDashboard.putBoolean(\"Reset Encoders\", false);\n        }\n        \n        // Read slider values for tuning\n        double kP = SmartDashboard.getNumber(\"PID kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"PID kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"PID kD\", 0.01);\n        \n        // Update PID constants from dashboard\n        updatePIDConstants(kP, kI, kD);\n    }\n}"
     },
     {
-      "type": "rules-box",
-      "title": "Troubleshooting Elastic",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "<strong>Dashboard Not Loading:</strong> Verify robot is powered and connected, check IP address, ensure browser can reach robot's network",
-        "<strong>Widgets Not Updating:</strong> Verify key names match exactly (case-sensitive), check robot code is publishing data",
-        "<strong>Connection Issues:</strong> Verify team number is correct, check robot is on same network, check firewall",
-        "<strong>Performance Problems:</strong> Reduce update frequency, send less data, limit number of widgets",
-        "<strong>Data Not Appearing:</strong> Check NetworkTables data is being published, verify key names match",
-        "<strong>Multiple Devices Not Working:</strong> Ensure all devices are on same network, check network bandwidth",
-        "<strong>Browser Errors:</strong> Check browser console for errors, try different browser, clear browser cache",
-        "<strong>NetworkTables Not Connected:</strong> Verify robot code is running, check NetworkTables server is active"
-      ]
-    },
-    {
       "type": "text",
       "title": "Performance Considerations",
       "content": "Elastic sends data over the network using NetworkTables, so efficient data management is important for good performance.<br><br><strong>Network Bandwidth:</strong> Each dashboard update uses network bandwidth. Too many updates or too much data can slow down robot communication. Use reasonable update frequencies.<br><br><strong>Update Frequency:</strong> Most data doesn't need to update every cycle. Update at reasonable rates (5-20 Hz) depending on the data type. Critical data can update more frequently, while status information can update less frequently.<br><br><strong>Data Amount:</strong> Sending large amounts of data (like high-resolution images or large arrays) can be slow. Use efficient data types and only send what's necessary for the dashboard.<br><br><strong>Multiple Connections:</strong> Elastic supports multiple simultaneous connections, but each connection uses network resources. Monitor network performance if many devices are connected simultaneously.<br><br><strong>Browser Performance:</strong> Complex dashboards with many widgets can impact browser performance. Keep dashboards focused on essential data and use efficient widget configurations."
@@ -146,9 +115,15 @@
       "type": "link-grid",
       "title": "Related Topics",
       "links": [
-        { "label": "Driver Station Setup", "id": "driver-station-setup" },
-        { "label": "Basic Robot Structure", "id": "frc-basic-robot-structure" },
-        { "label": "Command-Based Programming", "id": "command-based-intro" }
+        {
+		  "label": "Driver Station Setup", 
+		  "url": "driver-station-setup"},
+        {
+		  "label": "Basic Robot Structure", 
+		  "url": "frc-basic-robot-structure"},
+        {
+		  "label": "Command-Based Programming", 
+		  "url": "command-based-intro"}
       ]
     }
   ]
