@@ -105,7 +105,7 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "content": [
         {
           "title": "Telemetry API",

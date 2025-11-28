@@ -19,7 +19,7 @@
     {
       "type": "code",
       "title": "Basic Button Trigger",
-      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport edu.wpi.first.wpilibj2.command.button.Trigger;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.subsystems.Arm;\n\npublic class RobotContainer {\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    private final Arm m_arm = new Arm();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // Create trigger from button and bind command\n        // When button A is pressed, schedule MoveArmCommand\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 45.0, 0.3, 2.0));\n        \n        // Button triggers are automatically created from CommandXboxController\n        // No need to manually create Trigger objects\n    }\n}"
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport edu.wpi.first.wpilibj2.command.button.Trigger;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.subsystems.Arm;\n\npublic class RobotContainer {\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    private final Arm m_arm = new Arm();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // When button A is pressed, schedule MoveArmCommand\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 45.0, 0.3, 2.0));\n        \n        // Button triggers are automatically created from CommandXboxController\n        // No need to manually create Trigger objects\n    }\n}"
     },
     {
       "type": "text",
@@ -69,23 +69,25 @@
     {
       "type": "code",
       "title": "Organizing Triggers in RobotContainer",
-      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\n\npublic class RobotContainer {\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // Driver Controller Bindings\n        // A: Emergency stop\n        m_driverController.a().onTrue(new EmergencyStopCommand());\n        \n        // B: Toggle intake\n        m_driverController.b().toggleOnTrue(new ToggleIntakeCommand(m_intake));\n        \n        // Operator Controller Bindings\n        // A: Move arm to low position\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 30.0, 0.3, 2.0));\n        \n        // B: Move arm to high position\n        m_operatorController.b()\n            .onTrue(new MoveArmCommand(m_arm, 60.0, 0.3, 2.0));\n        \n        // X: Run intake (while held)\n        m_operatorController.x()\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // Y: Reverse intake (while held)\n        m_operatorController.y()\n            .whileTrue(new RunIntakeCommand(m_intake, -0.4));\n        \n        // Right trigger: Intake (analog)\n        m_operatorController.rightTrigger(0.5)\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // POV: Elevator control\n        m_operatorController.povUp()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 48.0, 0.5, 0.5));\n        m_operatorController.povDown()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 0.0, 0.5, 0.5));\n    }\n}"
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\n\npublic class RobotContainer {\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    public RobotContainer() {\n        configureButtonBindings();\n    }\n    \n    private void configureButtonBindings() {\n        // A: Emergency stop\n        m_driverController.a().onTrue(new EmergencyStopCommand());\n        \n        // B: Toggle intake\n        m_driverController.b().toggleOnTrue(new ToggleIntakeCommand(m_intake));\n        \n        // Operator Controller Bindings\n        // A: Move arm to low position\n        m_operatorController.a()\n            .onTrue(new MoveArmCommand(m_arm, 30.0, 0.3, 2.0));\n        \n        // B: Move arm to high position\n        m_operatorController.b()\n            .onTrue(new MoveArmCommand(m_arm, 60.0, 0.3, 2.0));\n        \n        // X: Run intake (while held)\n        m_operatorController.x()\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // Y: Reverse intake (while held)\n        m_operatorController.y()\n            .whileTrue(new RunIntakeCommand(m_intake, -0.4));\n        \n        // Right trigger: Intake (analog)\n        m_operatorController.rightTrigger(0.5)\n            .whileTrue(new RunIntakeCommand(m_intake, 0.6));\n        \n        // POV: Elevator control\n        m_operatorController.povUp()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 48.0, 0.5, 0.5));\n        m_operatorController.povDown()\n            .whileTrue(new MoveElevatorCommand(m_elevator, 0.0, 0.5, 0.5));\n    }\n}"
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Robot Container", 
-		  "url": "robot-container"},
+          "label": "Robot Container",
+          "id": "robot-container"
+        },
         {
-		  "label": "Command Creation", 
-		  "url": "command-creation"},
+          "label": "Command Creation",
+          "id": "command-creation"
+        },
         {
-		  "label": "Default Commands", 
-		  "url": "default-commands"}
+          "label": "Default Commands",
+          "id": "default-commands"
+        }
       ]
     }
   ]
 }
-

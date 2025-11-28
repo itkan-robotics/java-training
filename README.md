@@ -310,7 +310,7 @@ All content files follow a standardized JSON format:
 - `emphasis-box`: Important information highlights
 - `data-types-grid`: Interactive data type comparisons
 - `logical-operators`: Operator reference tables
-- `link-grid`: Navigation to related topics
+- `link-grid`: Navigation to Related Topics and Documentation
 - `table`: Structured data tables with headers and rows
 
 ## 🔧 Development Guidelines

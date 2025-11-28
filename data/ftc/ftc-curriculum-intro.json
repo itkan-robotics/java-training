@@ -8,6 +8,17 @@
     },
     {
       "type": "rules-box",
+      "title": "Important Disclaimer",
+      "subtitle": "Official Documentation",
+      "items": [
+        "This curriculum is designed as a learning resource and guide",
+        "For official documentation, specifications, and the most up-to-date information, please refer to the official FTC documentation",
+        "If you have questions about FTC rules, hardware specifications, or official APIs, consult the official FIRST Tech Challenge resources",
+        "Official documentation should always be your primary reference for competition rules and technical specifications"
+      ]
+    },
+    {
+      "type": "rules-box",
       "title": "What is FTC?",
       "subtitle": "FIRST Tech Challenge is:",
       "items": [
@@ -91,23 +102,10 @@
           "id": "robot-hardware-overview"
         },
         {
-		  "label": "Android Studio Environment", 
-		  "url": "android-studio-environment"{
-	  }      ]
-    },
-    {
-      "type": "exercise-box",
-      "title": "FTC Programming Readiness",
-      "description": "Before starting FTC programming, assess your readiness:",
-      "tasks": [
-        "Do you have access to FTC robot hardware or simulation tools?",
-        "Are you comfortable with basic Java programming concepts?",
-        "How much time can you dedicate to learning and practice?",
-        "What are your goals (competition, learning, career development)?",
-        "Are you comfortable working with hardware and electronics?",
-        "Do you have a team or mentor to work with?"
-      ],
-      "content": "// FTC programming is about bringing robots to life\n// Start with the fundamentals and build your skills systematically\n// Remember: practice and experimentation are key to success!"
+          "label": "Android Studio Environment",
+          "id": "android-studio-environment"
+        }
+      ]
     }
   ]
 }

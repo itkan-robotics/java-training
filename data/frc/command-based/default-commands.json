@@ -19,7 +19,7 @@
     {
       "type": "code",
       "title": "Setting Default Command",
-      "content": "package frc.robot;\n\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    \n    public RobotContainer() {\n        // Set default command for drivetrain\n        // This command will run automatically when no other command requires drivetrain\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(\n                m_drivetrain,\n                () -> m_driverController.getLeftY(),\n                () -> m_driverController.getRightX()\n            )\n        );\n        \n        // Now drivetrain will respond to joystick input automatically\n        // Other commands can still take control when needed\n    }\n}"
+      "content": "package frc.robot;\n\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    \n    public RobotContainer() {\n        // This command will run automatically when no other command requires drivetrain\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(\n                m_drivetrain,\n                () -> m_driverController.getLeftY(),\n                () -> m_driverController.getRightX()\n            )\n        );\n        \n        // Other commands can still take control when needed\n    }\n}"
     },
     {
       "type": "text",
@@ -29,7 +29,7 @@
     {
       "type": "code",
       "title": "Default Command Implementation",
-      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\nimport java.util.function.DoubleSupplier;\n\npublic class ArcadeDriveCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final DoubleSupplier m_forwardSupplier;\n    private final DoubleSupplier m_rotationSupplier;\n    \n    public ArcadeDriveCommand(\n            Drivetrain drivetrain,\n            DoubleSupplier forwardSupplier,\n            DoubleSupplier rotationSupplier) {\n        m_drivetrain = drivetrain;\n        m_forwardSupplier = forwardSupplier;\n        m_rotationSupplier = rotationSupplier;\n        \n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        // Called once when command starts (or when resuming after interruption)\n    }\n    \n    @Override\n    public void execute() {\n        // Called every loop - read joystick input and drive\n        double forward = m_forwardSupplier.getAsDouble();\n        double rotation = m_rotationSupplier.getAsDouble();\n        \n        m_drivetrain.arcadeDrive(forward, rotation);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Always return false - command runs until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Called when command is interrupted (another command takes control)\n        // Stop drivetrain when interrupted\n        m_drivetrain.stop();\n    }\n}"
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\nimport java.util.function.DoubleSupplier;\n\npublic class ArcadeDriveCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final DoubleSupplier m_forwardSupplier;\n    private final DoubleSupplier m_rotationSupplier;\n    \n    public ArcadeDriveCommand(\n            Drivetrain drivetrain,\n            DoubleSupplier forwardSupplier,\n            DoubleSupplier rotationSupplier) {\n        m_drivetrain = drivetrain;\n        m_forwardSupplier = forwardSupplier;\n        m_rotationSupplier = rotationSupplier;\n        \n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n    }\n    \n    @Override\n    public void execute() {\n        double forward = m_forwardSupplier.getAsDouble();\n        double rotation = m_rotationSupplier.getAsDouble();\n        \n        m_drivetrain.arcadeDrive(forward, rotation);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Always return false - command runs until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_drivetrain.stop();\n    }\n}"
     },
     {
       "type": "text",
@@ -39,12 +39,12 @@
     {
       "type": "code",
       "title": "Multiple Default Commands",
-      "content": "package frc.robot;\n\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    public RobotContainer() {\n        // Drivetrain default: Arcade drive from joystick\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(\n                m_drivetrain,\n                () -> m_driverController.getLeftY(),\n                () -> m_driverController.getRightX()\n            )\n        );\n        \n        // Arm default: Hold current position\n        m_arm.setDefaultCommand(\n            new HoldArmPositionCommand(m_arm)\n        );\n        \n        // Intake default: Manual control from button\n        m_intake.setDefaultCommand(\n            new ManualIntakeCommand(\n                m_intake,\n                () -> m_operatorController.getRightTriggerAxis() > 0.5\n            )\n        );\n        \n        // Each subsystem now has continuous behavior\n        // Commands can still take control when needed\n    }\n}"
+      "content": "package frc.robot;\n\nimport frc.robot.commands.*;\nimport frc.robot.subsystems.*;\nimport edu.wpi.first.wpilibj2.command.button.CommandXboxController;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain = new Drivetrain();\n    private final Arm m_arm = new Arm();\n    private final Intake m_intake = new Intake();\n    \n    private final CommandXboxController m_driverController = new CommandXboxController(0);\n    private final CommandXboxController m_operatorController = new CommandXboxController(1);\n    \n    public RobotContainer() {\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(\n                m_drivetrain,\n                () -> m_driverController.getLeftY(),\n                () -> m_driverController.getRightX()\n            )\n        );\n        \n        // Arm default: Hold current position\n        m_arm.setDefaultCommand(\n            new HoldArmPositionCommand(m_arm)\n        );\n        \n        // Intake default: Manual control from button\n        m_intake.setDefaultCommand(\n            new ManualIntakeCommand(\n                m_intake,\n                () -> m_operatorController.getRightTriggerAxis() > 0.5\n            )\n        );\n        \n        // Each subsystem now has continuous behavior\n        // Commands can still take control when needed\n    }\n}"
     },
     {
       "type": "code",
       "title": "Default Command with User Input",
-      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Intake;\nimport java.util.function.BooleanSupplier;\n\npublic class ManualIntakeCommand extends Command {\n    private final Intake m_intake;\n    private final BooleanSupplier m_runSupplier;\n    \n    public ManualIntakeCommand(Intake intake, BooleanSupplier runSupplier) {\n        m_intake = intake;\n        m_runSupplier = runSupplier;\n        addRequirements(intake);\n    }\n    \n    @Override\n    public void initialize() {\n        // Setup if needed\n    }\n    \n    @Override\n    public void execute() {\n        // Read button input and control intake\n        if (m_runSupplier.getAsBoolean()) {\n            m_intake.run(0.6);  // Run intake when button pressed\n        } else {\n            m_intake.stop();    // Stop when button released\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Run continuously until interrupted\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        // Stop intake when interrupted\n        m_intake.stop();\n    }\n}"
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Intake;\nimport java.util.function.BooleanSupplier;\n\npublic class ManualIntakeCommand extends Command {\n    private final Intake m_intake;\n    private final BooleanSupplier m_runSupplier;\n    \n    public ManualIntakeCommand(Intake intake, BooleanSupplier runSupplier) {\n        m_intake = intake;\n        m_runSupplier = runSupplier;\n        addRequirements(intake);\n    }\n    \n    @Override\n    public void initialize() {\n    }\n    \n    @Override\n    public void execute() {\n        if (m_runSupplier.getAsBoolean()) {\n            m_intake.run(0.6);\n        } else {\n            m_intake.stop();\n        }\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_intake.stop();\n    }\n}"
     },
     {
       "type": "text",
@@ -54,23 +54,29 @@
     {
       "type": "code",
       "title": "Default Command Conflict Handling",
-      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DefaultCommandConflictExample {\n    private Drivetrain m_drivetrain;\n    \n    public void demonstrateConflict() {\n        // Set default command\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(m_drivetrain, () -> 0.0, () -> 0.0)\n        );\n        \n        // Default command is now running (responding to joystick)\n        \n        // Schedule another command requiring drivetrain\n        Command autonomousCommand = new DriveForwardCommand(m_drivetrain, 0.5);\n        CommandScheduler.getInstance().schedule(autonomousCommand);\n        \n        // Scheduler automatically:\n        // 1. Interrupts ArcadeDriveCommand (calls end(true))\n        // 2. Schedules DriveForwardCommand (calls initialize())\n        // 3. DriveForwardCommand now controls drivetrain\n        \n        // When DriveForwardCommand finishes:\n        // 1. DriveForwardCommand ends (calls end(false))\n        // 2. ArcadeDriveCommand automatically resumes\n        // 3. Drivetrain responds to joystick again\n    }\n}"
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.commands.ArcadeDriveCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DefaultCommandConflictExample {\n    private Drivetrain m_drivetrain;\n    \n    public void demonstrateConflict() {\n        m_drivetrain.setDefaultCommand(\n            new ArcadeDriveCommand(m_drivetrain, () -> 0.0, () -> 0.0)\n        );\n        \n        // Default command is now running (responding to joystick)\n        \n        // Schedule another command requiring drivetrain\n        Command autonomousCommand = new DriveForwardCommand(m_drivetrain, 0.5);\n        CommandScheduler.getInstance().schedule(autonomousCommand);\n        \n        // Scheduler automatically:\n        // 1. Interrupts ArcadeDriveCommand (calls end(true))\n        // 2. Schedules DriveForwardCommand (calls initialize())\n        // 3. DriveForwardCommand now controls drivetrain\n        \n        // When DriveForwardCommand finishes:\n        // 1. DriveForwardCommand ends (calls end(false))\n        // 2. ArcadeDriveCommand automatically resumes\n        // 3. Drivetrain responds to joystick again\n    }\n}"
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Command Creation", 
-		  "url": "command-creation"},
+          "label": "Command Creation",
+          "id": "command-creation"
+        },
         {
-		  "label": "Command Scheduler", 
-		  "url": "command-scheduler"},
+          "label": "Command Scheduler",
+          "id": "command-scheduler"
+        },
         {
-		  "label": "Trigger Bindings", 
-		  "url": "trigger-bindings"}
+          "label": "Trigger Bindings",
+          "id": "trigger-bindings"
+        },
+        {
+          "label": "WPILib Documentation",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html#default-commands"
+        }
       ]
     }
   ]
 }
-

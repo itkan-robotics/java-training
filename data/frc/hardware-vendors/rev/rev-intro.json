@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "What is REV Robotics?",
-      "content": "REV Robotics is a leading manufacturer of motor controllers, motors, sensors, and other electronics for FRC robots. REV products are widely used in FRC due to their reliability, ease of use, and excellent documentation. Understanding REV hardware is essential for many FRC teams.<br><br>REV provides a comprehensive ecosystem of hardware and software tools that work together seamlessly. Their products are designed specifically for FRC competition and are well-documented and supported."
+      "content": "REV Robotics is a leading manufacturer of motor controllers, motors, sensors, and other electronics for FRC robots. REV products are widely used in FRC due to their reliability, ease of use, and excellent documentation. Understanding REV hardware is essential for many FRC teams.<br><br>REV provides a comprehensive ecosystem of hardware and software tools that work together seamlessly. Their products are designed specifically for FRC competition and are well-documented and supported.<br><br><strong>Learn more:</strong> <a href='https://docs.revrobotics.com/docs/ion/' target='_blank'>REV ION Documentation</a>"
     },
     {
       "type": "rules-box",
@@ -30,11 +30,6 @@
       "type": "text",
       "title": "When to Use REV Hardware",
       "content": "REV hardware is an excellent choice for many FRC applications. Here are situations where REV products excel:<br><br><strong>SPARK MAX Advantages:</strong><br>- Easy to use and configure<br>- Supports both brushed and brushless motors<br>- Built-in encoder support (NEO motors)<br>- Advanced motion profiling (Smart Motion)<br>- Excellent documentation and community support<br><br><strong>NEO Motor Advantages:</strong><br>- High performance and efficiency<br>- Integrated encoder (no external encoder needed)<br>- Reliable and proven in competition<br>- Good value for performance<br><br><strong>REV Sensor Advantages:</strong><br>- Easy integration via data port<br>- Well-documented APIs<br>- Reliable performance<br>- Useful for autonomous and teleop"
-    },
-    {
-      "type": "text",
-      "title": "Adding REVLib to Your Project",
-      "content": "To use REV hardware in your FRC project, you need to add the REVLib library. WPILib provides a built-in system for managing vendor dependencies (vendordeps) that automatically configures dependencies and repositories. This is the recommended method for adding REVLib to your project.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html' target='_blank'>WPILib Documentation: Third-Party Libraries</a>"
     },
     {
       "type": "text",
@@ -73,7 +68,7 @@
     },
     {
       "type": "text",
-      "title": "REV Documentation Resources",
+      "title": "REV Related Topics and Documentation",
       "content": "REV provides comprehensive documentation for all their products. Here are key resources:<br><br><strong>Official Documentation:</strong><br>- <a href='https://docs.revrobotics.com/' target='_blank'>REV Robotics Documentation</a> - Complete product documentation and guides<br>- <a href='https://codedocs.revrobotics.com/java/' target='_blank'>REVLib Java API Documentation</a> - Complete API reference<br>- <a href='https://www.revrobotics.com/sparkmax-software/' target='_blank'>SPARK MAX Software</a> - Software downloads and resources<br><br><strong>Community Resources:</strong><br>- REV forums and community support<br>- FRC programming resources and examples<br>- Team code examples and tutorials"
     },
     {
@@ -87,13 +82,13 @@
       "links": [
         {
 		  "label": "SPARK MAX Setup", 
-		  "url": "spark-max-setup"},
+		  "id": "spark-max-setup"},
         {
 		  "label": "Gradle Build System", 
-		  "url": "gradle-build-system"},
+		  "id": "gradle-build-system"},
         {
 		  "label": "REV Hardware Client", 
-		  "url": "rev-hardware-client"}
+		  "id": "rev-hardware-client"}
       ]
     }
   ]

@@ -82,9 +82,10 @@
           "id": "java-variables"
         },
         {
-		  "label": "Calculations and Math", 
-		  "url": "java-calculations"{
-	  }      ]
+          "label": "Calculations and Math",
+          "id": "java-calculations"
+        }
+      ]
     },
     {
       "type": "exercise-box",

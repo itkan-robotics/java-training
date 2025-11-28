@@ -1,0 +1,117 @@
+{
+  "title": "PathPlanner: Visual Autonomous Routines",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is PathPlanner?",
+      "content": "PathPlanner is a powerful visual path planning tool designed specifically for FRC robots. It allows teams to create complex autonomous paths by visually placing waypoints on a field map, then automatically generates optimized trajectories that robots can follow. PathPlanner eliminates the need to manually calculate waypoints and trajectories, making autonomous routine development faster and more intuitive.<br><br>PathPlanner generates smooth, continuous paths using mathematical optimization, ensuring robots follow efficient trajectories with proper velocity and acceleration constraints. The tool integrates seamlessly with WPILib's path following capabilities and can generate code automatically through AutoBuilder, significantly reducing development time.<br><br>Learn more: <a href='https://pathplanner.dev/home.html' target='_blank'>PathPlanner Official Website</a>"
+    },
+    {
+      "type": "text",
+      "title": "Why Use PathPlanner?",
+      "content": "PathPlanner offers several advantages over manual path planning:<br><br><strong>Visual Path Creation:</strong> Design paths by clicking on a field map rather than calculating coordinates manually. This makes it easy to visualize and adjust autonomous routines.<br><br><strong>Automatic Trajectory Generation:</strong> PathPlanner automatically generates optimized trajectories with proper velocity and acceleration profiles, eliminating complex mathematical calculations.<br><br><strong>Event Markers:</strong> Add actions (like deploying mechanisms or shooting) at specific points along paths, making it easy to create complex autonomous sequences.<br><br><strong>AutoBuilder Integration:</strong> Automatically generate WPILib commands from paths, reducing code writing and potential errors.<br><br><strong>Path Optimization:</strong> PathPlanner optimizes paths for smooth motion, reducing wear on mechanisms and improving autonomous performance.<br><br><strong>Easy Iteration:</strong> Quickly modify paths and regenerate trajectories without rewriting code, enabling rapid autonomous development."
+    },
+    {
+      "type": "text",
+      "title": "Installation and Setup",
+      "content": "PathPlanner can be installed in several ways:<br><br><strong>Microsoft Store (Recommended):</strong> The easiest method is installing PathPlanner from the Microsoft Store. This provides automatic updates and easy installation. Search for \"PathPlanner\" in the Microsoft Store and install it.<br><br><strong>Manual Installation:</strong> Download the latest release from the PathPlanner GitHub repository. Extract the files and run the executable. Manual installation requires manual updates but gives you more control.<br><br><strong>VS Code Extension:</strong> PathPlanner also offers a VS Code extension that integrates path planning directly into your development environment. Install it from the VS Code extensions marketplace.<br><br>After installation, you'll need to add PathPlannerLib to your robot project. Add the PathPlannerLib dependency to your <code>build.gradle</code> file. Refer to the official PathPlanner documentation for the latest dependency information and version numbers."
+    },
+    {
+      "type": "text",
+      "title": "PathPlanner UI Overview",
+      "content": "When you first open PathPlanner, you'll see the main interface with several key components:<br><br><strong>Field Map:</strong> The central area displays the FRC field. You can zoom, pan, and place waypoints by clicking on the field. The field map shows field elements, game pieces, and obstacles.<br><br><strong>Path List:</strong> Shows all paths you've created. You can create multiple paths for different autonomous routines. Each path can be named and configured independently.<br><br><strong>Properties Panel:</strong> Displays properties for the selected path or waypoint. Here you can adjust path constraints, waypoint positions, and event markers.<br><br><strong>Toolbar:</strong> Contains tools for creating paths, adding waypoints, setting constraints, and exporting paths. Familiarize yourself with these tools as they're essential for path creation.<br><br><strong>Preview Window:</strong> Shows a preview of the generated trajectory, including velocity and acceleration profiles. This helps you visualize how the robot will move along the path."
+    },
+    {
+      "type": "text",
+      "title": "Creating Your First Path",
+      "content": "Let's create a simple path to get started:<br><br><strong>Step 1: Open Your Robot Project</strong><br>In PathPlanner, open your robot project directory. PathPlanner will look for your robot configuration files to understand your robot's dimensions and constraints.<br><br><strong>Step 2: Create a New Path</strong><br>Click the \"New Path\" button or use the menu to create a new path. Give it a descriptive name like \"SimpleForward\" or \"ScoreAndReturn\".<br><br><strong>Step 3: Place Waypoints</strong><br>Click on the field map to place waypoints. The first waypoint represents your robot's starting position. Add additional waypoints to define the path. Waypoints can be moved by dragging them.<br><br><strong>Step 4: Set Path Constraints</strong><br>In the properties panel, set maximum velocity, maximum acceleration, and maximum angular velocity. These constraints ensure the generated trajectory is physically achievable by your robot.<br><br><strong>Step 5: Generate Path</strong><br>Click \"Generate Path\" to create the trajectory. PathPlanner will optimize the path and show a preview. Adjust waypoints or constraints if needed and regenerate.<br><br><strong>Step 6: Export Path</strong><br>Export the path to your robot project. Paths are saved as JSON files in your project's pathplanner directory."
+    },
+    {
+      "type": "code",
+      "title": "Basic Path Following Command",
+      "content": "package frc.robot.commands;\n\nimport com.pathplanner.lib.auto.AutoBuilder;\nimport com.pathplanner.lib.path.PathPlannerPath;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class FollowPathCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final Command m_pathFollowingCommand;\n    \n    public FollowPathCommand(Drivetrain drivetrain, String pathName) {\n        m_drivetrain = drivetrain;\n        \n        // Load the path from PathPlanner\n        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);\n        \n        m_pathFollowingCommand = AutoBuilder.followPath(path);\n        \n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        m_pathFollowingCommand.schedule();\n    }\n    \n    @Override\n    public void execute() {\n        // Path following is handled by the AutoBuilder command\n        // This method may be empty or contain additional logic\n    }\n    \n    @Override\n    public boolean isFinished() {\n        // Check if path following is complete\n        return !m_pathFollowingCommand.isScheduled();\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_drivetrain.stop();\n        \n        if (interrupted) {\n            m_pathFollowingCommand.cancel();\n        }\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Path Constraints and Parameters",
+      "content": "Path constraints determine how fast and how smoothly your robot moves along paths. Understanding and setting these correctly is crucial for good autonomous performance:<br><br><strong>Maximum Velocity:</strong> The maximum linear speed your robot can achieve (in meters per second). Set this based on your robot's capabilities. Too high and the robot won't be able to follow the path accurately. Too low and autonomous routines will be unnecessarily slow.<br><br><strong>Maximum Acceleration:</strong> How quickly your robot can change speed (in meters per second squared). This affects how smoothly the robot accelerates and decelerates. Higher values allow faster acceleration but may cause jerky motion.<br><br><strong>Maximum Angular Velocity:</strong> The maximum rotational speed (in radians per second). This controls how fast your robot can turn. Set based on your drivetrain's turning capabilities.<br><br><strong>Maximum Angular Acceleration:</strong> How quickly your robot can change rotational speed. This affects turning smoothness.<br><br>These constraints should match your robot's physical capabilities. Test your robot to determine realistic values, then use them consistently across all paths. Refer to PathPlanner documentation for guidance on setting these values.<br><br>Learn more: <a href='https://pathplanner.dev/api/java/com/pathplanner/lib/path/PathConstraints.html' target='_blank'>PathPlanner: Path Constraints API</a>"
+    },
+    {
+      "type": "text",
+      "title": "Waypoints and Path Generation",
+      "content": "Waypoints define the key points your robot must pass through. PathPlanner uses these waypoints to generate smooth, continuous trajectories:<br><br><strong>Starting Waypoint:</strong> The first waypoint represents your robot's starting position and orientation. This should match your robot's actual starting pose in autonomous.<br><br><strong>Intermediate Waypoints:</strong> Additional waypoints guide the robot's path. PathPlanner generates smooth curves between waypoints, so you don't need waypoints for every small movement. Place waypoints at key decision points, turns, or locations where the robot needs to be at a specific position.<br><br><strong>Ending Waypoint:</strong> The final waypoint is where the robot should finish. You can specify the robot's orientation at the end of the path.<br><br><strong>Path Generation:</strong> PathPlanner uses mathematical optimization to generate trajectories between waypoints. The generated path minimizes time while respecting velocity and acceleration constraints. The algorithm ensures smooth motion with continuous velocity and acceleration.<br><br><strong>Holonomic Mode:</strong> For holonomic drivetrains (like swerve), PathPlanner can generate paths where rotation is independent of translation. This allows more complex maneuvers and better autonomous performance."
+    },
+    {
+      "type": "text",
+      "title": "Event Markers",
+      "content": "Event markers allow you to trigger actions at specific points along a path. This is essential for creating complex autonomous routines that combine movement with mechanism operations:<br><br><strong>Adding Event Markers:</strong> Place event markers along your path at points where you want actions to occur. For example, you might want to deploy an intake at one point, shoot at another, or retract an arm at a third point.<br><br><strong>Marker Actions:</strong> Each event marker can trigger one or more commands. When the robot reaches the marker during path following, the associated commands are automatically scheduled. This allows you to create sophisticated autonomous sequences without manually timing mechanism operations.<br><br><strong>Parallel vs Sequential:</strong> You can configure markers to run commands in parallel (simultaneously) or sequentially (one after another). Parallel execution allows mechanisms to operate while the robot continues moving, while sequential execution ensures actions complete before continuing.<br><br><strong>Common Uses:</strong> Event markers are commonly used for scoring game pieces, deploying mechanisms, intaking objects, and triggering vision-based actions. They make it easy to create multi-step autonomous routines that combine movement and mechanism control.<br><br>Learn more: <a href='https://pathplanner.dev/api/java/com/pathplanner/lib/path/EventMarker.html' target='_blank'>PathPlanner: Event Markers API</a>"
+    },
+    {
+      "type": "code",
+      "title": "Using Event Markers in Code",
+      "content": "package frc.robot.commands;\n\nimport com.pathplanner.lib.auto.AutoBuilder;\nimport com.pathplanner.lib.path.PathPlannerPath;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.Commands;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Arm;\nimport frc.robot.subsystems.Intake;\n\npublic class AutonomousRoutine {\n    private final Drivetrain m_drivetrain;\n    private final Arm m_arm;\n    private final Intake m_intake;\n    \n    public AutonomousRoutine(Drivetrain drivetrain, Arm arm, Intake intake) {\n        m_drivetrain = drivetrain;\n        m_arm = arm;\n        m_intake = intake;\n    }\n    \n    public Command getAutonomousCommand() {\n        // Load path with event markers\n        PathPlannerPath path = PathPlannerPath.fromPathFile(\"ScoreAndReturn\");\n        \n        // AutoBuilder automatically handles event markers\n        // Markers defined in PathPlanner will trigger these commands:\n        // - \"deployIntake\" marker triggers intake deployment\n        // - \"score\" marker triggers scoring sequence\n        // - \"retract\" marker triggers mechanism retraction\n        \n        return AutoBuilder.followPath(path)\n            .withMarkers(\n                \"deployIntake\", Commands.runOnce(() -> m_intake.deploy(), m_intake),\n                \"score\", Commands.sequence(\n                    Commands.runOnce(() -> m_arm.moveToScoringPosition(), m_arm),\n                    Commands.waitSeconds(0.5),\n                    Commands.runOnce(() -> m_intake.eject(), m_intake)\n                ),\n                \"retract\", Commands.runOnce(() -> m_arm.retract(), m_arm)\n            );\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "AutoBuilder Setup",
+      "content": "AutoBuilder is PathPlanner's automatic command generation system. It simplifies path following by automatically creating commands from your paths, eliminating the need to manually write path following code:<br><br><strong>Configuring AutoBuilder:</strong> Before using AutoBuilder, you must configure it with your robot's characteristics. This includes your drivetrain kinematics, PID controllers for path following, and pose supplier. AutoBuilder uses this information to generate appropriate commands for your specific robot.<br><br><strong>Robot Configuration:</strong> Provide AutoBuilder with your robot's maximum velocity, maximum acceleration, and base radius (for holonomic drivetrains). These values should match the constraints you use in PathPlanner.<br><br><strong>Path Following Configuration:</strong> Configure PID controllers for translation and rotation. These controllers determine how accurately your robot follows paths. Tune these controllers for your specific robot and drivetrain.<br><br><strong>Pose Supplier:</strong> AutoBuilder needs to know your robot's current pose (position and orientation). Provide a supplier that returns your robot's pose from odometry or pose estimation.<br><br>Once configured, AutoBuilder can automatically generate commands for any path you create in PathPlanner, significantly reducing development time.<br><br>Learn more: <a href='https://pathplanner.dev/pplib-build-an-auto.html#configure-autobuilder' target='_blank'>PathPlanner: AutoBuilder</a>"
+    },
+    {
+      "type": "code",
+      "title": "AutoBuilder Configuration Example",
+      "content": "package frc.robot;\n\nimport com.pathplanner.lib.auto.AutoBuilder;\nimport com.pathplanner.lib.util.HolonomicPathFollowerConfig;\nimport com.pathplanner.lib.util.PIDConstants;\nimport com.pathplanner.lib.util.ReplanningConfig;\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.kinematics.ChassisSpeeds;\nimport edu.wpi.first.wpilibj.DriverStation;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class RobotContainer {\n    private final Drivetrain m_drivetrain;\n    \n    public RobotContainer() {\n        m_drivetrain = new Drivetrain();\n        \n        // Configure AutoBuilder\n        AutoBuilder.configureHolonomic(\n            // Pose supplier - where is the robot?\n            m_drivetrain::getPose,\n            \n            m_drivetrain::resetPose,\n            \n            // Robot relative speeds supplier\n            () -> m_drivetrain.getChassisSpeeds(),\n            \n            // Robot relative output\n            (ChassisSpeeds speeds) -> m_drivetrain.drive(speeds),\n            \n            // Path follower config\n            new HolonomicPathFollowerConfig(\n                new PIDConstants(5.0, 0.0, 0.0),  // Translation PID\n                new PIDConstants(5.0, 0.0, 0.0),  // Rotation PID\n                4.5,  // Max module speed (m/s)\n                0.4,\n                new ReplanningConfig()  // Default replanning config\n            ),\n            \n            // Should path be flipped based on alliance color?\n            () -> {\n                // Flip path if on red alliance\n                var alliance = DriverStation.getAlliance();\n                return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;\n            },\n            \n            // Reference to drivetrain subsystem\n            m_drivetrain\n        );\n    }\n    \n    public Command getAutonomousCommand() {\n        // AutoBuilder can now generate commands automatically\n        return AutoBuilder.buildAuto(\"YourPathName\");\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Path Following in Robot Code",
+      "content": "Once you've created paths in PathPlanner and configured AutoBuilder, using paths in your robot code is straightforward:<br><br><strong>Loading Paths:</strong> Paths are stored as JSON files in your project. Use <code>PathPlannerPath.fromPathFile()</code> to load a path by name. The path file should be in your project's pathplanner directory.<br><br><strong>Following Paths:</strong> Use AutoBuilder to create commands that follow paths. The <code>AutoBuilder.followPath()</code> method returns a command that will follow the specified path. Schedule this command in your autonomous routine.<br><br><strong>Path Sequences:</strong> You can chain multiple paths together to create complex autonomous routines. Use command groups (SequentialCommandGroup or ParallelCommandGroup) to combine path following with other commands.<br><br><strong>Path Flipping:</strong> PathPlanner supports path flipping based on alliance color. This allows you to create one path and automatically mirror it for the opposite alliance. Configure path flipping in AutoBuilder setup.<br><br><strong>Monitoring Progress:</strong> Path following commands provide feedback about progress. You can check if a path is complete, get the current target pose, and monitor path following performance."
+    },
+    {
+      "type": "text",
+      "title": "Tuning Path Following",
+      "content": "Proper tuning is essential for accurate path following. Several parameters affect how well your robot follows paths:<br><br><strong>Translation PID:</strong> Controls how accurately the robot follows the path's position. Increase kP for faster response, but watch for oscillation. Add kD to reduce overshoot. Tune these values to match your robot's characteristics.<br><br><strong>Rotation PID:</strong> Controls how accurately the robot maintains the path's heading. Similar tuning principles apply - balance responsiveness with stability.<br><br><strong>Feedforward:</strong> PathPlanner supports feedforward control for better path following. Configure feedforward gains (kV, kA) based on your robot's dynamics. Feedforward helps the robot anticipate required motor outputs, reducing following error.<br><br><strong>Replanning:</strong> PathPlanner can replan paths if the robot deviates significantly. Configure replanning thresholds and behavior. Replanning helps recover from errors but can cause path changes mid-execution.<br><br><strong>Tuning Process:</strong> Start with conservative PID values, then gradually increase gains while testing. Use AdvantageScope or similar tools to visualize path following performance. Adjust parameters based on observed behavior - reduce gains if oscillating, increase if too slow.<br><br>Refer to PathPlanner documentation for detailed tuning guidance and recommended starting values for different robot types."
+    },
+    {
+      "type": "text",
+      "title": "Common Autonomous Patterns",
+      "content": "PathPlanner enables several common autonomous patterns:<br><br><strong>Simple Movement:</strong> Basic paths that move the robot from one position to another. Useful for positioning, avoiding obstacles, or reaching scoring locations.<br><br><strong>Scoring Sequences:</strong> Paths that combine movement with scoring actions using event markers. The robot moves to a scoring position, performs scoring actions, then continues.<br><br><strong>Multi-Piece Autonomous:</strong> Complex routines that collect multiple game pieces and score them. These typically involve multiple paths connected with intake and scoring commands.<br><br><strong>Defensive Autonomous:</strong> Paths designed to avoid other robots or obstacles. These may involve dynamic replanning or obstacle avoidance.<br><br><strong>Return Paths:</strong> Paths that return the robot to a starting position or safe zone after completing actions. Often used at the end of autonomous routines.<br><br>Experiment with different patterns to find what works best for your robot and game strategy. PathPlanner makes it easy to iterate and refine autonomous routines."
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "subtitle": "Tips for effective PathPlanner usage:",
+      "items": [
+        "Test paths in simulation before deploying to robot",
+        "Start with simple paths and gradually increase complexity",
+        "Use event markers to combine movement with mechanism actions",
+        "Tune path following parameters for your specific robot",
+        "Document path constraints and tuning values for your team",
+        "Version control your path files along with your code",
+        "Create multiple path variations for different scenarios",
+        "Regularly refer to official PathPlanner documentation for updates"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics and Documentation",
+      "links": [
+        {
+          "label": "PathPlanner Documentation",
+          "url": "https://pathplanner.dev/home.html"
+        },
+        {
+          "label": "Command-Based Programming",
+          "id": "command-based-intro"
+        },
+        {
+          "label": "Pose Estimation",
+          "id": "pose-estimation-intro"
+        },
+        {
+          "label": "PID Control",
+          "id": "pid-control-intro"
+        }
+      ]
+    }
+  ]
+}

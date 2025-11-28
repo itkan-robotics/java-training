@@ -64,7 +64,7 @@
     {
       "type": "text",
       "title": "WPILib Versioning",
-      "content": "WPILib uses semantic versioning (major.minor.patch) and is tied to FRC seasons. Understanding version numbers helps ensure compatibility:<br><br><strong>Version Format:</strong> <code>[Year].[Major].[Minor]</code> (e.g., 2024.1.1)<br>- <strong>Year:</strong> The FRC competition season<br>- <strong>Major:</strong> Major feature releases during the season<br>- <strong>Minor:</strong> Bug fixes and minor updates<br><br><strong>Season Compatibility:</strong> Each FRC season has its own WPILib version. Code written for one season's WPILib may not be compatible with another season's version. Always use the WPILib version that matches your competition season.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/getting-started/index.html' target='_blank'>WPILib Getting Started Guide</a>"
+      "content": "WPILib uses semantic versioning (major.minor.patch) and is tied to FRC seasons. Understanding version numbers helps ensure compatibility:<br><br><strong>Version Format:</strong> <code>[Year].[Major].[Minor]</code> (e.g., 2024.1.1)<br>- <strong>Year:</strong> The FRC competition season<br>- <strong>Major:</strong> Major feature releases during the season<br>- <strong>Minor:</strong> Bug fixes and minor updates<br><br><strong>Season Compatibility:</strong> Each FRC season has its own WPILib version. Code written for one season's WPILib may not be compatible with another season's version. Always use the WPILib version that matches your competition season."
     },
     {
       "type": "text",
@@ -78,17 +78,17 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
 		  "label": "Project Creation", 
-		  "url": "project-creation"},
+		  "id": "project-creation"},
         {
 		  "label": "VS Code Setup", 
-		  "url": "vs-code-setup"},
+		  "id": "vs-code-setup"},
         {
 		  "label": "Gradle Build System", 
-		  "url": "gradle-build-system"}
+		  "id": "gradle-build-system"}
       ]
     }
   ]

@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Introduction to FRC Projects",
-      "content": "An FRC robot project is a structured codebase that contains all the code needed to control your robot. WPILib provides project templates that give you a starting point with the correct structure and configuration. Understanding how to create and configure projects is essential for FRC development.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/frc-game-tools.html' target='_blank'>WPILib Documentation: Creating a Robot Project</a>"
+      "content": "An FRC robot project is a structured codebase that contains all the code needed to control your robot. WPILib provides project templates that give you a starting point with the correct structure and configuration. Understanding how to create and configure projects is essential for FRC development.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/labview/creating-robot-programs/index.html' target='_blank'>WPILib Documentation: Creating a Robot Project</a>"
     },
     {
       "type": "rules-box",
@@ -35,12 +35,12 @@
     {
       "type": "text",
       "title": "Key Files Explained",
-      "content": "Each file in your project has a specific purpose. Understanding these files helps you work effectively with your robot code.<br><br><strong>Main.java:</strong> The entry point of your program. It calls the Robot class and handles program initialization.<br><br><strong>Robot.java (TimedRobot):</strong> The main robot class that extends TimedRobot. Contains methods like <code>robotInit()</code>, <code>autonomousPeriodic()</code>, and <code>teleopPeriodic()</code> that are called at different times during robot operation.<br><br><strong>RobotContainer.java (Command-based):</strong> Central configuration class for command-based programming. Sets up subsystems, commands, and button bindings.<br><br><strong>Constants.java:</strong> A file (you may need to create) for storing constant values like motor IDs, speeds, and configuration parameters.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/basic-programming/project-structure.html' target='_blank'>WPILib Documentation: Project Structure</a>"
+      "content": "Each file in your project has a specific purpose. Understanding these files helps you work effectively with your robot code.<br><br><strong>Main.java:</strong> The entry point of your program. It calls the Robot class and handles program initialization.<br><br><strong>Robot.java (TimedRobot):</strong> The main robot class that extends TimedRobot. Contains methods like <code>robotInit()</code>, <code>autonomousPeriodic()</code>, and <code>teleopPeriodic()</code> that are called at different times during robot operation.<br><br><strong>RobotContainer.java (Command-based):</strong> Central configuration class for command-based programming. Sets up subsystems, commands, and button bindings.<br><br><strong>Constants.java:</strong> A file (you may need to create) for storing constant values like motor IDs, speeds, and configuration parameters.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/vscode-overview/creating-robot-program.html' target='_blank'>WPILib Documentation: Creating a Robot Program</a>"
     },
     {
       "type": "code",
       "title": "Basic TimedRobot Template Structure",
-      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class Robot extends TimedRobot {\n    private Command m_autonomousCommand;\n\n    @Override\n    public void robotInit() {\n        // This method is called once when the robot starts\n        // Initialize hardware, sensors, and subsystems here\n    }\n\n    @Override\n    public void robotPeriodic() {\n        // This method is called repeatedly while the robot is on\n        // Update dashboard, run periodic tasks\n        CommandScheduler.getInstance().run();\n    }\n\n    @Override\n    public void autonomousInit() {\n        // Called once when autonomous mode starts\n        // Schedule autonomous commands here\n    }\n\n    @Override\n    public void autonomousPeriodic() {\n        // Called repeatedly during autonomous\n        // Autonomous logic goes here\n    }\n\n    @Override\n    public void teleopInit() {\n        // Called once when teleop mode starts\n        // Cancel autonomous commands, initialize teleop\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // Called repeatedly during teleop\n        // Teleop control logic goes here\n    }\n\n    @Override\n    public void testInit() {\n        // Called once when test mode starts\n    }\n\n    @Override\n    public void testPeriodic() {\n        // Called repeatedly during test mode\n        // Test code goes here\n    }\n}"
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class Robot extends TimedRobot {\n    private Command m_autonomousCommand;\n\n    @Override\n    public void robotInit() {\n        // This method is called once when the robot starts\n    }\n\n    @Override\n    public void robotPeriodic() {\n        // This method is called repeatedly while the robot is on\n        CommandScheduler.getInstance().run();\n    }\n\n    @Override\n    public void autonomousInit() {\n        // Schedule autonomous commands here\n    }\n\n    @Override\n    public void autonomousPeriodic() {\n        // Autonomous logic goes here\n    }\n\n    @Override\n    public void teleopInit() {\n        // Cancel autonomous commands, initialize teleop\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // Teleop control logic goes here\n    }\n\n    @Override\n    public void testInit() {\n    }\n\n    @Override\n    public void testPeriodic() {\n        // Test code goes here\n    }\n}"
     },
     {
       "type": "text",
@@ -70,7 +70,7 @@
     {
       "type": "text",
       "title": "Deploying to Robot",
-      "content": "Deploying uploads your compiled code to the roboRIO (robot controller). The robot must be powered on and connected to the same network as your computer.<br><br><strong>Deployment Methods:</strong><br><br><strong>1. Using VS Code Command:</strong><br>- Press <code>Ctrl+Shift+P</code> and type 'WPILib: Deploy Robot Code'<br>- Or use the keyboard shortcut <code>Ctrl+F5</code><br><br><strong>2. Using Terminal:</strong><br>- Run <code>./gradlew deploy</code> (Windows: <code>gradlew.bat deploy</code>)<br><br><strong>Deployment Process:</strong><br>1. Builds your project (if not already built)<br>2. Connects to the robot over the network<br>3. Uploads the compiled code<br>4. Restarts the robot code on the roboRIO<br><br><strong>Verification:</strong> After deployment, check the Driver Station to see if the robot code is running. You should see your robot's status indicators active.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/getting-started/getting-started-frc-control-system/roborio-introduction.html' target='_blank'>WPILib Documentation: roboRIO Introduction</a>"
+      "content": "Deploying uploads your compiled code to the roboRIO (robot controller). The robot must be powered on and connected to the same network as your computer.<br><br><strong>Deployment Methods:</strong><br><br><strong>1. Using VS Code Command:</strong><br>- Press <code>Ctrl+Shift+P</code> and type 'WPILib: Deploy Robot Code'<br>- Or use the keyboard shortcut <code>Ctrl+F5</code><br><br><strong>2. Using Terminal:</strong><br>- Run <code>./gradlew deploy</code> (Windows: <code>gradlew.bat deploy</code>)<br><br><strong>Deployment Process:</strong><br>1. Builds your project (if not already built)<br>2. Connects to the robot over the network<br>3. Uploads the compiled code<br>4. Restarts the robot code on the roboRIO<br><br><strong>Verification:</strong> After deployment, check the Driver Station to see if the robot code is running. You should see your robot's status indicators active.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/roborio-info/roborio-introduction.html' target='_blank'>WPILib Documentation: roboRIO Introduction</a>"
     },
     {
       "type": "text",
@@ -82,16 +82,18 @@
       "title": "Next Steps",
       "links": [
         {
-		  "label": "VS Code Setup", 
-		  "url": "vs-code-setup"},
+          "label": "VS Code Setup",
+          "id": "vs-code-setup"
+        },
         {
-		  "label": "Gradle Build System", 
-		  "url": "gradle-build-system"},
+          "label": "Gradle Build System",
+          "id": "gradle-build-system"
+        },
         {
-		  "label": "Basic Robot Structure", 
-		  "url": "frc-basic-robot-structure"}
+          "label": "Command-Based Introduction",
+          "id": "command-based-intro"
+        }
       ]
     }
   ]
 }
-

@@ -1,0 +1,119 @@
+{
+  "title": "Professional Code Organization",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Why Code Organization Matters",
+      "content": "Well-organized code is easier to understand, maintain, and extend. Good organization makes it easier for team members to find code, understand how it works, and make changes safely. Poor organization leads to confusion, bugs, and slower development. For FRC teams, good code organization is essential for effective collaboration and reliable robot code.<br><br>Code organization includes package structure, naming conventions, code documentation, design patterns, and team practices. These elements work together to create maintainable, professional code. Good organization becomes more important as robots become more complex and teams grow larger.<br><br>While organization requires initial effort and discipline, it pays dividends throughout the season. Well-organized code is easier to debug, easier to extend, and easier for new team members to understand. Many competitive teams invest in code organization to improve development speed and code quality.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html' target='_blank'>WPILib: Code Structure</a>"
+    },
+    {
+      "type": "text",
+      "title": "Benefits of Good Organization",
+      "content": "Good code organization provides several important benefits:<br><br><strong>Easier Navigation:</strong> Find code quickly when you know where to look. Clear package structure and naming conventions make code easy to locate. This saves time during development and debugging.<br><br><strong>Better Understanding:</strong> Understand code more easily when it's well-organized. Clear structure, good naming, and documentation help team members understand code quickly. This is especially valuable for new team members.<br><br><strong>Safer Changes:</strong> Make changes more safely when code is well-organized. Clear structure helps identify what code affects what, reducing the risk of breaking unrelated functionality. Good organization enables confident refactoring.<br><br><strong>Team Collaboration:</strong> Collaborate more effectively with well-organized code. Team members can work on different parts of the codebase without conflicts. Clear organization reduces confusion and miscommunication.<br><br><strong>Maintainability:</strong> Maintain code more easily when it's well-organized. Well-structured code is easier to debug, extend, and modify. Good organization reduces long-term maintenance burden.<br><br><strong>Professional Practices:</strong> Demonstrate professional software development practices. Well-organized code shows attention to detail and professional standards. This is valuable for learning and for competition."
+    },
+    {
+      "type": "text",
+      "title": "Package Structure",
+      "content": "Package structure organizes code into logical groups:<br><br><strong>Standard WPILib Structure:</strong> WPILib recommends a standard package structure: <code>frc.robot.subsystems</code> for subsystems, <code>frc.robot.commands</code> for commands, <code>frc.robot</code> for main robot classes. This structure is familiar to FRC teams and follows WPILib conventions.<br><br><strong>Subsystem Organization:</strong> Organize subsystems in the <code>subsystems</code> package. Each subsystem should be in its own file. For complex subsystems, consider sub-packages (e.g., <code>subsystems.drivetrain</code> for drivetrain-related classes).<br><br><strong>Command Organization:</strong> Organize commands in the <code>commands</code> package. Group related commands together - for example, all autonomous commands in <code>commands.auto</code>. This makes it easy to find commands for specific purposes.<br><br><strong>Utility Organization:</strong> Create utility packages for shared code. Common utilities go in <code>util</code> or <code>common</code> packages. This prevents code duplication and centralizes shared functionality.<br><br><strong>Constants Organization:</strong> Organize constants in a <code>Constants</code> class or constants package. Group related constants together (drivetrain constants, arm constants, etc.). This makes tuning and configuration easier.<br><br>Follow WPILib's recommended structure, adapting it for your team's needs. Consistency is more important than perfect structure."
+    },
+    {
+      "type": "code",
+      "title": "Example Package Structure",
+      "content": "package structure:\n\nfrc.robot/\n├── Robot.java                    // Main robot class\n├── Main.java                     // Main entry point\n├── RobotContainer.java           // Robot container\n│\n├── constants/\n│   ├── Constants.java            // All constants\n│   ├── DrivetrainConstants.java\n│   └── ArmConstants.java         // Arm-specific\n│\n├── subsystems/\n│   ├── Drivetrain.java\n│   ├── Arm.java                  // Arm subsystem\n│   ├── Intake.java               // Intake subsystem\n│   └── Elevator.java             // Elevator subsystem\n│\n├── commands/\n│   ├── auto/\n│   │   ├── SimpleAuto.java      // Simple autonomous\n│   │   └── ComplexAuto.java     // Complex autonomous\n│   ├── teleop/\n│   │   ├── DriveCommand.java    // Teleop driving\n│   │   └── ArmCommand.java      // Teleop arm control\n│   └── default/\n│       └── DefaultArmCommand.java // Default commands\n│\n└── util/\n    ├── MathUtils.java            // Math utilities\n    ├── Conversions.java          // Unit conversions\n    └── LimelightHelpers.java    // Vision utilities\n\n// This structure is clear, organized, and easy to navigate"
+    },
+    {
+      "type": "text",
+      "title": "Naming Conventions",
+      "content": "Consistent naming conventions make code easier to understand:<br><br><strong>Class Names:</strong> Use PascalCase for class names. Names should be descriptive and indicate purpose. Subsystems end with the subsystem type (e.g., <code>Drivetrain</code>, <code>ArmSubsystem</code>). Commands end with \"Command\" (e.g., <code>DriveForwardCommand</code>).<br><br><strong>Method Names:</strong> Use camelCase for method names. Names should be verbs that describe what the method does (e.g., <code>setAngle()</code>, <code>getPosition()</code>, <code>moveToState()</code>). Be descriptive but concise.<br><br><strong>Variable Names:</strong> Use camelCase for variables. Names should indicate purpose and type when helpful. Use meaningful names - <code>targetAngle</code> is better than <code>angle</code> or <code>a</code>. Prefix member variables with <code>m_</code> (WPILib convention).<br><br><strong>Constants:</strong> Use UPPER_SNAKE_CASE for constants. Constants should be descriptive and indicate their purpose. Group related constants together. For example, <code>MAX_ARM_ANGLE</code>, <code>MIN_ARM_ANGLE</code>.<br><br><strong>Package Names:</strong> Use lowercase for package names. Package names should be descriptive and indicate contents. Follow Java package naming conventions (reverse domain, lowercase).<br><br>Consistency is key - establish conventions and follow them throughout the codebase. WPILib has recommended conventions that many teams follow."
+    },
+    {
+      "type": "code",
+      "title": "Naming Convention Examples",
+      "content": "package frc.robot.subsystems;\npackage frc.robot.commands.auto;\npackage frc.robot.util;\n\n// Good names are self-documenting\n// Bad: double a = 5.0;\n// Good: double targetAngleDegrees = 5.0;\n\n// Good names indicate purpose\n// Bad: void doStuff() { }\n// Good: void moveArmToScoringPosition() { }"
+    },
+    {
+      "type": "text",
+      "title": "Code Documentation",
+      "content": "Good documentation helps team members understand code:<br><br><strong>JavaDoc Comments:</strong> Use JavaDoc comments for classes and public methods. JavaDoc provides structured documentation that tools can process. Document what code does, parameters, return values, and any important behavior or constraints.<br><br><strong>Inline Comments:</strong> Use inline comments to explain why code does something, not what it does. Code should be self-explanatory for what it does - comments explain the why. Comment complex logic, non-obvious decisions, or important details.<br><br><strong>README Files:</strong> Create README files for complex subsystems or features. README files provide overview documentation that helps team members understand larger concepts. Include setup instructions, usage examples, and important notes.<br><br><strong>Code Comments:</strong> Keep comments up-to-date with code changes. Outdated comments are worse than no comments - they mislead and confuse. Review and update comments when modifying code.<br><br><strong>Documentation Standards:</strong> Establish documentation standards for your team. Decide what needs documentation, what format to use, and how detailed documentation should be. Consistency in documentation is as important as consistency in code."
+    },
+    {
+      "type": "code",
+      "title": "Documentation Examples",
+      "content": "Here are examples of good documentation:\n\n/**\n * Drivetrain subsystem for robot movement.\n * Controls left and right motor groups for tank drive.\n */\npublic class Drivetrain extends SubsystemBase {\n    /**\n     * Maximum velocity in meters per second.\n     */\n    private static final double MAX_VELOCITY = 4.5;\n    \n    /**\n     * Sets the drivetrain speed.\n     * \n     * @param leftSpeed Left side speed (-1.0 to 1.0)\n     * @param rightSpeed Right side speed (-1.0 to 1.0)\n     */\n    public void drive(double leftSpeed, double rightSpeed) {\n        // Clamp speeds to valid range\n        leftSpeed = MathUtils.clamp(leftSpeed, -1.0, 1.0);\n        rightSpeed = MathUtils.clamp(rightSpeed, -1.0, 1.0);\n        \n        m_leftGroup.set(leftSpeed);\n        m_rightGroup.set(rightSpeed);\n    }\n    \n    /**\n     * Gets the current robot pose from odometry.\n     * \n     * @return Current robot pose (position and orientation)\n     */\n    public Pose2d getPose() {\n        return m_odometry.getPoseMeters();\n    }\n}\n\n// Inline comments explain why, not what:\n// This prevents the arm from sagging when stationary\ndouble feedforward = Math.cos(armAngle) * kG;"
+    },
+    {
+      "type": "text",
+      "title": "Design Patterns",
+      "content": "Design patterns provide proven solutions to common problems:<br><br><strong>Command-Based Pattern:</strong> WPILib's command-based programming is a design pattern. It separates commands (actions) from subsystems (hardware), enabling flexible robot behavior. This pattern is fundamental to FRC programming and is recommended by WPILib.<br><br><strong>Singleton Pattern:</strong> Use singletons for subsystems that should have only one instance. WPILib subsystems are typically singletons. The singleton pattern ensures consistent access to shared resources.<br><br><strong>Factory Pattern:</strong> Use factories to create objects with complex initialization. Command factories can create commands with proper dependencies. Factory patterns simplify object creation and manage dependencies.<br><br><strong>Strategy Pattern:</strong> Use strategy pattern for algorithms that can vary. For example, different path following strategies or different control algorithms. Strategy pattern enables flexibility and easy algorithm swapping.<br><br><strong>Observer Pattern:</strong> WPILib's command scheduler uses observer-like patterns. Commands observe subsystem state and react accordingly. Understanding these patterns helps design better code.<br><br>Don't overuse patterns - use them where they provide value. Simple code is often better than complex patterns. Patterns should solve problems, not create complexity."
+    },
+    {
+      "type": "text",
+      "title": "Refactoring Techniques",
+      "content": "Refactoring improves code without changing behavior:<br><br><strong>Extract Methods:</strong> Break large methods into smaller, focused methods. Each method should do one thing well. Smaller methods are easier to understand, test, and reuse. Extract methods when code becomes long or complex.<br><br><strong>Extract Classes:</strong> Split large classes into smaller, focused classes. Each class should have a single responsibility. Smaller classes are easier to understand and maintain. Extract classes when classes become too large or have multiple responsibilities.<br><br><strong>Rename for Clarity:</strong> Rename variables, methods, and classes to be more descriptive. Better names make code self-documenting. Rename when names don't clearly indicate purpose or when understanding improves.<br><br><strong>Remove Duplication:</strong> Identify and eliminate code duplication. Duplicated code is harder to maintain - bugs must be fixed in multiple places. Extract common code into shared methods or classes.<br><br><strong>Simplify Logic:</strong> Simplify complex conditional logic, nested structures, or calculations. Simpler code is easier to understand and less error-prone. Break complex logic into smaller, clearer pieces.<br><br>Refactor incrementally and test after each change. Good tests enable safe refactoring. Refactor when you understand code better, not just to change it."
+    },
+    {
+      "type": "text",
+      "title": "Team Collaboration",
+      "content": "Good organization enables effective team collaboration:<br><br><strong>Code Reviews:</strong> Review code changes before merging. Code reviews catch bugs, improve code quality, and share knowledge. Establish review processes and standards. Reviews should be constructive and educational.<br><br><strong>Version Control:</strong> Use version control (Git) effectively. Commit frequently with clear messages. Use branches for features and fixes. Good version control practices enable safe collaboration and easy rollback.<br><br><strong>Communication:</strong> Communicate about code changes, especially large refactorings. Keep team members informed about significant changes. Communication prevents conflicts and confusion.<br><br><strong>Standards:</strong> Establish and follow coding standards. Standards ensure consistency and make code easier to understand. Document standards and enforce them through reviews and tooling.<br><br><strong>Knowledge Sharing:</strong> Share knowledge about code organization and patterns. Help team members understand organization decisions and patterns. Knowledge sharing improves team capability and code quality."
+    },
+    {
+      "type": "text",
+      "title": "Version Control Best Practices",
+      "content": "Effective version control is essential for team collaboration:<br><br><strong>Commit Frequently:</strong> Commit changes frequently with clear, descriptive messages. Small, focused commits are easier to understand and review. Frequent commits provide a history of development and enable easier rollback.<br><br><strong>Meaningful Messages:</strong> Write commit messages that explain what changed and why. Good messages help team members understand changes and find relevant commits. Follow commit message conventions if your team has them.<br><br><strong>Branch Strategy:</strong> Use branches for features, fixes, and experiments. Keep main branch stable and working. Merge branches after review and testing. Branch strategy prevents conflicts and enables parallel development.<br><br><strong>Avoid Large Commits:</strong> Avoid committing many unrelated changes together. Large commits are hard to review and understand. Split large changes into smaller, focused commits when possible.<br><br><strong>Use .gitignore:</strong> Configure .gitignore to exclude build artifacts, IDE files, and other generated content. This keeps the repository clean and prevents conflicts. WPILib projects include appropriate .gitignore files."
+    },
+    {
+      "type": "text",
+      "title": "Code Review Process",
+      "content": "Code reviews improve code quality and share knowledge:<br><br><strong>Review Checklist:</strong> Use a checklist for reviews. Check for correctness, organization, documentation, and adherence to standards. Checklists ensure thorough reviews and consistency.<br><br><strong>Constructive Feedback:</strong> Provide constructive, respectful feedback. Focus on code, not people. Explain why changes are suggested, not just what to change. Constructive feedback improves code and team relationships.<br><br><strong>Review Timing:</strong> Review code promptly to avoid blocking development. Quick reviews enable faster iteration. However, thorough reviews are more important than speed - balance both.<br><br><strong>Learning Opportunity:</strong> Use reviews as learning opportunities. Explain patterns, best practices, and reasoning. Reviews help team members learn and improve. Both reviewers and authors learn from the process."
+    },
+    {
+      "type": "text",
+      "title": "Maintaining Code Quality",
+      "content": "Maintain code quality throughout development:<br><br><strong>Regular Refactoring:</strong> Refactor code regularly as understanding improves. Don't let code quality degrade over time. Regular refactoring prevents technical debt from accumulating. Refactor when you understand code better, not just when it breaks.<br><br><strong>Standards Enforcement:</strong> Enforce coding standards through reviews and tooling. Use linters, formatters, and other tools to maintain consistency. Automated tools catch issues that manual review might miss.<br><br><strong>Documentation Updates:</strong> Keep documentation updated as code changes. Outdated documentation is misleading. Update comments, JavaDoc, and README files when modifying code. Documentation maintenance is as important as code maintenance.<br><br><strong>Team Discipline:</strong> Maintain discipline in following organization standards. It's easy to skip documentation or use quick fixes, but discipline pays off long-term. Team commitment to quality is essential.<br><br>Code quality is an ongoing effort, not a one-time task. Maintain quality throughout development to avoid problems later."
+    },
+    {
+      "type": "text",
+      "title": "Common Organization Mistakes",
+      "content": "Avoid these common organization mistakes:<br><br><strong>Inconsistent Naming:</strong> Inconsistent naming makes code hard to understand. Establish conventions and follow them consistently. Use tools or reviews to enforce naming consistency.<br><br><strong>Poor Package Structure:</strong> Unclear package structure makes code hard to find. Follow WPILib conventions and keep structure logical. Don't create too many or too few packages.<br><br><strong>Lack of Documentation:</strong> Missing documentation makes code hard to understand. Document complex logic, important decisions, and public APIs. Balance documentation with code clarity.<br><br><strong>Code Duplication:</strong> Duplicated code is harder to maintain. Extract common code into shared utilities. Eliminate duplication when you find it.<br><br><strong>Large Classes/Methods:</strong> Large classes and methods are hard to understand and maintain. Break them into smaller, focused pieces. Keep classes and methods focused on single responsibilities.<br><br><strong>Ignoring Standards:</strong> Ignoring established standards creates inconsistency. Follow team standards even when inconvenient. Consistency is more important than perfect standards."
+    },
+    {
+      "type": "rules-box",
+      "title": "Organization Best Practices",
+      "subtitle": "Key principles for well-organized code:",
+      "items": [
+        "Follow WPILib package structure conventions",
+        "Use consistent naming throughout codebase",
+        "Document complex logic and public APIs",
+        "Keep classes and methods focused",
+        "Eliminate code duplication",
+        "Refactor regularly as understanding improves",
+        "Use version control effectively",
+        "Review code before merging",
+        "Maintain discipline in following standards",
+        "Balance organization with development speed"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics and Documentation",
+      "links": [
+        {
+          "label": "Command-Based Programming",
+          "id": "command-based-intro"
+        },
+        {
+          "label": "Unit Testing",
+          "id": "unit-testing"
+        },
+        {
+          "label": "WPILib Code Structure",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/basic-programming/code-structure.html"
+        },
+        {
+          "label": "Subsystem Design",
+          "id": "subsystem-design"
+        }
+      ]
+    }
+  ]
+}

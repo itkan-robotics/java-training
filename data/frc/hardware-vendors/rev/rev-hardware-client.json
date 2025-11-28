@@ -9,7 +9,7 @@
     {
       "type": "text",
       "title": "Installing REV Hardware Client",
-      "content": "REV Hardware Client is a standalone application that you install on your computer. It's available for Windows, macOS, and Linux.<br><br><strong>Download:</strong> REV Hardware Client is available from the <a href='https://www.revrobotics.com/rev-hardware-client/' target='_blank'>REV Robotics website</a> or from the <a href='https://github.com/REVrobotics/REV-Hardware-Client/releases' target='_blank'>REV Hardware Client GitHub releases page</a>.<br><br><strong>Installation Steps:</strong><br>1. Download the installer for your operating system<br>2. Run the installer<br>3. Follow the installation wizard<br>4. Launch REV Hardware Client<br><br><strong>System Requirements:</strong> REV Hardware Client requires a computer with USB ports (for USB connection) or network connection (for CAN bus connection). Check REV documentation for specific system requirements."
+      "content": "REV Hardware Client is a standalone application that you install on your computer. It's available for Windows, macOS, and Linux.<br><br><strong>Download:</strong> REV Hardware Client is available from the <a href='https://docs.revrobotics.com/rev-hardware-client' target='_blank'>REV Robotics website</a><br>1. Download the installer for your operating system<br>2. Run the installer<br>3. Follow the installation wizard<br>4. Launch REV Hardware Client<br><br><strong>System Requirements:</strong> REV Hardware Client requires a computer with USB ports (for USB connection) or network connection (for CAN bus connection). Check REV documentation for specific system requirements."
     },
     {
       "type": "text",
@@ -48,17 +48,17 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "SPARK MAX Configuration", 
-		  "url": "spark-max-configuration"},
+		  "label": "Motor Controller Configuration", 
+		  "id": "motor-controller-configuration"},
         {
 		  "label": "SPARK MAX Setup", 
-		  "url": "spark-max-setup"},
+		  "id": "spark-max-setup"},
         {
 		  "label": "REV Introduction", 
-		  "url": "rev-intro"}
+		  "id": "rev-intro"}
       ]
     }
   ]

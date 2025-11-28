@@ -35,7 +35,7 @@
     {
       "type": "code",
       "title": "Creating Pigeon IMU Instance",
-      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\n\npublic class DrivetrainWithPigeon {\n    // Pigeon2 IMU for heading\n    private final Pigeon2 m_pigeon = new Pigeon2(0);  // CAN ID 0\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw()\n    };\n    \n    public DrivetrainWithPigeon() {\n        // Configure Pigeon (see configuration section)\n    }\n    \n    public double getHeading() {\n        // Refresh signal and read heading (yaw angle)\n        BaseStatusSignal.refreshAll(m_signals);\n        return m_pigeon.getYaw().getValue();\n    }\n}\n\n// Alternative: Pigeon mounted on Talon FX\npublic class DrivetrainWithPigeonOnTalon {\n    private final com.ctre.phoenix6.hardware.TalonFX m_motor = \n        new com.ctre.phoenix6.hardware.TalonFX(1);\n    \n    // Pigeon can be mounted on some Talon FX controllers\n    // In this case, use the Talon FX's device ID\n    private final Pigeon2 m_pigeon = new Pigeon2(m_motor);\n}"
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\n\npublic class DrivetrainWithPigeon {\n    // Pigeon2 IMU for heading\n    private final Pigeon2 m_pigeon = new Pigeon2(0);  // CAN ID 0\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw()\n    };\n    \n    public DrivetrainWithPigeon() {\n        // Configure Pigeon (see configuration section)\n    }\n    \n    public double getHeading() {\n        // Refresh signal and read heading (yaw angle)\n        BaseStatusSignal.refreshAll(m_signals);\n        return m_pigeon.getYaw().getValue();\n    }\n}\n\n// Alternative: Pigeon mounted on Talon FX\npublic class DrivetrainWithPigeonOnTalon {\n    private final com.ctre.phoenix6.hardware.TalonFX m_motor = \n        new com.ctre.phoenix6.hardware.TalonFX(1);\n    \n    // Pigeon can be mounted on some Talon FX controllers\n    private final Pigeon2 m_pigeon = new Pigeon2(m_motor);\n}"
     },
     {
       "type": "text",
@@ -45,7 +45,7 @@
     {
       "type": "code",
       "title": "Reading Pigeon Heading",
-      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw()\n    };\n    \n    public Drivetrain() {\n        // Calibrate Pigeon (takes a few seconds)\n        // In Phoenix 6, calibration happens automatically on first boot\n        // You can manually trigger calibration if needed\n    }\n    \n    public double getHeading() {\n        // Refresh signal and read yaw (heading) angle\n        BaseStatusSignal.refreshAll(m_signals);\n        return m_pigeon.getYaw().getValue();\n    }\n    \n    public void resetHeading() {\n        // Reset heading to zero\n        m_pigeon.setYaw(0);\n    }\n    \n    public double getHeadingRadians() {\n        // Convert degrees to radians\n        return Math.toRadians(getHeading());\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Robot Heading (degrees)\", getHeading());\n        SmartDashboard.putNumber(\"Robot Heading (radians)\", getHeadingRadians());\n    }\n}"
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw()\n    };\n    \n    public Drivetrain() {\n        // Calibrate Pigeon (takes a few seconds)\n        // In Phoenix 6, calibration happens automatically on first boot\n        // You can manually trigger calibration if needed\n    }\n    \n    public double getHeading() {\n        // Refresh signal and read yaw (heading) angle\n        BaseStatusSignal.refreshAll(m_signals);\n        return m_pigeon.getYaw().getValue();\n    }\n    \n    public void resetHeading() {\n        m_pigeon.setYaw(0);\n    }\n    \n    public double getHeadingRadians() {\n        // Convert degrees to radians\n        return Math.toRadians(getHeading());\n    }\n    \n    @Override\n    public void periodic() {\n        SmartDashboard.putNumber(\"Robot Heading (degrees)\", getHeading());\n        SmartDashboard.putNumber(\"Robot Heading (radians)\", getHeadingRadians());\n    }\n}"
     },
     {
       "type": "text",
@@ -55,7 +55,7 @@
     {
       "type": "code",
       "title": "Reading Pitch and Roll",
-      "content": "import com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class PigeonPitchRoll {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw(),\n        m_pigeon.getPitch(),\n        m_pigeon.getRoll()\n    };\n    \n    public void updateAngles() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        // Read all angles (yaw, pitch, roll)\n        double yaw = m_pigeon.getYaw().getValue();    // Heading\n        double pitch = m_pigeon.getPitch().getValue();  // Pitch angle\n        double roll = m_pigeon.getRoll().getValue();    // Roll angle\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Yaw\", yaw);\n        SmartDashboard.putNumber(\"Pitch\", pitch);\n        SmartDashboard.putNumber(\"Roll\", roll);\n        \n        // Check if robot is tilted\n        boolean isTilted = Math.abs(pitch) > 10 || Math.abs(roll) > 10;\n        SmartDashboard.putBoolean(\"Robot Tilted\", isTilted);\n    }\n}"
+      "content": "import com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class PigeonPitchRoll {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    // Status signals for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw(),\n        m_pigeon.getPitch(),\n        m_pigeon.getRoll()\n    };\n    \n    public void updateAngles() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        double yaw = m_pigeon.getYaw().getValue();    // Heading\n        double pitch = m_pigeon.getPitch().getValue();  // Pitch angle\n        double roll = m_pigeon.getRoll().getValue();    // Roll angle\n        \n        SmartDashboard.putNumber(\"Yaw\", yaw);\n        SmartDashboard.putNumber(\"Pitch\", pitch);\n        SmartDashboard.putNumber(\"Roll\", roll);\n        \n        // Check if robot is tilted\n        boolean isTilted = Math.abs(pitch) > 10 || Math.abs(roll) > 10;\n        SmartDashboard.putBoolean(\"Robot Tilted\", isTilted);\n    }\n}"
     },
     {
       "type": "text",
@@ -65,7 +65,7 @@
     {
       "type": "code",
       "title": "Pigeon Calibration",
-      "content": "package frc.robot;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.configs.Pigeon2Configuration;\nimport edu.wpi.first.wpilibj.TimedRobot;\n\npublic class Robot extends TimedRobot {\n    private Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    @Override\n    public void robotInit() {\n        // Configure Pigeon\n        Pigeon2Configuration config = new Pigeon2Configuration();\n        // Configure mounting orientation and other settings as needed\n        m_pigeon.getConfigurator().apply(config);\n        \n        // In Phoenix 6, calibration typically happens automatically on first boot\n        // If you need to manually trigger calibration, you can do so here\n        // IMPORTANT: Keep robot stationary during calibration\n        System.out.println(\"Pigeon IMU initialized\");\n        \n        // Wait a moment for Pigeon to initialize\n        try {\n            Thread.sleep(1000);\n        } catch (InterruptedException e) {\n            e.printStackTrace();\n        }\n        \n        // Reset heading to zero\n        m_pigeon.setYaw(0);\n        \n        System.out.println(\"Pigeon ready\");\n    }\n}"
+      "content": "package frc.robot;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.configs.Pigeon2Configuration;\nimport edu.wpi.first.wpilibj.TimedRobot;\n\npublic class Robot extends TimedRobot {\n    private Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    @Override\n    public void robotInit() {\n        // Configure Pigeon\n        Pigeon2Configuration config = new Pigeon2Configuration();\n        // Configure mounting orientation and other settings as needed\n        m_pigeon.getConfigurator().apply(config);\n        \n        // In Phoenix 6, calibration typically happens automatically on first boot\n        // If you need to manually trigger calibration, you can do so here\n        // IMPORTANT: Keep robot stationary during calibration\n        System.out.println(\"Pigeon IMU initialized\");\n        \n        // Wait a moment for Pigeon to initialize\n        try {\n            Thread.sleep(1000);\n        } catch (InterruptedException e) {\n            e.printStackTrace();\n        }\n        \n        m_pigeon.setYaw(0);\n        \n        System.out.println(\"Pigeon ready\");\n    }\n}"
     },
     {
       "type": "text",
@@ -75,7 +75,7 @@
     {
       "type": "code",
       "title": "Field-Relative Driving with Pigeon",
-      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class FieldRelativeDrivetrain extends SubsystemBase {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    // ... motor controllers ...\n    \n    // Status signal for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw()\n    };\n    \n    public Rotation2d getHeading() {\n        // Refresh signal and get heading, convert to Rotation2d\n        BaseStatusSignal.refreshAll(m_signals);\n        double yaw = m_pigeon.getYaw().getValue();\n        return Rotation2d.fromDegrees(yaw);\n    }\n    \n    public void driveFieldRelative(double xSpeed, double ySpeed, double rotSpeed) {\n        // Get current heading\n        Rotation2d heading = getHeading();\n        \n        // Rotate field-relative speeds to robot-relative\n        // (Implementation would use WPILib's ChassisSpeeds or similar)\n        // This is a simplified example\n        \n        double cos = heading.getCos();\n        double sin = heading.getSin();\n        \n        double robotX = xSpeed * cos - ySpeed * sin;\n        double robotY = xSpeed * sin + ySpeed * cos;\n        \n        // Drive with robot-relative speeds\n        drive(robotX, robotY, rotSpeed);\n    }\n}"
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class FieldRelativeDrivetrain extends SubsystemBase {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    // ... motor controllers ...\n    \n    // Status signal for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_pigeon.getYaw()\n    };\n    \n    public Rotation2d getHeading() {\n        // Refresh signal and get heading, convert to Rotation2d\n        BaseStatusSignal.refreshAll(m_signals);\n        double yaw = m_pigeon.getYaw().getValue();\n        return Rotation2d.fromDegrees(yaw);\n    }\n    \n    public void driveFieldRelative(double xSpeed, double ySpeed, double rotSpeed) {\n        Rotation2d heading = getHeading();\n        \n        // Rotate field-relative speeds to robot-relative\n        // (Implementation would use WPILib's ChassisSpeeds or similar)\n        \n        double cos = heading.getCos();\n        double sin = heading.getSin();\n        \n        double robotX = xSpeed * cos - ySpeed * sin;\n        double robotY = xSpeed * sin + ySpeed * cos;\n        \n        drive(robotX, robotY, rotSpeed);\n    }\n}"
     },
     {
       "type": "text",
@@ -85,23 +85,25 @@
     {
       "type": "code",
       "title": "Pigeon Configuration",
-      "content": "import com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.configs.Pigeon2Configuration;\nimport com.ctre.phoenix6.signals.MountPoseYawValue;\n\npublic class PigeonConfiguration {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    public PigeonConfiguration() {\n        // Create configuration object\n        Pigeon2Configuration config = new Pigeon2Configuration();\n        \n        // Configure mounting orientation (if Pigeon is mounted at angle)\n        // Options: Top, Bottom, Front, Back, Left, Right, etc.\n        config.MountPose.MountPoseYaw = MountPoseYawValue.Top;\n        \n        // Apply configuration\n        m_pigeon.getConfigurator().apply(config);\n        \n        // In Phoenix 6, calibration typically happens automatically\n        // Reset heading to zero\n        m_pigeon.setYaw(0);\n    }\n}"
+      "content": "import com.ctre.phoenix6.hardware.Pigeon2;\nimport com.ctre.phoenix6.configs.Pigeon2Configuration;\nimport com.ctre.phoenix6.signals.MountPoseYawValue;\n\npublic class PigeonConfiguration {\n    private final Pigeon2 m_pigeon = new Pigeon2(0);\n    \n    public PigeonConfiguration() {\n        Pigeon2Configuration config = new Pigeon2Configuration();\n        \n        // Configure mounting orientation (if Pigeon is mounted at angle)\n        // Options: Top, Bottom, Front, Back, Left, Right, etc.\n        config.MountPose.MountPoseYaw = MountPoseYawValue.Top;\n        \n        m_pigeon.getConfigurator().apply(config);\n        \n        // In Phoenix 6, calibration typically happens automatically\n        m_pigeon.setYaw(0);\n    }\n}"
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Odometry Basics", 
-		  "url": "odometry-basics"},
+          "label": "Odometry Basics",
+          "id": "odometry-basics"
+        },
         {
-		  "label": "Field-Relative Driving", 
-		  "url": "frc-drivetrain-control"},
+          "label": "Field-Relative Driving",
+          "id": "odometry-basics"
+        },
         {
-		  "label": "CTRE Introduction", 
-		  "url": "ctre-intro"}
+          "label": "CTRE Introduction",
+          "id": "ctre-intro"
+        }
       ]
     }
   ]
 }
-

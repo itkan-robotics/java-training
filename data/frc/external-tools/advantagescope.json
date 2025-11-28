@@ -1,0 +1,197 @@
+{
+  "title": "AdvantageScope: Data Logging and Analysis",
+  "sections": [
+    {
+      "type": "text",
+      "title": "What is AdvantageScope?",
+      "content": "AdvantageScope is a powerful data visualization and analysis tool designed for FRC robots, developed by Team 6328. It allows teams to view and analyze robot data both in real-time and from log files. AdvantageScope provides comprehensive visualization capabilities, making it easier to understand robot behavior, debug issues, and optimize performance.<br><br>AdvantageScope works with any WPILib robot project and is optimized for use with AdvantageKit, though AdvantageKit is NOT required. The tool supports multiple log formats including WPILOG, DS log, Hoot (CTRE), and RLOG file formats. It can also view live robot data using NT4 or RLOG streaming.<br><br>Unlike SmartDashboard or Shuffleboard, which are primarily for real-time monitoring, AdvantageScope excels at detailed analysis of recorded data. It's particularly valuable for post-match analysis, debugging autonomous routines, and tuning control systems.<br><br>Learn more: <a href='https://docs.advantagescope.org' target='_blank'>AdvantageScope Documentation</a>  "
+    },
+    {
+      "type": "text",
+      "title": "Why Use AdvantageScope?",
+      "content": "AdvantageScope offers several advantages for FRC teams:<br><br><strong>Comprehensive Data Analysis:</strong> View and analyze all robot data in one place. AdvantageScope can display sensor readings, motor outputs, pose estimates, and custom logged data simultaneously, making it easy to correlate different aspects of robot behavior.<br><br><strong>Log Replay:</strong> Record robot behavior during matches or testing, then replay it later for detailed analysis. This is invaluable for understanding what happened during autonomous routines or diagnosing issues that occurred during competition.<br><br><strong>2D and 3D Field Visualization:</strong> Visualize robot movement on both 2D and 3D field representations. See exactly where your robot was, how it moved, and how it interacted with field elements. This is particularly useful for analyzing autonomous paths and pose estimation accuracy.<br><br><strong>Live Data Viewing:</strong> View live robot data in real-time using NT4 or RLOG streaming. Monitor robot behavior as it happens, not just from recorded logs.<br><br><strong>Advanced Visualizations:</strong> Create graphs and charts, visualize joystick inputs, display swerve drive module vectors, review console messages, and calculate log statistics. Export data for further analysis.<br><br><strong>Synchronized Video Playback:</strong> Synchronize video playback with log data to see exactly what the robot was doing at any moment. This is invaluable for understanding robot behavior in context.<br><br><strong>Post-Match Analysis:</strong> Analyze match performance after competition to understand what worked well and what needs improvement. This data-driven approach helps teams make better decisions."
+    },
+    {
+      "type": "text",
+      "title": "Installation and Setup",
+      "content": "AdvantageScope can be installed from GitHub releases:<br><br><strong>Download from GitHub:</strong> Download the latest release from the <a href='https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v4.1.6' target='_blank'>AdvantageScope GitHub releases page</a>. Releases are available for Windows, macOS, and Linux. Extract the downloaded file and run the executable.<br><br><strong>Automatic Updates:</strong> AdvantageScope can check for updates automatically. Enable automatic updates in settings to ensure you're always using the latest version with bug fixes and new features.<br><br><strong>System Requirements:</strong> Ensure your computer meets AdvantageScope's system requirements. The tool requires adequate RAM and processing power for handling large log files and 3D visualizations. Graphics capabilities are important for 3D field visualization.<br><br><strong>Initial Configuration:</strong> On first launch, AdvantageScope may prompt for initial configuration. Set preferences for default log locations, visualization settings, and update preferences. These can be changed later in settings.<br><br>After installation, AdvantageScope is ready to use. You'll need to configure your robot code to log data (covered in later sections) before you can view data in AdvantageScope, or set up live data streaming for real-time viewing.<br><br>Learn more: <a href='https://docs.advantagescope.org/overview/installation' target='_blank'>AdvantageScope Installation Documentation</a>"
+    },
+    {
+      "type": "text",
+      "title": "Supported Log Formats",
+      "content": "AdvantageScope supports multiple log file formats, making it compatible with various logging systems:<br><br><strong>WPILOG:</strong> Standard WPILib log format created by DataLogManager or DataLog. This is the native WPILib logging format and works with any WPILib project.<br><br><strong>DS Log:</strong> Driver Station log files. These logs contain driver station data and can be analyzed in AdvantageScope.<br><br><strong>Hoot (CTRE):</strong> CTRE's Hoot log format. If you're using CTRE motor controllers with their logging system, AdvantageScope can read these logs.<br><br><strong>RLOG:</strong> AdvantageKit's RLOG format. This is the format used by AdvantageKit and provides comprehensive logging with structured data support.<br><br><strong>Live Data Streaming:</strong> In addition to log files, AdvantageScope can view live robot data using NT4 (NetworkTables) or RLOG streaming. This allows real-time monitoring and analysis without waiting for log files."
+    },
+    {
+      "type": "text",
+      "title": "Basic Logging Setup",
+      "content": "To use AdvantageScope, you need to enable data logging in your robot code. The setup depends on whether you're using AdvantageKit or standard WPILib logging:<br><br><strong>With AdvantageKit:</strong> If you're using AdvantageKit, logging is built-in and configured through AdvantageKit's setup. AdvantageKit automatically logs a wide variety of data with structured data support, and AdvantageScope can read these logs directly. AdvantageScope is optimized for AdvantageKit but works with any logging system.<br><br><strong>With Standard WPILib:</strong> WPILib provides a DataLog class for logging data. You can log various data types including doubles, strings, booleans, and structured data (using WPILib struct format). Create a DataLog instance and use it to log data throughout your robot code.<br><br><strong>What to Log:</strong> Log data that helps you understand robot behavior. Common data includes sensor readings (encoders, gyros, vision), motor outputs, pose estimates, command states, and custom calculated values. Log enough data to diagnose issues but avoid logging excessively (can impact performance).<br><br><strong>Log File Location:</strong> Log files are typically saved to the robot's storage or a USB drive. Configure the log location in your robot code. AdvantageScope can open log files from any location.<br><br><strong>Struct Support:</strong> AdvantageScope supports WPILib struct format for logging structured data. This provides better organization and visualization compared to number arrays. The legacy number array format is deprecated in favor of structs.<br><br>Refer to WPILib documentation for details on using DataLog, or AdvantageKit documentation if using AdvantageKit."
+    },
+    {
+      "type": "code",
+      "title": "Basic WPILib Data Logging",
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.DataLogManager;\nimport edu.wpi.first.wpilibj.DriverStation;\nimport edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class Robot extends TimedRobot {\n    @Override\n    public void robotInit() {\n        // Logs are saved to /home/lvuser/logs on the roboRIO\n        DataLogManager.start();\n        \n        // Log match information\n        DataLogManager.log(\"Robot initialized\");\n        \n        // Log driver station data (match info, alliance, etc.)\n        DriverStation.startDataLog(DataLogManager.getLog());\n    }\n    \n    @Override\n    public void robotPeriodic() {\n        CommandScheduler.getInstance().run();\n    }\n}\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.DataLogManager;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n    private double m_leftEncoderPosition = 0.0;\n    private double m_rightEncoderPosition = 0.0;\n    \n    @Override\n    public void periodic() {\n        // Log encoder positions (double values)\n        DataLogManager.log(\"Drivetrain/LeftEncoder\", m_leftEncoderPosition);\n        DataLogManager.log(\"Drivetrain/RightEncoder\", m_rightEncoderPosition);\n        \n        // Log calculated values\n        double averagePosition = (m_leftEncoderPosition + m_rightEncoderPosition) / 2.0;\n        DataLogManager.log(\"Drivetrain/AveragePosition\", averagePosition);\n        \n        // Log boolean values\n        boolean isMoving = Math.abs(averagePosition) > 0.01;\n        DataLogManager.log(\"Drivetrain/IsMoving\", isMoving);\n    }\n}\n\n// Note: For more advanced logging, use DataLog directly\n// or consider using AdvantageKit for comprehensive logging with struct support"
+    },
+    {
+      "type": "text",
+      "title": "Recording Robot Data",
+      "content": "Recording data during robot operation is essential for later analysis:<br><br><strong>Automatic Logging:</strong> Configure your robot to automatically start logging when enabled. This ensures you capture data from every match and test run without manual intervention. Logging should start in <code>robotInit()</code> and continue throughout robot operation.<br><br><strong>Match Logging:</strong> Log data during matches to analyze performance afterward. Match logs are particularly valuable for understanding autonomous routine execution, diagnosing issues that occurred during competition, and identifying areas for improvement.<br><br><strong>Test Logging:</strong> Log data during testing and practice. This helps with tuning control systems, debugging mechanisms, and validating autonomous routines. Test logs are often more detailed than match logs since you have time to analyze them.<br><br><strong>Log File Management:</strong> Organize log files with descriptive names and timestamps. Consider including match numbers, test descriptions, or dates in filenames. This makes it easier to find specific logs later. Regularly archive old logs to manage storage space.<br><br><strong>Storage Considerations:</strong> Log files can be large, especially with detailed logging. Ensure adequate storage space on your robot's storage device or USB drive. Consider logging only essential data if storage is limited, or use compression if available.<br><br><strong>Live Data Streaming:</strong> For real-time analysis, use NT4 or RLOG streaming to view live data in AdvantageScope without creating log files. This is useful for immediate feedback during testing."
+    },
+    {
+      "type": "text",
+      "title": "Viewing Logs and Live Data",
+      "content": "AdvantageScope provides several ways to view and navigate logged data:<br><br><strong>Opening Log Files:</strong> Open log files from the File menu or by dragging files into AdvantageScope. The tool supports WPILOG, DS log, Hoot (CTRE), and RLOG formats. Once opened, AdvantageScope parses the log and makes data available for visualization. The 2025 version features 100x faster log decoding for improved performance.<br><br><strong>Live Data Connection:</strong> Connect to live robot data using NT4 (NetworkTables) or RLOG streaming. This allows real-time monitoring and analysis without waiting for log files. Configure the connection in AdvantageScope's connection settings.<br><br><strong>Data Tree:</strong> View all logged data in a hierarchical tree structure. Data is organized by source (subsystems, sensors, etc.), making it easy to find specific data points. Expand and collapse sections to navigate large datasets.<br><br><strong>Time Navigation:</strong> Navigate through time in the log using the timeline interface. The 2025 version features a new timeline interface for improved navigation. Scrub through the log to see how data changed over time. This is essential for understanding robot behavior sequences and correlating events.<br><br><strong>Data Selection:</strong> Select specific data points to visualize. You can select multiple data streams to compare them or view related data together. Selected data appears in plots, tables, or other visualizations.<br><br><strong>Search and Filter:</strong> Use search and filter capabilities to find specific data quickly. Filter by data name, time range, or value ranges. This is particularly useful when working with large logs containing many data points."
+    },
+    {
+      "type": "text",
+      "title": "Plotting Data",
+      "content": "AdvantageScope's plotting capabilities are one of its most powerful features:<br><br><strong>Creating Plots:</strong> Create plots by selecting data from the data tree and adding it to a plot. You can create multiple plots to visualize different aspects of robot behavior. Plots update as you navigate through the log timeline.<br><br><strong>Multiple Data Series:</strong> Add multiple data series to a single plot for comparison. For example, plot desired and actual positions together to see following error, or plot multiple sensor readings to identify correlations.<br><br><strong>Plot Customization:</strong> Customize plots with labels, legends, colors, and scales. The 2025 version features expanded color options for better visualization. Adjust axis ranges to focus on relevant data ranges. Add grid lines and markers to make plots easier to read. Save plot configurations for reuse.<br><br><strong>Time-Based Plots:</strong> Most plots are time-based, showing how data changes over time. This is ideal for understanding robot behavior sequences, control system performance, and identifying issues.<br><br><strong>Statistical Plots:</strong> Create statistical visualizations like histograms or scatter plots. These help identify data distributions, correlations, and outliers. Statistical analysis is valuable for performance optimization and identifying patterns."
+    },
+    {
+      "type": "text",
+      "title": "Advanced Analysis Features",
+      "content": "AdvantageScope provides advanced analysis capabilities beyond basic plotting:<br><br><strong>2D and 3D Field Visualization:</strong> Visualize robot movement on both 2D and 3D field representations. See robot pose, trajectory, and field elements in multiple dimensions. This is invaluable for analyzing autonomous paths, pose estimation accuracy, and robot-field interactions. The 3D view can be rotated, zoomed, and panned for detailed examination.<br><br><strong>Log Replay:</strong> Replay logged robot behavior in real-time or at adjustable speeds. Watch the robot move through its autonomous routine, see sensor readings change, and observe mechanism operations. Replay helps understand robot behavior and identify issues. The 2025 version features a new control interface for improved replay control.<br><br><strong>Synchronized Video Playback:</strong> Synchronize video playback with log data to see exactly what the robot was doing at any moment. This provides context for understanding robot behavior and is invaluable for post-match analysis.<br><br><strong>Joystick Visualization:</strong> Visualize joystick inputs to understand driver commands and how they correlate with robot behavior. This helps with driver training and understanding control inputs.<br><br><strong>Swerve Drive Module Vectors:</strong> For swerve drive robots, visualize module vectors to see how each module is oriented and moving. This is essential for debugging swerve drive behavior and tuning.<br><br><strong>Console Message Review:</strong> Review console messages from your robot code synchronized with log data. This helps correlate code behavior with logged data.<br><br><strong>Statistical Analysis:</strong> Calculate statistics on logged data including mean, standard deviation, min, max, and percentiles. Compare statistics across different time ranges or different log files. Statistical analysis helps quantify performance and identify improvement opportunities.<br><br><strong>Data Comparison:</strong> Compare data from different log files or different time ranges. Overlay plots from different runs to see how changes affected performance. Comparison is essential for validating improvements and understanding the impact of modifications.<br><br><strong>Export Options:</strong> Export data and visualizations for further analysis or documentation. Export plots, statistics, or raw data as needed."
+    },
+    {
+      "type": "text",
+      "title": "Integration with Robot Code",
+      "content": "AdvantageScope works with data logged from your robot code. The integration depends on your logging approach:<br><br><strong>AdvantageKit Integration:</strong> If using AdvantageKit, logging is comprehensive and automatic. AdvantageKit logs a wide variety of data including pose estimates, motor states, sensor readings, and custom logged values with full struct support. AdvantageScope reads AdvantageKit logs directly without additional configuration. AdvantageScope is optimized for AdvantageKit but works with any logging system.<br><br><strong>WPILib Integration:</strong> With standard WPILib logging, you manually log data using DataLog or DataLogManager. Log data at appropriate rates (typically every robot loop or at specific events). Organize logged data with consistent naming conventions to make it easy to find in AdvantageScope. Use WPILib struct format for structured data logging - AdvantageScope provides first-class support for structs, and the legacy number array format is deprecated.<br><br><strong>Live Data Streaming:</strong> For real-time viewing, configure NT4 (NetworkTables) or RLOG streaming. This allows AdvantageScope to view live robot data without creating log files. Configure the connection in AdvantageScope's connection settings.<br><br><strong>Logging Best Practices:</strong> Log data consistently throughout robot operation. Use descriptive names for logged data that indicate the source and purpose. Log data at appropriate rates - too frequent can impact performance, too infrequent may miss important events. Consider logging data in both periodic methods and event handlers.<br><br><strong>Custom Data Logging:</strong> Log custom calculated values, performance metrics, or derived data that helps with analysis. For example, log PID errors, path following accuracy, or mechanism state transitions. Custom logging provides insights beyond raw sensor data."
+    },
+    {
+      "type": "code",
+      "title": "Logging Custom Data with AdvantageKit",
+      "content": "package frc.robot.subsystems;\n\nimport org.littletonrobotics.junction.Logger;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n    // AdvantageKit automatically logs many values through IO layer\n    // You can also log custom data:\n    \n    private double m_leftPosition = 0.0;\n    private double m_rightPosition = 0.0;\n    private double m_targetVelocity = 0.0;\n    \n    @Override\n    public void periodic() {\n        // Log custom values (doubles)\n        Logger.recordOutput(\"Drivetrain/LeftPosition\", m_leftPosition);\n        Logger.recordOutput(\"Drivetrain/RightPosition\", m_rightPosition);\n        Logger.recordOutput(\"Drivetrain/TargetVelocity\", m_targetVelocity);\n        \n        // Log calculated values\n        double averagePosition = (m_leftPosition + m_rightPosition) / 2.0;\n        Logger.recordOutput(\"Drivetrain/AveragePosition\", averagePosition);\n        \n        // Log booleans\n        Logger.recordOutput(\"Drivetrain/IsMoving\", Math.abs(m_targetVelocity) > 0.01);\n        \n        // Log strings\n        String state = m_targetVelocity > 0 ? \"Forward\" : \"Stopped\";\n        Logger.recordOutput(\"Drivetrain/State\", state);\n        \n        // Log arrays\n        double[] wheelSpeeds = {m_leftPosition, m_rightPosition};\n        Logger.recordOutput(\"Drivetrain/WheelSpeeds\", wheelSpeeds);\n        \n        // AdvantageKit supports struct logging for structured data\n        // AdvantageScope provides first-class support for structs\n    }\n}\n\n// AdvantageKit logs are automatically readable by AdvantageScope\n// No additional configuration needed\n// Logs are saved in RLOG format and can be opened directly in AdvantageScope"
+    },
+    {
+      "type": "rules-box",
+      "title": "Logging Best Practices",
+      "subtitle": "Tips for effective data logging and analysis:",
+      "items": [
+        "Log data that helps diagnose issues and optimize performance",
+        "Include sensor readings, motor outputs, pose estimates, command states, and calculated values",
+        "Avoid logging data that changes extremely frequently unless necessary",
+        "Log data consistently throughout robot operation, starting in robotInit()",
+        "Use consistent, descriptive names organized hierarchically (e.g., \"Drivetrain/LeftEncoder\")",
+        "Use WPILib struct format for structured data (number arrays are deprecated)",
+        "Name log files descriptively with timestamps, match numbers, or test descriptions",
+        "Organize log files in folders by date or purpose",
+        "Regularly review and archive old logs to manage storage space",
+        "Establish a workflow for analyzing logs after matches or tests"
+      ]
+    },
+    {
+      "type": "rules-box",
+      "title": "Troubleshooting Common Issues",
+      "subtitle": "Common issues and solutions:",
+      "items": [
+        "Log files not opening: Ensure files are in supported format (WPILOG, DS log, Hoot, or RLOG) and not corrupted",
+        "Missing data: Verify logging is enabled in robot code and data is logged with correct names",
+        "Performance issues: Close unused plots, filter data to relevant time ranges, or work with smaller log segments",
+        "3D visualization not working: Update graphics drivers and ensure adequate graphics capabilities",
+        "Live data connection issues: Verify NetworkTables or RLOG streaming is configured correctly and network connectivity is working",
+        "Data not correlating: Check that all data is logged with consistent timing and timestamps are correct"
+      ]
+    },
+    {
+      "type": "table",
+      "title": "AdvantageScope vs SmartDashboard/Shuffleboard",
+      "headers": [
+        "Feature",
+        "SmartDashboard/Shuffleboard",
+        "AdvantageScope"
+      ],
+      "rows": [
+        [
+          "Primary Purpose",
+          "Real-time monitoring",
+          "Data analysis and visualization"
+        ],
+        [
+          "Data Source",
+          "Live robot data",
+          "Log files and live data (NT4/RLOG)"
+        ],
+        [
+          "Log Replay",
+          "Not available",
+          "Full log replay capability"
+        ],
+        [
+          "2D/3D Visualization",
+          "Limited",
+          "Comprehensive 2D and 3D field view"
+        ],
+        [
+          "Statistical Analysis",
+          "Basic",
+          "Advanced statistical tools"
+        ],
+        [
+          "Data Comparison",
+          "Not available",
+          "Compare multiple logs"
+        ],
+        [
+          "Video Synchronization",
+          "Not available",
+          "Synchronized video playback"
+        ],
+        [
+          "Log Formats",
+          "NetworkTables only",
+          "WPILOG, DS log, Hoot, RLOG"
+        ],
+        [
+          "Ease of Use",
+          "Simple, immediate",
+          "More complex, powerful"
+        ],
+        [
+          "Best For",
+          "During matches, quick checks",
+          "Post-match analysis, debugging"
+        ]
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Comparison with SmartDashboard/Shuffleboard",
+      "content": "AdvantageScope and SmartDashboard/Shuffleboard serve different but complementary purposes:<br><br><strong>SmartDashboard/Shuffleboard:</strong> Best for real-time monitoring during matches and testing. Provides immediate feedback on robot state, sensor readings, and basic telemetry. Easy to use and always available. Essential for driver feedback and quick diagnostics. Uses NetworkTables for live data only.<br><br><strong>AdvantageScope:</strong> Best for detailed analysis after matches or tests, though it also supports live data viewing. Provides comprehensive visualization, log replay, statistical analysis, and synchronized video playback. More powerful but requires log files or streaming setup. Essential for deep debugging and performance optimization. Supports multiple log formats and live data streaming.<br><br><strong>Using Both:</strong> Many teams use both tools - SmartDashboard/Shuffleboard during operation for real-time monitoring, and AdvantageScope afterward for detailed analysis. They complement each other well, with each tool excelling in its domain. AdvantageScope can also be used for live monitoring if configured for streaming.<br><br>Choose the right tool for your needs. For quick checks and real-time monitoring, use SmartDashboard/Shuffleboard. For detailed analysis and debugging, use AdvantageScope."
+    },
+    {
+      "type": "rules-box",
+      "title": "Best Practices",
+      "subtitle": "Tips for effective AdvantageScope usage:",
+      "items": [
+        "Log data consistently throughout robot operation",
+        "Use descriptive, hierarchical names for logged data",
+        "Use WPILib struct format for structured data (number arrays are deprecated)",
+        "Organize log files with clear naming conventions",
+        "Regularly analyze logs to identify issues and improvements",
+        "Use 2D and 3D visualization to understand robot movement",
+        "Compare logs from different runs to validate changes",
+        "Take advantage of synchronized video playback for context",
+        "Use live data streaming for real-time analysis when needed",
+        "Keep AdvantageScope updated for latest features and fixes",
+        "Refer to official documentation for advanced features"
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics and Documentation",
+      "links": [
+        {
+          "label": "AdvantageScope Documentation",
+          "url": "https://docs.advantagescope.org"
+        },
+        {
+          "label": "AdvantageKit",
+          "id": "advantagekit"
+        },
+        {
+          "label": "Pose Estimation",
+          "id": "pose-estimation-intro"
+        }
+      ]
+    }
+  ]
+}

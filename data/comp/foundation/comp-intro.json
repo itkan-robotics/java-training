@@ -131,9 +131,10 @@
           "id": "comp-arrays-strings"
         },
         {
-		  "label": "Interview Preparation", 
-		  "url": "comp-interview-prep"{
-	  }      ]
+          "label": "Interview Preparation",
+          "id": "comp-interview-prep"
+        }
+      ]
     },
     {
       "type": "exercise-box",

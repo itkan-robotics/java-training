@@ -30,11 +30,6 @@
     },
     {
       "type": "text",
-      "title": "Adding CTRE Phoenix to Your Project",
-      "content": "To use CTRE hardware in your FRC project, you need to add the CTRE Phoenix library. WPILib provides a built-in system for managing vendor dependencies (vendordeps) that automatically configures dependencies and repositories. This is the recommended method for adding CTRE Phoenix to your project.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html' target='_blank'>WPILib Documentation: Third-Party Libraries</a>"
-    },
-    {
-      "type": "text",
       "title": "Installing CTRE Phoenix (Online Method)",
       "content": "The online installation method fetches the latest library version directly from the internet. This is the simplest method if you have internet access.<br><br><strong>Steps:</strong><br>1. In Visual Studio Code, press <code>Ctrl+Shift+P</code> (or <code>Cmd+Shift+P</code> on Mac) to open the Command Palette<br>2. Type \"WPILib: Manage Vendor Libraries\" and select it<br>3. Choose \"Install new libraries (online)\"<br>4. Enter the URL for the CTRE Phoenix vendordeps JSON file:<br>   <code>https://maven.phoenixframework.org/json/Phoenix-frc.json</code><br>5. VS Code will download and configure the library automatically<br>6. Your Gradle project will sync automatically<br><br>The library will be added to your project's <code>vendordeps/</code> folder, and all dependencies and repositories will be configured automatically."
     },
@@ -66,7 +61,7 @@
     {
       "type": "text",
       "title": "Phoenix 5 vs Phoenix 6",
-      "content": "CTRE maintains two versions of the Phoenix API. Understanding the differences helps you choose the right version for your project.<br><br><strong>Phoenix 6 (Recommended for New Projects):</strong><br>- Modern architecture with improved design<br>- Better WPILib integration, including units library support<br>- Simplified API with clearer separation of concerns<br>- Configuration objects instead of individual config methods<br>- Control request pattern instead of control modes<br>- Status signals for asynchronous data reading<br>- Better documentation and examples<br><br><strong>Phoenix 5 (Legacy):</strong><br>- Still supported and widely used<br>- Many existing robot projects use Phoenix 5<br>- Different API structure (WPI_TalonFX, ControlMode, etc.)<br>- Individual config methods instead of configuration objects<br><br><strong>Migration:</strong> If you're starting a new project, use Phoenix 6. If you're working with existing code, you may need to use Phoenix 5 for compatibility. Both versions can be used in the same project if needed."
+      "content": "CTRE maintains two versions of the Phoenix API. Understanding the differences helps you choose the right version for your project.<br><br><strong>Phoenix 6 (Recommended for New Projects):</strong><br>- Modern architecture with improved design<br>- Better WPILib integration, including units library support<br>- Simplified API with clearer separation of concerns<br>- Configuration objects instead of individual config methods<br>- Control request pattern instead of control modes<br>- Status signals for asynchronous data reading<br>- Better documentation and examples<br><br><strong>Phoenix 5 (Legacy):</strong><br>- Still supported and widely used<br>- Many existing robot projects use Phoenix 5<br>- Different API structure (TalonFX, ControlMode, etc.)<br>- Individual config methods instead of configuration objects<br><br><strong>Migration:</strong> If you're starting a new project, use Phoenix 6. If you're working with existing code, you may need to use Phoenix 5 for compatibility. Both versions can be used in the same project if needed."
     },
     {
       "type": "text",
@@ -80,7 +75,7 @@
     },
     {
       "type": "text",
-      "title": "CTRE Documentation Resources",
+      "title": "CTRE Related Topics and Documentation",
       "content": "CTRE provides comprehensive documentation for all their products. Here are key resources:<br><br><strong>Official Documentation:</strong><br>- <a href='https://v6.docs.ctr-electronics.com/en/stable/' target='_blank'>CTRE Phoenix v6 Documentation</a> - Complete API reference and guides<br>- <a href='https://github.com/CrossTheRoadElec/Phoenix-Releases' target='_blank'>CTRE Phoenix Releases</a> - Latest library versions and vendordeps files<br><br><strong>Community Resources:</strong><br>- CTRE forums and community support<br>- FRC programming resources and examples<br>- Team code examples and tutorials"
     },
     {
@@ -94,13 +89,13 @@
       "links": [
         {
 		  "label": "Talon FX Setup", 
-		  "url": "talon-fx-setup"},
+		  "id": "talon-fx-setup"},
         {
 		  "label": "CANcoder Setup", 
-		  "url": "cancoder-setup"},
+		  "id": "cancoder-setup"},
         {
 		  "label": "Gradle Build System", 
-		  "url": "gradle-build-system"}
+		  "id": "gradle-build-system"}
       ]
     }
   ]

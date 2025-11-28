@@ -49,7 +49,7 @@
     {
       "type": "code",
       "title": "State-Space Representation Example",
-      "content": "This conceptual example shows state-space representation:\n\npackage frc.robot.examples;\n\n/**\n * Conceptual example of state-space representation for an arm.\n * This demonstrates the concept - full implementation requires\n * WPILib's state-space control classes.\n */\npublic class StateSpaceConcept {\n    // State variables: [angle, angular_velocity]\n    // For an arm, these completely describe the system state\n    \n    // State equation: ẋ = Ax + Bu\n    // Where:\n    //   x = [angle, angular_velocity]^T (state vector)\n    //   u = motor_voltage (input)\n    //   A = system matrix (describes how state evolves)\n    //   B = input matrix (describes how input affects state)\n    \n    // Output equation: y = Cx + Du\n    // Where:\n    //   y = sensor_reading (output)\n    //   C = output matrix\n    //   D = feedthrough matrix\n    \n    // In practice, WPILib provides LinearSystem and StateSpaceController\n    // classes that handle the mathematics for you.\n    \n    // Key advantage: Can control multiple states simultaneously,\n    // optimize for multiple objectives, handle constraints\n}"
+      "content": "package frc.robot.examples;\n\n/**\n * Conceptual example of state-space representation for an arm.\n * This demonstrates the concept - full implementation requires\n * WPILib's state-space control classes.\n */\npublic class StateSpaceConcept {\n    // State variables: [angle, angular_velocity]\n    // For an arm, these completely describe the system state\n    \n    // State equation: ẋ = Ax + Bu\n    // Where:\n    //   x = [angle, angular_velocity]^T (state vector)\n    //   u = motor_voltage (input)\n    //   A = system matrix (describes how state evolves)\n    //   B = input matrix (describes how input affects state)\n    \n    // Output equation: y = Cx + Du\n    // Where:\n    //   y = sensor_reading (output)\n    //   C = output matrix\n    //   D = feedthrough matrix\n    \n    // In practice, WPILib provides LinearSystem and StateSpaceController\n    // classes that handle the mathematics for you.\n    \n    // Key advantage: Can control multiple states simultaneously,\n    // optimize for multiple objectives, handle constraints\n}"
     },
     {
       "type": "text",
@@ -63,19 +63,21 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "PID Control Introduction", 
-		  "url": "pid-control-intro"},
+          "label": "PID Control Introduction",
+          "id": "pid-control-intro"
+        },
         {
-		  "label": "Feedforward Control", 
-		  "url": "feedforward-control"},
+          "label": "Feedforward Control",
+          "id": "feedforward-control"
+        },
         {
-		  "label": "Motion Profiling Basics", 
-		  "url": "motion-profiling-basics"}
+          "label": "Motion Profiling Basics",
+          "id": "motion-profiling-basics"
+        }
       ]
     }
   ]
 }
-

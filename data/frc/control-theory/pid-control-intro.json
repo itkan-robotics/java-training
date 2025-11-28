@@ -24,7 +24,7 @@
     {
       "type": "code",
       "title": "Basic PID Concept Demonstration",
-      "content": "This example demonstrates the PID calculation conceptually (not using WPILib classes yet):\n\npackage frc.robot.examples;\n\npublic class PIDConceptDemo {\n    // PID gains (these would be tuned for your mechanism)\n    private static final double kP = 0.1;\n    private static final double kI = 0.0;\n    private static final double kD = 0.01;\n    \n    // Control variables\n    private double m_setpoint = 0.0;  // Desired value\n    private double m_previousError = 0.0;\n    private double m_integral = 0.0;\n    \n    /**\n     * Calculate PID output given current sensor reading\n     * @param currentValue Current sensor value\n     * @return Motor output (-1.0 to 1.0)\n     */\n    public double calculate(double currentValue) {\n        // Calculate error\n        double error = m_setpoint - currentValue;\n        \n        // Proportional term\n        double pTerm = kP * error;\n        \n        // Integral term (accumulate error over time)\n        m_integral += error;\n        double iTerm = kI * m_integral;\n        \n        // Derivative term (rate of error change)\n        double derivative = error - m_previousError;\n        double dTerm = kD * derivative;\n        \n        // Calculate output\n        double output = pTerm + iTerm + dTerm;\n        \n        // Store error for next iteration\n        m_previousError = error;\n        \n        // Clamp output to valid range\n        return Math.max(-1.0, Math.min(1.0, output));\n    }\n    \n    public void setSetpoint(double setpoint) {\n        m_setpoint = setpoint;\n        // Reset integral when setpoint changes\n        m_integral = 0.0;\n    }\n}"
+      "content": "package frc.robot.examples;\n\npublic class PIDConceptDemo {\n    // PID gains (these would be tuned for your mechanism)\n    private static final double kP = 0.1;\n    private static final double kI = 0.0;\n    private static final double kD = 0.01;\n    \n    // Control variables\n    private double m_setpoint = 0.0;  // Desired value\n    private double m_previousError = 0.0;\n    private double m_integral = 0.0;\n    \n    /**\n     * Calculate PID output given current sensor reading\n     * @param currentValue Current sensor value\n     * @return Motor output (-1.0 to 1.0)\n     */\n    public double calculate(double currentValue) {\n        double error = m_setpoint - currentValue;\n        \n        // Proportional term\n        double pTerm = kP * error;\n        \n        // Integral term (accumulate error over time)\n        m_integral += error;\n        double iTerm = kI * m_integral;\n        \n        // Derivative term (rate of error change)\n        double derivative = error - m_previousError;\n        double dTerm = kD * derivative;\n        \n        double output = pTerm + iTerm + dTerm;\n        \n        m_previousError = error;\n        \n        // Clamp output to valid range\n        return Math.max(-1.0, Math.min(1.0, output));\n    }\n    \n    public void setSetpoint(double setpoint) {\n        m_setpoint = setpoint;\n        m_integral = 0.0;\n    }\n}"
     },
     {
       "type": "text",
@@ -39,7 +39,7 @@
     {
       "type": "code",
       "title": "Open-Loop vs Closed-Loop Control Comparison",
-      "content": "This example demonstrates the difference between open-loop and closed-loop control:\n\npackage frc.robot.examples;\n\npublic class ControlComparison {\n    private double m_motorOutput = 0.0;\n    private double m_currentPosition = 0.0;  // Simulated position\n    \n    // Open-loop control: fixed output, no feedback\n    public void openLoopControl(double targetPosition) {\n        // Just set a fixed power - no feedback!\n        // This won't account for load, battery voltage, etc.\n        m_motorOutput = 0.5;  // Fixed 50% power\n        // Problem: Mechanism may not reach target, or overshoot\n    }\n    \n    // Closed-loop control: uses feedback to adjust output\n    public void closedLoopControl(double targetPosition) {\n        // Calculate error\n        double error = targetPosition - m_currentPosition;\n        \n        // Adjust output based on error (simplified PID)\n        if (Math.abs(error) > 5.0) {\n            // Far from target: use more power\n            m_motorOutput = 0.8;\n        } else if (Math.abs(error) > 1.0) {\n            // Close to target: use less power\n            m_motorOutput = 0.3;\n        } else {\n            // At target: stop\n            m_motorOutput = 0.0;\n        }\n        // This is still simplified - real PID is smoother and more accurate\n    }\n    \n    // Real PID control (using WPILib PIDController - covered in later lessons)\n    // Provides smooth, accurate control with automatic error correction\n}"
+      "content": "package frc.robot.examples;\n\npublic class ControlComparison {\n    private double m_motorOutput = 0.0;\n    private double m_currentPosition = 0.0;  // Simulated position\n    \n    // Open-loop control: fixed output, no feedback\n    public void openLoopControl(double targetPosition) {\n        // Just set a fixed power - no feedback!\n        // This won't account for load, battery voltage, etc.\n        m_motorOutput = 0.5;  // Fixed 50% power\n        // Problem: Mechanism may not reach target, or overshoot\n    }\n    \n    // Closed-loop control: uses feedback to adjust output\n    public void closedLoopControl(double targetPosition) {\n        double error = targetPosition - m_currentPosition;\n        \n        // Adjust output based on error (simplified PID)\n        if (Math.abs(error) > 5.0) {\n            // Far from target: use more power\n            m_motorOutput = 0.8;\n        } else if (Math.abs(error) > 1.0) {\n            // Close to target: use less power\n            m_motorOutput = 0.3;\n        } else {\n            // At target: stop\n            m_motorOutput = 0.0;\n        }\n    }\n    \n    // Real PID control (using WPILib PIDController - covered in later lessons)\n    // Provides smooth, accurate control with automatic error correction\n}"
     },
     {
       "type": "text",
@@ -48,19 +48,21 @@
     },
     {
       "type": "link-grid",
-      "title": "Documentation Resources",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "WPILib Control System Basics", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/index.html"},
+          "label": "WPILib Control System Basics",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/control-system-basics.html"
+        },
         {
-		  "label": "WPILib PIDController", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html"},
+          "label": "WPILib PIDController",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html"
+        },
         {
-		  "label": "WPILib Introduction to PID", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html"}
+          "label": "WPILib Introduction to PID",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html"
+        }
       ]
     }
   ]
 }
-

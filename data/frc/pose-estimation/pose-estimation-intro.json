@@ -14,7 +14,7 @@
     {
       "type": "code",
       "title": "Basic Pose Representation",
-      "content": "This example demonstrates how WPILib represents poses:\n\npackage frc.robot.examples;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.math.geometry.Translation2d;\n\npublic class PoseExample {\n    public static void main(String[] args) {\n        // Create a pose at position (2.0, 3.0) meters, facing 45 degrees\n        Pose2d robotPose = new Pose2d(\n            new Translation2d(2.0, 3.0),  // X = 2.0m, Y = 3.0m\n            Rotation2d.fromDegrees(45.0)  // Heading = 45 degrees\n        );\n        \n        // Access position components\n        double x = robotPose.getX();  // 2.0\n        double y = robotPose.getY();  // 3.0\n        \n        // Access orientation\n        double headingDegrees = robotPose.getRotation().getDegrees();  // 45.0\n        double headingRadians = robotPose.getRotation().getRadians();\n        \n        // Create pose at origin (0, 0) facing forward\n        Pose2d originPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));\n        \n        // Transform poses (move and rotate)\n        Pose2d transformedPose = originPose.transformBy(\n            new Pose2d(1.0, 0.5, Rotation2d.fromDegrees(90.0))\n        );\n    }\n}"
+      "content": "package frc.robot.examples;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.math.geometry.Translation2d;\n\npublic class PoseExample {\n    public static void main(String[] args) {\n        Pose2d robotPose = new Pose2d(\n            new Translation2d(2.0, 3.0),  // X = 2.0m, Y = 3.0m\n            Rotation2d.fromDegrees(45.0)  // Heading = 45 degrees\n        );\n        \n        double x = robotPose.getX();  // 2.0\n        double y = robotPose.getY();  // 3.0\n        \n        double headingDegrees = robotPose.getRotation().getDegrees();  // 45.0\n        double headingRadians = robotPose.getRotation().getRadians();\n        \n        Pose2d originPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));\n        \n        // Transform poses (move and rotate)\n        Pose2d transformedPose = originPose.transformBy(\n            new Pose2d(1.0, 0.5, Rotation2d.fromDegrees(90.0))\n        );\n    }\n}"
     },
     {
       "type": "text",
@@ -22,23 +22,13 @@
       "content": "Understanding coordinate systems is crucial for pose estimation. FRC uses a standard field coordinate system:<br><br><strong>Field Coordinate System:</strong> The field has a fixed origin (typically at one corner) with X and Y axes. The positive X direction is usually toward the opposing alliance station, and the positive Y direction is typically to the left when facing positive X. All poses are measured relative to this fixed field coordinate system.<br><br><strong>Robot Coordinate System:</strong> The robot has its own coordinate system where the front of the robot is typically the positive X direction. Robot-centric coordinates are relative to the robot's current orientation, while field-centric coordinates are relative to the fixed field.<br><br><strong>Origin and Axes:</strong> The field origin (0, 0) is a fixed reference point. All robot positions are measured from this origin. The coordinate system is right-handed: positive X is typically forward, positive Y is left, and positive rotation is counterclockwise."
     },
     {
-        "type": "text",
-        "content": "<div style='width: 50%; height: auto; display: block; margin: auto;'> <img src='https://docs.wpilib.org/en/2023_a/_images/infinite-recharge.webp' alt='Field Coordinate System' style='transform:rotate(180deg); width: 100%;'><i>Taken from <a href='https://docs.wpilib.org/en/2023_a/docs/software/advanced-controls/geometry/coordinate-systems.html#coordinate-systems' target='_blank'>WPILib Coordinate Systems</a></i></div>"
+      "type": "text",
+      "content": "<div style='width: 50%; height: auto; display: block; margin: auto;'> <img src='https://docs.wpilib.org/en/stable/_images/field-blue-alliance.svg' alt='Field Coordinate System' style='width: 100%;'><i>Taken from <a href='https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#origin-follows-your-alliance' target='_blank'>WPILib Coordinate Systems</a></i></div>"
     },
     {
       "type": "text",
       "title": "Methods of Pose Estimation",
       "content": "There are several methods for estimating robot pose in FRC:<br><br><strong>Odometry (Encoder-Based):</strong> Uses wheel encoders and a gyroscope to track robot movement. Odometry calculates position by integrating wheel movements over time (dead reckoning). It provides continuous updates but can accumulate error (drift) over time. Odometry is fast and doesn't require external references, making it ideal for continuous tracking.<br><br><strong>Vision-Based (Camera-Based):</strong> Uses cameras to observe field features (AprilTags, field elements, game pieces) and calculate pose from these observations. Vision provides absolute positioning (no drift) but requires visibility of field features. Vision updates are typically slower than odometry and depend on camera field of view and lighting conditions.<br><br><strong>Sensor Fusion:</strong> Combines odometry and vision (or multiple sensors) to get the best of both worlds. Fusion algorithms (like Kalman filters) weight different sensor sources based on their reliability and update rates. This provides continuous tracking with periodic absolute corrections, resulting in highly accurate pose estimates."
-    },
-    {
-      "type": "code",
-      "title": "Coordinate System Demonstration",
-      "content": "This example demonstrates field and robot coordinate systems:\n\npackage frc.robot.examples;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.math.geometry.Translation2d;\n\npublic class CoordinateSystemDemo {\n    // Field coordinate system: fixed reference frame\n    // Origin (0, 0) is at a fixed point on the field\n    // Positive X: typically toward opposing alliance\n    // Positive Y: typically to the left when facing +X\n    \n    public void demonstrateCoordinateSystems() {\n        // Field-centric pose: position relative to field origin\n        Pose2d fieldPose = new Pose2d(3.0, 2.0, Rotation2d.fromDegrees(90.0));\n        // Robot is at (3.0, 2.0) on field, facing 90 degrees (left)\n        \n        // Robot-centric movement: relative to robot's current orientation\n        // If robot is facing 90 degrees and moves \"forward\" 1 meter:\n        // In robot coordinates: (1.0, 0.0)\n        // In field coordinates: (0.0, 1.0) - moves in +Y direction\n        \n        // Transform robot-centric to field-centric\n        Translation2d robotRelativeMovement = new Translation2d(1.0, 0.0);\n        Translation2d fieldRelativeMovement = robotRelativeMovement.rotateBy(\n            fieldPose.getRotation()\n        );\n        \n        // New field position\n        Pose2d newFieldPose = fieldPose.transformBy(\n            new Pose2d(fieldRelativeMovement, Rotation2d.fromDegrees(0.0))\n        );\n    }\n}"
-    },
-    {
-      "type": "text",
-      "title": "When to Use Each Method",
-      "content": "Choosing the right pose estimation method depends on your robot's capabilities and requirements:<br><br><strong>Use Odometry When:</strong> You need continuous, fast updates (every robot loop). Your robot has reliable encoders and a gyro. You're doing path following or continuous movement tracking. You don't have vision hardware or field features aren't always visible.<br><br><strong>Use Vision When:</strong> You need absolute positioning without drift. You have cameras and can see field features (AprilTags, field elements). You can accept slower update rates (typically 10-30 Hz vs 50 Hz for odometry). You need to reset odometry drift periodically.<br><br><strong>Use Sensor Fusion When:</strong> You want the best accuracy and reliability. You have both odometry and vision capabilities. You're doing complex autonomous routines requiring high precision. You want continuous tracking with periodic absolute corrections."
     },
     {
       "type": "text",
@@ -48,7 +38,7 @@
     {
       "type": "code",
       "title": "Simple Pose Tracking Example",
-      "content": "This example demonstrates basic pose tracking:\n\npackage frc.robot.examples;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\n\npublic class SimplePoseTracking {\n    private Pose2d m_currentPose;\n    \n    public SimplePoseTracking() {\n        // Initialize pose at starting position\n        // In real code, this would come from odometry or vision\n        m_currentPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));\n    }\n    \n    /**\n     * Update robot pose (called every robot loop)\n     * In real implementation, this would use odometry or vision updates\n     */\n    public void updatePose(Pose2d newPose) {\n        m_currentPose = newPose;\n    }\n    \n    /**\n     * Get current robot pose\n     */\n    public Pose2d getPose() {\n        return m_currentPose;\n    }\n    \n    /**\n     * Check if robot is at target position (within tolerance)\n     */\n    public boolean isAtPosition(Pose2d targetPose, double positionTolerance, double angleTolerance) {\n        double distance = m_currentPose.getTranslation().getDistance(targetPose.getTranslation());\n        double angleError = Math.abs(\n            m_currentPose.getRotation().minus(targetPose.getRotation()).getDegrees()\n        );\n        \n        return distance < positionTolerance && angleError < angleTolerance;\n    }\n    \n    /**\n     * Calculate distance to target position\n     */\n    public double getDistanceToTarget(Pose2d targetPose) {\n        return m_currentPose.getTranslation().getDistance(targetPose.getTranslation());\n    }\n}"
+      "content": "package frc.robot.examples;\n\nimport edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\n\npublic class SimplePoseTracking {\n    private Pose2d m_currentPose;\n    \n    public SimplePoseTracking() {\n        m_currentPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));\n    }\n    \n    /**\n     * Update robot pose (called every robot loop)\n     * In real implementation, this would use odometry or vision updates\n     */\n    public void updatePose(Pose2d newPose) {\n        m_currentPose = newPose;\n    }\n    \n    /**\n     * Get current robot pose\n     */\n    public Pose2d getPose() {\n        return m_currentPose;\n    }\n    \n    /**\n     * Check if robot is at target position (within tolerance)\n     */\n    public boolean isAtPosition(Pose2d targetPose, double positionTolerance, double angleTolerance) {\n        double distance = m_currentPose.getTranslation().getDistance(targetPose.getTranslation());\n        double angleError = Math.abs(\n            m_currentPose.getRotation().minus(targetPose.getRotation()).getDegrees()\n        );\n        \n        return distance < positionTolerance && angleError < angleTolerance;\n    }\n    \n    /**\n     * Calculate distance to target position\n     */\n    public double getDistanceToTarget(Pose2d targetPose) {\n        return m_currentPose.getTranslation().getDistance(targetPose.getTranslation());\n    }\n}"
     },
     {
       "type": "text",
@@ -57,22 +47,21 @@
     },
     {
       "type": "link-grid",
-      "title": "Documentation Resources",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "WPILib Odometry Overview", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/index.html#kinematics-and-odometry"},
+          "label": "WPILib Odometry Overview",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/index.html#kinematics-and-odometry"
+        },
         {
-		  "label": "WPILib Pose2d Class", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html"},
+          "label": "WPILib Pose Explanation",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/pose.html"
+        },
         {
-		  "label": "WPILib Coordinate Systems", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html"},
-        {
-		  "label": "WPILib Vision Overview", 
-		  "url": "https://docs.wpilib.org/en/stable/docs/software/vision/index.html"}
+          "label": "WPILib Coordinate Systems",
+          "url": "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html"
+        }
       ]
     }
   ]
 }
-

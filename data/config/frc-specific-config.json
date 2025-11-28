@@ -86,23 +86,16 @@
           "duration": "45 min"
         },
         {
-          "id": "cancoder-setup",
-          "label": "CANcoder Setup",
-          "file": "data/frc/hardware-vendors/ctre/cancoder-setup.json",
+          "id": "cancoder",
+          "label": "CANcoder",
+          "file": "data/frc/hardware-vendors/ctre/cancoder.json",
           "difficulty": "beginner",
           "duration": "30 min"
         },
         {
-          "id": "cancoder-absolute-encoders",
-          "label": "CANcoder Absolute Encoders",
-          "file": "data/frc/hardware-vendors/ctre/cancoder-absolute-encoders.json",
-          "difficulty": "intermediate",
-          "duration": "40 min"
-        },
-        {
-          "id": "ctre-sensors",
+          "id": "pigeon-imu",
           "label": "CTRE Sensors",
-          "file": "data/frc/hardware-vendors/ctre/ctre-sensors.json",
+          "file": "data/frc/hardware-vendors/ctre/pigeon-imu.json",
           "difficulty": "intermediate",
           "duration": "35 min"
         }
@@ -350,18 +343,11 @@
           "duration": "45 min"
         },
         {
-          "id": "vision-based-pose",
-          "label": "Vision-Based Pose Estimation",
-          "file": "data/frc/pose-estimation/vision-based-pose.json",
+          "id": "vision-pose-estimation",
+          "label": "Vision and AprilTag Pose Estimation",
+          "file": "data/frc/pose-estimation/vision-pose-estimation.json",
           "difficulty": "intermediate",
           "duration": "45 min"
-        },
-        {
-          "id": "apriltag-pose-estimation",
-          "label": "AprilTag Pose Estimation",
-          "file": "data/frc/pose-estimation/apriltag-pose-estimation.json",
-          "difficulty": "intermediate",
-          "duration": "50 min"
         },
         {
           "id": "pose-estimation-fusion",
@@ -378,19 +364,84 @@
           "duration": "45 min"
         }
       ]
+    },
+    {
+      "id": "frc-external-tools",
+      "label": "External Tools",
+      "description": "PathPlanner, YASS, AdvantageScope, and AdvantageKit",
+      "icon": "🛠️",
+      "items": [
+        {
+          "id": "pathplanner",
+          "label": "PathPlanner",
+          "file": "data/frc/external-tools/pathplanner.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
+        },
+        {
+          "id": "yass",
+          "label": "YASS Software Suite",
+          "file": "data/frc/external-tools/yass.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
+        },
+        {
+          "id": "advantagescope",
+          "label": "AdvantageScope",
+          "file": "data/frc/external-tools/advantagescope.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        },
+        {
+          "id": "advantagekit",
+          "label": "AdvantageKit",
+          "file": "data/frc/external-tools/advantagekit.json",
+          "difficulty": "advanced",
+          "duration": "50 min"
+        }
+      ]
+    },
+    {
+      "id": "frc-advanced-topics",
+      "label": "Advanced Topics",
+      "description": "Advanced development practices including simulation, unit testing, and code organization",
+      "icon": "🚀",
+      "items": [
+        {
+          "id": "simulation-basics",
+          "label": "Simulation Basics",
+          "file": "data/frc/advanced-topics/simulation-basics.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
+        },
+        {
+          "id": "unit-testing",
+          "label": "Unit Testing",
+          "file": "data/frc/advanced-topics/unit-testing.json",
+          "difficulty": "intermediate",
+          "duration": "50 min"
+        },
+        {
+          "id": "code-organization",
+          "label": "Code Organization",
+          "file": "data/frc/advanced-topics/code-organization.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
+        }
+      ]
     }
   ],
   "metadata": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "lastUpdated": "2025-01-27",
-    "totalLessons": 46,
+    "totalLessons": 55,
     "difficultyLevels": {
       "beginner": 14,
-      "intermediate": 28,
-      "advanced": 6
+      "intermediate": 31,
+      "advanced": 8
     },
-    "estimatedDuration": "22.2 hours",
+    "estimatedDuration": "29.25 hours",
     "prerequisites": ["java-training"],
-    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting", "rev", "spark-max", "neo", "smart-motion", "revlib", "command-based", "commands", "subsystems", "scheduler", "triggers", "control-theory", "motion-profiling", "feedforward", "trapezoidal-profiles", "exponential-profiles", "pose-estimation", "odometry", "vision", "apriltag", "sensor-fusion", "localization"]
+    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting", "rev", "spark-max", "neo", "smart-motion", "revlib", "command-based", "commands", "subsystems", "scheduler", "triggers", "control-theory", "motion-profiling", "feedforward", "trapezoidal-profiles", "exponential-profiles", "pose-estimation", "odometry", "vision", "apriltag", "sensor-fusion", "localization", "pathplanner", "yass", "yagsl", "yams", "yall", "yamg", "advantagescope", "advantagekit", "simulation", "unit-testing", "code-organization", "testing", "logging"]
   }
 }

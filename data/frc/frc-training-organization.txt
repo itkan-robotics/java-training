@@ -5,29 +5,22 @@
 │   ├── vs-code-setup.json
 │   ├── gradle-build-system.json
 │   ├── driver-station-setup.json
-│   └── smart-dashboard-basics.json
+│   └── elastic-basics.json
 ├── hardware-vendors/
 │   ├── ctre/
 │   │   ├── ctre-intro.json
 │   │   ├── talon-fx-setup.json
-│   │   ├── talon-fx-configuration.json
-│   │   ├── talon-fx-pid-control.json
 │   │   ├── talon-fx-motion-magic.json
-│   │   ├── cancoder-setup.json
-│   │   ├── cancoder-absolute-encoders.json
-│   │   ├── ctre-sensors.json
-│   │   └── ctre-current-limiting.json
+│   │   ├── cancoder.json
+│   │   └── pigeon-imu.json
 │   ├── rev/
 │   │   ├── rev-intro.json
 │   │   ├── spark-max-setup.json
-│   │   ├── spark-max-configuration.json
-│   │   ├── spark-max-pid-control.json
 │   │   ├── spark-max-smart-motion.json
 │   │   ├── rev-encoders.json
 │   │   ├── rev-sensors.json
-│   │   ├── rev-current-limiting.json
 │   │   └── rev-hardware-client.json
-│   ├── overlap/
+│   ├── vendor-generic/
 │   │   ├── motor-controller-configuration.json
 │   │   ├── motor-pid-control.json
 │   │   └── motor-current-limiting.json
@@ -45,43 +38,24 @@
 │   ├── pid-tuning.json
 │   ├── pid-on-controller.json
 │   ├── pid-in-code.json
+│   ├── motion-profiling-basics.json
 │   ├── trapezoidal-profiles.json
 │   ├── exponential-profiles.json
-│   ├── motion-profiling-basics.json
 │   ├── feedforward-control.json
 │   └── advanced-control-theory.json
 ├── pose-estimation/
 │   ├── pose-estimation-intro.json
 │   ├── odometry-basics.json
 │   ├── swerve-odometry.json
-│   ├── vision-based-pose.json
-│   ├── apriltag-pose-estimation.json
+│   ├── vision-pose-estimation.json
 │   ├── pose-estimation-fusion.json
 │   └── pose-estimation-tuning.json
-├── pathing/
-│   ├── pathplanner/
-│   │   ├── pathplanner-intro.json
-│   │   ├── pathplanner-setup.json
-│   │   ├── pathplanner-trajectory-creation.json
-│   │   ├── pathplanner-following.json
-│   │   ├── pathplanner-events.json
-│   │   ├── pathplanner-auto-builder.json
-│   │   └── pathplanner-tuning.json
-├── yams/
-│   ├── yams-intro.json
-│   ├── yams-setup.json
-│   ├── yams-mechanism-configuration.json
-│   ├── yams-state-machines.json
-│   ├── yams-commands.json
-│   └── yams-advanced-patterns.json
+├── external-tools/
+│   ├── pathplanner.json
+│   ├── yass.json
+│   ├── advantagescope.json
+│   └── advantagekit.json
 ├── advanced-topics/
-│   ├── advantagescope-setup.json
-│   ├── advantagescope-logging.json
-│   ├── advantagescope-analysis.json
-│   ├── advantagekit-setup.json
-│   ├── advantagekit-architecture.json
 │   ├── simulation-basics.json
-│   ├── advanced-simulation.json
 │   ├── unit-testing.json
 │   └── code-organization.json
-

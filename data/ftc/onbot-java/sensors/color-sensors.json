@@ -41,7 +41,7 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "content": [
         {"label": "Intro to Sensors", "url": "#intro-to-sensors"},
         {"label": "Distance Sensors", "url": "#distance-sensors"}

@@ -39,7 +39,7 @@
     {
       "type": "code",
       "title": "Sending Data to Elastic Using NetworkTables",
-      "content": "import edu.wpi.first.networktables.NetworkTableInstance;\nimport edu.wpi.first.networktables.NetworkTable;\n\npublic class ExampleSubsystem {\n    private NetworkTable m_table;\n    private double motorSpeed = 0.5;\n    private String status = \"Running\";\n    private boolean isEnabled = true;\n    \n    public ExampleSubsystem() {\n        // Get the SmartDashboard table (Elastic reads from here)\n        m_table = NetworkTableInstance.getDefault().getTable(\"SmartDashboard\");\n    }\n    \n    public void updateDashboard() {\n        // Send a number\n        m_table.getEntry(\"Motor Speed\").setDouble(motorSpeed);\n        \n        // Send a string\n        m_table.getEntry(\"Robot Status\").setString(status);\n        \n        // Send a boolean\n        m_table.getEntry(\"System Enabled\").setBoolean(isEnabled);\n        \n        // Send multiple values\n        m_table.getEntry(\"Left Motor\").setDouble(0.75);\n        m_table.getEntry(\"Right Motor\").setDouble(0.75);\n        m_table.getEntry(\"Arm Position\").setDouble(45.0);\n    }\n}"
+      "content": "import edu.wpi.first.networktables.NetworkTableInstance;\nimport edu.wpi.first.networktables.NetworkTable;\n\npublic class ExampleSubsystem {\n    private NetworkTable m_table;\n    private double motorSpeed = 0.5;\n    private String status = \"Running\";\n    private boolean isEnabled = true;\n    \n    public ExampleSubsystem() {\n        m_table = NetworkTableInstance.getDefault().getTable(\"SmartDashboard\");\n    }\n    \n    public void updateDashboard() {\n        // Send a number\n        m_table.getEntry(\"Motor Speed\").setDouble(motorSpeed);\n        \n        // Send a string\n        m_table.getEntry(\"Robot Status\").setString(status);\n        \n        // Send a boolean\n        m_table.getEntry(\"System Enabled\").setBoolean(isEnabled);\n        \n        // Send multiple values\n        m_table.getEntry(\"Left Motor\").setDouble(0.75);\n        m_table.getEntry(\"Right Motor\").setDouble(0.75);\n        m_table.getEntry(\"Arm Position\").setDouble(45.0);\n    }\n}"
     },
     {
       "type": "code",
@@ -59,12 +59,12 @@
     {
       "type": "code",
       "title": "Reading Values from Elastic",
-      "content": "import edu.wpi.first.networktables.NetworkTableInstance;\nimport edu.wpi.first.networktables.NetworkTable;\n\npublic class ExampleSubsystem {\n    private NetworkTable m_table;\n    private double targetSpeed;\n    private boolean enableSystem;\n    \n    public ExampleSubsystem() {\n        m_table = NetworkTableInstance.getDefault().getTable(\"SmartDashboard\");\n    }\n    \n    public void readDashboard() {\n        // Read a number (with default value if key doesn't exist)\n        targetSpeed = m_table.getEntry(\"Target Speed\").getDouble(0.5);\n        \n        // Read a boolean (with default value)\n        enableSystem = m_table.getEntry(\"Enable System\").getBoolean(false);\n        \n        // Read a string\n        String mode = m_table.getEntry(\"Robot Mode\").getString(\"Teleop\");\n        \n        // Use the values in your code\n        if (enableSystem) {\n            setMotorSpeed(targetSpeed);\n        }\n    }\n}"
+      "content": "import edu.wpi.first.networktables.NetworkTableInstance;\nimport edu.wpi.first.networktables.NetworkTable;\n\npublic class ExampleSubsystem {\n    private NetworkTable m_table;\n    private double targetSpeed;\n    private boolean enableSystem;\n    \n    public ExampleSubsystem() {\n        m_table = NetworkTableInstance.getDefault().getTable(\"SmartDashboard\");\n    }\n    \n    public void readDashboard() {\n        targetSpeed = m_table.getEntry(\"Target Speed\").getDouble(0.5);\n        \n        enableSystem = m_table.getEntry(\"Enable System\").getBoolean(false);\n        \n        String mode = m_table.getEntry(\"Robot Mode\").getString(\"Teleop\");\n        \n        if (enableSystem) {\n            setMotorSpeed(targetSpeed);\n        }\n    }\n}"
     },
     {
       "type": "code",
       "title": "Complete Subsystem with Elastic Integration",
-      "content": "package frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkMaxLowLevel.MotorType;\n\npublic class Arm extends SubsystemBase {\n    private final CANSparkMax m_armMotor = new CANSparkMax(3, MotorType.kBrushless);\n    private double m_targetPosition = 0.0;\n    private boolean m_pidEnabled = false;\n    \n    public Arm() {\n        // Initialize default dashboard values\n        SmartDashboard.putNumber(\"Arm Target Position\", 0.0);\n        SmartDashboard.putBoolean(\"Arm PID Enabled\", false);\n    }\n    \n    @Override\n    public void periodic() {\n        // Read values from Elastic dashboard\n        m_targetPosition = SmartDashboard.getNumber(\"Arm Target Position\", 0.0);\n        m_pidEnabled = SmartDashboard.getBoolean(\"Arm PID Enabled\", false);\n        \n        // Update Elastic dashboard with current values\n        SmartDashboard.putNumber(\"Arm Current Position\", m_armMotor.getEncoder().getPosition());\n        SmartDashboard.putNumber(\"Arm Current Speed\", m_armMotor.getEncoder().getVelocity());\n        SmartDashboard.putNumber(\"Arm Current\", m_armMotor.getOutputCurrent());\n        SmartDashboard.putBoolean(\"Arm At Target\", isAtPosition(m_targetPosition, 2.0));\n        \n        // Control arm based on dashboard values\n        if (m_pidEnabled) {\n            // Use PID to move to target position\n            // (PID implementation would go here)\n        }\n    }\n    \n    private boolean isAtPosition(double target, double tolerance) {\n        double current = m_armMotor.getEncoder().getPosition();\n        return Math.abs(current - target) < tolerance;\n    }\n}"
+      "content": "package frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkMaxLowLevel.MotorType;\n\npublic class Arm extends SubsystemBase {\n    private final CANSparkMax m_armMotor = new CANSparkMax(3, MotorType.kBrushless);\n    private double m_targetPosition = 0.0;\n    private boolean m_pidEnabled = false;\n    \n    public Arm() {\n        SmartDashboard.putNumber(\"Arm Target Position\", 0.0);\n        SmartDashboard.putBoolean(\"Arm PID Enabled\", false);\n    }\n    \n    @Override\n    public void periodic() {\n        m_targetPosition = SmartDashboard.getNumber(\"Arm Target Position\", 0.0);\n        m_pidEnabled = SmartDashboard.getBoolean(\"Arm PID Enabled\", false);\n        \n        SmartDashboard.putNumber(\"Arm Current Position\", m_armMotor.getEncoder().getPosition());\n        SmartDashboard.putNumber(\"Arm Current Speed\", m_armMotor.getEncoder().getVelocity());\n        SmartDashboard.putNumber(\"Arm Current\", m_armMotor.getOutputCurrent());\n        SmartDashboard.putBoolean(\"Arm At Target\", isAtPosition(m_targetPosition, 2.0));\n        \n        // Control arm based on dashboard values\n        if (m_pidEnabled) {\n            // (PID implementation would go here)\n        }\n    }\n    \n    private boolean isAtPosition(double target, double tolerance) {\n        double current = m_armMotor.getEncoder().getPosition();\n        return Math.abs(current - target) < tolerance;\n    }\n}"
     },
     {
       "type": "text",
@@ -79,7 +79,7 @@
     {
       "type": "code",
       "title": "Sending Field Pose Data to Elastic",
-      "content": "import edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj.smartdashboard.Field2d;\n\npublic class Drivetrain extends SubsystemBase {\n    private final Field2d m_field = new Field2d();\n    private Pose2d m_robotPose;\n    \n    public Drivetrain() {\n        // Field2d automatically publishes to NetworkTables\n        // Elastic will automatically display it\n        SmartDashboard.putData(\"Field\", m_field);\n    }\n    \n    @Override\n    public void periodic() {\n        // Update robot pose (from odometry)\n        m_robotPose = getOdometryPose();\n        \n        // Update field visualization\n        m_field.setRobotPose(m_robotPose);\n        \n        // You can also add trajectory visualizations\n        // m_field.getObject(\"trajectory\").setTrajectory(trajectory);\n    }\n}"
+      "content": "import edu.wpi.first.math.geometry.Pose2d;\nimport edu.wpi.first.math.geometry.Rotation2d;\nimport edu.wpi.first.wpilibj.smartdashboard.Field2d;\n\npublic class Drivetrain extends SubsystemBase {\n    private final Field2d m_field = new Field2d();\n    private Pose2d m_robotPose;\n    \n    public Drivetrain() {\n        // Field2d automatically publishes to NetworkTables\n        // Elastic will automatically display it\n        SmartDashboard.putData(\"Field\", m_field);\n    }\n    \n    @Override\n    public void periodic() {\n        m_robotPose = getOdometryPose();\n        \n        m_field.setRobotPose(m_robotPose);\n        \n        // You can also add trajectory visualizations\n        // m_field.getObject(\"trajectory\").setTrajectory(trajectory);\n    }\n}"
     },
     {
       "type": "text",
@@ -89,7 +89,7 @@
     {
       "type": "code",
       "title": "Efficient Dashboard Update Pattern",
-      "content": "public class Drivetrain extends SubsystemBase {\n    private final CANSparkMax m_leftMotor = new CANSparkMax(1, MotorType.kBrushless);\n    private final CANSparkMax m_rightMotor = new CANSparkMax(2, MotorType.kBrushless);\n    \n    // Update counter to limit update frequency\n    private int m_updateCounter = 0;\n    private static final int UPDATE_RATE = 10; // Update every 10 cycles (~2 Hz)\n    \n    @Override\n    public void periodic() {\n        // Only update dashboard periodically, not every cycle\n        if (m_updateCounter++ % UPDATE_RATE == 0) {\n            updateDashboard();\n        }\n    }\n    \n    private void updateDashboard() {\n        // Group related data with consistent naming\n        SmartDashboard.putNumber(\"Drivetrain/Left Speed\", m_leftMotor.get());\n        SmartDashboard.putNumber(\"Drivetrain/Right Speed\", m_rightMotor.get());\n        SmartDashboard.putNumber(\"Drivetrain/Left Current\", m_leftMotor.getOutputCurrent());\n        SmartDashboard.putNumber(\"Drivetrain/Right Current\", m_rightMotor.getOutputCurrent());\n    }\n}"
+      "content": "public class Drivetrain extends SubsystemBase {\n    private final CANSparkMax m_leftMotor = new CANSparkMax(1, MotorType.kBrushless);\n    private final CANSparkMax m_rightMotor = new CANSparkMax(2, MotorType.kBrushless);\n    \n    private int m_updateCounter = 0;\n    private static final int UPDATE_RATE = 10;\n    \n    @Override\n    public void periodic() {\n        // Only update dashboard periodically, not every cycle\n        if (m_updateCounter++ % UPDATE_RATE == 0) {\n            updateDashboard();\n        }\n    }\n    \n    private void updateDashboard() {\n        // Group related data with consistent naming\n        SmartDashboard.putNumber(\"Drivetrain/Left Speed\", m_leftMotor.get());\n        SmartDashboard.putNumber(\"Drivetrain/Right Speed\", m_rightMotor.get());\n        SmartDashboard.putNumber(\"Drivetrain/Left Current\", m_leftMotor.getOutputCurrent());\n        SmartDashboard.putNumber(\"Drivetrain/Right Current\", m_rightMotor.getOutputCurrent());\n    }\n}"
     },
     {
       "type": "text",
@@ -99,7 +99,7 @@
     {
       "type": "code",
       "title": "Reading Controls from Elastic Dashboard",
-      "content": "public class ExampleCommand extends CommandBase {\n    @Override\n    public void execute() {\n        // Read button state from Elastic dashboard\n        boolean resetEncoders = SmartDashboard.getBoolean(\"Reset Encoders\", false);\n        \n        if (resetEncoders) {\n            // Reset encoders when button is pressed\n            resetAllEncoders();\n            \n            // Reset the button state (optional)\n            SmartDashboard.putBoolean(\"Reset Encoders\", false);\n        }\n        \n        // Read slider values for tuning\n        double kP = SmartDashboard.getNumber(\"PID kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"PID kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"PID kD\", 0.01);\n        \n        // Update PID constants from dashboard\n        updatePIDConstants(kP, kI, kD);\n    }\n}"
+      "content": "public class ExampleCommand extends CommandBase {\n    @Override\n    public void execute() {\n        boolean resetEncoders = SmartDashboard.getBoolean(\"Reset Encoders\", false);\n        \n        if (resetEncoders) {\n            resetAllEncoders();\n            \n            SmartDashboard.putBoolean(\"Reset Encoders\", false);\n        }\n        \n        double kP = SmartDashboard.getNumber(\"PID kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"PID kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"PID kD\", 0.01);\n        \n        updatePIDConstants(kP, kI, kD);\n    }\n}"
     },
     {
       "type": "text",
@@ -113,17 +113,20 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Driver Station Setup", 
-		  "url": "driver-station-setup"},
+          "label": "Driver Station Setup",
+          "id": "driver-station-setup"
+        },
         {
-		  "label": "Basic Robot Structure", 
-		  "url": "frc-basic-robot-structure"},
+          "label": "Basic Robot Structure",
+          "id": "command-based-intro"
+        },
         {
-		  "label": "Command-Based Programming", 
-		  "url": "command-based-intro"}
+          "label": "Command-Based Programming",
+          "id": "command-based-intro"
+        }
       ]
     }
   ]

@@ -8,6 +8,17 @@
     },
     {
       "type": "rules-box",
+      "title": "Important Disclaimer",
+      "subtitle": "Official Documentation",
+      "items": [
+        "This curriculum is designed as a learning resource and guide",
+        "For official documentation, specifications, and the most up-to-date information, please refer to the official FRC and WPILib documentation",
+        "If you have questions about FRC rules, hardware specifications, or official APIs, consult the official FIRST Robotics Competition resources",
+        "Official documentation should always be your primary reference for competition rules and technical specifications"
+      ]
+    },
+    {
+      "type": "rules-box",
       "title": "What is FRC?",
       "subtitle": "FIRST Robotics Competition is:",
       "items": [
@@ -53,19 +64,6 @@
         "<strong>Add Pose Estimation:</strong> Implement odometry and vision-based localization. Enable sophisticated autonomous behaviors.",
         "<strong>Create Autonomous Paths:</strong> Use PathPlanner to design and execute complex autonomous routines with events and markers.",
         "<strong>Explore Advanced Tools:</strong> Learn AdvantageScope for data analysis, AdvantageKit for advanced architecture, and simulation for testing."
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Prerequisites",
-      "subtitle": "Before starting FRC programming, you should have:",
-      "items": [
-        "Solid understanding of Java programming fundamentals",
-        "Familiarity with object-oriented programming concepts",
-        "Understanding of basic electronics and robotics hardware",
-        "Access to FRC robot hardware (or simulation environment)",
-        "WPILib development environment set up",
-        "Willingness to learn professional software development practices"
       ]
     },
     {
@@ -115,37 +113,21 @@
       "links": [
         {
           "label": "WPILib Setup",
-          "url": "wpilib-setup"
+          "id": "wpilib-setup"
         },
         {
           "label": "Project Creation",
-          "url": "project-creation"
+          "id": "project-creation"
         },
         {
           "label": "Command-Based Intro",
-          "url": "command-based-intro"
+          "id": "command-based-intro"
         },
         {
           "label": "PID Control Intro",
-          "url": "pid-control-intro"
+          "id": "pid-control-intro"
         }
       ]
-    },
-    {
-      "type": "exercise-box",
-      "title": "FRC Programming Readiness",
-      "description": "Before starting FRC programming, assess your readiness:",
-      "tasks": [
-        "Do you have access to FRC robot hardware or simulation tools?",
-        "Are you comfortable with Java programming and object-oriented concepts?",
-        "Have you set up the WPILib development environment?",
-        "How much time can you dedicate to learning and practice?",
-        "What are your goals (competition, learning, career development)?",
-        "Are you comfortable working with industrial-grade hardware?",
-        "Do you have a team or mentor to work with?",
-        "Are you ready to learn professional software development practices?"
-      ],
-      "content": "// FRC programming is about building competitive robots\n// Start with the fundamentals and build your skills systematically\n// Remember: professional practices and thorough testing lead to success!"
     }
   ]
 }

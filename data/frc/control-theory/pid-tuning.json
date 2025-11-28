@@ -44,7 +44,7 @@
     {
       "type": "code",
       "title": "Tuning Helper Code with SmartDashboard",
-      "content": "This example shows how to create a tuning interface using SmartDashboard:\n\npackage frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport edu.wpi.first.math.controller.PIDController;\n\npublic class TunableArm extends SubsystemBase {\n    private final PIDController m_pidController = new PIDController(0.1, 0.0, 0.01);\n    private double m_targetAngle = 0.0;\n    private double m_currentAngle = 0.0;  // From encoder\n    \n    public TunableArm() {\n        // Initialize SmartDashboard with default values\n        SmartDashboard.putNumber(\"Arm kP\", 0.1);\n        SmartDashboard.putNumber(\"Arm kI\", 0.0);\n        SmartDashboard.putNumber(\"Arm kD\", 0.01);\n        SmartDashboard.putNumber(\"Arm Setpoint\", 0.0);\n    }\n    \n    @Override\n    public void periodic() {\n        // Read PID values from SmartDashboard (allows real-time tuning)\n        double kP = SmartDashboard.getNumber(\"Arm kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"Arm kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"Arm kD\", 0.01);\n        \n        // Update PID controller with new values\n        m_pidController.setP(kP);\n        m_pidController.setI(kI);\n        m_pidController.setD(kD);\n        \n        // Read setpoint from SmartDashboard\n        m_targetAngle = SmartDashboard.getNumber(\"Arm Setpoint\", 0.0);\n        \n        // Calculate PID output\n        double output = m_pidController.calculate(m_currentAngle, m_targetAngle);\n        \n        // Apply to motor (implementation depends on your motor controller)\n        // m_armMotor.set(output);\n        \n        // Display tuning information\n        SmartDashboard.putNumber(\"Arm Current Angle\", m_currentAngle);\n        SmartDashboard.putNumber(\"Arm Error\", m_targetAngle - m_currentAngle);\n        SmartDashboard.putNumber(\"Arm Output\", output);\n        SmartDashboard.putBoolean(\"Arm At Setpoint\", m_pidController.atSetpoint());\n    }\n    \n    public void setAngle(double angle) {\n        m_targetAngle = angle;\n        SmartDashboard.putNumber(\"Arm Setpoint\", angle);\n    }\n}"
+      "content": "package frc.robot.subsystems;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\nimport edu.wpi.first.math.controller.PIDController;\n\npublic class TunableArm extends SubsystemBase {\n    private final PIDController m_pidController = new PIDController(0.1, 0.0, 0.01);\n    private double m_targetAngle = 0.0;\n    private double m_currentAngle = 0.0;  // From encoder\n    \n    public TunableArm() {\n        SmartDashboard.putNumber(\"Arm kP\", 0.1);\n        SmartDashboard.putNumber(\"Arm kI\", 0.0);\n        SmartDashboard.putNumber(\"Arm kD\", 0.01);\n        SmartDashboard.putNumber(\"Arm Setpoint\", 0.0);\n    }\n    \n    @Override\n    public void periodic() {\n        double kP = SmartDashboard.getNumber(\"Arm kP\", 0.1);\n        double kI = SmartDashboard.getNumber(\"Arm kI\", 0.0);\n        double kD = SmartDashboard.getNumber(\"Arm kD\", 0.01);\n        \n        m_pidController.setP(kP);\n        m_pidController.setI(kI);\n        m_pidController.setD(kD);\n        \n        m_targetAngle = SmartDashboard.getNumber(\"Arm Setpoint\", 0.0);\n        \n        double output = m_pidController.calculate(m_currentAngle, m_targetAngle);\n        \n        // m_armMotor.set(output);\n        \n        SmartDashboard.putNumber(\"Arm Current Angle\", m_currentAngle);\n        SmartDashboard.putNumber(\"Arm Error\", m_targetAngle - m_currentAngle);\n        SmartDashboard.putNumber(\"Arm Output\", output);\n        SmartDashboard.putBoolean(\"Arm At Setpoint\", m_pidController.atSetpoint());\n    }\n    \n    public void setAngle(double angle) {\n        m_targetAngle = angle;\n        SmartDashboard.putNumber(\"Arm Setpoint\", angle);\n    }\n}"
     },
     {
       "type": "rules-box",
@@ -68,19 +68,21 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "PID Control Introduction", 
-		  "url": "pid-control-intro"},
+          "label": "PID Control Introduction",
+          "id": "pid-control-intro"
+        },
         {
-		  "label": "PID On Controller", 
-		  "url": "pid-on-controller"},
+          "label": "PID On Controller",
+          "id": "pid-on-controller"
+        },
         {
-		  "label": "PID In Code", 
-		  "url": "pid-in-code"}
+          "label": "PID In Code",
+          "id": "pid-in-code"
+        }
       ]
     }
   ]
 }
-

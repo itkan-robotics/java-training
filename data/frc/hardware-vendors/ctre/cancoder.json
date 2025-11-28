@@ -1,0 +1,90 @@
+{
+  "title": "CANcoder Setup and Basic Usage",
+  "sections": [
+    {
+      "type": "text",
+      "title": "Introduction to CANcoder",
+      "content": "The CANcoder is CTRE's absolute encoder that provides precise position tracking over CAN bus. Unlike relative encoders (like those built into motors), absolute encoders remember their position even after power loss, making them ideal for mechanisms that need to know their position immediately on startup.<br><br><strong>Absolute vs Relative Encoders:</strong><br>- <strong>Absolute:</strong> Position is always known, no reset needed, remembers position after power loss<br>- <strong>Relative:</strong> Position resets to 0 on power-up, must be reset/homed, loses position on power loss<br><br>The CANcoder is commonly used for swerve module angle measurement, arm position tracking, and other mechanisms where absolute position is important. It provides high resolution (4096 counts per revolution) and communicates over CAN bus, eliminating the need for additional wiring.<br><br>Learn more: <a href='https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/cancoder/index.html' target='_blank'>CTRE Documentation: CANcoder</a>"
+    },
+    {
+      "type": "rules-box",
+      "title": "CANcoder Features",
+      "subtitle": "Key capabilities:",
+      "items": [
+        "Absolute position tracking (remembers position after power loss)",
+        "High resolution (4096 counts per revolution)",
+        "CAN bus communication (no extra wiring)",
+        "Magnet-based sensing (no mechanical contact)",
+        "Configurable direction and offset"
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Hardware Setup",
+      "content": "Before programming, you need to physically set up your CANcoder on the mechanism.<br><br><strong>Mounting CANcoder:</strong><br>1. Mount CANcoder securely to your mechanism<br>2. Ensure the magnet is properly aligned with the CANcoder<br>3. Magnet should be centered and at correct distance (see CANcoder documentation)<br>4. Secure all mounting hardware<br><br><strong>Wiring:</strong><br>1. <strong>CAN Bus:</strong> Connect CAN High and CAN Low to the CAN bus network<br>2. <strong>Power:</strong> CANcoder is powered from the CAN bus (no separate power needed)<br>3. <strong>Ground:</strong> Ensure proper CAN bus grounding<br><br><strong>Magnet:</strong> Use the magnet provided with CANcoder, mounted on the rotating part of the mechanism with proper distance and orientation."
+    },
+    {
+      "type": "text",
+      "title": "CAN ID Configuration",
+      "content": "Each CANcoder needs a unique CAN ID (0-62) to communicate on the CAN bus. Set the CAN ID using Phoenix Tuner or specify it in code when creating the CANcoder instance. The CAN ID in code must match what's configured in Phoenix Tuner.<br><br><strong>Best Practices:</strong><br>- Use sequential IDs for related devices<br>- Document your CAN ID assignments<br>- Keep CAN IDs organized by mechanism"
+    },
+    {
+      "type": "code",
+      "title": "Creating CANcoder Instances",
+      "content": "package frc.robot.subsystems;\n\nimport com.ctre.phoenix6.hardware.CANcoder;\n\npublic class SwerveModule {\n    // CANcoder for measuring module angle\n    private final CANcoder m_angleEncoder = new CANcoder(10);  // CAN ID 10\n    \n    public SwerveModule() {\n        // Configure CANcoder (see configuration section)\n    }\n    \n    public double getAngle() {\n        return m_angleEncoder.getAbsolutePosition().getValue();\n    }\n}\n\n// Example: Multiple CANcoders\npublic class ArmSystem {\n    private final CANcoder m_shoulderEncoder = new CANcoder(11);  // CAN ID 11\n    private final CANcoder m_elbowEncoder = new CANcoder(12);     // CAN ID 12\n}"
+    },
+    {
+      "type": "text",
+      "title": "Reading Absolute Position",
+      "content": "The CANcoder's primary function is providing absolute position. Position is returned in rotations (0.0 to 1.0 for one full revolution). This position is always available, even immediately after power-up, without any calibration or homing sequence.<br><br><strong>Position Characteristics:</strong><br>- Range: 0.0 to 1.0 rotations (one full revolution)<br>- Can be converted to degrees: position * 360.0<br>- Position wraps around (1.0 + small increment = 0.0)<br>- Always accurate, no drift over time<br><br><strong>Reading Position:</strong> Use <code>getAbsolutePosition().getValue()</code> to read the raw absolute position, or <code>getPosition().getValue()</code> to read position with magnet offset applied. Both return a <code>StatusSignal</code> which must be read using <code>getValue()</code>."
+    },
+    {
+      "type": "code",
+      "title": "Reading CANcoder Position",
+      "content": "import com.ctre.phoenix6.hardware.CANcoder;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class CANcoderPosition {\n    private final CANcoder m_encoder = new CANcoder(10);\n    \n    // Status signal for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_encoder.getAbsolutePosition(),\n        m_encoder.getPosition()\n    };\n    \n    public void updatePosition() {\n        // Refresh all signals at once (efficient)\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        double rawPosition = m_encoder.getAbsolutePosition().getValue();\n        \n        // Convert to degrees (0-360)\n        double degrees = rawPosition * 360.0;\n        \n        // Alternative: Use getPosition() which includes offset\n        double positionWithOffset = m_encoder.getPosition().getValue();\n        \n        SmartDashboard.putNumber(\"CANcoder Raw Position (rotations)\", rawPosition);\n        SmartDashboard.putNumber(\"CANcoder Degrees\", degrees);\n        SmartDashboard.putNumber(\"CANcoder Position (with offset)\", positionWithOffset);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Magnet Offset Calibration",
+      "content": "Magnet offset accounts for the physical mounting position of the magnet relative to the mechanism's zero position. Calibrating the magnet offset allows you to define what position corresponds to \"zero\" for your mechanism.<br><br><strong>Calibration Process:</strong><br>1. Move mechanism to desired zero position<br>2. Read current absolute position using <code>getAbsolutePosition().getValue()</code><br>3. Calculate offset: offset = desired_zero - current_position (in rotations)<br>4. Configure offset in code (see configuration section)<br>5. Verify: <code>getPosition().getValue()</code> should now show zero at mechanism zero<br><br><strong>Using Offset:</strong> Once configured, <code>getPosition().getValue()</code> returns position with offset applied, while <code>getAbsolutePosition().getValue()</code> returns raw position."
+    },
+    {
+      "type": "code",
+      "title": "Calibrating Magnet Offset",
+      "content": "import com.ctre.phoenix6.hardware.CANcoder;\nimport com.ctre.phoenix6.configs.CANcoderConfiguration;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class MagnetOffsetCalibration {\n    private final CANcoder m_encoder = new CANcoder(10);\n    \n    // Status signals\n    private final BaseStatusSignal[] m_signals = {\n        m_encoder.getAbsolutePosition(),\n        m_encoder.getPosition()\n    };\n    \n    public void calibrateOffset() {\n        // Step 1: Move mechanism to desired zero position (manually)\n        \n        // Step 2: Read current absolute position\n        BaseStatusSignal.refreshAll(m_signals);\n        double currentAbsolutePosition = m_encoder.getAbsolutePosition().getValue();\n        \n        // Step 3: Calculate offset (in rotations)\n        // If you want current position to be zero:\n        double offset = -currentAbsolutePosition;\n        \n        // Or if you want a specific position to be zero:\n        // double desiredZeroPosition = 0.0;  // degrees\n        // double desiredZeroRotations = desiredZeroPosition / 360.0;\n        // offset = desiredZeroRotations - currentAbsolutePosition;\n        \n        // Step 4: Configure offset\n        CANcoderConfiguration config = new CANcoderConfiguration();\n        config.MagnetSensor.MagnetOffset = offset;\n        m_encoder.getConfigurator().apply(config);\n        \n        // Step 5: Verify\n        BaseStatusSignal.refreshAll(m_signals);\n        double positionWithOffset = m_encoder.getPosition().getValue();\n        System.out.println(\"Offset configured: \" + offset);\n        System.out.println(\"Position with offset: \" + positionWithOffset);\n        \n        SmartDashboard.putNumber(\"Magnet Offset\", offset);\n        SmartDashboard.putNumber(\"Position After Calibration\", positionWithOffset);\n    }\n}"
+    },
+    {
+      "type": "text",
+      "title": "Configuration",
+      "content": "When setting up a CANcoder, there are several essential configuration parameters:<br><br><strong>Magnet Offset:</strong> Calibrates the zero position, accounts for magnet mounting position<br><br><strong>Direction:</strong> Inverts encoder direction if needed to match mechanism rotation direction<br><br><strong>Sensor Range:</strong> Typically 0.0 to 1.0 rotations (wraps around)<br><br>These settings should be configured in code for consistency. Configure them in the constructor or initialization method."
+    },
+    {
+      "type": "code",
+      "title": "Basic CANcoder Configuration",
+      "content": "import com.ctre.phoenix6.hardware.CANcoder;\nimport com.ctre.phoenix6.configs.CANcoderConfiguration;\nimport com.ctre.phoenix6.signals.SensorDirectionValue;\nimport com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;\n\npublic class CANcoderConfig {\n    private final CANcoder m_encoder = new CANcoder(10);\n    \n    public CANcoderConfig() {\n        CANcoderConfiguration config = new CANcoderConfiguration();\n        \n        // Configure sensor direction (invert if needed)\n        config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;\n        \n        // Configure absolute sensor range (0 to 1.0 rotations)\n        config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;\n        \n        // Configure magnet offset (calibrated value in rotations)\n        double magnetOffset = 0.0;  // Calibrate this value\n        config.MagnetSensor.MagnetOffset = magnetOffset;\n        \n        m_encoder.getConfigurator().apply(config);\n    }\n}"
+    },
+    {
+      "type": "code",
+      "title": "Swerve Module Example",
+      "content": "package frc.robot.subsystems.swerve;\n\nimport com.ctre.phoenix6.hardware.CANcoder;\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.configs.CANcoderConfiguration;\nimport com.ctre.phoenix6.signals.SensorDirectionValue;\nimport com.ctre.phoenix6.BaseStatusSignal;\nimport edu.wpi.first.math.geometry.Rotation2d;\n\npublic class SwerveModule {\n    private final TalonFX m_driveMotor;\n    private final TalonFX m_steerMotor;\n    private final CANcoder m_angleEncoder;\n    \n    // Status signal for efficient reading\n    private final BaseStatusSignal[] m_signals = {\n        m_angleEncoder.getPosition()\n    };\n    \n    // Conversion: rotations to radians\n    private static final double ROTATIONS_TO_RADIANS = 2.0 * Math.PI;\n    \n    public SwerveModule(int driveMotorID, int steerMotorID, int encoderID, double encoderOffset) {\n        m_driveMotor = new TalonFX(driveMotorID);\n        m_steerMotor = new TalonFX(steerMotorID);\n        m_angleEncoder = new CANcoder(encoderID);\n        \n        // Configure encoder offset and direction\n        CANcoderConfiguration config = new CANcoderConfiguration();\n        config.MagnetSensor.MagnetOffset = encoderOffset;  // Offset in rotations\n        config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;\n        m_angleEncoder.getConfigurator().apply(config);\n    }\n    \n    public Rotation2d getAngle() {\n        // Refresh signal\n        BaseStatusSignal.refreshAll(m_signals);\n        \n        double position = m_angleEncoder.getPosition().getValue();  // In rotations\n        double radians = position * ROTATIONS_TO_RADIANS;\n        return Rotation2d.fromRadians(radians);\n    }\n}"
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics and Documentation",
+      "links": [
+        {
+          "label": "Talon FX Setup",
+          "id": "talon-fx-setup"
+        },
+        {
+          "label": "CTRE Introduction",
+          "id": "ctre-intro"
+        },
+        {
+          "label": "Swerve Odometry",
+          "id": "swerve-odometry"
+        }
+      ]
+    }
+  ]
+}

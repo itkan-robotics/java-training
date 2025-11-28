@@ -26,7 +26,7 @@
     {
       "type": "code",
       "title": "Sequential Command Group Example",
-      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.SequentialCommandGroup;\nimport edu.wpi.first.wpilibj2.command.WaitCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.TurnCommand;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Arm;\n\npublic class SimpleAutonomousRoutine extends SequentialCommandGroup {\n    public SimpleAutonomousRoutine(Drivetrain drivetrain, Arm arm) {\n        // Add commands in the order they should execute\n        addCommands(\n            // Drive forward for 2 seconds\n            new DriveForwardCommand(drivetrain, 0.5).withTimeout(2.0),\n            \n            // Wait 0.5 seconds\n            new WaitCommand(0.5),\n            \n            // Turn 90 degrees\n            new TurnCommand(drivetrain, 90),\n            \n            // Move arm to scoring position\n            new MoveArmCommand(arm, 45.0),\n            \n            // Wait 1 second\n            new WaitCommand(1.0),\n            \n            // Drive forward again\n            new DriveForwardCommand(drivetrain, 0.5).withTimeout(1.0)\n        );\n        \n        // This group requires both drivetrain and arm\n        // (inherited from the commands it contains)\n    }\n}"
+      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.SequentialCommandGroup;\nimport edu.wpi.first.wpilibj2.command.WaitCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.TurnCommand;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Arm;\n\npublic class SimpleAutonomousRoutine extends SequentialCommandGroup {\n    public SimpleAutonomousRoutine(Drivetrain drivetrain, Arm arm) {\n        // Add commands in the order they should execute\n        addCommands(\n            new DriveForwardCommand(drivetrain, 0.5).withTimeout(2.0),\n            \n            // Wait 0.5 seconds\n            new WaitCommand(0.5),\n            \n            // Turn 90 degrees\n            new TurnCommand(drivetrain, 90),\n            \n            new MoveArmCommand(arm, 45.0),\n            \n            // Wait 1 second\n            new WaitCommand(1.0),\n            \n            new DriveForwardCommand(drivetrain, 0.5).withTimeout(1.0)\n        );\n        \n        // This group requires both drivetrain and arm\n        // (inherited from the commands it contains)\n    }\n}"
     },
     {
       "type": "text",
@@ -36,7 +36,7 @@
     {
       "type": "code",
       "title": "Parallel Command Group Example",
-      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.ParallelCommandGroup;\nimport frc.robot.commands.MoveElevatorCommand;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.commands.RunIntakeCommand;\nimport frc.robot.subsystems.Elevator;\nimport frc.robot.subsystems.Arm;\nimport frc.robot.subsystems.Intake;\n\npublic class PrepareForScoringCommand extends ParallelCommandGroup {\n    public PrepareForScoringCommand(Elevator elevator, Arm arm, Intake intake) {\n        // All commands start simultaneously\n        addCommands(\n            // Move elevator to scoring height\n            new MoveElevatorCommand(elevator, 36.0, 0.5, 0.5),\n            \n            // Move arm to scoring angle\n            new MoveArmCommand(arm, 60.0, 0.3, 2.0),\n            \n            // Run intake to hold game piece\n            new RunIntakeCommand(intake, 0.2)\n        );\n        \n        // All three mechanisms operate simultaneously\n        // Group finishes when all three commands finish\n        // Note: Each command must use a different subsystem\n    }\n}"
+      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.ParallelCommandGroup;\nimport frc.robot.commands.MoveElevatorCommand;\nimport frc.robot.commands.MoveArmCommand;\nimport frc.robot.commands.RunIntakeCommand;\nimport frc.robot.subsystems.Elevator;\nimport frc.robot.subsystems.Arm;\nimport frc.robot.subsystems.Intake;\n\npublic class PrepareForScoringCommand extends ParallelCommandGroup {\n    public PrepareForScoringCommand(Elevator elevator, Arm arm, Intake intake) {\n        // All commands start simultaneously\n        addCommands(\n            new MoveElevatorCommand(elevator, 36.0, 0.5, 0.5),\n            \n            new MoveArmCommand(arm, 60.0, 0.3, 2.0),\n            \n            new RunIntakeCommand(intake, 0.2)\n        );\n        \n        // All three mechanisms operate simultaneously\n        // Group finishes when all three commands finish\n        // Note: Each command must use a different subsystem\n    }\n}"
     },
     {
       "type": "text",
@@ -46,7 +46,7 @@
     {
       "type": "code",
       "title": "Parallel Race Group Example",
-      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.ParallelRaceGroup;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.WaitForGamePieceCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Intake;\n\npublic class DriveUntilGamePieceCommand extends ParallelRaceGroup {\n    public DriveUntilGamePieceCommand(Drivetrain drivetrain, Intake intake) {\n        // Both commands start simultaneously\n        addCommands(\n            // Drive forward (runs until interrupted)\n            new DriveForwardCommand(drivetrain, 0.4),\n            \n            // Wait for game piece detection (finishes when detected)\n            new WaitForGamePieceCommand(intake)\n        );\n        \n        // When WaitForGamePieceCommand detects a game piece:\n        // 1. WaitForGamePieceCommand finishes\n        // 2. Group ends immediately\n        // 3. DriveForwardCommand is interrupted\n        // 4. Robot stops\n    }\n}"
+      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.ParallelRaceGroup;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.WaitForGamePieceCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Intake;\n\npublic class DriveUntilGamePieceCommand extends ParallelRaceGroup {\n    public DriveUntilGamePieceCommand(Drivetrain drivetrain, Intake intake) {\n        // Both commands start simultaneously\n        addCommands(\n            new DriveForwardCommand(drivetrain, 0.4),\n            \n            // Wait for game piece detection (finishes when detected)\n            new WaitForGamePieceCommand(intake)\n        );\n        \n        // When WaitForGamePieceCommand detects a game piece:\n        // 1. WaitForGamePieceCommand finishes\n        // 2. Group ends immediately\n        // 3. DriveForwardCommand is interrupted\n        // 4. Robot stops\n    }\n}"
     },
     {
       "type": "text",
@@ -56,7 +56,7 @@
     {
       "type": "code",
       "title": "Parallel Deadline Group Example",
-      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;\nimport edu.wpi.first.wpilibj2.command.WaitCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.RunIntakeCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Intake;\n\npublic class DriveAndIntakeForTimeCommand extends ParallelDeadlineGroup {\n    public DriveAndIntakeForTimeCommand(Drivetrain drivetrain, Intake intake, double duration) {\n        // Deadline command (determines when group ends)\n        super(new WaitCommand(duration));\n        \n        // Other commands (run until deadline finishes)\n        addCommands(\n            // Drive forward\n            new DriveForwardCommand(drivetrain, 0.5),\n            \n            // Run intake\n            new RunIntakeCommand(intake, 0.6)\n        );\n        \n        // When WaitCommand finishes (after duration):\n        // 1. Group ends\n        // 2. DriveForwardCommand is interrupted\n        // 3. RunIntakeCommand is interrupted\n        // 4. Both mechanisms stop\n    }\n}"
+      "content": "package frc.robot.commands.auto;\n\nimport edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;\nimport edu.wpi.first.wpilibj2.command.WaitCommand;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.RunIntakeCommand;\nimport frc.robot.subsystems.Drivetrain;\nimport frc.robot.subsystems.Intake;\n\npublic class DriveAndIntakeForTimeCommand extends ParallelDeadlineGroup {\n    public DriveAndIntakeForTimeCommand(Drivetrain drivetrain, Intake intake, double duration) {\n        // Deadline command (determines when group ends)\n        super(new WaitCommand(duration));\n        \n        // Other commands (run until deadline finishes)\n        addCommands(\n            new DriveForwardCommand(drivetrain, 0.5),\n            \n            new RunIntakeCommand(intake, 0.6)\n        );\n        \n        // When WaitCommand finishes (after duration):\n        // 1. Group ends\n        // 2. DriveForwardCommand is interrupted\n        // 3. RunIntakeCommand is interrupted\n        // 4. Both mechanisms stop\n    }\n}"
     },
     {
       "type": "text",
@@ -90,19 +90,21 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Command Creation", 
-		  "url": "command-creation"},
+          "label": "Command Creation",
+          "id": "command-creation"
+        },
         {
-		  "label": "Command Scheduler", 
-		  "url": "command-scheduler"},
+          "label": "Command Scheduler",
+          "id": "command-scheduler"
+        },
         {
-		  "label": "Robot Container", 
-		  "url": "robot-container"}
+          "label": "Robot Container",
+          "id": "robot-container"
+        }
       ]
     }
   ]
 }
-

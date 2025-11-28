@@ -58,7 +58,7 @@
     {
       "type": "code",
       "title": "Robot Mode Methods in Code",
-      "content": "// In your Robot.java, these methods correspond to Driver Station modes:\n\npublic class Robot extends TimedRobot {\n    @Override\n    public void robotInit() {\n        // Called once when robot starts (any mode)\n    }\n\n    @Override\n    public void disabledInit() {\n        // Called when entering Disabled mode\n    }\n\n    @Override\n    public void disabledPeriodic() {\n        // Called repeatedly while in Disabled mode\n    }\n\n    @Override\n    public void autonomousInit() {\n        // Called when entering Autonomous mode\n    }\n\n    @Override\n    public void autonomousPeriodic() {\n        // Called repeatedly during Autonomous mode\n    }\n\n    @Override\n    public void teleopInit() {\n        // Called when entering Teleop mode\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // Called repeatedly during Teleop mode\n    }\n\n    @Override\n    public void testInit() {\n        // Called when entering Test mode\n    }\n\n    @Override\n    public void testPeriodic() {\n        // Called repeatedly during Test mode\n    }\n}"
+      "content": "\npublic class Robot extends TimedRobot {\n    @Override\n    public void robotInit() {\n    }\n\n    @Override\n    public void disabledInit() {\n    }\n\n    @Override\n    public void disabledPeriodic() {\n    }\n\n    @Override\n    public void autonomousInit() {\n    }\n\n    @Override\n    public void autonomousPeriodic() {\n    }\n\n    @Override\n    public void teleopInit() {\n    }\n\n    @Override\n    public void teleopPeriodic() {\n    }\n\n    @Override\n    public void testInit() {\n    }\n\n    @Override\n    public void testPeriodic() {\n    }\n}"
     },
     {
       "type": "text",
@@ -87,17 +87,20 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Elastic Basics", 
-		  "url": "elastic-basics"},
+          "label": "Elastic Basics",
+          "id": "elastic-basics"
+        },
         {
-		  "label": "Project Creation", 
-		  "url": "project-creation"},
+          "label": "Project Creation",
+          "id": "project-creation"
+        },
         {
-		  "label": "WPILib Setup", 
-		  "url": "wpilib-setup"}
+          "label": "WPILib Setup",
+          "id": "wpilib-setup"
+        }
       ]
     }
   ]

@@ -19,7 +19,7 @@
     {
       "type": "code",
       "title": "Reading NEO Encoder Values",
-      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class NEOEncoderReading {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Conversion: encoder counts to degrees\n    // NEO encoder: 42 counts per revolution\n    private static final double COUNTS_PER_DEGREE = 42.0 / 360.0;\n    \n    public void updateEncoder() {\n        // Read encoder position (in encoder counts)\n        double position = m_encoder.getPosition();\n        \n        // Read encoder velocity (in encoder counts per second)\n        double velocity = m_encoder.getVelocity();\n        \n        // Convert to degrees\n        double positionDegrees = position / COUNTS_PER_DEGREE;\n        double velocityDegreesPerSecond = velocity / COUNTS_PER_DEGREE;\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Encoder Position (counts)\", position);\n        SmartDashboard.putNumber(\"Encoder Position (degrees)\", positionDegrees);\n        SmartDashboard.putNumber(\"Encoder Velocity (counts/s)\", velocity);\n        SmartDashboard.putNumber(\"Encoder Velocity (deg/s)\", velocityDegreesPerSecond);\n    }\n}"
+      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\n\npublic class NEOEncoderReading {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Conversion: encoder counts to degrees\n    // NEO encoder: 42 counts per revolution\n    private static final double COUNTS_PER_DEGREE = 42.0 / 360.0;\n    \n    public void updateEncoder() {\n        double position = m_encoder.getPosition();\n        \n        double velocity = m_encoder.getVelocity();\n        \n        // Convert to degrees\n        double positionDegrees = position / COUNTS_PER_DEGREE;\n        double velocityDegreesPerSecond = velocity / COUNTS_PER_DEGREE;\n        \n        SmartDashboard.putNumber(\"Encoder Position (counts)\", position);\n        SmartDashboard.putNumber(\"Encoder Position (degrees)\", positionDegrees);\n        SmartDashboard.putNumber(\"Encoder Velocity (counts/s)\", velocity);\n        SmartDashboard.putNumber(\"Encoder Velocity (deg/s)\", velocityDegreesPerSecond);\n    }\n}"
     },
     {
       "type": "text",
@@ -29,7 +29,7 @@
     {
       "type": "code",
       "title": "Encoder Reset Code Example",
-      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\n\npublic class EncoderReset {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    public void resetEncoder() {\n        // Reset encoder position to zero\n        m_encoder.setPosition(0);\n        \n        // Now current position is considered zero\n        // All future position readings will be relative to this point\n    }\n    \n    public void resetToValue(double value) {\n        // Reset encoder to a specific value\n        // Useful if you want zero to be at a different position\n        m_encoder.setPosition(value);\n    }\n}"
+      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\n\npublic class EncoderReset {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    public void resetEncoder() {\n        m_encoder.setPosition(0);\n        \n        // All future position readings will be relative to this point\n    }\n    \n    public void resetToValue(double value) {\n        m_encoder.setPosition(value);\n    }\n}"
     },
     {
       "type": "text",
@@ -39,7 +39,7 @@
     {
       "type": "code",
       "title": "External Encoder Configuration",
-      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkMaxAlternateEncoder;\nimport com.revrobotics.RelativeEncoder;\n\npublic class ExternalEncoderConfig {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushed);\n    \n    // Configure alternate encoder (external encoder via data port)\n    // Type: kQuadrature for quadrature encoder\n    // Counts per revolution depends on encoder\n    private final SparkMaxAlternateEncoder.Type m_encoderType = SparkMaxAlternateEncoder.Type.kQuadrature;\n    private final int m_countsPerRevolution = 4096;  // Example: 4096 counts per revolution\n    \n    // Get alternate encoder\n    private final RelativeEncoder m_alternateEncoder = m_motor.getAlternateEncoder(m_encoderType, m_countsPerRevolution);\n    \n    public ExternalEncoderConfig() {\n        // Configure encoder conversion factors (if needed)\n        // For example, if gear ratio is 10:1\n        m_alternateEncoder.setPositionConversionFactor(1.0 / 10.0);\n        m_alternateEncoder.setVelocityConversionFactor(1.0 / 10.0);\n        \n        // Reset encoder position\n        m_alternateEncoder.setPosition(0);\n    }\n    \n    public double getPosition() {\n        return m_alternateEncoder.getPosition();\n    }\n    \n    public double getVelocity() {\n        return m_alternateEncoder.getVelocity();\n    }\n}"
+      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.SparkMaxAlternateEncoder;\nimport com.revrobotics.RelativeEncoder;\n\npublic class ExternalEncoderConfig {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushed);\n    \n    // Configure alternate encoder (external encoder via data port)\n    // Type: kQuadrature for quadrature encoder\n    // Counts per revolution depends on encoder\n    private final SparkMaxAlternateEncoder.Type m_encoderType = SparkMaxAlternateEncoder.Type.kQuadrature;\n    private final int m_countsPerRevolution = 4096;  // Example: 4096 counts per revolution\n    \n    private final RelativeEncoder m_alternateEncoder = m_motor.getAlternateEncoder(m_encoderType, m_countsPerRevolution);\n    \n    public ExternalEncoderConfig() {\n        // Configure encoder conversion factors (if needed)\n        // For example, if gear ratio is 10:1\n        m_alternateEncoder.setPositionConversionFactor(1.0 / 10.0);\n        m_alternateEncoder.setVelocityConversionFactor(1.0 / 10.0);\n        \n        m_alternateEncoder.setPosition(0);\n    }\n    \n    public double getPosition() {\n        return m_alternateEncoder.getPosition();\n    }\n    \n    public double getVelocity() {\n        return m_alternateEncoder.getVelocity();\n    }\n}"
     },
     {
       "type": "text",
@@ -49,7 +49,7 @@
     {
       "type": "code",
       "title": "Reading Encoder Position and Velocity",
-      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class EncoderReading extends SubsystemBase {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Conversion factors\n    private static final double COUNTS_PER_REVOLUTION = 42.0;  // NEO encoder\n    private static final double COUNTS_PER_DEGREE = COUNTS_PER_REVOLUTION / 360.0;\n    \n    @Override\n    public void periodic() {\n        // Read position (encoder counts)\n        double positionCounts = m_encoder.getPosition();\n        \n        // Read velocity (encoder counts per second)\n        double velocityCountsPerSecond = m_encoder.getVelocity();\n        \n        // Convert to degrees\n        double positionDegrees = positionCounts / COUNTS_PER_DEGREE;\n        double velocityDegreesPerSecond = velocityCountsPerSecond / COUNTS_PER_DEGREE;\n        \n        // Convert velocity to RPM\n        double velocityRPM = (velocityCountsPerSecond / COUNTS_PER_REVOLUTION) * 60.0;\n        \n        // Update dashboard\n        SmartDashboard.putNumber(\"Position (counts)\", positionCounts);\n        SmartDashboard.putNumber(\"Position (degrees)\", positionDegrees);\n        SmartDashboard.putNumber(\"Velocity (counts/s)\", velocityCountsPerSecond);\n        SmartDashboard.putNumber(\"Velocity (deg/s)\", velocityDegreesPerSecond);\n        SmartDashboard.putNumber(\"Velocity (RPM)\", velocityRPM);\n    }\n}"
+      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class EncoderReading extends SubsystemBase {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Conversion factors\n    private static final double COUNTS_PER_REVOLUTION = 42.0;  // NEO encoder\n    private static final double COUNTS_PER_DEGREE = COUNTS_PER_REVOLUTION / 360.0;\n    \n    @Override\n    public void periodic() {\n        double positionCounts = m_encoder.getPosition();\n        \n        double velocityCountsPerSecond = m_encoder.getVelocity();\n        \n        // Convert to degrees\n        double positionDegrees = positionCounts / COUNTS_PER_DEGREE;\n        double velocityDegreesPerSecond = velocityCountsPerSecond / COUNTS_PER_DEGREE;\n        \n        // Convert velocity to RPM\n        double velocityRPM = (velocityCountsPerSecond / COUNTS_PER_REVOLUTION) * 60.0;\n        \n        SmartDashboard.putNumber(\"Position (counts)\", positionCounts);\n        SmartDashboard.putNumber(\"Position (degrees)\", positionDegrees);\n        SmartDashboard.putNumber(\"Velocity (counts/s)\", velocityCountsPerSecond);\n        SmartDashboard.putNumber(\"Velocity (deg/s)\", velocityDegreesPerSecond);\n        SmartDashboard.putNumber(\"Velocity (RPM)\", velocityRPM);\n    }\n}"
     },
     {
       "type": "text",
@@ -69,23 +69,25 @@
     {
       "type": "code",
       "title": "Encoder Configuration Example",
-      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\n\npublic class EncoderConfiguration {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Gear ratio: 10:1 (motor rotates 10 times for 1 mechanism rotation)\n    private static final double GEAR_RATIO = 10.0;\n    \n    public EncoderConfiguration() {\n        // Set position conversion factor\n        // Position will now be in mechanism rotations instead of motor rotations\n        m_encoder.setPositionConversionFactor(1.0 / GEAR_RATIO);\n        \n        // Set velocity conversion factor\n        // Velocity will now be in mechanism rotations per second\n        m_encoder.setVelocityConversionFactor(1.0 / GEAR_RATIO);\n        \n        // Set average depth for velocity (number of samples to average)\n        // Higher = smoother but slower response\n        m_encoder.setAverageDepth(4);\n        \n        // Set measurement period for velocity (milliseconds)\n        // Lower = faster updates but may be noisier\n        m_encoder.setMeasurementPeriod(10);\n        \n        // Reset encoder position\n        m_encoder.setPosition(0);\n    }\n}"
+      "content": "import com.revrobotics.CANSparkMax;\nimport com.revrobotics.CANSparkLowLevel.MotorType;\nimport com.revrobotics.RelativeEncoder;\n\npublic class EncoderConfiguration {\n    private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);\n    private final RelativeEncoder m_encoder = m_motor.getEncoder();\n    \n    // Gear ratio: 10:1 (motor rotates 10 times for 1 mechanism rotation)\n    private static final double GEAR_RATIO = 10.0;\n    \n    public EncoderConfiguration() {\n        // Position will now be in mechanism rotations instead of motor rotations\n        m_encoder.setPositionConversionFactor(1.0 / GEAR_RATIO);\n        \n        // Velocity will now be in mechanism rotations per second\n        m_encoder.setVelocityConversionFactor(1.0 / GEAR_RATIO);\n        \n        // Higher = smoother but slower response\n        m_encoder.setAverageDepth(4);\n        \n        // Lower = faster updates but may be noisier\n        m_encoder.setMeasurementPeriod(10);\n        \n        m_encoder.setPosition(0);\n    }\n}"
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "SPARK MAX PID Control", 
-		  "url": "spark-max-pid-control"},
+          "label": "Motor PID Control",
+          "id": "motor-pid-control"
+        },
         {
-		  "label": "SPARK MAX Configuration", 
-		  "url": "spark-max-configuration"},
+          "label": "Motor Controller Configuration",
+          "id": "motor-controller-configuration"
+        },
         {
-		  "label": "SPARK MAX Setup", 
-		  "url": "spark-max-setup"}
+          "label": "SPARK MAX Setup",
+          "id": "spark-max-setup"
+        }
       ]
     }
   ]
 }
-

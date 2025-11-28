@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Introduction to Command Scheduler",
-      "content": "The Command Scheduler is the execution manager for command-based programming. It runs continuously, scheduling commands, executing their lifecycle methods, managing subsystem ownership, and handling command interruption. Understanding how the scheduler works is essential for effective command-based programming.<br><br>The scheduler runs automatically in command-based robots, calling <code>CommandScheduler.getInstance().run()</code> in the robot's periodic methods. It manages all command execution, ensuring commands run correctly and subsystems are used safely."
+      "content": "The Command Scheduler is the execution manager for command-based programming. It runs continuously, scheduling commands, executing their lifecycle methods, managing subsystem ownership, and handling command interruption. Understanding how the scheduler works is essential for effective command-based programming.<br><br>The scheduler runs automatically in command-based robots, calling <code>CommandScheduler.getInstance().run()</code> in the robot's periodic methods. It manages all command execution, ensuring commands run correctly and subsystems are used safely.<br><br><strong>Learn more:</strong> <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/command-scheduler.html' target='_blank'>WPILib Documentation: Command Scheduler</a>"
     },
     {
       "type": "rules-box",
@@ -44,12 +44,12 @@
     {
       "type": "code",
       "title": "Command Interruption Example",
-      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DriveForwardCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final double m_speed;\n    \n    public DriveForwardCommand(Drivetrain drivetrain, double speed) {\n        m_drivetrain = drivetrain;\n        m_speed = speed;\n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        System.out.println(\"DriveForwardCommand: Starting\");\n    }\n    \n    @Override\n    public void execute() {\n        m_drivetrain.drive(m_speed, m_speed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return false;  // Runs until interrupted\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_drivetrain.stop();\n        \n        if (interrupted) {\n            // This command was interrupted by another command\n            System.out.println(\"DriveForwardCommand: Interrupted by another command\");\n        } else {\n            System.out.println(\"DriveForwardCommand: Completed normally\");\n        }\n    }\n}\n\n// When another command requiring drivetrain is scheduled:\n// CommandScheduler.getInstance().schedule(new TurnCommand(drivetrain, 90));\n// DriveForwardCommand will be interrupted automatically"
+      "content": "package frc.robot.commands;\n\nimport edu.wpi.first.wpilibj2.command.Command;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class DriveForwardCommand extends Command {\n    private final Drivetrain m_drivetrain;\n    private final double m_speed;\n    \n    public DriveForwardCommand(Drivetrain drivetrain, double speed) {\n        m_drivetrain = drivetrain;\n        m_speed = speed;\n        addRequirements(drivetrain);\n    }\n    \n    @Override\n    public void initialize() {\n        System.out.println(\"DriveForwardCommand: Starting\");\n    }\n    \n    @Override\n    public void execute() {\n        m_drivetrain.drive(m_speed, m_speed);\n    }\n    \n    @Override\n    public boolean isFinished() {\n        return false;\n    }\n    \n    @Override\n    public void end(boolean interrupted) {\n        m_drivetrain.stop();\n        \n        if (interrupted) {\n            // This command was interrupted by another command\n            System.out.println(\"DriveForwardCommand: Interrupted by another command\");\n        } else {\n            System.out.println(\"DriveForwardCommand: Completed normally\");\n        }\n    }\n}\n\n// When another command requiring drivetrain is scheduled:\n// CommandScheduler.getInstance().schedule(new TurnCommand(drivetrain, 90));"
     },
     {
       "type": "code",
       "title": "Requirement Conflict Handling",
-      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.TurnCommand;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class ConflictExample {\n    private Drivetrain m_drivetrain;\n    \n    public void demonstrateConflicts() {\n        // Schedule first command\n        Command driveCommand = new DriveForwardCommand(m_drivetrain, 0.5);\n        CommandScheduler.getInstance().schedule(driveCommand);\n        \n        // driveCommand is now active and controls drivetrain\n        \n        // Schedule second command requiring same subsystem\n        Command turnCommand = new TurnCommand(m_drivetrain, 90);\n        CommandScheduler.getInstance().schedule(turnCommand);\n        \n        // Scheduler automatically:\n        // 1. Interrupts driveCommand (calls end(true))\n        // 2. Schedules turnCommand (calls initialize())\n        // 3. turnCommand now has exclusive control of drivetrain\n        \n        // driveCommand is no longer active\n        // turnCommand is now active\n    }\n}"
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.commands.DriveForwardCommand;\nimport frc.robot.commands.TurnCommand;\nimport frc.robot.subsystems.Drivetrain;\n\npublic class ConflictExample {\n    private Drivetrain m_drivetrain;\n    \n    public void demonstrateConflicts() {\n        // Schedule first command\n        Command driveCommand = new DriveForwardCommand(m_drivetrain, 0.5);\n        CommandScheduler.getInstance().schedule(driveCommand);\n        \n        \n        // Schedule second command requiring same subsystem\n        Command turnCommand = new TurnCommand(m_drivetrain, 90);\n        CommandScheduler.getInstance().schedule(turnCommand);\n        \n        // Scheduler automatically:\n        // 1. Interrupts driveCommand (calls end(true))\n        // 2. Schedules turnCommand (calls initialize())\n        // 3. turnCommand now has exclusive control of drivetrain\n        \n        // turnCommand is now active\n    }\n}"
     },
     {
       "type": "text",
@@ -59,7 +59,7 @@
     {
       "type": "code",
       "title": "Scheduler Methods Usage",
-      "content": "import edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class SchedulerMethodsExample {\n    private Command m_activeCommand;\n    \n    public void scheduleCommand(Command command) {\n        // Schedule a command\n        CommandScheduler.getInstance().schedule(command);\n        m_activeCommand = command;\n    }\n    \n    public void cancelActiveCommand() {\n        // Cancel specific command\n        if (m_activeCommand != null) {\n            CommandScheduler.getInstance().cancel(m_activeCommand);\n            m_activeCommand = null;\n        }\n    }\n    \n    public void emergencyStop() {\n        // Cancel all commands (emergency stop)\n        CommandScheduler.getInstance().cancelAll();\n        m_activeCommand = null;\n    }\n    \n    public void runScheduler() {\n        // Run scheduler (called in robot periodic methods)\n        CommandScheduler.getInstance().run();\n    }\n}"
+      "content": "import edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class SchedulerMethodsExample {\n    private Command m_activeCommand;\n    \n    public void scheduleCommand(Command command) {\n        // Schedule a command\n        CommandScheduler.getInstance().schedule(command);\n        m_activeCommand = command;\n    }\n    \n    public void cancelActiveCommand() {\n        // Cancel specific command\n        if (m_activeCommand != null) {\n            CommandScheduler.getInstance().cancel(m_activeCommand);\n            m_activeCommand = null;\n        }\n    }\n    \n    public void emergencyStop() {\n        // Cancel all commands (emergency stop)\n        CommandScheduler.getInstance().cancelAll();\n        m_activeCommand = null;\n    }\n    \n    public void runScheduler() {\n        CommandScheduler.getInstance().run();\n    }\n}"
     },
     {
       "type": "text",
@@ -69,7 +69,7 @@
     {
       "type": "code",
       "title": "Monitoring Active Commands",
-      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class SchedulerMonitoring {\n    public void updateTelemetry() {\n        // Get scheduler instance\n        CommandScheduler scheduler = CommandScheduler.getInstance();\n        \n        // Note: Direct access to active commands is limited in current WPILib API\n        // Use command-specific methods or subsystem state to track activity\n        \n        // Example: Track command state through subsystems\n        // Subsystems can track which command is using them\n        \n        // Display scheduler status\n        SmartDashboard.putBoolean(\"Scheduler Running\", true);\n        \n        // In practice, track command state through:\n        // - Subsystem methods that indicate active commands\n        // - Command-specific state variables\n        // - RobotContainer tracking active commands\n    }\n}"
+      "content": "package frc.robot;\n\nimport edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;\nimport edu.wpi.first.wpilibj2.command.Command;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\n\npublic class SchedulerMonitoring {\n    public void updateTelemetry() {\n        CommandScheduler scheduler = CommandScheduler.getInstance();\n        \n        // Note: Direct access to active commands is limited in current WPILib API\n        \n        // Example: Track command state through subsystems\n        // Subsystems can track which command is using them\n        \n        SmartDashboard.putBoolean(\"Scheduler Running\", true);\n        \n        // In practice, track command state through:\n        // - Subsystem methods that indicate active commands\n        // - Command-specific state variables\n        // - RobotContainer tracking active commands\n    }\n}"
     },
     {
       "type": "code",
@@ -78,19 +78,21 @@
     },
     {
       "type": "link-grid",
-      "title": "Related Topics",
+      "title": "Related Topics and Documentation",
       "links": [
         {
-		  "label": "Command Creation", 
-		  "url": "command-creation"},
+          "label": "Command Creation",
+          "id": "command-creation"
+        },
         {
-		  "label": "Command Requirements", 
-		  "url": "command-requirements"},
+          "label": "Command Creation",
+          "id": "command-creation"
+        },
         {
-		  "label": "Default Commands", 
-		  "url": "default-commands"}
+          "label": "Default Commands",
+          "id": "default-commands"
+        }
       ]
     }
   ]
 }
-
