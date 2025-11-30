@@ -4,7 +4,7 @@
     {
       "type": "text",
       "title": "Structuring a Command-Based Project",
-      "content": "A well-organized FRC project is easier to maintain, debug, and teach to new members. The standard structure for a Command-Based robot separates concerns into Subsystems, Commands, and the Robot container.<br><br><strong>Subsystems:</strong> Represent physical parts of the robot (Drivetrain, Arm, Intake). They handle low-level hardware control (motors, sensors) and expose high-level methods (`setVoltage`, `moveToAngle`).<br><br><strong>Commands:</strong> Represent actions or behaviors (`DriveWithJoystick`, `ScoreGamePiece`). They use subsystem methods to perform tasks over time.<br><br><strong>RobotContainer:</strong> The \"glue\" class. It initializes subsystems, defines button bindings, and sets up autonomous routines. It replaces the logic typically found in `Robot.java`.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html' target='_blank'>WPILib: Structuring a Command-Based Project</a>"
+      "content": "A well-organized FRC project is easier to maintain, debug, and teach to new members. The standard structure for a Command-Based robot separates concerns into Subsystems, Commands, and the Robot container.<br><br><strong>Subsystems:</strong> Represent physical parts of the robot (Drivetrain, Arm, Intake). They handle low-level hardware control (motors, sensors) and expose high-level methods (\"setVoltage\", \"moveToAngle\").<br><br><strong>Commands:</strong> Represent actions or behaviors (\"DriveWithJoystick\", \"ScoreGamePiece\"). They use subsystem methods to perform tasks over time.<br><br><strong>RobotContainer:</strong> The \"glue\" class. It initializes subsystems, defines button bindings, and sets up autonomous routines. It replaces the logic typically found in \"Robot.java\".<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html' target='_blank'>WPILib: Structuring a Command-Based Project</a>"
     },
     {
       "type": "text",
@@ -19,7 +19,7 @@
     {
       "type": "text",
       "title": "Constants Management",
-      "content": "Avoid \"magic numbers\" in your code. Use a `Constants` class to store all configuration values. This makes tuning easier (change in one place) and improves readability.<br><br>Organize `Constants` using nested classes for each subsystem."
+      "content": "Avoid \"magic numbers\" in your code. Use a \"Constants\" class to store all configuration values. This makes tuning easier (change in one place) and improves readability.<br><br>Organize \"Constants\" using nested classes for each subsystem."
     },
     {
       "type": "code",
@@ -29,7 +29,7 @@
     {
       "type": "text",
       "title": "RobotContainer Best Practices",
-      "content": "The `RobotContainer` is where you wire everything together. It should:<br><br>1. Instantiate all subsystems as `private final` fields.<br>2. Define `Command` objects for default behaviors (e.g., default drive).<br>3. Configure button bindings using `Trigger` and `JoystickButton`.<br>4. Setup the `SendableChooser` for selecting autonomous routines.<br><br>It should <strong>NOT</strong> contain loop logic or hardware initialization details (that belongs in subsystems)."
+      "content": "The \"RobotContainer\" is where you wire everything together. It should:<br><br>1. Instantiate all subsystems as \"private final\" fields.<br>2. Define \"Command\" objects for default behaviors (e.g., default drive).<br>3. Configure button bindings using \"Trigger\" and \"JoystickButton\".<br>4. Setup the \"SendableChooser\" for selecting autonomous routines.<br><br>It should <strong>NOT</strong> contain loop logic or hardware initialization details (that belongs in subsystems)."
     },
     {
       "type": "code",
@@ -69,3 +69,4 @@
     }
   ]
 }
+

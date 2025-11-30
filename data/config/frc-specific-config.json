@@ -27,6 +27,13 @@
           "file": "data/frc/environment-setup/elastic-basics.json",
           "difficulty": "beginner",
           "duration": "30 min"
+        },
+        {
+          "id": "code-organization",
+          "label": "Code Organization",
+          "file": "data/frc/environment-setup/code-organization.json",
+          "difficulty": "intermediate",
+          "duration": "40 min"
         }
       ]
     },
@@ -168,11 +175,18 @@
           "duration": "60 min"
         },
         {
-          "id": "vision-pose-estimation-complete",
-          "label": "Vision-Based Pose Estimation",
-          "file": "data/frc/pose-estimation/vision-pose-estimation-complete.json",
+          "id": "vision-subsystem",
+          "label": "Vision Subsystem",
+          "file": "data/frc/pose-estimation/vision-subsystem.json",
+          "difficulty": "intermediate",
+          "duration": "45 min"
+        },
+        {
+          "id": "vision-pose-estimation-fusion",
+          "label": "Fused Pose Estimation",
+          "file": "data/frc/pose-estimation/vision-pose-estimation-fusion.json",
           "difficulty": "advanced",
-          "duration": "90 min"
+          "duration": "60 min"
         }
       ]
     },
@@ -231,13 +245,6 @@
           "file": "data/frc/advanced-topics/unit-testing.json",
           "difficulty": "intermediate",
           "duration": "50 min"
-        },
-        {
-          "id": "code-organization",
-          "label": "Code Organization",
-          "file": "data/frc/advanced-topics/code-organization.json",
-          "difficulty": "intermediate",
-          "duration": "40 min"
         }
       ]
     }
@@ -245,10 +252,10 @@
   "metadata": {
     "version": "1.3.0",
     "lastUpdated": "2025-11-30",
-    "totalLessons": 35,
+    "totalLessons": 36,
     "difficultyLevels": {
       "beginner": 5,
-      "intermediate": 24,
+      "intermediate": 25,
       "advanced": 6
     },
     "estimatedDuration": "27 hours",

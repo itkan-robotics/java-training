@@ -9,6 +9,9 @@
   NODE_VERSION = "18"
 
 # SPA routing configuration
+# Redirect all non-file requests to index.html
+# This handles client-side routing for the SPA
+# Note: Netlify will automatically serve existing files and only redirect non-existent paths
 [[redirects]]
   from = "/*"
   to = "/index.html"

@@ -1,16 +1,23 @@
-/* SWYFT Robotics-inspired Modern Documentation Theme */
+/* SWYFT Robotics - Official Design System */
 
-/* CSS Variables - Light Theme */
+/* CSS Variables - Light Theme (Matching SWYFT Robotics Website) */
 :root {
-    --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    /* Typography - SWYFT uses Poppins */
+    --font-stack: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-stack--monospace: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Menlo, Consolas, Monaco, 'Liberation Mono', 'Lucida Console', monospace;
-    --font-stack--headings: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-stack--headings: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     
-    --font-size--normal: 100%;
-    --font-size--small: 87.5%;
-    --font-size--small--2: 81.25%;
-    --font-size--small--3: 75%;
-    --font-size--small--4: 62.5%;
+    /* Font Sizes - SWYFT uses 12px base */
+    --font-size--normal: 12px;
+    --font-size--small: 10.5px;
+    --font-size--small--2: 9.75px;
+    --font-size--small--3: 9px;
+    --font-size--small--4: 7.5px;
+    
+    /* Body typography - SWYFT specs */
+    --body-font-size: 12px;
+    --body-line-height: 22px;
+    --body-letter-spacing: 0.02em;
     
     --sidebar-caption-font-size: var(--font-size--small--2);
     --sidebar-item-font-size: var(--font-size--small);
@@ -21,22 +28,31 @@
     --sidebar-item-spacing-horizontal: 1.25rem;
     --sidebar-item-height: calc(var(--sidebar-item-line-height) + var(--sidebar-item-spacing-vertical) * 2);
     
-    /* SWYFT-inspired Color Palette */
-    --color-foreground-primary: #1a1a1a; /* Deep charcoal */
-    --color-foreground-secondary: #4a4a4a; /* Medium gray */
-    --color-foreground-muted: #6b7280;    /* Muted gray */
-    --color-foreground-border: #e5e7eb;   /* Light border */
-    --color-background-primary: #ffffff; /* Pure white */
-    --color-background-secondary: #f9fafb; /* Very light gray */
-    --color-background-hover: #f3f4f6;   /* Hover state */
-    --color-background-border: #e5e7eb;  /* Subtle border */
-    --color-brand-primary: #2563eb;      /* Modern blue */
-    --color-brand-primary-rgb: 37, 99, 235; /* RGB values for #2563eb */
-    --color-brand-content: #1d4ed8;      /* Darker blue */
-    --color-accent: #f59e0b;             /* Amber accent */
-    --color-success: #10b981;            /* Green */
-    --color-warning: #f59e0b;            /* Amber */
-    --color-error: #ef4444;              /* Red */
+    /* SWYFT Robotics Official Color Palette */
+    --color-foreground-primary: #232323; /* SWYFT text color */
+    --color-foreground-secondary: #868686; /* SWYFT grey */
+    --color-foreground-muted: #969696;    /* SWYFT muted grey */
+    --color-foreground-border: #e6e6e6;   /* SWYFT border */
+    --color-background-primary: #ffffff;  /* Pure white */
+    --color-background-secondary: #fafafa; /* SWYFT bg-global */
+    --color-background-hover: #f8f8f8;   /* SWYFT hover */
+    --color-background-border: #e6e6e6;  /* SWYFT border-global */
+    --color-brand-primary: #232323;      /* SWYFT primary (black) */
+    --color-brand-primary-rgb: 35, 35, 35; /* RGB values for #232323 */
+    --color-brand-content: #232323;      /* SWYFT link color */
+    --color-accent: #0088ff;             /* SWYFT blue */
+    --color-success: #5A5A5A;            /* SWYFT success */
+    --color-warning: #e0b252;            /* SWYFT warning */
+    --color-error: #e95144;              /* SWYFT error red */
+    --color-black: #202020;              /* SWYFT black */
+    
+    /* Button Colors - SWYFT Style */
+    --btn-1-color: #FFFFFF;
+    --btn-1-bg: #232323;
+    --btn-1-border: #232323;
+    --btn-1-color-hover: #232323;
+    --btn-1-bg-hover: #ffffff;
+    --btn-1-border-hover: #232323;
     
     --color-sidebar-background: var(--color-background-primary);
     --color-sidebar-background-border: var(--color-background-border);
@@ -50,11 +66,11 @@
     --color-header-border: var(--color-background-border);
     --color-header-text: var(--color-foreground-primary);
     
-    --color-code-background: #f8fafc;
-    --color-code-foreground: #1e293b;
-    --color-inline-code-background: #f1f5f9;
+    --color-code-background: #fafafa;
+    --color-code-foreground: #232323;
+    --color-inline-code-background: #fafafa;
     
-    --color-link: var(--color-brand-content);
+    --color-link: #232323; /* SWYFT links match text color */
     
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -73,20 +89,20 @@
   @media (prefers-color-scheme: dark) {
     html:not([data-theme="dark"])[data-theme="light"],
       html:not([data-theme="dark"]):not([data-theme]) {
-      /* SWYFT-inspired Light Theme */
+      /* SWYFT Robotics Official Light Theme */
     --color-background-primary: #ffffff; /* Pure white background */
-    --color-background-secondary: #f9fafb; /* Very light gray background */
-    --color-background-hover: #f3f4f6;   /* Subtle hover state */
-    --color-background-border: #e5e7eb;  /* Clean border */
-    --color-foreground-primary: #1a1a1a; /* Deep charcoal text */
-    --color-foreground-secondary: #4a4a4a; /* Medium gray text */
-    --color-foreground-muted: #6b7280;    /* Muted gray text */
-    --color-foreground-border: #e5e7eb;   /* Light border */
-    --color-brand-primary: #2563eb;      /* Modern blue */
-    --color-brand-primary-rgb: 37, 99, 235; /* RGB values for #2563eb */
-    --color-brand-content: #1d4ed8;      /* Darker blue for links/active */
-    --color-code-background: #f8fafc; /* Clean code background */
-    --color-code-foreground: #1e293b; /* Dark code text */
+    --color-background-secondary: #fafafa; /* SWYFT bg-global */
+    --color-background-hover: #f8f8f8;   /* SWYFT hover state */
+    --color-background-border: #e6e6e6;  /* SWYFT border-global */
+    --color-foreground-primary: #232323; /* SWYFT text color */
+    --color-foreground-secondary: #868686; /* SWYFT grey */
+    --color-foreground-muted: #969696;    /* SWYFT muted grey */
+    --color-foreground-border: #e6e6e6;   /* SWYFT border */
+    --color-brand-primary: #232323;      /* SWYFT primary black */
+    --color-brand-primary-rgb: 35, 35, 35; /* RGB values for #232323 */
+    --color-brand-content: #232323;      /* SWYFT link color */
+    --color-code-background: #fafafa; /* SWYFT code background */
+    --color-code-foreground: #232323; /* SWYFT code text */
   
       
       /* Update derived sidebar colors for dark theme */
@@ -180,16 +196,18 @@
     color: var(--color-foreground-primary);
   }
   
-  body {
+body {
     font-family: var(--font-stack);
+    font-size: var(--body-font-size);
+    line-height: var(--body-line-height);
+    letter-spacing: var(--body-letter-spacing);
     margin: 0;
-    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: var(--color-background-primary) !important;
     overflow-x: hidden; /* Prevent horizontal overflow */
     max-width: 100vw; /* Ensure body doesn't exceed viewport width */
-  }
+}
   
   /* Major containers already handled by consolidated rule above */
   
@@ -197,8 +215,8 @@
   .table-container {
     margin: 1.5rem 0;
     overflow-x: auto;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+    border-radius: 0; /* SWYFT: no border radius */
+    box-shadow: none; /* SWYFT: no shadows */
     border: 1px solid var(--color-background-border);
   }
   
@@ -232,7 +250,7 @@
   }
   
   .content-table tbody tr:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--color-background-hover); /* SWYFT hover color */
   }
   
   .content-table tbody tr:last-child td {
@@ -331,8 +349,8 @@
     background-color: rgba(255, 255, 255, 0.95);
   } */
   .mobile-header {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
+    background-color: var(--color-background-primary); /* SWYFT: solid background */
+    backdrop-filter: none; /* SWYFT: no blur effects */
     border-bottom: 1px solid var(--color-background-border);
     color: var(--color-header-text);
     display: flex;
@@ -345,8 +363,8 @@
     top: 0;
     left: 0;
     right: 0;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
+    box-shadow: none; /* SWYFT: no shadows */
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
   }
   
   .mobile-header.visible {
@@ -381,27 +399,28 @@
   }
   
   .header-nav-link {
-    color: var(--color-foreground-secondary);
+    color: var(--color-foreground-primary);
     text-decoration: none;
     padding: 0.75rem 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    border-radius: 0; /* SWYFT uses no border radius */
+    font-size: 14px; /* SWYFT menu-lv1-size */
+    font-weight: 700; /* SWYFT menu-lv1-weight */
+    letter-spacing: 0.05em; /* SWYFT menu-lv1-letter-spacing */
+    text-transform: uppercase; /* SWYFT menu-lv1-text-transform */
+    line-height: 22px; /* SWYFT menu-lv1-line-height */
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
     position: relative;
   }
   
   .header-nav-link:hover {
-    background-color: var(--color-background-hover);
     color: var(--color-foreground-primary);
-    transform: translateY(-1px);
+    text-decoration: underline; /* SWYFT style hover */
   }
   
   .header-nav-link.active {
-    background-color: var(--color-brand-primary);
-    color: white;
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
+    color: var(--color-foreground-primary);
+    font-weight: 700;
+    text-decoration: underline;
   }
   
   /* Header Search Styles */
@@ -415,23 +434,23 @@
   .search-input-header {
     width: 240px;
     padding: 0.75rem 1rem;
-    border: 2px solid var(--color-background-border);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-background-secondary);
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    border-radius: 0; /* SWYFT: no border radius */
+    background-color: var(--color-background-primary);
     color: var(--color-foreground-primary);
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    font-size: 12px; /* SWYFT body font size */
+    letter-spacing: 0.02em; /* SWYFT body letter spacing */
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
     box-sizing: border-box;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* SWYFT: no shadows */
+    font-family: var(--font-stack);
   }
   
   .search-input-header:focus {
     outline: none;
-    border-color: var(--color-brand-primary);
+    border-color: var(--color-foreground-primary);
     background-color: var(--color-background-primary);
-    width: 280px;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
+    /* SWYFT: no transforms or size changes */
   }
   
   .search-input-header::placeholder {
@@ -505,7 +524,7 @@
   }
   
   .search-result-match:hover {
-    background-color: var(--color-background-secondary);
+    background-color: var(--color-background-hover); /* SWYFT hover color */
   }
   
   .match-type {
@@ -540,50 +559,37 @@
   
   .link-grid-button {
     background-color: var(--color-background-primary);
-    border: 2px solid var(--color-background-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-background-border); /* SWYFT: simpler border */
+    border-radius: 0; /* SWYFT: no border radius */
     color: var(--color-foreground-primary);
     cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 14px; /* SWYFT menu font size */
+    font-weight: 400; /* SWYFT body weight */
+    letter-spacing: 0.02em; /* SWYFT body letter spacing */
     padding: 1.5rem;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
     min-height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     overflow: hidden;
   }
   
+  /* Remove fancy gradient animation */
   .link-grid-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    display: none;
   }
   
   .link-grid-button:hover {
-    background-color: var(--color-background-primary);
-    border-color: var(--color-brand-primary);
-    color: var(--color-brand-primary);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    background-color: var(--color-background-hover);
+    border-color: var(--color-background-border);
+    color: var(--color-foreground-primary);
+    /* SWYFT: no transforms, just background change */
   }
   
-  .link-grid-button:hover::before {
-    left: 100%;
-  }
-  
-  .link-grid-button:active {
-    transform: translateY(-2px);
-  }
   
   .nav-overlay-icon {
     cursor: pointer;
@@ -635,8 +641,8 @@
     transition: left 0.3s ease;
     z-index: 2;
     overflow: hidden;
-    box-shadow: var(--shadow-xl);
-    backdrop-filter: blur(8px);
+    box-shadow: none; /* SWYFT: no shadows */
+    backdrop-filter: none; /* SWYFT: no blur effects */
     border-right: 1px solid var(--color-background-border);
     min-width: 15em; /* Ensure minimum width */
     max-width: 600px; /* Maximum width for very wide content */
@@ -825,9 +831,9 @@
     padding: var(--sidebar-item-spacing-vertical) var(--sidebar-item-spacing-horizontal);
     text-decoration: none;
     width: 100%;
-    border-radius: var(--radius-sm);
+    border-radius: 0; /* SWYFT: no border radius */
     margin: 0.125rem 0.5rem;
-    transition: all 0.2s ease;
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
     position: relative;
     white-space: nowrap; /* Prevent text wrapping */
     overflow: hidden;
@@ -837,8 +843,7 @@
   .sidebar-tree .reference:hover {
     background: var(--color-sidebar-item-background--hover);
     color: var(--color-sidebar-link-text);
-    transform: translateX(4px);
-    box-shadow: var(--shadow-sm);
+    /* SWYFT: no transforms or shadows, just background change */
   }
   
   /* Better spacing for nested navigation */
@@ -871,15 +876,17 @@
     padding-left: 2rem !important; /* Indent child items */
     font-size: 0.9em;
     color: var(--color-sidebar-link-text);
-    transition: all 0.2s ease;
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
+    border-radius: 0; /* SWYFT: no border radius */
   }
   
   /* Parent items with better visual hierarchy */
   .parent-reference {
-    font-weight: 600;
+    font-weight: 700; /* SWYFT menu weight */
     color: var(--color-sidebar-link-text--top-level);
     padding: var(--sidebar-item-spacing-vertical) var(--sidebar-item-spacing-horizontal);
-    transition: all 0.2s ease;
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
+    border-radius: 0; /* SWYFT: no border radius */
   }
   
   /* Expand icon positioning */
@@ -967,15 +974,17 @@
     line-height: 1.5;
   }
   
-  h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6 {
     border-radius: 0.5rem;
     font-family: var(--font-stack--headings);
     font-weight: 700;
     line-height: 1.25;
+    letter-spacing: 0.05em; /* SWYFT heading letter spacing */
+    text-transform: uppercase; /* SWYFT headings are uppercase */
     margin: 0.5rem -0.5rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-  }
+}
   
   h1 {
     font-size: 2.5em;
@@ -1042,15 +1051,17 @@
     font-weight: 600;
   }
   
-  /* Links */
-  a {
+/* Links - always underlined */
+a {
     color: var(--color-link);
     text-decoration: underline;
-  }
-  
-  a:hover {
-    text-decoration: none;
-  }
+    transition: all ease 0.3s;
+}
+
+a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+}
   
   .headerlink {
     font-weight: 100;
@@ -1076,33 +1087,27 @@
   
   code {
     background: var(--color-inline-code-background);
-    border-radius: 0.2em;
+    border-radius: 0; /* SWYFT: no border radius */
     font-size: var(--font-size--small--2);
     padding: 0.1em 0.2em;
   }
   
   .code-block {
     background: var(--color-code-background);
-    border: 1px solid var(--color-background-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    border-radius: 0; /* SWYFT: no border radius */
     margin: 1.5rem 0;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     max-height: calc(100vh - var(--header-height) - 2rem);
     display: flex;
     flex-direction: column;
   }
   
+  /* Remove decorative top gradient border */
   .code-block::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--color-brand-primary), var(--color-accent));
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    display: none;
   }
   
   .code-block pre {
@@ -1288,37 +1293,31 @@
     }
   }
   
-  /* Code tabs container */
+  /* Code tabs container - SWYFT style */
   .code-tabs-container {
     background: var(--color-code-background);
-    border: 1px solid var(--color-background-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    border-radius: 0; /* SWYFT: no border radius */
     margin: 1.5rem 0;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     max-height: calc(100vh - var(--header-height) - 2rem);
     display: flex;
     flex-direction: column;
   }
   
+  /* Remove decorative top gradient border */
   .code-tabs-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--color-brand-primary), var(--color-accent));
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    display: none;
   }
   
   .code-tabs-header {
     display: flex;
-    background: var(--color-background-secondary);
+    background: var(--color-background-primary); /* SWYFT: simple background */
     border-bottom: 1px solid var(--color-background-border);
     overflow-x: auto;
-    padding-top: 3px;
+    padding-top: 0; /* SWYFT: no extra padding */
     flex-shrink: 0;
     align-items: center;
   }
@@ -1327,27 +1326,28 @@
     padding: 10px 16px;
     background: transparent;
     border: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 1px solid transparent; /* SWYFT: simpler border */
     color: var(--color-foreground-secondary);
     cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 400;
+    font-size: 12px; /* SWYFT body font size */
+    font-weight: 400; /* SWYFT body weight */
     white-space: nowrap;
-    transition: all 0.2s;
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
     font-family: var(--font-stack--monospace);
     position: relative;
   }
   
   .code-tab-button:hover {
     background: var(--color-background-hover);
+    /* SWYFT: no other changes on hover */
   }
   
   .code-tab-button[data-active="true"],
   .code-tab-button.active {
-    background: var(--color-background);
-    border-bottom-color: var(--color-brand-primary);
-    color: var(--color-brand-primary);
-    font-weight: 600;
+    background: var(--color-background-primary);
+    border-bottom-color: var(--color-foreground-primary); /* SWYFT: use primary color */
+    color: var(--color-foreground-primary);
+    font-weight: 400; /* SWYFT: consistent weight */
   }
   
   .code-tabs-content {
@@ -1444,26 +1444,21 @@
     margin-top: 0.25rem;
   }
   
-  /* Special content boxes */
+  /* Special content boxes - SWYFT style */
   .rules-box {
-    background: linear-gradient(135deg, var(--color-background-secondary) 0%, var(--color-background-hover) 100%);
-    border: 2px solid var(--color-brand-primary);
-    border-radius: 0.75rem;
+    background: var(--color-background-primary); /* SWYFT: flat background */
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    border-radius: 0; /* SWYFT: no border radius */
     padding: 1.5rem;
     margin: 2rem 0;
-    box-shadow: 0 4px 12px rgba(var(--color-brand-primary-rgb), 0.1);
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     overflow: hidden;
   }
   
+  /* Remove decorative left border */
   .rules-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--color-brand-primary);
+    display: none;
   }
   
   .rules-box h3 {
@@ -1505,23 +1500,18 @@
   
   .exercise-box {
     background: var(--color-background-primary);
-    border: 2px solid var(--color-background-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    border-radius: 0; /* SWYFT: no border radius */
     padding: 2rem;
     margin: 2rem 0;
-    box-shadow: var(--shadow-md);
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     overflow: hidden;
   }
   
+  /* Remove decorative gradient border */
   .exercise-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--color-brand-primary), var(--color-accent));
+    display: none;
   }
   
   .hint-box {
@@ -1579,29 +1569,24 @@
     background: var(--color-background-primary);
     color: var(--color-foreground-primary);
     padding: 2rem;
-    border-radius: var(--radius-lg);
+    border-radius: 0; /* SWYFT: no border radius */
     text-align: center;
-    transition: all 0.3s ease;
-    border: 2px solid var(--color-background-border);
-    box-shadow: var(--shadow-sm);
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     overflow: hidden;
   }
   
+  /* Remove decorative top border gradient */
   .data-type-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-brand-primary), var(--color-accent));
+    display: none;
   }
   
   .data-type-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-brand-primary);
+    background-color: var(--color-background-hover);
+    border-color: var(--color-background-border);
+    /* SWYFT: no transforms or shadows, just background change */
   }
   
   .data-type-card h4 {
@@ -1887,36 +1872,28 @@
     }
     
     .mobile-sidebar-nav .header-nav-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--color-brand-primary);
-      transform: scaleY(0);
-      transition: transform 0.2s ease;
+      display: none; /* SWYFT: no decorative left border */
     }
     
     .mobile-sidebar-nav .header-nav-link:hover {
       background-color: var(--color-sidebar-item-background--hover);
       border-color: var(--color-background-border);
-      transform: translateX(4px);
+      /* SWYFT: no transforms, just background change */
     }
     
     .mobile-sidebar-nav .header-nav-link:hover::before {
-      transform: scaleY(1);
+      display: none; /* SWYFT: no decorative elements */
     }
     
     .mobile-sidebar-nav .header-nav-link.active {
-      background: linear-gradient(135deg, var(--color-sidebar-item-background--current) 0%, var(--color-brand-primary) 100%);
+      background: var(--color-background-hover);
       color: var(--color-sidebar-link-text--top-level);
-      border-color: var(--color-brand-primary);
-      box-shadow: 0 2px 8px rgba(var(--color-brand-primary-rgb), 0.3);
+      border-color: var(--color-background-border);
+      /* SWYFT: no gradients or shadows */
     }
     
     .mobile-sidebar-nav .header-nav-link.active::before {
-      transform: scaleY(1);
+      display: none; /* SWYFT: no decorative elements */
     }
     
     .mobile-sidebar-nav .header-nav-link:last-child {
@@ -2059,6 +2036,7 @@
   .parent-reference:hover {
       background-color: var(--color-sidebar-item-background--hover);
       color: var(--color-sidebar-link-text--top-level);
+      /* SWYFT: no transforms, just background change */
   }
   
   .expand-icon {
@@ -2104,32 +2082,31 @@
       color: var(--color-sidebar-link-text);
       text-decoration: none;
       padding: 0.375rem var(--sidebar-item-spacing-horizontal);
-      border-radius: 0.25rem;
+      border-radius: 0; /* SWYFT: no border radius */
       font-size: 0.9rem;
-      transition: all 0.15s ease;
-      border-left: 3px solid transparent;
+      transition: all ease 0.3s; /* SWYFT anchor-transition */
+      border-left: none; /* SWYFT: no decorative borders */
   }
   
   .child-reference:hover {
       background-color: var(--color-sidebar-item-background--hover);
       color: var(--color-sidebar-link-text--top-level);
-      border-left-color: var(--color-brand-primary);
+      /* SWYFT: no decorative borders, just background change */
   }
   
-  /* Active/Current Page Styles */
+  /* Active/Current Page Styles - SWYFT style */
   .parent-tab.current-page > .parent-reference {
-      background-color: var(--color-sidebar-item-background--current);
+      background-color: var(--color-background-hover);
       color: var(--color-sidebar-link-text--top-level);
-      font-weight: 600;
-      border-left: 3px solid var(--color-brand-primary);
+      font-weight: 700;
+      /* SWYFT: no decorative borders */
   }
   
   .child-tab.current-page > .child-reference {
-      background-color: var(--color-sidebar-item-background--current);
+      background-color: var(--color-background-hover);
       color: var(--color-sidebar-link-text--top-level);
-      border-left-color: var(--color-brand-primary);
-      font-weight: 600;
-      border-left: 3px solid var(--color-brand-primary);
+      font-weight: 700;
+      /* SWYFT: no decorative borders */
   }
   
   /* Add smooth scrolling to sidebar */
@@ -2169,7 +2146,7 @@
   
   /* Enhanced visual hierarchy */
   .parent-reference {
-      border-bottom: 1px solid var(--color-background-border);
+      border-bottom: none; /* SWYFT: no decorative borders */
       margin-bottom: 0.25rem;
   }
   
@@ -2854,51 +2831,36 @@
     gap: 0.875rem;
     padding: 1rem 1.25rem;
     background-color: var(--color-background-primary);
-    border: 2px solid var(--color-background-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-background-border); /* SWYFT: simple border */
+    border-radius: 0; /* SWYFT: no border radius */
     color: var(--color-foreground-primary);
     font-family: var(--font-stack);
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 12px; /* SWYFT body font size */
+    font-weight: 400; /* SWYFT body weight */
+    letter-spacing: 0.02em; /* SWYFT body letter spacing */
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all ease 0.3s; /* SWYFT anchor-transition */
     text-decoration: none;
     max-width: 48%;
     min-width: 0;
     flex: 1;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* SWYFT: no shadows */
     position: relative;
     overflow: hidden;
     text-align: left;
 }
 
 .nav-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(var(--color-brand-primary-rgb), 0.1), transparent);
-    transition: left 0.5s ease;
+    display: none; /* SWYFT: no decorative gradients */
 }
 
 .nav-button:hover {
-    background-color: var(--color-background-primary);
-    border-color: var(--color-brand-primary);
-    color: var(--color-brand-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    background-color: var(--color-background-hover);
+    border-color: var(--color-background-border);
+    color: var(--color-foreground-primary);
+    /* SWYFT: no transforms or shadows */
 }
 
-.nav-button:hover::before {
-    left: 100%;
-}
-
-.nav-button:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-md);
-}
 
 .nav-button-prev {
     justify-content: flex-start;

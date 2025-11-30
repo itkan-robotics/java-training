@@ -54,10 +54,53 @@ class NavigationManager {
      * Parses the current URL to determine section and tab
      */
     parseCurrentUrl() {
+        // Check for stored redirect path from 404.html fallback
+        const storedPath = sessionStorage.getItem('redirectPath');
+        if (storedPath) {
+            sessionStorage.removeItem('redirectPath');
+            // Parse the stored path
+            try {
+                const url = new URL(storedPath, window.location.origin);
+                const path = url.pathname;
+                const hash = url.hash;
+                const pathParts = path.split('/').filter(part => part !== '' && part !== 'index.html');
+                
+                // Check for section/tab path structure like /java/java-intro
+                if (pathParts.length === 2) {
+                    const [sectionPath, tabId] = pathParts;
+                    if (this.urlSectionMap[sectionPath]) {
+                        const sectionId = this.urlSectionMap[sectionPath];
+                        // Update URL to match the stored path
+                        window.history.replaceState({section: sectionId, tab: tabId}, '', storedPath);
+                        return { sectionId, tabId };
+                    }
+                }
+                
+                // Check for main section paths like /java
+                if (pathParts.length === 1) {
+                    const sectionPath = pathParts[0];
+                    if (this.urlSectionMap[sectionPath]) {
+                        const sectionId = this.urlSectionMap[sectionPath];
+                        window.history.replaceState({section: sectionId}, '', storedPath);
+                        return { sectionId, tabId: null };
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to parse stored redirect path:', e);
+            }
+        }
+        
         // Fallback to direct URL parsing
-        const path = window.location.pathname;
+        let path = window.location.pathname;
         const hash = window.location.hash;
-        const pathParts = path.split('/').filter(part => part !== '');
+        const search = window.location.search;
+        
+        // Handle /index.html paths (strip index.html)
+        if (path === '/index.html' || path.endsWith('/index.html')) {
+            path = path.replace(/\/index\.html$/, '') || '/';
+        }
+        
+        const pathParts = path.split('/').filter(part => part !== '' && part !== 'index.html');
         
         // Check for section/tab path structure like /java/java-intro
         if (pathParts.length === 2) {
@@ -78,7 +121,7 @@ class NavigationManager {
         }
         
         // Check for root path (homepage)
-        if (path === '/' || path === '') {
+        if (path === '/' || path === '' || pathParts.length === 0) {
             const tabId = hash ? hash.substring(1) : null;
             if (tabId && tabId !== 'homepage') {
                 // Find which section this tab belongs to

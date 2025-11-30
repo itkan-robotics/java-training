@@ -18,24 +18,16 @@
       ]
     },
     {
-      "type": "text",
-      "title": "LinearOpMode Example",
-      "content": "A LinearOpMode is great for simple autonomous or TeleOp routines. All your code runs in the <code>runOpMode()</code> method, and you can use <code>waitForStart()</code> and <code>sleep()</code> for timing."
-    },
-    {
       "type": "code",
       "title": "LinearOpMode Example",
+      "description": "A LinearOpMode is great for simple autonomous or TeleOp routines. All your code runs in the <code>runOpMode()</code> method, and you can use <code>waitForStart()</code> and <code>sleep()</code> for timing.",
       "language": "java",
       "content": "@TeleOp(name = \"LinearTeleOp\")\npublic class LinearTeleOp extends LinearOpMode {\n    private DcMotor leftDrive, rightDrive;\n\n    @Override\n    public void runOpMode() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n        waitForStart();\n        while (opModeIsActive()) {\n            double leftPower = -gamepad1.left_stick_y;\n            double rightPower = -gamepad1.right_stick_y;\n            leftDrive.setPower(leftPower);\n            rightDrive.setPower(rightPower);\n            telemetry.addData(\"Left Power\", leftPower);\n            telemetry.addData(\"Right Power\", rightPower);\n            telemetry.update();\n        }\n    }\n}"
     },
     {
-      "type": "text",
-      "title": "Iterative OpMode Example",
-      "content": "An Iterative OpMode gives you more control over timing and state. You implement <code>init()</code> for setup and <code>loop()</code> for repeated logic. This is useful for advanced TeleOp and state machines."
-    },
-    {
       "type": "code",
       "title": "Iterative OpMode Example",
+      "description": "An Iterative OpMode gives you more control over timing and state. You implement <code>init()</code> for setup and <code>loop()</code> for repeated logic. This is useful for advanced TeleOp and state machines.",
       "language": "java",
       "content": "@TeleOp(name = \"IterativeTeleOp\")\npublic class IterativeTeleOp extends OpMode {\n    private DcMotor leftDrive, rightDrive;\n\n    @Override\n    public void init() {\n        leftDrive = hardwareMap.get(DcMotor.class, \"left_drive\");\n        rightDrive = hardwareMap.get(DcMotor.class, \"right_drive\");\n    }\n\n    @Override\n    public void loop() {\n        double leftPower = -gamepad1.left_stick_y;\n        double rightPower = -gamepad1.right_stick_y;\n        leftDrive.setPower(leftPower);\n        rightDrive.setPower(rightPower);\n        telemetry.addData(\"Left Power\", leftPower);\n        telemetry.addData(\"Right Power\", rightPower);\n        telemetry.update();\n    }\n}"
     },

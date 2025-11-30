@@ -81,15 +81,39 @@ class Application {
     async showAppropriateTab() {
         // Parse the current URL and navigate to the appropriate tab
         const { sectionId, tabId } = this.navigationManager.parseCurrentUrl();
-        // If both sectionId and tabId are missing or invalid, force homepage
+        
+        // Check if we have a valid path in the URL that should be preserved
+        const currentPath = window.location.pathname;
+        const hasValidPath = currentPath && currentPath !== '/' && currentPath !== '/index.html' && !currentPath.endsWith('/index.html');
+        
+        // If both sectionId and tabId are missing or invalid, check if we should preserve the URL
         if ((!sectionId || sectionId === '' || sectionId === null) && (!tabId || tabId === '' || tabId === null)) {
-            appState.currentSection = 'homepage';
-            appState.currentTab = null;
-            this.navigationManager.updateUrl('homepage');
-            await this.navigationManager.handleSectionNavigation('homepage');
-            this.contentManager.renderContent('homepage');
-            return;
+            // Only default to homepage if we're actually on the root path
+            // If we have a valid path but couldn't parse it, wait a bit and try again
+            if (!hasValidPath || currentPath === '/' || currentPath === '') {
+                appState.currentSection = 'homepage';
+                appState.currentTab = null;
+                this.navigationManager.updateUrl('homepage');
+                await this.navigationManager.handleSectionNavigation('homepage');
+                this.contentManager.renderContent('homepage');
+                return;
+            } else {
+                // We have a path but couldn't parse it - might be a timing issue
+                // Try parsing again after a short delay
+                console.warn('Could not parse URL, retrying...', currentPath);
+                await new Promise(resolve => setTimeout(resolve, 100));
+                const retryParse = this.navigationManager.parseCurrentUrl();
+                if (retryParse.sectionId && retryParse.sectionId !== 'homepage') {
+                    if (retryParse.sectionId && retryParse.tabId) {
+                        await this.navigationManager.navigateToTab(retryParse.tabId);
+                    } else if (retryParse.sectionId) {
+                        await this.navigationManager.handleSectionNavigation(retryParse.sectionId);
+                    }
+                    return;
+                }
+            }
         }
+        
         if (sectionId && tabId) {
             await this.navigationManager.navigateToTab(tabId);
         } else if (sectionId) {
@@ -98,12 +122,14 @@ class Application {
                 this.contentManager.renderContent('homepage');
             }
         } else {
-            // Fallback to homepage
-            appState.currentSection = 'homepage';
-            appState.currentTab = null;
-            this.navigationManager.updateUrl('homepage');
-            await this.navigationManager.handleSectionNavigation('homepage');
-            this.contentManager.renderContent('homepage');
+            // Fallback to homepage only if we're actually on root
+            if (!hasValidPath) {
+                appState.currentSection = 'homepage';
+                appState.currentTab = null;
+                this.navigationManager.updateUrl('homepage');
+                await this.navigationManager.handleSectionNavigation('homepage');
+                this.contentManager.renderContent('homepage');
+            }
         }
     }
 

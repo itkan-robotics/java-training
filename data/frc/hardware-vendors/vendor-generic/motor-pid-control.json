@@ -24,20 +24,75 @@
     {
       "type": "text",
       "title": "Configuring Position Control PID",
-      "content": "Position control requires tuning PID parameters that balance speed, accuracy, and stability. For elevators, you typically need:<br><br><strong>kP (Proportional):</strong> Provides the \"oomph\" to move toward the target. Higher values make the elevator respond faster, but too high causes overshoot and oscillation. Start around 0.1-0.5 for position control.<br><br><strong>kI (Integral):</strong> Eliminates persistent errors. If your elevator consistently stops 2 units short of the target (steady-state error), integral gain gradually increases output until it reaches exactly where it should. Often set to 0 for elevators, but can help overcome friction or mechanical resistance.<br><br><strong>kD (Derivative):</strong> The dampening force. As your elevator approaches the target, derivative gain reduces the aggressive correction, preventing overshoot. Essential for smooth, accurate stops. Typical values are 0.01-0.1 times your kP value.<br><br><strong>kFF (Feedforward):</strong> Provides predictive control to improve response. Often set to 0 for basic position control.<br><br>Remember: These are starting points. Your actual values depend on your mechanism's weight, gearing, and mechanical characteristics. Tune systematically, test thoroughly."
+      "content": "Position control requires tuning PID parameters that balance speed, accuracy, and stability. For elevators, you need to configure four main parameters: kP (Proportional), kI (Integral), kD (Derivative), and kFF (Feedforward). Each parameter plays a specific role in controlling your mechanism's movement.<br><br>Remember: These are starting points. Your actual values depend on your mechanism's weight, gearing, and mechanical characteristics. Tune systematically, test thoroughly."
+    },
+    {
+      "type": "text",
+      "title": "kP: Proportional Gain",
+      "content": "The proportional gain (kP) provides the \"oomph\" to move toward the target. Higher values make the elevator respond faster, but too high causes overshoot and oscillation. Think of kP as how aggressively your mechanism moves toward its target.<br><br><strong>How it works:</strong> kP multiplies the error (difference between current position and target). If you're 10 units away, a kP of 0.5 means the controller tries to move with 5 units of \"force\" toward the target.<br><br><strong>Starting values:</strong> Start around 0.1-0.5 for position control. Too low and your mechanism moves slowly. Too high and it overshoots, oscillates, or becomes unstable.<br><br><strong>Tuning tip:</strong> Increase kP until your mechanism responds quickly, then back off slightly if you see overshoot or oscillation."
+    },
+    {
+      "type": "text",
+      "title": "kI: Integral Gain",
+      "content": "The integral gain (kI) eliminates persistent errors. If your elevator consistently stops 2 units short of the target (steady-state error), integral gain gradually increases output until it reaches exactly where it should.<br><br><strong>How it works:</strong> kI accumulates error over time. If there's a consistent small error, the integral term gradually builds up to push the mechanism closer to the target. This is especially useful for overcoming friction or mechanical resistance.<br><br><strong>Starting values:</strong> Often set to 0 for elevators, but can help overcome friction or mechanical resistance. If you notice your mechanism consistently stops short of the target, try small values like 0.001-0.01.<br><br><strong>Tuning tip:</strong> Start at 0. Only add integral gain if you see persistent steady-state error. Too much kI can cause instability or slow oscillation."
+    },
+    {
+      "type": "text",
+      "title": "kD: Derivative Gain",
+      "content": "The derivative gain (kD) is the dampening force. As your elevator approaches the target, derivative gain reduces the aggressive correction, preventing overshoot. Essential for smooth, accurate stops.<br><br><strong>How it works:</strong> kD responds to the rate of change of error. If you're approaching the target quickly, kD reduces the output to prevent overshooting. It acts as a brake that gets stronger as you approach your target.<br><br><strong>Starting values:</strong> Typical values are 0.01-0.1 times your kP value. For example, if kP is 0.5, try kD around 0.05-0.05.<br><br><strong>Tuning tip:</strong> Increase kD to reduce overshoot and smooth out the approach. Too much kD can make the system sluggish or noisy."
+    },
+    {
+      "type": "text",
+      "title": "kFF: Feedforward Gain",
+      "content": "The feedforward gain (kFF) provides predictive control to improve response. Instead of waiting for error to occur (like PID does), feedforward predicts the needed output based on the target.<br><br><strong>How it works:</strong> Feedforward adds output based on the target position itself, not the error. This \"pre-loads\" the system with an expected output, making the PID corrections smaller and smoother.<br><br><strong>Starting values:</strong> Often set to 0 for basic position control. Feedforward is more commonly used in velocity control (as kF/kV), where predicting output based on target speed is more straightforward.<br><br><strong>Tuning tip:</strong> For position control, start at 0. Feedforward can be useful for mechanisms with predictable load characteristics, but requires more advanced tuning."
+    },
+    {
+      "type": "text",
+      "title": "Adding Position Control to Your Elevator",
+      "content": "Building on your configured elevator from the previous lesson, adding PID position control involves three main steps: defining PID constants, configuring PID in the constructor, and creating methods to use position control. Let's break this down step by step."
     },
     {
       "type": "code-tabs",
-      "title": "Adding Position Control to Your Elevator",
-      "content": "Building on your configured elevator, here's how to add PID position control:",
+      "title": "Step 1: Define PID Constants",
+      "content": "First, define your PID constants as class constants. These are the tuned values that control your elevator's behavior:",
       "tabs": [
         {
           "label": "SPARK MAX",
-          "code": "import com.revrobotics.spark.ClosedLoopSlot;\nimport com.revrobotics.spark.SparkClosedLoopController;\nimport com.revrobotics.spark.SparkBase.ControlType;\nimport com.revrobotics.spark.config.SparkMaxConfig;\n\n// PID constants for position control (Slot 0)\nprivate static final double POSITION_KP = 0.5;\nprivate static final double POSITION_KI = 0.0;\nprivate static final double POSITION_KD = 0.1;\nprivate static final double POSITION_KFF = 0.0;\n\nprivate final SparkClosedLoopController m_closedLoopController = m_elevatorMotor.getClosedLoopController();\n\n// In your Elevator constructor, add to SparkMaxConfig:\nSparkMaxConfig config = new SparkMaxConfig();\n\n// Position control PID configuration (Slot 0)\nconfig.closedLoop.pidf(POSITION_KP, POSITION_KI, POSITION_KD, POSITION_KFF, ClosedLoopSlot.kSlot0);\nconfig.closedLoop.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot0);\n\n// Apply configuration\nm_elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);\n\n// Method to move elevator to specific height\npublic void setHeight(double height) {\n    m_closedLoopController.setReference(height, ControlType.kPosition, ClosedLoopSlot.kSlot0);\n}"
+          "code": "// PID constants for position control (Slot 0)\nprivate static final double POSITION_KP = 0.5;\nprivate static final double POSITION_KI = 0.0;\nprivate static final double POSITION_KD = 0.1;\nprivate static final double POSITION_KFF = 0.0;"
         },
         {
           "label": "Talon FX",
-          "code": "import com.ctre.phoenix6.controls.PositionVoltage;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\n// PID constants for position control (Slot0)\nprivate static final double POSITION_KP = 0.5;\nprivate static final double POSITION_KI = 0.0;\nprivate static final double POSITION_KD = 0.1;\n\nprivate final PositionVoltage m_positionRequest = new PositionVoltage(0);\n\n// In your Elevator constructor, add to TalonFXConfiguration:\nTalonFXConfiguration config = new TalonFXConfiguration();\n\n// Position control PID configuration (Slot0)\nconfig.Slot0.kP = POSITION_KP;\nconfig.Slot0.kI = POSITION_KI;\nconfig.Slot0.kD = POSITION_KD;\nconfig.Slot0.kV = 0.0;\nconfig.Slot0.kS = 0.0;\nconfig.Slot0.kA = 0.0;\n\n// Apply configuration\nm_elevatorMotor.getConfigurator().apply(config);\n\n// Method to move elevator to specific height\npublic void setHeight(double height) {\n    m_elevatorMotor.setControl(m_positionRequest.withPosition(height).withSlot(0));\n}"
+          "code": "// PID constants for position control (Slot0)\nprivate static final double POSITION_KP = 0.5;\nprivate static final double POSITION_KI = 0.0;\nprivate static final double POSITION_KD = 0.1;"
+        }
+      ]
+    },
+    {
+      "type": "code-tabs",
+      "title": "Step 2: Configure PID in Constructor",
+      "content": "In your elevator constructor, add PID configuration to your SparkMaxConfig or TalonFXConfiguration. Also get a reference to the closed-loop controller (SPARK MAX) or create a position request object (Talon FX):",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "import com.revrobotics.spark.ClosedLoopSlot;\nimport com.revrobotics.spark.SparkClosedLoopController;\nimport com.revrobotics.spark.config.SparkMaxConfig;\n\n// Get closed-loop controller reference\nprivate final SparkClosedLoopController m_closedLoopController = m_elevatorMotor.getClosedLoopController();\n\n// In your Elevator constructor, add to SparkMaxConfig:\nSparkMaxConfig config = new SparkMaxConfig();\n\n// Position control PID configuration (Slot 0)\nconfig.closedLoop.pidf(POSITION_KP, POSITION_KI, POSITION_KD, POSITION_KFF, ClosedLoopSlot.kSlot0);\nconfig.closedLoop.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot0);\n\n// Apply configuration\nm_elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);"
+        },
+        {
+          "label": "Talon FX",
+          "code": "import com.ctre.phoenix6.controls.PositionVoltage;\nimport com.ctre.phoenix6.configs.TalonFXConfiguration;\n\n// Create position request object\nprivate final PositionVoltage m_positionRequest = new PositionVoltage(0);\n\n// In your Elevator constructor, add to TalonFXConfiguration:\nTalonFXConfiguration config = new TalonFXConfiguration();\n\n// Position control PID configuration (Slot0)\nconfig.Slot0.kP = POSITION_KP;\nconfig.Slot0.kI = POSITION_KI;\nconfig.Slot0.kD = POSITION_KD;\nconfig.Slot0.kV = 0.0;\nconfig.Slot0.kS = 0.0;\nconfig.Slot0.kA = 0.0;\n\n// Apply configuration\nm_elevatorMotor.getConfigurator().apply(config);"
+        }
+      ]
+    },
+    {
+      "type": "code-tabs",
+      "title": "Step 3: Create Position Control Methods",
+      "content": "Finally, create methods that use PID position control to move your elevator to specific heights:",
+      "tabs": [
+        {
+          "label": "SPARK MAX",
+          "code": "import com.revrobotics.spark.SparkBase.ControlType;\nimport com.revrobotics.spark.ClosedLoopSlot;\n\n// Method to move elevator to specific height\npublic void setHeight(double height) {\n    m_closedLoopController.setReference(height, ControlType.kPosition, ClosedLoopSlot.kSlot0);\n}"
+        },
+        {
+          "label": "Talon FX",
+          "code": "// Method to move elevator to specific height\npublic void setHeight(double height) {\n    m_elevatorMotor.setControl(m_positionRequest.withPosition(height).withSlot(0));\n}"
         }
       ]
     },
@@ -114,7 +169,7 @@
     {
       "type": "text",
       "title": "Position vs Velocity: Choosing Your Control Strategy",
-      "content": "You've now seen both position control (elevator) and velocity control (flywheel) in action. Understanding when to use each is crucial for effective robot design.<br><br><strong>Use Position Control When:</strong> Your mechanism needs to reach and hold a specific position. Examples include elevators at specific heights, arms at specific angles, turrets at specific rotations. The mechanism moves to a target and stays there.<br><br><strong>Use Velocity Control When:</strong> Your mechanism needs to maintain a specific speed. Examples include flywheels at consistent RPM, intakes at constant speed, conveyors at steady rates. The mechanism maintains speed rather than reaching a position.<br><br><strong>The Beauty of Multiple Slots:</strong> Your motor controller supports both simultaneously. Your elevator can use Slot 0 for position control, while your flywheel uses Slot 1 for velocity control - each with independently tuned parameters optimized for their specific tasks. One controller, multiple personalities, all running simultaneously at 1ms update rates."
+      "content": "You've now seen both position control (elevator) and velocity control (flywheel) in action. Understanding when to use each is crucial for effective robot design.<br><br><strong>Use Position Control When:</strong> Your mechanism needs to reach and hold a specific position. Examples include elevators at specific heights, arms at specific angles, turrets at specific rotations. The mechanism moves to a target and stays there.<br><br><strong>Use Velocity Control When:</strong> Your mechanism needs to maintain a specific speed. Examples include flywheels at consistent RPM, intakes at constant speed, conveyors at steady rates. The mechanism maintains speed rather than reaching a position."
     },
     {
       "type": "rules-box",

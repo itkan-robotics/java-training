@@ -1,1 +1,3 @@
+# Redirect all routes to index.html for SPA routing
+# Exclude static assets (files with extensions)
 /*    /index.html   200 

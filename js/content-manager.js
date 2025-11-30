@@ -664,6 +664,13 @@ class ContentManager {
     renderCodeSection(container, data) {
         this.createSectionTitle(container, data.title);
         
+        // Render description property as HTML (same as content in text sections)
+        if (data.description && data.description.trim()) {
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = data.description;
+            container.appendChild(paragraph);
+        }
+        
         // Determine what code to render - use content if no code property exists
         const codeToRender = data.code || data.content;
         
@@ -801,6 +808,13 @@ class ContentManager {
 
     renderCodeTabsSection(container, data) {
         this.createSectionTitle(container, data.title);
+        
+        // Render description property as HTML (same as content in text sections)
+        if (data.description && data.description.trim()) {
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = data.description;
+            container.appendChild(paragraph);
+        }
         
         // Render content as HTML if provided (explanation text)
         if (data.content && data.content !== '') {

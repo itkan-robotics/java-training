@@ -3,35 +3,36 @@
 👀 = information correct
 /
 ├── environment-setup/
-│   ├── environment-setup.json 
-│   └── elastic-basics.json
+│   ├── environment-setup.json 💻
+│   ├── elastic-basics.json 💻
+│   └── code-organization.json 💻
 ├── hardware-vendors/
 │   ├── ctre/
-│   │   ├── ctre-hardware-setup.json 
-│   │   └── ctre-sensors.json 
+│   │   ├── ctre-hardware-setup.json 💻
+│   │   └── ctre-sensors.json 💻
 │   ├── rev/
-│   │   ├── rev-hardware-setup.json 
-│   │   └── rev-sensors-and-encoders.json 
-│   ├── vendor-generic/
-│   │   ├── motor-controller-configuration.json 
-│   │   ├── motor-pid-control.json 
-│   │   └── motor-current-limiting.json 
+│   │   ├── rev-hardware-setup.json 💻
+│   │   └── rev-sensors-and-encoders.json 💻
+│   └── vendor-generic/
+│       ├── motor-controller-configuration.json 💻
+│       ├── motor-pid-control.json 💻
+│       └── motor-current-limiting.json 💻
 ├── command-based/
-│   └── command-based-complete.json 
+│   └── command-based-complete.json 💻
 ├── control-theory/
-│   ├── pid-control.json
-│   ├── motor-motion-profiling.json
-│   └── advanced-control-theory.json
+│   ├── pid-control.json 💻
+│   ├── motor-motion-profiling.json 💻
+│   └── advanced-control-theory.json 💻
 ├── pose-estimation/
-│   ├── pose-estimation-intro.json
-│   ├── odometry.json
-│   ├── vision-pose-estimation-complete.json
+│   ├── pose-estimation-intro.json 💻
+│   ├── odometry.json 💻
+│   ├── vision-subsystem.json 💻
+│   └── vision-pose-estimation-fusion.json 💻
 ├── external-tools/
-│   ├── pathplanner.json
-│   ├── yass.json
-│   ├── advantagescope.json
-│   └── advantagekit.json
-├── advanced-topics/
-│   ├── simulation-basics.json
-│   ├── unit-testing.json
-│   └── code-organization.json
+│   ├── pathplanner.json 💻
+│   ├── yass.json 💻
+│   ├── advantagescope.json 💻
+│   └── advantagekit.json 💻
+└── advanced-topics/
+    ├── simulation-basics.json 💻
+    └── unit-testing.json 💻

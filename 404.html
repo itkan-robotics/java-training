@@ -3,66 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Page Not Found - SwyftNav Documentation">
     <title>Page Not Found - SwyftNav Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicons for Website (Dark = Light Mode & Vice Versa) -->
+    <link rel="icon" href="./media/FRCCodeLabDark.svg" type="image/svg+xml">
+    <link rel="icon" href="./media/FRCCodeLabLight.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="./media/FRCCodeLab.png" type="image/png" sizes="any">
+    
     <style>
         body { 
-            font-family: 'Inter', Arial, sans-serif; 
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 12px;
+            line-height: 22px;
+            letter-spacing: 0.02em;
             text-align: center; 
-            padding: 50px; 
-            background: #f8f9fa;
-            color: #333;
+            padding: 50px 20px; 
+            background: #ffffff;
+            color: #232323;
             margin: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         .container {
             max-width: 600px;
             padding: 40px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border: 1px solid #e6e6e6;
+            border-radius: 0;
+            box-shadow: none;
         }
         h1 { 
-            color: #333; 
+            color: #232323; 
             margin-bottom: 20px;
             font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
         }
         p {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 22px;
+            letter-spacing: 0.02em;
             margin-bottom: 30px;
-            color: #666;
+            color: #232323;
         }
         a { 
-            color: #0066cc; 
-            text-decoration: none;
-            font-weight: 500;
-            padding: 12px 24px;
-            background: #0066cc;
-            color: white;
-            border-radius: 6px;
-            transition: background-color 0.2s;
+            color: #232323; 
+            text-decoration: underline;
+            font-weight: 400;
+            padding: 10px 20px;
+            background: #ffffff;
+            border: 1px solid #e6e6e6;
+            display: inline-block;
+            transition: all ease 0.3s;
         }
         a:hover { 
-            background: #0052a3;
-            text-decoration: none;
+            background: #f8f8f8;
+            color: #232323;
+            text-decoration: underline;
         }
         .logo {
             margin-bottom: 30px;
             font-size: 2rem;
             font-weight: 700;
-            color: #0066cc;
+            color: #232323;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
     </style>
+    <script>
+        // Store the original path before redirecting
+        // This allows the SPA to restore the correct route
+        const originalPath = window.location.pathname;
+        const originalSearch = window.location.search;
+        const originalHash = window.location.hash;
+        
+        // Only redirect if we're actually on a 404 page (not already on index.html or root)
+        if (originalPath !== '/' && originalPath !== '/index.html' && !originalPath.startsWith('/index.html')) {
+            // Store the original path in sessionStorage so the SPA can use it
+            sessionStorage.setItem('redirectPath', originalPath + originalSearch + originalHash);
+            // Redirect to root - the SPA will check sessionStorage and restore the route
+            window.location.replace('/');
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <div class="logo">SwyftNav</div>
         <h1>Page Not Found</h1>
         <p>The page you're looking for doesn't exist. It may have been moved or the URL might be incorrect.</p>
+        <p>Redirecting...</p>
         <a href="/">Return to Home</a>
     </div>
 </body>

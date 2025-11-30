@@ -9,7 +9,7 @@
     {
       "type": "text",
       "title": "Why Unit Testing is Important",
-      "content": "<strong>1. Early Bug Detection:</strong> Catch logic errors, off-by-one errors, and edge cases before deploying code to the robot. This saves valuable battery/practice time.<br><br><strong>2. Safe Refactoring:</strong> When you clean up or optimize code, unit tests act as a safety net, ensuring you haven't broken existing functionality.<br><br><strong>3. Documentation:</strong> Tests serve as live documentation. A new member can look at `DrivetrainTest` to understand how the `Drivetrain` class is supposed to behave.<br><br><strong>4. Faster Feedback Loop:</strong> deploying code takes minutes; running tests takes seconds. This encourages more frequent testing and iteration.<br><br><strong>5. Testing Hard-to-Reach States:</strong> You can simulate rare error conditions (like a sensor disconnect or max current draw) that are dangerous or difficult to reproduce on a real robot."
+      "content": "<strong>1. Early Bug Detection:</strong> Catch logic errors, off-by-one errors, and edge cases before deploying code to the robot. This saves valuable battery/practice time.<br><br><strong>2. Safe Refactoring:</strong> When you clean up or optimize code, unit tests act as a safety net, ensuring you haven't broken existing functionality.<br><br><strong>3. Documentation:</strong> Tests serve as live documentation. A new member can look at \"DrivetrainTest\" to understand how the \"Drivetrain\" class is supposed to behave.<br><br><strong>4. Faster Feedback Loop:</strong> deploying code takes minutes; running tests takes seconds. This encourages more frequent testing and iteration.<br><br><strong>5. Testing Hard-to-Reach States:</strong> You can simulate rare error conditions (like a sensor disconnect or max current draw) that are dangerous or difficult to reproduce on a real robot."
     },
     {
       "type": "text",
@@ -29,12 +29,12 @@
     {
       "type": "code",
       "title": "Subsystem Test with Mockito",
-      "content": "package frc.robot.subsystems;\n\nimport static org.mockito.Mockito.*;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\nimport com.revrobotics.CANSparkMax;\nimport frc.robot.Constants;\n\npublic class IntakeTest {\n    private CANSparkMax m_mockMotor;\n    private Intake m_intake;\n\n    @BeforeEach\n    void setup() {\n        // Create a mock CANSparkMax\n        m_mockMotor = mock(CANSparkMax.class);\n        // Inject the mock into the subsystem\n        m_intake = new Intake(m_mockMotor);\n    }\n\n    @Test\n    void testDeploy() {\n        m_intake.deploy();\n        // Verify the motor was set to the deploy speed\n        verify(m_mockMotor).set(Constants.Intake.kDeploySpeed);\n    }\n\n    @Test\n    void testStop() {\n        m_intake.stop();\n        // Verify the motor was stopped\n        verify(m_mockMotor).set(0.0);\n    }\n}"
+      "content": "package frc.robot.subsystems;\n\nimport static org.mockito.Mockito.*;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\nimport com.revrobotics.spark.SparkMax;\nimport frc.robot.Constants;\n\npublic class IntakeTest {\n    private SparkMax m_mockMotor;\n    private Intake m_intake;\n\n    @BeforeEach\n    void setup() {\n        // Create a mock SparkMax\n        m_mockMotor = mock(SparkMax.class);\n        // Inject the mock into the subsystem\n        m_intake = new Intake(m_mockMotor);\n    }\n\n    @Test\n    void testDeploy() {\n        m_intake.deploy();\n        // Verify the motor was set to the deploy speed\n        verify(m_mockMotor).set(Constants.Intake.kDeploySpeed);\n    }\n\n    @Test\n    void testStop() {\n        m_intake.stop();\n        // Verify the motor was stopped\n        verify(m_mockMotor).set(0.0);\n    }\n}"
     },
     {
       "type": "text",
       "title": "Testing Commands and Time",
-      "content": "Commands often involve timing (e.g., `WaitCommand`, running for a duration). WPILib's `SimHooks` allows you to control the robot's simulated time, letting you test time-dependent logic instantly.<br><br>You can also simulate the `CommandScheduler` to verify that commands finish when expected or are interrupted correctly."
+      "content": "Commands often involve timing (e.g., \"WaitCommand\", running for a duration). WPILib's \"SimHooks\" allows you to control the robot's simulated time, letting you test time-dependent logic instantly.<br><br>You can also simulate the \"CommandScheduler\" to verify that commands finish when expected or are interrupted correctly."
     },
     {
       "type": "code",
