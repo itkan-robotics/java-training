@@ -44,9 +44,8 @@
         "<strong>Command-Based Programming:</strong> Master the command-based framework with subsystems, commands, command groups, triggers, and the robot container pattern. Professional architecture for complex robots.",
         "<strong>Control Theory:</strong> Deep dive into PID control, motion profiling (trapezoidal and exponential), feedforward control, and advanced control techniques. Essential for precise robot movement.",
         "<strong>Pose Estimation:</strong> Learn odometry basics, swerve odometry, vision-based pose estimation, AprilTag integration, sensor fusion, and tuning techniques for accurate robot localization.",
-        "<strong>Path Planning:</strong> Master PathPlanner setup, trajectory creation, path following, event markers, AutoBuilder, and tuning. Create sophisticated autonomous routines.",
-        "<strong>YAMS Framework:</strong> Learn the YAMS (Yet Another Mechanism System) framework for mechanism configuration, state machines, commands, and advanced patterns.",
-        "<strong>Advanced Topics:</strong> Explore AdvantageScope logging and analysis, AdvantageKit architecture, simulation basics and advanced simulation, unit testing, and professional code organization."
+        "<strong>External Tools:</strong> Master PathPlanner for visual autonomous path planning, YASS (Yet Another Software Suite) including YAMS for mechanism development, AdvantageScope for data logging and analysis, and AdvantageKit for advanced robot architecture.",
+        "<strong>Advanced Topics:</strong> Explore simulation basics, unit testing strategies, and professional code organization patterns for maintainable and scalable FRC development."
       ]
     },
     {
@@ -62,8 +61,8 @@
         "<strong>Learn Command-Based Architecture:</strong> Understand subsystems, commands, and the command scheduler. Build well-structured, maintainable robot code.",
         "<strong>Implement Control Systems:</strong> Master PID control, motion profiling, and feedforward control. Create smooth, precise robot movements.",
         "<strong>Add Pose Estimation:</strong> Implement odometry and vision-based localization. Enable sophisticated autonomous behaviors.",
-        "<strong>Create Autonomous Paths:</strong> Use PathPlanner to design and execute complex autonomous routines with events and markers.",
-        "<strong>Explore Advanced Tools:</strong> Learn AdvantageScope for data analysis, AdvantageKit for advanced architecture, and simulation for testing."
+        "<strong>Explore External Tools:</strong> Use PathPlanner for visual path planning, YASS for mechanism development, AdvantageScope for data analysis, and AdvantageKit for advanced architecture.",
+        "<strong>Master Advanced Topics:</strong> Learn simulation for testing, unit testing strategies, and professional code organization patterns."
       ]
     },
     {
@@ -125,7 +124,7 @@
         },
         {
           "label": "PID Control Intro",
-          "id": "pid-control-intro"
+          "id": "pid-control"
         }
       ]
     }

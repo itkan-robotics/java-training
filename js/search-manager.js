@@ -10,8 +10,21 @@ class SearchManager {
         this.contentManager = contentManager;
         this.navigationManager = navigationManager;
         this.searchTimeout = null;
+        this.suggestionTimeout = null;
         this.isSearching = false;
+        this.searchIndex = null;
+        this.suggestions = [];
+        this.selectedSuggestionIndex = -1;
+        this.useIndex = false; // Flag to use new index system
         this.setupSearch();
+    }
+
+    /**
+     * Set the search index instance
+     */
+    setSearchIndex(searchIndex) {
+        this.searchIndex = searchIndex;
+        this.useIndex = searchIndex && searchIndex.isIndexed;
     }
 
     setupSearch() {
@@ -24,8 +37,15 @@ class SearchManager {
 
             searchInput.addEventListener('focus', () => {
                 if (this.currentSearchQuery && this.searchResults.length > 0) {
-                    // Optionally show search results
+                    this.showResults();
+                } else if (this.currentSearchQuery && this.currentSearchQuery.length < 3) {
+                    this.showSuggestions(this.currentSearchQuery);
                 }
+            });
+
+            // Keyboard navigation
+            searchInput.addEventListener('keydown', (e) => {
+                this.handleSearchKeydown(e, searchInput);
             });
         }
         // Also set up mobile sidebar search
@@ -36,24 +56,116 @@ class SearchManager {
             });
             mobileSearchInput.addEventListener('focus', () => {
                 if (this.currentSearchQuery && this.searchResults.length > 0) {
-                    // Optionally show search results
+                    this.showResults();
+                } else if (this.currentSearchQuery && this.currentSearchQuery.length < 3) {
+                    this.showSuggestions(this.currentSearchQuery);
                 }
+            });
+
+            // Keyboard navigation
+            mobileSearchInput.addEventListener('keydown', (e) => {
+                this.handleSearchKeydown(e, mobileSearchInput);
             });
         }
         // Close search results when clicking outside
         document.addEventListener('mousedown', (e) => {
             if (!e.target.closest('.search-container-header') && 
                 !e.target.closest('.search-results') &&
+                !e.target.closest('.search-suggestions') &&
                 !e.target.closest('.mobile-sidebar-search-container')) {
                 this.hideResults();
             }
         });
     }
 
+    handleSearchKeydown(e, input) {
+        const suggestionsDiv = document.querySelector('.search-suggestions');
+        const resultsDiv = document.querySelector('.search-results:not(.search-suggestions)');
+        
+        // Handle suggestions navigation
+        if (suggestionsDiv && this.suggestions.length > 0) {
+            const items = suggestionsDiv.querySelectorAll('.search-suggestion-item');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                this.selectedSuggestionIndex = Math.min(
+                    this.selectedSuggestionIndex + 1,
+                    items.length - 1
+                );
+                this.highlightSuggestion(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                this.selectedSuggestionIndex = Math.max(this.selectedSuggestionIndex - 1, -1);
+                this.highlightSuggestion(items);
+            } else if (e.key === 'Enter' && this.selectedSuggestionIndex >= 0) {
+                e.preventDefault();
+                const selected = this.suggestions[this.selectedSuggestionIndex];
+                input.value = selected;
+                this.handleSearchInput(selected);
+            } else if (e.key === 'Escape') {
+                this.hideResults();
+                input.blur();
+            }
+            return;
+        }
+        
+        // Handle results navigation
+        if (resultsDiv && this.searchResults.length > 0) {
+            const items = resultsDiv.querySelectorAll('.search-result-item, [data-search-result]');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const currentIndex = Array.from(items).findIndex(item => 
+                    item.classList.contains('selected')
+                );
+                const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+                items.forEach(item => item.classList.remove('selected'));
+                if (items[nextIndex]) {
+                    items[nextIndex].classList.add('selected');
+                    items[nextIndex].scrollIntoView({ block: 'nearest' });
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const currentIndex = Array.from(items).findIndex(item => 
+                    item.classList.contains('selected')
+                );
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+                items.forEach(item => item.classList.remove('selected'));
+                if (items[prevIndex]) {
+                    items[prevIndex].classList.add('selected');
+                    items[prevIndex].scrollIntoView({ block: 'nearest' });
+                }
+            } else if (e.key === 'Enter') {
+                const selected = resultsDiv.querySelector('.selected');
+                if (selected) {
+                    e.preventDefault();
+                    selected.click();
+                }
+            } else if (e.key === 'Escape') {
+                this.hideResults();
+                input.blur();
+            }
+        }
+    }
+
+    highlightSuggestion(items) {
+        items.forEach((item, index) => {
+            if (index === this.selectedSuggestionIndex) {
+                item.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.style.backgroundColor = '';
+            }
+        });
+    }
+
     handleSearchInput(query) {
-        // Clear existing timeout
+        // Clear existing timeouts
         if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
+        }
+        if (this.suggestionTimeout) {
+            clearTimeout(this.suggestionTimeout);
         }
         
         // Store current query and save to app state
@@ -62,16 +174,23 @@ class SearchManager {
         
         if (!query.trim()) {
             this.hideResults();
+            this.suggestions = [];
+            this.selectedSuggestionIndex = -1;
             return;
         }
         
-        // Show loading state
-        this.showLoadingState();
-        
-        // Debounce search
-        this.searchTimeout = setTimeout(() => {
-            this.performSearch(query);
-        }, 200);
+        // Show suggestions for short queries, full search for longer ones
+        if (query.length < 3 && this.useIndex) {
+            this.showSuggestions(query);
+        } else {
+            // Show loading state
+            this.showLoadingState();
+            
+            // Debounce search
+            this.searchTimeout = setTimeout(() => {
+                this.performSearch(query);
+            }, 150);
+        }
     }
 
     showLoadingState() {
@@ -128,12 +247,25 @@ class SearchManager {
         }
         
         try {
-            // Search through all available tabs
             this.searchResults = [];
-            await this.searchAllTabs(searchQuery);
             
-            // Sort results with titles first
-            this.sortResults();
+            // Use new index system if available
+            if (this.useIndex && this.searchIndex) {
+                // Try exact search first
+                const indexResults = this.searchIndex.search(query, 50);
+                
+                if (indexResults.length === 0) {
+                    // Try fuzzy search if no exact matches
+                    const fuzzyResults = this.searchIndex.fuzzySearch(query, 30, 2);
+                    this.processIndexResults(fuzzyResults, query);
+                } else {
+                    this.processIndexResults(indexResults, query);
+                }
+            } else {
+                // Fallback to old search method
+                await this.searchAllTabs(searchQuery);
+                this.sortResults();
+            }
             
             this.showResults();
             
@@ -143,6 +275,181 @@ class SearchManager {
         } finally {
             this.isSearching = false;
         }
+    }
+
+    /**
+     * Process results from search index
+     */
+    processIndexResults(indexResults, query) {
+        indexResults.forEach(result => {
+            const doc = this.searchIndex.getDocument(result.docId);
+            if (!doc) return;
+            
+            // Get the best match for this document
+            const bestMatch = result.matches
+                .sort((a, b) => b.termScore - a.termScore)[0];
+            
+            if (!bestMatch) return;
+            
+            // Get content snippet based on match type
+            let text = '';
+            let snippet = '';
+            
+            if (bestMatch.type === 'title') {
+                text = doc.title;
+                snippet = doc.title;
+            } else {
+                // Get section content for snippet
+                const sections = doc.content.sections || doc.content.content || [];
+                if (sections[bestMatch.sectionIndex]) {
+                    const section = sections[bestMatch.sectionIndex];
+                    
+                    if (bestMatch.type === 'section-title' && section.title) {
+                        text = section.title;
+                        snippet = section.title;
+                    } else if (bestMatch.type === 'content' && section.content) {
+                        text = this.stripHTML(section.content);
+                        snippet = this.createSnippet(text, query, 80);
+                    } else if (bestMatch.type === 'code' && section.code) {
+                        text = section.code;
+                        snippet = this.createSnippet(text, query, 60);
+                    } else if (bestMatch.type === 'list-item' && section.items) {
+                        const item = section.items[bestMatch.itemIndex];
+                        if (item) {
+                            text = typeof item === 'string' ? item : JSON.stringify(item);
+                            snippet = this.createSnippet(text, query, 60);
+                        }
+                    } else if (bestMatch.type === 'code' && section.tabs) {
+                        const tab = section.tabs[bestMatch.itemIndex];
+                        if (tab && tab.code) {
+                            text = tab.code;
+                            snippet = this.createSnippet(text, query, 60);
+                        }
+                    }
+                }
+            }
+            
+            if (text) {
+                this.searchResults.push({
+                    type: bestMatch.type,
+                    text: snippet || text,
+                    fullText: text,
+                    section: doc.sectionLabel || 'Unknown',
+                    group: doc.groupLabel || 'Unknown',
+                    tabId: doc.id,
+                    score: result.score,
+                    priority: this.getPriorityFromType(bestMatch.type),
+                    metadata: doc
+                });
+            }
+        });
+        
+        // Sort by score/priority
+        this.searchResults.sort((a, b) => {
+            if (a.priority !== b.priority) {
+                return a.priority - b.priority;
+            }
+            if (a.score !== undefined && b.score !== undefined) {
+                return b.score - a.score;
+            }
+            return 0;
+        });
+        
+        // Deduplicate
+        const seen = new Set();
+        this.searchResults = this.searchResults.filter(result => {
+            const key = `${result.tabId}|${result.type}|${result.text.substring(0, 50)}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }
+
+    getPriorityFromType(type) {
+        const priorities = {
+            'title': 1,
+            'code-label': 1.5,
+            'section-title': 2,
+            'list-item': 3,
+            'content': 4,
+            'code': 5
+        };
+        return priorities[type] || 5;
+    }
+
+    stripHTML(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+
+    /**
+     * Show search suggestions
+     */
+    showSuggestions(query) {
+        if (!this.useIndex || !this.searchIndex) {
+            return;
+        }
+        
+        this.suggestions = this.searchIndex.getSuggestions(query, 8);
+        this.selectedSuggestionIndex = -1;
+        
+        if (this.suggestions.length === 0) {
+            this.hideResults();
+            return;
+        }
+        
+        this.hideResults();
+        
+        const searchContainer = this.getSearchContainer();
+        if (!searchContainer) return;
+        
+        const isMobileSearch = searchContainer.classList.contains('mobile-sidebar-search-container');
+        const suggestionsDiv = this.createSearchResultsContainer(isMobileSearch);
+        suggestionsDiv.className = 'search-suggestions';
+        suggestionsDiv.style.textAlign = 'left';
+        suggestionsDiv.style.maxHeight = isMobileSearch ? '40vh' : '300px';
+        suggestionsDiv.style.overflowY = 'auto';
+        
+        this.suggestions.forEach((suggestion, index) => {
+            const item = document.createElement('div');
+            item.className = 'search-suggestion-item';
+            item.style.cssText = `
+                padding: 0.75rem 1rem;
+                cursor: pointer;
+                transition: background-color 0.15s ease;
+                border-bottom: 1px solid var(--color-background-border);
+            `;
+            
+            const highlighted = this.highlightQuery(suggestion, query);
+            item.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="opacity: 0.5;">🔍</span>
+                    <span>${highlighted}</span>
+                </div>
+            `;
+            
+            item.addEventListener('click', () => {
+                const searchInput = document.activeElement;
+                if (searchInput && (searchInput.id === 'header-search' || searchInput.id === 'mobile-sidebar-search')) {
+                    searchInput.value = suggestion;
+                    this.handleSearchInput(suggestion);
+                }
+            });
+            
+            item.addEventListener('mouseenter', () => {
+                item.style.backgroundColor = 'var(--color-sidebar-item-background--hover)';
+                this.selectedSuggestionIndex = index;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.backgroundColor = '';
+            });
+            
+            suggestionsDiv.appendChild(item);
+        });
+        
+        searchContainer.appendChild(suggestionsDiv);
     }
 
     async searchAllTabs(query) {
@@ -468,23 +775,109 @@ class SearchManager {
             resultsDiv.appendChild(header); // On mobile, header goes inside the dropdown
         }
         
-        // Show results
-        shownResults.forEach(result => {
-            const item = this.createResultItem(result);
-            item.style.textAlign = 'left';
-            resultsDiv.appendChild(item);
+        // Group results by document
+        const groupedResults = this.groupResultsByDocument(shownResults);
+        
+        // Show grouped results
+        Object.entries(groupedResults).forEach(([docId, results]) => {
+            const docGroup = this.createDocumentGroup(results[0], results);
+            resultsDiv.appendChild(docGroup);
         });
         
         searchContainer.appendChild(resultsDiv);
     }
 
-    createResultItem(result) {
+    groupResultsByDocument(results) {
+        const grouped = {};
+        results.forEach(result => {
+            if (!grouped[result.tabId]) {
+                grouped[result.tabId] = [];
+            }
+            grouped[result.tabId].push(result);
+        });
+        return grouped;
+    }
+
+    createDocumentGroup(firstResult, results) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'search-document-group';
+        groupDiv.style.cssText = `
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--color-background-border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        `;
+        
+        // Document header
+        const header = document.createElement('div');
+        header.style.cssText = `
+            padding: 0.75rem 1rem;
+            background-color: var(--color-background-secondary);
+            border-bottom: 1px solid var(--color-background-border);
+            font-weight: 600;
+            color: var(--color-sidebar-link-text--top-level);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        `;
+        
+        const title = firstResult.metadata ? firstResult.metadata.title : firstResult.text;
+        header.innerHTML = `
+            <span>📄</span>
+            <span>${this.highlightQuery(title, this.currentSearchQuery)}</span>
+            <span style="margin-left: auto; font-size: 0.875rem; font-weight: normal; color: var(--color-sidebar-link-text);">
+                ${results.length} match${results.length !== 1 ? 'es' : ''}
+            </span>
+        `;
+        groupDiv.appendChild(header);
+        
+        // Breadcrumb
+        const breadcrumb = document.createElement('div');
+        breadcrumb.style.cssText = `
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-sidebar-link-text);
+            background-color: var(--color-background-secondary);
+            border-bottom: 1px solid var(--color-background-border);
+        `;
+        breadcrumb.textContent = `📁 ${firstResult.section} → ${firstResult.group}`;
+        groupDiv.appendChild(breadcrumb);
+        
+        // Results list
+        const resultsList = document.createElement('div');
+        results.forEach((result, index) => {
+            const item = this.createResultItem(result, true);
+            item.setAttribute('data-search-result', 'true');
+            if (index === 0) {
+                item.style.borderTop = 'none';
+            }
+            resultsList.appendChild(item);
+        });
+        groupDiv.appendChild(resultsList);
+        
+        // Click handler for entire group
+        groupDiv.addEventListener('click', (e) => {
+            if (e.target.closest('.search-result-item')) return; // Let item handle its own click
+            if (this.navigationManager) {
+                this.navigationManager.navigateToTab(firstResult.tabId);
+            }
+            this.hideResults();
+        });
+        
+        groupDiv.style.cursor = 'pointer';
+        
+        return groupDiv;
+    }
+
+    createResultItem(result, inGroup = false) {
         const item = document.createElement('div');
+        item.className = 'search-result-item';
         item.style.cssText = `
-            padding: 1rem;
+            padding: ${inGroup ? '0.75rem 1rem' : '1rem'};
             border-bottom: 1px solid var(--color-background-border);
             cursor: pointer;
             transition: all 0.2s ease;
+            ${inGroup ? 'background-color: var(--color-sidebar-background);' : ''}
         `;
         
         const displayText = result.text.length > 100 ? 
@@ -529,7 +922,7 @@ class SearchManager {
         });
         
         item.addEventListener('mouseleave', () => {
-            item.style.backgroundColor = '';
+            item.style.backgroundColor = inGroup ? 'var(--color-sidebar-background)' : '';
         });
         
         return item;
@@ -556,6 +949,12 @@ class SearchManager {
         if (existing) {
             existing.remove();
         }
+        const suggestions = document.querySelector('.search-suggestions');
+        if (suggestions) {
+            suggestions.remove();
+        }
+        this.suggestions = [];
+        this.selectedSuggestionIndex = -1;
     }
 
     showError(message) {

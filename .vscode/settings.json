@@ -1,0 +1,30 @@
+{
+    // Enable word wrap for JSON files
+    "[json]": {
+      "editor.wordWrap": "on",
+      "editor.wordWrapColumn": 120,
+      "editor.rulers": [120],
+      "editor.formatOnSave": true
+    },
+    
+    // JSON-specific formatting
+    "json.format.enable": true,
+    
+    // Better folding for long strings
+    "editor.foldingStrategy": "indentation",
+    "editor.showFoldingControls": "always",
+    
+    // Visual aids
+    "editor.renderWhitespace": "boundary",
+    "editor.renderControlCharacters": true,
+    
+    // Better line handling
+    "editor.renderLineHighlight": "all",
+    
+    // File-specific for your JSON content files
+    "[*.json]": {
+      "editor.wordWrap": "on",
+      "editor.wordWrapColumn": 100,
+      "editor.rulers": [100]
+    }
+  }

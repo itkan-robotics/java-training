@@ -15,39 +15,11 @@
       "icon": "⚙️",
       "items": [
         {
-          "id": "wpilib-setup",
-          "label": "WPILib Setup",
-          "file": "data/frc/environment-setup/wpilib-setup.json",
+          "id": "environment-setup",
+          "label": "Environment Setup",
+          "file": "data/frc/environment-setup/environment-setup.json",
           "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "project-creation",
-          "label": "Project Creation",
-          "file": "data/frc/environment-setup/project-creation.json",
-          "difficulty": "beginner",
-          "duration": "25 min"
-        },
-        {
-          "id": "vs-code-setup",
-          "label": "VS Code Setup",
-          "file": "data/frc/environment-setup/vs-code-setup.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "gradle-build-system",
-          "label": "Gradle Build System",
-          "file": "data/frc/environment-setup/gradle-build-system.json",
-          "difficulty": "beginner",
-          "duration": "35 min"
-        },
-        {
-          "id": "driver-station-setup",
-          "label": "Driver Station Setup",
-          "file": "data/frc/environment-setup/driver-station-setup.json",
-          "difficulty": "beginner",
-          "duration": "25 min"
+          "duration": "60 min"
         },
         {
           "id": "elastic-basics",
@@ -65,39 +37,18 @@
       "icon": "⚡",
       "items": [
         {
-          "id": "ctre-intro",
-          "label": "CTRE Introduction",
-          "file": "data/frc/hardware-vendors/ctre/ctre-intro.json",
+          "id": "ctre-hardware-setup",
+          "label": "CTRE Hardware Setup",
+          "file": "data/frc/hardware-vendors/ctre/ctre-hardware-setup.json",
           "difficulty": "beginner",
-          "duration": "25 min"
+          "duration": "40 min"
         },
         {
-          "id": "talon-fx-setup",
-          "label": "Talon FX Setup",
-          "file": "data/frc/hardware-vendors/ctre/talon-fx-setup.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "talon-fx-motion-magic",
-          "label": "Talon FX Motion Magic",
-          "file": "data/frc/hardware-vendors/ctre/talon-fx-motion-magic.json",
-          "difficulty": "advanced",
-          "duration": "45 min"
-        },
-        {
-          "id": "cancoder",
-          "label": "CANcoder",
-          "file": "data/frc/hardware-vendors/ctre/cancoder.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "pigeon-imu",
+          "id": "ctre-sensors",
           "label": "CTRE Sensors",
-          "file": "data/frc/hardware-vendors/ctre/pigeon-imu.json",
+          "file": "data/frc/hardware-vendors/ctre/ctre-sensors.json",
           "difficulty": "intermediate",
-          "duration": "35 min"
+          "duration": "45 min"
         }
       ]
     },
@@ -108,46 +59,18 @@
       "icon": "🔧",
       "items": [
         {
-          "id": "rev-intro",
-          "label": "REV Introduction",
-          "file": "data/frc/hardware-vendors/rev/rev-intro.json",
+          "id": "rev-hardware-setup",
+          "label": "REV Hardware Setup",
+          "file": "data/frc/hardware-vendors/rev/rev-hardware-setup.json",
           "difficulty": "beginner",
-          "duration": "25 min"
-        },
-        {
-          "id": "spark-max-setup",
-          "label": "SPARK MAX Setup",
-          "file": "data/frc/hardware-vendors/rev/spark-max-setup.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "spark-max-smart-motion",
-          "label": "SPARK MAX Smart Motion",
-          "file": "data/frc/hardware-vendors/rev/spark-max-smart-motion.json",
-          "difficulty": "advanced",
           "duration": "45 min"
         },
         {
-          "id": "rev-encoders",
-          "label": "REV Encoders",
-          "file": "data/frc/hardware-vendors/rev/rev-encoders.json",
+          "id": "rev-sensors-and-encoders",
+          "label": "REV Sensors and Encoders",
+          "file": "data/frc/hardware-vendors/rev/rev-sensors-and-encoders.json",
           "difficulty": "intermediate",
-          "duration": "35 min"
-        },
-        {
-          "id": "rev-sensors",
-          "label": "REV Sensors",
-          "file": "data/frc/hardware-vendors/rev/rev-sensors.json",
-          "difficulty": "intermediate",
-          "duration": "35 min"
-        },
-        {
-          "id": "rev-hardware-client",
-          "label": "REV Hardware Client",
-          "file": "data/frc/hardware-vendors/rev/rev-hardware-client.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
+          "duration": "50 min"
         }
       ]
     },
@@ -187,60 +110,11 @@
       "icon": "🎮",
       "items": [
         {
-          "id": "command-based-intro",
-          "label": "Command-Based Introduction",
-          "file": "data/frc/command-based/command-based-intro.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "subsystem-design",
-          "label": "Subsystem Design",
-          "file": "data/frc/command-based/subsystem-design.json",
+          "id": "command-based-complete",
+          "label": "Command-Based Programming",
+          "file": "data/frc/command-based/command-based-complete.json",
           "difficulty": "intermediate",
-          "duration": "40 min"
-        },
-        {
-          "id": "command-creation",
-          "label": "Command Creation",
-          "file": "data/frc/command-based/command-creation.json",
-          "difficulty": "intermediate",
-          "duration": "45 min"
-        },
-        {
-          "id": "command-scheduler",
-          "label": "Command Scheduler",
-          "file": "data/frc/command-based/command-scheduler.json",
-          "difficulty": "intermediate",
-          "duration": "35 min"
-        },
-        {
-          "id": "command-groups",
-          "label": "Command Groups",
-          "file": "data/frc/command-based/command-groups.json",
-          "difficulty": "intermediate",
-          "duration": "50 min"
-        },
-        {
-          "id": "default-commands",
-          "label": "Default Commands",
-          "file": "data/frc/command-based/default-commands.json",
-          "difficulty": "intermediate",
-          "duration": "30 min"
-        },
-        {
-          "id": "trigger-bindings",
-          "label": "Trigger Bindings",
-          "file": "data/frc/command-based/trigger-bindings.json",
-          "difficulty": "intermediate",
-          "duration": "40 min"
-        },
-        {
-          "id": "robot-container",
-          "label": "Robot Container",
-          "file": "data/frc/command-based/robot-container.json",
-          "difficulty": "intermediate",
-          "duration": "35 min"
+          "duration": "60 min"
         }
       ]
     },
@@ -251,60 +125,18 @@
       "icon": "📊",
       "items": [
         {
-          "id": "pid-control-intro",
-          "label": "PID Control Introduction",
-          "file": "data/frc/control-theory/pid-control-intro.json",
-          "difficulty": "beginner",
-          "duration": "30 min"
-        },
-        {
-          "id": "pid-tuning",
-          "label": "PID Tuning",
-          "file": "data/frc/control-theory/pid-tuning.json",
+          "id": "pid-control",
+          "label": "PID Control",
+          "file": "data/frc/control-theory/pid-control.json",
           "difficulty": "intermediate",
-          "duration": "45 min"
+          "duration": "60 min"
         },
         {
-          "id": "pid-on-controller",
-          "label": "PID On Motor Controllers",
-          "file": "data/frc/control-theory/pid-on-controller.json",
+          "id": "motor-motion-profiling",
+          "label": "Motion Profiling",
+          "file": "data/frc/control-theory/motor-motion-profiling.json",
           "difficulty": "intermediate",
-          "duration": "35 min"
-        },
-        {
-          "id": "pid-in-code",
-          "label": "PID In Robot Code",
-          "file": "data/frc/control-theory/pid-in-code.json",
-          "difficulty": "intermediate",
-          "duration": "40 min"
-        },
-        {
-          "id": "motion-profiling-basics",
-          "label": "Motion Profiling Basics",
-          "file": "data/frc/control-theory/motion-profiling-basics.json",
-          "difficulty": "intermediate",
-          "duration": "35 min"
-        },
-        {
-          "id": "trapezoidal-profiles",
-          "label": "Trapezoidal Profiles",
-          "file": "data/frc/control-theory/trapezoidal-profiles.json",
-          "difficulty": "intermediate",
-          "duration": "40 min"
-        },
-        {
-          "id": "exponential-profiles",
-          "label": "Exponential Profiles",
-          "file": "data/frc/control-theory/exponential-profiles.json",
-          "difficulty": "intermediate",
-          "duration": "30 min"
-        },
-        {
-          "id": "feedforward-control",
-          "label": "Feedforward Control",
-          "file": "data/frc/control-theory/feedforward-control.json",
-          "difficulty": "advanced",
-          "duration": "45 min"
+          "duration": "90 min"
         },
         {
           "id": "advanced-control-theory",
@@ -329,39 +161,18 @@
           "duration": "30 min"
         },
         {
-          "id": "odometry-basics",
-          "label": "Odometry Basics",
-          "file": "data/frc/pose-estimation/odometry-basics.json",
+          "id": "odometry",
+          "label": "Odometry",
+          "file": "data/frc/pose-estimation/odometry.json",
           "difficulty": "intermediate",
-          "duration": "40 min"
+          "duration": "60 min"
         },
         {
-          "id": "swerve-odometry",
-          "label": "Swerve Odometry",
-          "file": "data/frc/pose-estimation/swerve-odometry.json",
-          "difficulty": "intermediate",
-          "duration": "45 min"
-        },
-        {
-          "id": "vision-pose-estimation",
-          "label": "Vision and AprilTag Pose Estimation",
-          "file": "data/frc/pose-estimation/vision-pose-estimation.json",
-          "difficulty": "intermediate",
-          "duration": "45 min"
-        },
-        {
-          "id": "pose-estimation-fusion",
-          "label": "Pose Estimation Sensor Fusion",
-          "file": "data/frc/pose-estimation/pose-estimation-fusion.json",
+          "id": "vision-pose-estimation-complete",
+          "label": "Vision-Based Pose Estimation",
+          "file": "data/frc/pose-estimation/vision-pose-estimation-complete.json",
           "difficulty": "advanced",
-          "duration": "50 min"
-        },
-        {
-          "id": "pose-estimation-tuning",
-          "label": "Pose Estimation Tuning",
-          "file": "data/frc/pose-estimation/pose-estimation-tuning.json",
-          "difficulty": "advanced",
-          "duration": "45 min"
+          "duration": "90 min"
         }
       ]
     },
@@ -380,7 +191,7 @@
         },
         {
           "id": "yass",
-          "label": "YASS Software Suite",
+          "label": "YASS",
           "file": "data/frc/external-tools/yass.json",
           "difficulty": "intermediate",
           "duration": "50 min"
@@ -432,16 +243,69 @@
     }
   ],
   "metadata": {
-    "version": "1.2.0",
-    "lastUpdated": "2025-01-27",
-    "totalLessons": 55,
+    "version": "1.3.0",
+    "lastUpdated": "2025-11-30",
+    "totalLessons": 35,
     "difficultyLevels": {
-      "beginner": 14,
-      "intermediate": 31,
-      "advanced": 8
+      "beginner": 5,
+      "intermediate": 24,
+      "advanced": 6
     },
-    "estimatedDuration": "29.25 hours",
-    "prerequisites": ["java-training"],
-    "tags": ["frc", "robotics", "wpilib", "environment-setup", "gradle", "vscode", "driver-station", "elastic", "dashboard", "ctre", "talon-fx", "cancoder", "pigeon", "pid", "motion-magic", "current-limiting", "rev", "spark-max", "neo", "smart-motion", "revlib", "command-based", "commands", "subsystems", "scheduler", "triggers", "control-theory", "motion-profiling", "feedforward", "trapezoidal-profiles", "exponential-profiles", "pose-estimation", "odometry", "vision", "apriltag", "sensor-fusion", "localization", "pathplanner", "yass", "yagsl", "yams", "yall", "yamg", "advantagescope", "advantagekit", "simulation", "unit-testing", "code-organization", "testing", "logging"]
+    "estimatedDuration": "27 hours",
+    "prerequisites": [
+      "java-training"
+    ],
+    "tags": [
+      "frc",
+      "robotics",
+      "wpilib",
+      "environment-setup",
+      "gradle",
+      "vscode",
+      "driver-station",
+      "elastic",
+      "dashboard",
+      "ctre",
+      "talon-fx",
+      "cancoder",
+      "pigeon",
+      "pid",
+      "motion-magic",
+      "current-limiting",
+      "rev",
+      "spark-max",
+      "neo",
+      "smart-motion",
+      "revlib",
+      "command-based",
+      "commands",
+      "subsystems",
+      "scheduler",
+      "triggers",
+      "control-theory",
+      "motion-profiling",
+      "feedforward",
+      "trapezoidal-profiles",
+      "exponential-profiles",
+      "pose-estimation",
+      "odometry",
+      "vision",
+      "apriltag",
+      "sensor-fusion",
+      "localization",
+      "pathplanner",
+      "yass",
+      "yagsl",
+      "yams",
+      "yall",
+      "yamg",
+      "advantagescope",
+      "advantagekit",
+      "simulation",
+      "unit-testing",
+      "code-organization",
+      "testing",
+      "logging"
+    ]
   }
 }

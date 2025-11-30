@@ -66,8 +66,8 @@
       "title": "Related Topics and Documentation",
       "links": [
         {
-          "label": "PID Control Introduction",
-          "id": "pid-control-intro"
+          "label": "PID Control",
+          "id": "pid-control"
         },
         {
           "label": "Feedforward Control",

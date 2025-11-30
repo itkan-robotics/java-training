@@ -1,140 +1,58 @@
 {
-  "title": "AdvantageKit: Introduction and Setup",
+  "title": "AdvantageKit: Advanced Logging & Simulation",
   "sections": [
     {
       "type": "text",
       "title": "What is AdvantageKit?",
-      "content": "AdvantageKit is an advanced framework for FRC robot development that enhances WPILib with powerful features for logging, simulation, and code organization. It provides a structured approach to robot programming that separates hardware interfaces from robot logic, enabling better testing, simulation, and data analysis.<br><br>AdvantageKit's core philosophy is the IO layer pattern, which separates hardware access from robot logic. This separation enables powerful features like log replay (running robot code with recorded sensor data), improved simulation, and comprehensive data logging. AdvantageKit is used by many top FRC teams and is particularly valuable for teams seeking professional-grade development practices.<br><br>Learn more: <a href='https://docs.advantagekit.org/' target='_blank'>AdvantageKit Documentation</a>"
-    },
-    {
-      "type": "text",
-      "title": "Why Use AdvantageKit?",
-      "content": "AdvantageKit offers several advantages for FRC teams:<br><br><strong>Comprehensive Logging:</strong> Automatic, comprehensive data logging with minimal code changes. Logs sensor readings, motor states, pose estimates, and custom data automatically.<br><br><strong>Log Replay:</strong> Run robot code with recorded sensor data, enabling you to test code changes without physical hardware.<br><br><strong>Improved Simulation:</strong> The IO layer pattern allows realistic hardware simulation without modifying robot logic code.<br><br><strong>Better Code Organization:</strong> The IO layer pattern enforces separation between hardware and logic, resulting in cleaner, more maintainable code.<br><br><strong>Professional Practices:</strong> Encourages professional software development practices like dependency injection, interface-based design, and testability."
-    },
-    {
-      "type": "text",
-      "title": "Installation and Setup",
-      "content": "Installing AdvantageKit involves adding it to your Gradle build file and updating your robot code structure:<br><br><strong>Gradle Dependency:</strong> Add AdvantageKit to your <code>build.gradle</code> file. Check the AdvantageKit GitHub repository for the latest version compatible with your WPILib version.<br><br><strong>Project Structure:</strong> AdvantageKit requires a specific project structure with IO interfaces and implementations. You'll need to create IO interfaces for your subsystems and separate hardware implementations.<br><br><strong>Robot.java Changes:</strong> AdvantageKit requires modifications to your <code>Robot.java</code> file. Instead of directly instantiating subsystems, you'll use AdvantageKit's robot structure with IO layers and logging.<br><br>Refer to the official AdvantageKit documentation for detailed, step-by-step installation instructions.<br><br>Learn more: <a href='https://docs.advantagekit.org/getting-started/installation/' target='_blank'>AdvantageKit Installation Guide</a>"
+      "content": "AdvantageKit is a logging and simulation framework developed by Team 6328 (Mechanical Advantage). It enables \"Log Replay,\" allowing you to replay data recorded during a match through your robot code to debug issues and verify fixes. It fundamentally changes how you structure your robot code to separate hardware interaction from logic.<br><br><strong>Key Philosophy:</strong> Logic should be deterministic and hardware-independent. By isolating hardware inputs (sensors) into a separate \"IO\" layer, you can swap real hardware for simulated hardware or a log file player without changing your subsystem logic.<br><br>Learn more: <a href='https://docs.advantagekit.org/' target='_blank'>AdvantageKit Documentation</a>"
     },
     {
       "type": "text",
       "title": "The IO Layer Pattern",
-      "content": "The IO layer pattern is the foundation of AdvantageKit's architecture. It separates hardware access from robot logic:<br><br><strong>IO Interfaces:</strong> Define the contract between subsystems and hardware. They specify methods for reading sensor data (through input structures) and controlling hardware (through output methods). Interfaces are hardware-agnostic, focusing on functionality rather than implementation.<br><br><strong>Input Structures:</strong> IO interfaces define nested input structures that contain all sensor readings. Subsystems receive these structures in <code>updateInputs()</code> calls, reading sensor data without knowing the source (real hardware, simulation, or log replay).<br><br><strong>Implementation Separation:</strong> Real hardware implementations, simulated implementations, and log replay implementations are separate classes. They all implement the same IO interface, allowing them to be swapped without changing subsystem code. This is the core of AdvantageKit's power.<br><br>This pattern enables log replay (using recorded data as \"sensor\" input) and simulation (using simulated sensor data) without modifying subsystem code."
+      "content": "To use AdvantageKit effectively, you must structure your subsystems using the IO Layer pattern:<br><br>1. <strong>SubsystemIO Interface:</strong> Defines the inputs (sensor data) and output methods (voltage/position) for the subsystem.<br>2. <strong>IO Implementation (Real):</strong> Wraps the real hardware (TalonFX, SparkMax) to read inputs and write outputs.<br>3. <strong>IO Implementation (Sim):</strong> Uses physics sims to generate inputs based on outputs.<br>4. <strong>Subsystem Logic:</strong> Interacts <em>only</em> with the IO interface, never directly with hardware classes."
     },
     {
       "type": "code",
-      "title": "Basic IO Layer Example",
-      "content": "package frc.robot.subsystems.drivetrain;\n\npublic interface DrivetrainIO {\n    // Inputs structure for sensor readings\n    public static class DrivetrainIOInputs {\n        public double leftPositionRad = 0.0;\n        public double rightPositionRad = 0.0;\n        public double leftVelocityRadPerSec = 0.0;\n        public double rightVelocityRadPerSec = 0.0;\n    }\n    \n    default void updateInputs(DrivetrainIOInputs inputs) {}\n    \n    default void setVoltage(double leftVolts, double rightVolts) {}\n}\n\n// Real Hardware Implementation\npackage frc.robot.subsystems.drivetrain;\n\nimport com.ctre.phoenix6.hardware.TalonFX;\n\npublic class DrivetrainIOTalonFX implements DrivetrainIO {\n    private final TalonFX m_leftMotor = new TalonFX(1);\n    private final TalonFX m_rightMotor = new TalonFX(2);\n    \n    @Override\n    public void updateInputs(DrivetrainIOInputs inputs) {\n        inputs.leftPositionRad = m_leftMotor.getPosition().getValueAsDouble();\n        inputs.rightPositionRad = m_rightMotor.getPosition().getValueAsDouble();\n        // ... more sensor readings ...\n    }\n    \n    @Override\n    public void setVoltage(double leftVolts, double rightVolts) {\n        m_leftMotor.setVoltage(leftVolts);\n        m_rightMotor.setVoltage(rightVolts);\n    }\n}\n\n// Simulated Implementation\npackage frc.robot.subsystems.drivetrain;\n\nimport edu.wpi.first.math.system.plant.DCMotor;\nimport edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;\n\npublic class DrivetrainIOSim implements DrivetrainIO {\n    private final DifferentialDrivetrainSim m_drivetrainSim = new DifferentialDrivetrainSim(\n        DCMotor.getKrakenX60(2), 10.71, 2.2, 0.3, 0.0508, 0.546, null\n    );\n    \n    @Override\n    public void updateInputs(DrivetrainIOInputs inputs) {\n        m_drivetrainSim.update(0.02);\n        // Provide simulated sensor data\n        inputs.leftPositionRad = m_drivetrainSim.getLeftPositionMeters();\n        // ... more simulated readings ...\n    }\n    \n    @Override\n    public void setVoltage(double leftVolts, double rightVolts) {\n        m_drivetrainSim.setInputs(leftVolts, rightVolts);\n    }\n}\n\n// Subsystem using IO interface\npackage frc.robot.subsystems.drivetrain;\n\nimport edu.wpi.first.wpilibj2.command.SubsystemBase;\n\npublic class Drivetrain extends SubsystemBase {\n    private final DrivetrainIO m_io;\n    private final DrivetrainIO.DrivetrainIOInputs m_inputs = new DrivetrainIO.DrivetrainIOInputs();\n    \n    public Drivetrain(DrivetrainIO io) {\n        m_io = io;\n    }\n    \n    @Override\n    public void periodic() {\n        m_io.updateInputs(m_inputs);\n    }\n}"
-    },
-    {
-      "type": "code",
-      "title": "Basic Robot.java with AdvantageKit",
-      "content": "package frc.robot;\n\nimport org.littletonrobotics.junction.LoggedRobot;\nimport org.littletonrobotics.junction.Logger;\nimport org.littletonrobotics.junction.networktables.NT4Publisher;\nimport org.littletonrobotics.junction.wpilog.WPILOGWriter;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport frc.robot.subsystems.drivetrain.Drivetrain;\nimport frc.robot.subsystems.drivetrain.DrivetrainIO;\nimport frc.robot.subsystems.drivetrain.DrivetrainIOReal;\nimport frc.robot.subsystems.drivetrain.DrivetrainIOSim;\n\npublic class Robot extends LoggedRobot {\n    private Drivetrain m_drivetrain;\n    \n    @Override\n    public void robotInit() {\n        Logger.recordMetadata(\"ProjectName\", \"MyRobot\");\n        Logger.recordMetadata(\"TeamNumber\", \"1234\");\n        \n        if (isReal()) {\n            Logger.addDataReceiver(new WPILOGWriter(\"/home/lvuser/logs\"));\n        } else {\n            Logger.addDataReceiver(new WPILOGWriter(\"\"));\n        }\n        Logger.addDataReceiver(new NT4Publisher());\n        \n        Logger.start();\n        \n        DrivetrainIO drivetrainIO = isReal() ? new DrivetrainIOReal() : new DrivetrainIOSim();\n        \n        m_drivetrain = new Drivetrain(drivetrainIO);\n    }\n    \n    @Override\n    public void robotPeriodic() {\n        CommandScheduler.getInstance().run();\n    }\n}\n\n// Note: This is a simplified example.\n// Refer to AdvantageKit documentation for complete setup."
+      "title": "AdvantageKit Subsystem Structure",
+      "content": "public class Flywheel extends SubsystemBase {\n    // 1. Define the inputs\n    @AutoLog\n    public static class FlywheelInputs {\n        public double velocityRadPerSec = 0.0;\n        public double appliedVolts = 0.0;\n        public double currentAmps = 0.0;\n    }\n\n    // 2. Define the IO Interface\n    public interface FlywheelIO {\n        default void updateInputs(FlywheelInputs inputs) {}\n        default void setVoltage(double volts) {}\n    }\n\n    private final FlywheelIO io;\n    private final FlywheelInputsAutoLogged inputs = new FlywheelInputsAutoLogged();\n\n    // Constructor injects the implementation\n    public Flywheel(FlywheelIO io) {\n        this.io = io;\n    }\n\n    @Override\n    public void periodic() {\n        // 3. Update inputs from the IO layer (Real, Sim, or Replay)\n        io.updateInputs(inputs);\n        \n        // 4. Log the inputs automatically\n        Logger.processInputs(\"Flywheel\", inputs);\n\n        // Logic uses 'inputs.velocityRadPerSec' instead of 'motor.getVelocity()'\n    }\n\n    public void runVolts(double volts) {\n        io.setVoltage(volts);\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Logging and Replay",
-      "content": "AdvantageKit's logging and replay capabilities are powerful features enabled by the IO layer pattern:<br><br><strong>Automatic Logging:</strong> AdvantageKit automatically logs all IO inputs (sensor readings) and outputs (motor commands) when using the IO layer pattern. This comprehensive logging happens automatically - no additional code needed.<br><br><strong>Log Replay:</strong> Replay robot code using recorded log data. During replay, IO implementations read from log files instead of hardware, allowing you to run robot code with historical sensor data. This enables testing code changes without physical hardware and debugging issues that occurred during matches.<br><br><strong>Custom Logging:</strong> Log custom values using AdvantageKit's Logger class. Log calculated values, performance metrics, or any data that helps with analysis. Custom logging integrates seamlessly with automatic logging.<br><br>Log replay is valuable for debugging autonomous routines, testing code changes, analyzing match performance, and validating improvements. It's particularly powerful when combined with AdvantageScope for visualization."
+      "title": "Logging Features",
+      "content": "AdvantageKit automatically logs all fields in your `@AutoLog` input classes. It uses a high-performance binary format (WPILOG/RLOG) that can record data every loop cycle with minimal overhead.<br><br>You can also log custom data using `Logger.recordOutput()`:<br><code>Logger.recordOutput(\"MyState/Target\", targetValue);</code><br><code>Logger.recordOutput(\"Odometry/Pose\", pose);</code>"
     },
     {
       "type": "text",
-      "title": "Simulation Integration",
-      "content": "AdvantageKit's architecture makes simulation more accurate and easier to implement:<br><br><strong>Simulated IO Implementations:</strong> Create simulated IO implementations that provide realistic sensor data without hardware. These implementations use WPILib's simulation classes to model physical behavior. Simulated implementations implement the same IO interface as real hardware, so subsystem code works unchanged.<br><br><strong>Physics Simulation:</strong> Use WPILib's physics simulation classes to model robot behavior accurately. These classes simulate motor dynamics, mechanism physics, and sensor behavior. Accurate simulation helps validate code before deploying to hardware.<br><br><strong>Testing in Simulation:</strong> Test robot code thoroughly in simulation before deploying to hardware. Simulation catches many issues early and allows rapid iteration. Use simulation to validate autonomous routines, test control systems, and verify mechanism behavior."
-    },
-    {
-      "type": "text",
-      "title": "Project Migration",
-      "content": "Migrating an existing WPILib project to AdvantageKit requires restructuring your code to use the IO layer pattern:<br><br><strong>Creating IO Interfaces:</strong> For each subsystem, create an IO interface that defines methods for reading sensor data and controlling hardware. The interface should be hardware-agnostic, focusing on functionality rather than specific hardware implementations.<br><br><strong>Implementing IO Classes:</strong> Create IO implementation classes for real hardware and simulated hardware. Real hardware implementations use actual motor controllers and sensors. Simulated implementations provide realistic sensor data for simulation.<br><br><strong>Updating Subsystems:</strong> Modify subsystems to use IO interfaces instead of directly accessing hardware. Subsystems receive IO implementations through constructors (dependency injection) and use them for all hardware interactions.<br><br>Migration is a significant undertaking but provides long-term benefits. Consider migrating incrementally, starting with one subsystem to understand the pattern, then migrating others."
+      "title": "Log Replay",
+      "content": "The killer feature of AdvantageKit. If a bug occurs in a match:<br>1. Download the log file.<br>2. Run your robot code in \"Replay\" mode pointing to that log file.<br>3. The `SubsystemIO` layers will be replaced by a `Replay` implementation that feeds the recorded sensor values into your code.<br>4. You can step through the code, inspect variables, and fix the bug, verifying that the fix works against the real match data."
     },
     {
       "type": "rules-box",
-      "title": "Architecture Best Practices",
-      "subtitle": "Key principles for effective AdvantageKit usage:",
+      "title": "AdvantageKit Best Practices",
+      "subtitle": "Getting started:",
       "items": [
-        "Keep IO interfaces simple and focused",
-        "Include comprehensive sensor data in input structures",
-        "Make simulated implementations realistic",
-        "Use consistent patterns across subsystems",
-        "Document IO interfaces and implementations",
-        "Test thoroughly in simulation before hardware",
-        "Use log replay for debugging and testing",
-        "Balance performance with functionality"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Troubleshooting Common Issues",
-      "subtitle": "Common issues and solutions:",
-      "items": [
-        "Build errors: Verify AdvantageKit dependency versions are correct and compatible with WPILib version",
-        "Runtime errors: Check that logging is initialized before creating subsystems",
-        "Hardware not working: Verify real hardware IO implementations are being used (not simulated)",
-        "Logging not working: Verify logger initialization occurs before subsystem creation",
-        "Simulation issues: Ensure simulated IO implementations are being used in simulation mode",
-        "Log replay not working: Verify log file format is correct and compatible with AdvantageKit version",
-        "Performance issues: Profile code to identify bottlenecks and check IO update methods for inefficiencies"
-      ]
-    },
-    {
-      "type": "table",
-      "title": "AdvantageKit vs Standard WPILib",
-      "headers": [
-        "Feature",
-        "Standard WPILib",
-        "AdvantageKit"
-      ],
-      "rows": [
-        [
-          "Architecture",
-          "Direct hardware access",
-          "IO layer pattern"
-        ],
-        [
-          "Logging",
-          "Manual, limited",
-          "Automatic, comprehensive"
-        ],
-        [
-          "Simulation",
-          "Manual setup required",
-          "Built-in simulation support"
-        ],
-        [
-          "Log Replay",
-          "Not available",
-          "Full log replay capability"
-        ],
-        [
-          "Code Organization",
-          "Team-dependent",
-          "Enforced patterns"
-        ],
-        [
-          "Best For",
-          "Simple robots, quick development",
-          "Complex robots, professional practices"
-        ]
+        "Adopt the IO Layer pattern for all subsystems.",
+        "Log EVERYTHING: inputs, outputs, targets, and internal states.",
+        "Keep the 'inputs' record classes simple (primitives, structs).",
+        "Use AdvantageScope to visualize the logs.",
+        "Commit to the structure: mixing direct hardware access with IO layers defeats the purpose."
       ]
     },
     {
       "type": "link-grid",
-      "title": "Related Topics and Documentation",
+      "title": "Related Topics",
       "links": [
         {
           "label": "AdvantageScope",
           "id": "advantagescope"
         },
         {
-          "label": "AdvantageKit GitHub",
-          "url": "https://github.com/Mechanical-Advantage/AdvantageKit/tree/main"
-        },
-        {
-          "label": "Command-Based Programming",
-          "id": "command-based-intro"
-        },
-        {
           "label": "Simulation Basics",
           "id": "simulation-basics"
+        },
+        {
+          "label": "AdvantageKit GitHub",
+          "url": "https://github.com/Mechanical-Advantage/AdvantageKit"
         }
       ]
     }

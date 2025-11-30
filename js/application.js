@@ -10,6 +10,8 @@ class Application {
         this.navigationManager = new NavigationManager(null, this.contentManager);
         this.searchManager = new SearchManager(this.contentManager, this.navigationManager);
         this.navigationManager.searchManager = this.searchManager; // Set the reference back
+        this.searchIndex = new SearchIndex();
+        this.searchManager.setSearchIndex(this.searchIndex);
         this.themeManager = new ThemeManager();
         this.eventManager = new EventManager(this.navigationManager, this.themeManager, this.searchManager);
         this.sidebarResizeManager = new SidebarResizeManager();
@@ -31,6 +33,9 @@ class Application {
             
             // Generate initial navigation
             await this.navigationManager.generateNavigation();
+            
+            // Build search index in background (non-blocking)
+            this.buildSearchIndex();
             
             // Initialize sidebar resize functionality
             this.sidebarResizeManager.initialize();
@@ -58,6 +63,18 @@ class Application {
             console.error('Error initializing application:', error);
             this.showError('Failed to load application. Please refresh the page.');
             hideLoadingOverlay();
+        }
+    }
+
+    async buildSearchIndex() {
+        try {
+            console.log('Building search index...');
+            await this.searchIndex.buildIndex(this.contentManager, this.configManager);
+            this.searchManager.setSearchIndex(this.searchIndex);
+            console.log('Search index built successfully');
+        } catch (error) {
+            console.error('Error building search index:', error);
+            // Continue without index - fallback to old search
         }
     }
 

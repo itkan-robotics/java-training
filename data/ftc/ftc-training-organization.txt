@@ -46,7 +46,7 @@
 │   │   ├── advanced-movement-control.json
 │   │   ├── pid-control.json
 │   │   ├── robot-pid-control.json
-│   │   ├── motion-profiling.json
+│   │   ├── motor-motion-profiling.json
 │   │   └── advanced-control-theory.json
 |   ├── odometry/
 │   │   ├── intro-to-odometry.json

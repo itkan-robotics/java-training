@@ -1129,6 +1129,27 @@
     overflow-wrap: break-word;
     max-width: 100%;
   }
+
+  /* Code copy button */
+  .code-copy-button {
+    user-select: none;
+  }
+
+  .code-copy-button:hover {
+    background-color: var(--color-background-hover) !important;
+  }
+
+  .code-copy-button.copied {
+    color: var(--color-success) !important;
+  }
+
+  .code-copy-button.copied .copy-icon {
+    color: var(--color-success);
+  }
+
+  .code-copy-button:active {
+    transform: scale(0.95);
+  }
   
   /* Java Syntax Highlighting - Light Theme */
   .code-block code .java-keyword {
@@ -1299,6 +1320,7 @@
     overflow-x: auto;
     padding-top: 3px;
     flex-shrink: 0;
+    align-items: center;
   }
   
   .code-tab-button {

@@ -4,113 +4,71 @@
     {
       "type": "text",
       "title": "What is Unit Testing?",
-      "content": "Unit testing involves testing individual components of your robot code in isolation to ensure they work correctly. Each unit test verifies that a specific piece of code (like a method, class, or subsystem) behaves as expected. Unit testing is a fundamental practice in professional software development that helps catch bugs early, enables confident code changes, and improves code quality.<br><br>In FRC, unit testing allows you to test subsystems, commands, and utility functions without physical hardware. You can verify that control logic works correctly, that calculations are accurate, and that code handles edge cases properly. Unit testing is particularly valuable for complex control systems, autonomous routines, and mathematical calculations.<br><br>While unit testing requires initial setup and writing test code, it provides significant long-term benefits. Tests serve as documentation, enable safe refactoring, and catch regressions when code changes. Many competitive FRC teams use unit testing to improve code reliability and development speed.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/unit-testing.html' target='_blank'>WPILib: Unit Testing</a>"
+      "content": "Unit testing is the practice of testing individual units of source code to determine if they are fit for use. In the context of FRC, a 'unit' is typically a class, a method, or a subsystem. Unlike integration tests or full robot tests, unit tests run on your development machine (not the roboRIO) and execute in milliseconds.<br><br>Unit testing allows you to verify logic, math, and state transitions without needing a physical robot. This is crucial for catching bugs early, documenting expected behavior, and allowing for safe refactoring. For FRC, it enables testing complex logic like kinematics, state machines, and autonomous sequences before you even have a drivetrain built.<br><br>Learn more: <a href='https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/unit-testing.html' target='_blank'>WPILib: Unit Testing</a>"
     },
     {
       "type": "text",
       "title": "Why Unit Testing is Important",
-      "content": "Unit testing offers several important benefits for FRC teams:<br><br><strong>Early Bug Detection:</strong> Catch bugs before deploying to hardware. Test code logic, calculations, and edge cases without physical hardware. Early detection saves time and prevents issues during competition.<br><br><strong>Confident Refactoring:</strong> Refactor code with confidence knowing tests will catch regressions. Make code improvements, optimizations, or restructuring without fear of breaking functionality. Tests provide a safety net for code changes.<br><br><strong>Documentation:</strong> Tests serve as executable documentation. They show how code is intended to be used and what behavior is expected. Well-written tests are valuable for team members learning the codebase.<br><br><strong>Design Improvement:</strong> Writing tests encourages better code design. Testable code tends to be more modular, have clearer interfaces, and separate concerns better. The discipline of testing improves overall code quality.<br><br><strong>Regression Prevention:</strong> Prevent regressions when making changes. Run tests after modifications to ensure existing functionality still works. Automated tests catch issues that manual testing might miss.<br><br><strong>Faster Development:</strong> While writing tests takes time initially, they can speed up development long-term. Tests enable faster iteration by catching issues immediately and reducing debugging time."
+      "content": "<strong>1. Early Bug Detection:</strong> Catch logic errors, off-by-one errors, and edge cases before deploying code to the robot. This saves valuable battery/practice time.<br><br><strong>2. Safe Refactoring:</strong> When you clean up or optimize code, unit tests act as a safety net, ensuring you haven't broken existing functionality.<br><br><strong>3. Documentation:</strong> Tests serve as live documentation. A new member can look at `DrivetrainTest` to understand how the `Drivetrain` class is supposed to behave.<br><br><strong>4. Faster Feedback Loop:</strong> deploying code takes minutes; running tests takes seconds. This encourages more frequent testing and iteration.<br><br><strong>5. Testing Hard-to-Reach States:</strong> You can simulate rare error conditions (like a sensor disconnect or max current draw) that are dangerous or difficult to reproduce on a real robot."
     },
     {
       "type": "text",
       "title": "Testing Frameworks",
-      "content": "JUnit is the standard testing framework for Java and is well-supported in WPILib projects:<br><br><strong>JUnit:</strong> JUnit is the most common Java testing framework. It's included with WPILib projects and provides annotations, assertions, and test runners. JUnit 5 is the current version and is recommended for new projects.<br><br><strong>WPILib Testing Support:</n> WPILib provides testing utilities and helpers for robot code. These include utilities for testing commands, simulating time, and working with WPILib classes in tests. WPILib's testing support makes it easier to test robot-specific code.<br><br><strong>Mocking Frameworks:</strong> Mocking frameworks like Mockito help isolate units under test. They allow you to create fake (mock) objects that simulate hardware or dependencies. Mocking is essential for testing code that depends on hardware.<br><br><strong>Test Structure:</strong> Tests are typically organized in a <code>test</code> directory parallel to <code>main</code>. Test classes mirror production classes with \"Test\" suffix. This organization keeps tests separate but related to production code.<br><br>JUnit and WPILib's testing support provide everything needed for effective unit testing. No additional frameworks are required, though mocking libraries can be helpful for complex scenarios."
+      "content": "WPILib projects use <strong>JUnit 5</strong> as the standard testing framework. It provides the structure for writing tests (assertions, test lifecycle methods).<br><br><strong>Mockito</strong> is typically used alongside JUnit. It allows you to create 'mock' objects—fake versions of complex dependencies like motor controllers or sensors. This lets you test your logic in isolation without needing the actual hardware libraries to be active or connected."
     },
     {
       "type": "code",
       "title": "Basic Unit Test Example",
-      "content": "package frc.robot.util;\n\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Assertions;\n\npublic class MathUtilsTest {\n    @Test\n    public void testClamp() {\n        // Test clamping values to range\n        Assertions.assertEquals(5.0, MathUtils.clamp(10.0, 0.0, 5.0), 0.001);\n        Assertions.assertEquals(0.0, MathUtils.clamp(-5.0, 0.0, 5.0), 0.001);\n        Assertions.assertEquals(3.0, MathUtils.clamp(3.0, 0.0, 5.0), 0.001);\n    }\n    \n    @Test\n    public void testDeadband() {\n        // Test deadband function\n        Assertions.assertEquals(0.0, MathUtils.deadband(0.05, 0.1), 0.001);\n        Assertions.assertEquals(0.15, MathUtils.deadband(0.15, 0.1), 0.001);\n        Assertions.assertEquals(-0.15, MathUtils.deadband(-0.15, 0.1), 0.001);\n    }\n}\n\n// MathUtils class being tested\npackage frc.robot.util;\n\npublic class MathUtils {\n    public static double clamp(double value, double min, double max) {\n        return Math.max(min, Math.min(max, value));\n    }\n    \n    public static double deadband(double value, double threshold) {\n        if (Math.abs(value) < threshold) {\n            return 0.0;\n        }\n        return value;\n    }\n}"
+      "content": "package frc.robot.util;\n\nimport org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.*;\n\npublic class MathUtilsTest {\n\n    @Test\n    public void testClamp() {\n        // Assert that clamp(val, min, max) returns expected results\n        assertEquals(5.0, MathUtils.clamp(10.0, 0.0, 5.0), 0.001, \"Should clamp to max\");\n        assertEquals(0.0, MathUtils.clamp(-5.0, 0.0, 5.0), 0.001, \"Should clamp to min\");\n        assertEquals(3.0, MathUtils.clamp(3.0, 0.0, 5.0), 0.001, \"Should return value within range\");\n    }\n\n    @Test\n    public void testDeadband() {\n        assertEquals(0.0, MathUtils.applyDeadband(0.05, 0.1), 0.001, \"Should be zero inside deadband\");\n        assertEquals(0.5, MathUtils.applyDeadband(0.5, 0.1), 0.001, \"Should return value outside deadband\");\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Writing Your First Test",
-      "content": "Writing your first unit test involves several steps:<br><br><strong>Choose What to Test:</strong> Start with simple, isolated code like utility functions or calculations. These are easiest to test and provide immediate value. Avoid starting with hardware-dependent code initially.<br><br><strong>Create Test Class:</strong> Create a test class in the test directory. Name it after the class being tested with \"Test\" suffix. For example, test <code>MathUtils</code> in <code>MathUtilsTest</code>.<br><br><strong>Write Test Methods:</strong> Write test methods annotated with <code>@Test</code>. Each test method should test one specific behavior. Use descriptive method names that explain what's being tested.<br><br><strong>Use Assertions:</strong> Use JUnit assertions to verify expected behavior. Assert that results match expectations, that exceptions are thrown when appropriate, and that edge cases are handled correctly.<br><br><strong>Run Tests:</strong> Run tests using your IDE's test runner or Gradle's test task. Verify that tests pass and provide useful feedback. Fix any failing tests before proceeding.<br><br>Start simple and gradually test more complex code as you become comfortable with testing."
-    },
-    {
-      "type": "text",
-      "title": "Testing Subsystems",
-      "content": "Testing subsystems requires special consideration because they depend on hardware:<br><br><strong>Mock Hardware:</strong> Use mocking to simulate hardware in subsystem tests. Create mock motor controllers, sensors, and other hardware components. Mocks allow you to test subsystem logic without real hardware.<br><br><strong>Test Logic:</strong> Focus on testing subsystem logic rather than hardware interaction. Test calculations, state management, and control algorithms. Hardware interaction is tested through integration testing, not unit tests.<br><br><strong>Isolate Dependencies:</strong> Isolate subsystems from hardware dependencies. Use dependency injection to provide mock hardware to subsystems. This makes subsystems testable and more flexible.<br><br><strong>Test Edge Cases:</strong> Test edge cases and error conditions. Verify that subsystems handle invalid inputs, boundary conditions, and error states correctly. Edge case testing improves robustness.<br><br><strong>Use WPILib Testing Utilities:</strong> Use WPILib's testing utilities for subsystem testing. These utilities help with common testing scenarios and provide helpers for WPILib-specific code."
+      "title": "Testing Subsystems with Mocks",
+      "content": "Subsystems often depend on hardware (TalonFX, SparkMax, etc.). To test subsystem logic without hardware, use <strong>Mockito</strong> to mock these dependencies.<br><br>By mocking, you can verify that your subsystem calls the correct methods on the hardware (e.g., \"did we tell the motor to set voltage to 12V?\") without actually having a motor connected."
     },
     {
       "type": "code",
-      "title": "Subsystem Test Example",
-      "content": "package frc.robot.subsystems;\n\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Assertions;\nimport org.mockito.Mock;\nimport org.mockito.MockitoAnnotations;\nimport com.ctre.phoenix.motorcontrol.can.TalonFX;\n\npublic class ArmTest {\n    @Mock\n    private TalonFX m_mockMotor;\n    \n    private Arm m_arm;\n    \n    @BeforeEach\n    public void setup() {\n        MockitoAnnotations.openMocks(this);\n        m_arm = new Arm(m_mockMotor);\n    }\n    \n    @Test\n    public void testSetAngle() {\n        // Test setting arm angle\n        m_arm.setAngle(45.0);\n        \n        // Verify motor was commanded correctly\n        // (exact verification depends on implementation)\n        // Mockito.verify(m_mockMotor).set(ArgumentMatchers.any());\n    }\n    \n    @Test\n    public void testGetAngle() {\n        // Mockito.when(m_mockMotor.getSelectedSensorPosition()).thenReturn(2048);\n        \n        // Test getting angle\n        // double angle = m_arm.getAngle();\n        // Assertions.assertEquals(45.0, angle, 0.1);\n    }\n}\n\n// Note: Exact mocking depends on your implementation.\n// This example shows the general pattern."
+      "title": "Subsystem Test with Mockito",
+      "content": "package frc.robot.subsystems;\n\nimport static org.mockito.Mockito.*;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\nimport com.revrobotics.CANSparkMax;\nimport frc.robot.Constants;\n\npublic class IntakeTest {\n    private CANSparkMax m_mockMotor;\n    private Intake m_intake;\n\n    @BeforeEach\n    void setup() {\n        // Create a mock CANSparkMax\n        m_mockMotor = mock(CANSparkMax.class);\n        // Inject the mock into the subsystem\n        m_intake = new Intake(m_mockMotor);\n    }\n\n    @Test\n    void testDeploy() {\n        m_intake.deploy();\n        // Verify the motor was set to the deploy speed\n        verify(m_mockMotor).set(Constants.Intake.kDeploySpeed);\n    }\n\n    @Test\n    void testStop() {\n        m_intake.stop();\n        // Verify the motor was stopped\n        verify(m_mockMotor).set(0.0);\n    }\n}"
     },
     {
       "type": "text",
-      "title": "Testing Commands",
-      "content": "Testing commands requires simulating the command scheduler and time:<br><br><strong>Command Scheduler Simulation:</strong> Use WPILib's command testing utilities to simulate the command scheduler. These utilities allow you to run commands in tests without the full robot framework.<br><br><strong>Time Simulation:</strong> Simulate time passage in tests. Commands often depend on time (waiting, timeouts, etc.). Use simulated time to test time-dependent behavior without actually waiting.<br><br><strong>Test Command Lifecycle:</strong> Test command lifecycle methods (initialize, execute, end). Verify that commands initialize correctly, execute as expected, and clean up properly. Test both normal completion and interruption.<br><br><strong>Test Command Composition:</strong> Test command groups and sequences. Verify that commands execute in the correct order, that parallel commands work together, and that command groups behave correctly.<br><br><strong>Mock Subsystems:</strong> Mock subsystems when testing commands. Commands depend on subsystems, so use mocks to isolate command testing from subsystem implementation."
+      "title": "Testing Commands and Time",
+      "content": "Commands often involve timing (e.g., `WaitCommand`, running for a duration). WPILib's `SimHooks` allows you to control the robot's simulated time, letting you test time-dependent logic instantly.<br><br>You can also simulate the `CommandScheduler` to verify that commands finish when expected or are interrupted correctly."
     },
     {
       "type": "code",
-      "title": "Command Test Example",
-      "content": "package frc.robot.commands;\n\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.BeforeEach;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport edu.wpi.first.wpilibj.simulation.SimHooks;\nimport org.mockito.Mock;\nimport org.mockito.MockitoAnnotations;\nimport frc.robot.subsystems.Arm;\n\npublic class MoveArmCommandTest {\n    @Mock\n    private Arm m_mockArm;\n    \n    private MoveArmCommand m_command;\n    \n    @BeforeEach\n    public void setup() {\n        MockitoAnnotations.openMocks(this);\n        m_command = new MoveArmCommand(m_mockArm, 90.0);\n    }\n    \n    @Test\n    public void testCommandCompletes() {\n        // Mockito.when(m_mockArm.getAngle()).thenReturn(90.0);\n        \n        // Schedule command\n        m_command.schedule();\n        \n        CommandScheduler.getInstance().run();\n        \n        // Verify command completed\n        Assertions.assertFalse(m_command.isScheduled());\n    }\n    \n    @Test\n    public void testCommandInterrupt() {\n        // Schedule command\n        m_command.schedule();\n        \n        CommandScheduler.getInstance().run();\n        \n        // Cancel command\n        m_command.cancel();\n        \n        // Verify command was interrupted\n        Assertions.assertFalse(m_command.isScheduled());\n    }\n}\n\n// Note: Exact testing depends on command implementation."
-    },
-    {
-      "type": "text",
-      "title": "Mocking Hardware",
-      "content": "Mocking hardware is essential for unit testing robot code:<br><br><strong>Why Mock:</strong> Real hardware isn't available in unit tests, and you want to test logic in isolation. Mocking creates fake hardware objects that you can control in tests. This allows testing subsystem and command logic without physical hardware.<br><br><strong>What to Mock:</strong> Mock hardware components like motor controllers, sensors, and other WPILib hardware classes. Mock the interfaces your code uses, not implementation details. Focus on mocking the hardware interactions your code depends on.<br><br><strong>Mock Behavior:</strong> Configure mocks to return specific values or behaviors. Set up mocks to simulate different scenarios - normal operation, edge cases, error conditions. Mock behavior should represent realistic hardware responses.<br><br><strong>Verify Interactions:</strong> Verify that code interacts with hardware correctly. Check that methods are called with expected parameters, that hardware is configured properly, and that interactions occur as expected. Verification ensures code uses hardware correctly.<br><br><strong>Mocking Frameworks:</strong> Use Mockito or similar frameworks for mocking. These frameworks provide powerful mocking capabilities and make it easy to create and configure mocks. WPILib projects typically include Mockito."
-    },
-    {
-      "type": "text",
-      "title": "Test-Driven Development",
-      "content": "Test-Driven Development (TDD) is a development approach where you write tests before writing code:<br><br><strong>TDD Process:</strong> Write a failing test first, then write code to make it pass, then refactor. This cycle (Red-Green-Refactor) ensures code is testable and that tests drive design. TDD encourages good design and comprehensive testing.<br><br><strong>Benefits:</strong> TDD ensures code is testable, encourages better design, and provides immediate feedback. Writing tests first helps clarify requirements and think through design before implementation.<br><br><strong>When to Use:</strong> TDD is valuable for complex logic, calculations, or algorithms. It's less useful for simple code or code that's primarily hardware interaction. Use TDD where it provides value, but don't force it everywhere.<br><br><strong>Team Adoption:</strong> TDD requires team buy-in and practice. Start with simple examples and gradually adopt TDD practices. Not all code needs TDD, but it's valuable for critical or complex code.<br><br>TDD is a powerful practice but requires discipline and practice. Consider adopting it for complex robot code where it provides clear benefits."
-    },
-    {
-      "type": "text",
-      "title": "Continuous Integration",
-      "content": "Continuous Integration (CI) automatically runs tests when code changes:<br><br><strong>Automated Testing:</strong> Set up CI to run tests automatically on every code change. This catches issues immediately and ensures code quality. Automated testing is essential for teams with multiple developers or frequent changes.<br><br><strong>CI Setup:</strong> Configure CI using services like GitHub Actions, GitLab CI, or Jenkins. Set up CI to build your project and run tests. CI should fail builds if tests fail, preventing broken code from being merged.<br><br><strong>Test Reports:</strong> Configure CI to generate test reports. Reports show which tests passed or failed and provide details about failures. Test reports help identify and fix issues quickly.<br><br><strong>Integration with Version Control:</strong> Integrate CI with your version control system. Run tests on pull requests, before merging, and on main branch. This ensures code quality throughout development.<br><br>CI is valuable for teams but requires initial setup. Consider setting up CI if your team makes frequent changes or has multiple developers working on code."
-    },
-    {
-      "type": "text",
-      "title": "Common Testing Scenarios",
-      "content": "Common scenarios for unit testing in FRC:<br><br><strong>Utility Functions:</strong> Test mathematical calculations, conversions, and utility functions. These are easy to test and provide immediate value. Test functions like deadband, clamp, unit conversions, and coordinate transformations.<br><br><strong>Control Algorithms:</strong> Test PID controllers, motion profiles, and control logic. Verify that control algorithms produce expected outputs for given inputs. Test tuning parameters and edge cases.<br><br><strong>State Machines:</strong> Test state machine logic, transitions, and state-dependent behavior. Verify that state machines transition correctly and handle edge cases. State machine testing ensures reliable mechanism control.<br><br><strong>Path Following:</strong> Test path following logic, trajectory calculations, and path generation. Verify that paths are generated correctly and that following logic works as expected. Path following testing validates autonomous capabilities.<br><br><strong>Command Logic:</strong> Test command behavior, conditions, and sequencing. Verify that commands execute correctly, handle completion conditions, and interact with subsystems properly. Command testing ensures reliable autonomous and teleop behavior."
+      "title": "Command and Time Simulation",
+      "content": "package frc.robot.commands;\n\nimport static org.junit.jupiter.api.Assertions.*;\nimport org.junit.jupiter.api.Test;\nimport edu.wpi.first.wpilibj.simulation.SimHooks;\nimport edu.wpi.first.wpilibj2.command.CommandScheduler;\nimport edu.wpi.first.wpilibj2.command.WaitCommand;\n\npublic class CommandTest {\n    @Test\n    void testWaitCommand() {\n        CommandScheduler scheduler = CommandScheduler.getInstance();\n        WaitCommand waitCmd = new WaitCommand(2.0);\n        \n        scheduler.schedule(waitCmd);\n        scheduler.run();\n        assertTrue(scheduler.isScheduled(waitCmd), \"Command should be scheduled\");\n\n        // Advance time by 1 second\n        SimHooks.stepInTime(1.0);\n        scheduler.run();\n        assertTrue(scheduler.isScheduled(waitCmd), \"Command should still be running after 1s\");\n\n        // Advance time by another 1.1 seconds (total 2.1)\n        SimHooks.stepInTime(1.1);\n        scheduler.run();\n        assertFalse(scheduler.isScheduled(waitCmd), \"Command should finish after 2s\");\n    }\n}"
     },
     {
       "type": "rules-box",
-      "title": "Troubleshooting Test Issues",
-      "subtitle": "Common issues and solutions:",
+      "title": "Best Practices for FRC Unit Testing",
+      "subtitle": "Follow these guidelines for effective tests:",
       "items": [
-        "Tests not running: Check that test classes are in the test directory and test methods are annotated with @Test",
-        "Mocking problems: Ensure Mockito is included as a dependency and mocks are properly initialized",
-        "WPILib dependencies: Use WPILib's testing utilities for common WPILib testing scenarios",
-        "Flaky tests: Check for shared state, timing issues, or non-deterministic behavior"
-      ]
-    },
-    {
-      "type": "rules-box",
-      "title": "Testing Best Practices",
-      "subtitle": "Key principles for effective unit testing:",
-      "items": [
-        "Test one thing per test method",
-        "Use descriptive test names",
-        "Keep tests isolated and independent",
-        "Test edge cases and error conditions",
-        "Mock hardware dependencies",
-        "Maintain tests as code changes",
-        "Run tests frequently during development",
-        "Use CI to run tests automatically"
+        "Isolate tests: Each test should run independently and not depend on the state of others.",
+        "Mock hardware: Don't rely on real hardware classes; mock them or use simulation classes.",
+        "Test edge cases: Test boundary values (0, max, min) and invalid inputs.",
+        "Keep it fast: Unit tests should run instantly. If it takes seconds, it's too slow.",
+        "Use dependency injection: Pass hardware objects into subsystem constructors to make mocking easier.",
+        "Run often: Run tests before every commit and push."
       ]
     },
     {
       "type": "link-grid",
-      "title": "Related Topics and Documentation",
+      "title": "Related Topics",
       "links": [
-        {
-          "label": "Code Organization",
-          "id": "code-organization"
-        },
-        {
-          "label": "WPILib Unit Testing",
-          "url": "https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/unit-testing.html"
-        },
         {
           "label": "Simulation Basics",
           "id": "simulation-basics"
         },
         {
-          "label": "Command-Based Programming",
-          "id": "command-based-intro"
+          "label": "Code Organization",
+          "id": "code-organization"
+        },
+        {
+          "label": "JUnit 5 Documentation",
+          "url": "https://junit.org/junit5/docs/current/user-guide/"
         }
       ]
     }

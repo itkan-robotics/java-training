@@ -8,6 +8,138 @@ class ContentManager {
         this.configManager = configManager || new ConfigManager();
     }
 
+    /**
+     * Extract plain text from a code element, stripping HTML tags
+     * @param {HTMLElement} codeElement - The code element to extract text from
+     * @returns {string} - Plain text code with preserved whitespace
+     */
+    extractCodeText(codeElement) {
+        if (!codeElement) return '';
+        
+        // Clone the element to avoid modifying the original
+        const clone = codeElement.cloneNode(true);
+        
+        // Get text content which automatically strips HTML tags and preserves whitespace
+        return clone.textContent || clone.innerText || '';
+    }
+
+    /**
+     * Copy text to clipboard with fallback for older browsers
+     * @param {string} text - Text to copy
+     * @returns {Promise<boolean>} - Success status
+     */
+    async copyToClipboard(text) {
+        try {
+            // Modern Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+                return true;
+            }
+            
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return successful;
+            } catch (err) {
+                document.body.removeChild(textArea);
+                return false;
+            }
+        } catch (err) {
+            console.error('Failed to copy text:', err);
+            return false;
+        }
+    }
+
+    /**
+     * Show visual feedback for copy action
+     * @param {HTMLElement} button - The copy button element
+     */
+    showCopyFeedback(button) {
+        const originalHTML = button.innerHTML;
+        const originalText = button.querySelector('.copy-text');
+        const originalIcon = button.querySelector('.copy-icon');
+        
+        // Update button to show "Copied!" state
+        if (originalIcon) {
+            originalIcon.textContent = '✓';
+        }
+        if (originalText) {
+            originalText.textContent = 'Copied!';
+        }
+        button.classList.add('copied');
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+            if (originalIcon) {
+                originalIcon.textContent = '📋';
+            }
+            if (originalText) {
+                originalText.textContent = 'Copy';
+            }
+            button.classList.remove('copied');
+        }, 2000);
+    }
+
+    /**
+     * Create a copy button element
+     * @returns {HTMLElement} - Copy button element
+     */
+    createCopyButton() {
+        const copyButton = this.createStyledElement('button', 'code-copy-button', {
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--color-foreground-secondary)',
+            cursor: 'pointer',
+            fontSize: '0.85em',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            transition: 'all 0.2s ease',
+            fontFamily: 'var(--font-stack)'
+        });
+        
+        copyButton.setAttribute('aria-label', 'Copy code');
+        
+        const icon = document.createElement('span');
+        icon.className = 'copy-icon';
+        icon.textContent = '📋';
+        icon.style.fontSize = '0.9em';
+        
+        const text = document.createElement('span');
+        text.className = 'copy-text';
+        text.textContent = 'Copy';
+        
+        copyButton.appendChild(icon);
+        copyButton.appendChild(text);
+        
+        // Hover effect
+        copyButton.addEventListener('mouseenter', () => {
+            copyButton.style.backgroundColor = 'var(--color-background-hover)';
+            copyButton.style.color = 'var(--color-brand-primary)';
+        });
+        
+        copyButton.addEventListener('mouseleave', () => {
+            if (!copyButton.classList.contains('copied')) {
+                copyButton.style.backgroundColor = 'transparent';
+                copyButton.style.color = 'var(--color-foreground-secondary)';
+            }
+        });
+        
+        return copyButton;
+    }
+
     async loadSectionContent(sectionId) {
         const sectionConfig = await this.configManager.loadSectionConfig(sectionId);
         const contentPromises = [];
@@ -600,8 +732,37 @@ class ContentManager {
             toggleButton.style.backgroundColor = 'transparent';
         });
         
+        // Create copy button
+        const copyButton = this.createCopyButton();
+        copyButton.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const codeText = this.extractCodeText(code);
+            const success = await this.copyToClipboard(codeText);
+            if (success) {
+                this.showCopyFeedback(copyButton);
+            } else {
+                // Show error feedback
+                const originalText = copyButton.querySelector('.copy-text');
+                if (originalText) {
+                    originalText.textContent = 'Failed';
+                    setTimeout(() => {
+                        originalText.textContent = 'Copy';
+                    }, 2000);
+                }
+            }
+        });
+        
+        // Create button container
+        const buttonContainer = this.createStyledElement('div', null, {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        });
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(toggleButton);
+        
         codeHeader.appendChild(titleLabel);
-        codeHeader.appendChild(toggleButton);
+        codeHeader.appendChild(buttonContainer);
         codeBlock.appendChild(codeHeader);
         
         const pre = document.createElement('pre');
@@ -662,6 +823,14 @@ class ContentManager {
             display: 'flex',
             background: 'var(--color-background-secondary)',
             borderBottom: '1px solid var(--color-background-border)',
+            overflowX: 'auto',
+            alignItems: 'center'
+        });
+        
+        // Create tabs wrapper for tab buttons
+        const tabsWrapper = this.createStyledElement('div', null, {
+            display: 'flex',
+            flex: '1',
             overflowX: 'auto'
         });
         
@@ -692,6 +861,13 @@ class ContentManager {
                 fontFamily: 'var(--font-stack--monospace)'
             });
             
+            if (index === 0) {
+                tabButton.setAttribute('data-active', 'true');
+                tabButton.classList.add('active');
+            } else {
+                tabButton.setAttribute('data-active', 'false');
+            }
+            
             tabButton.textContent = tab.label || `Tab ${index + 1}`;
             
             // Create tab content
@@ -700,6 +876,10 @@ class ContentManager {
                 padding: '0',
                 flexDirection: 'column'
             });
+            
+            if (index === 0) {
+                tabContent.classList.add('active');
+            }
             
             // Create code block for this tab (reuse code section rendering logic)
             const codeBlock = this.createStyledElement('div', 'code-block', {
@@ -732,7 +912,7 @@ class ContentManager {
             tabButton.addEventListener('click', () => {
                 // Update all tabs
                 data.tabs.forEach((_, i) => {
-                    const otherButton = tabsHeader.children[i];
+                    const otherButton = tabsWrapper.children[i];
                     const otherContent = tabsContent.children[i];
                     
                     if (i === index) {
@@ -741,15 +921,21 @@ class ContentManager {
                         otherButton.style.borderBottomColor = 'var(--color-brand-primary)';
                         otherButton.style.color = 'var(--color-brand-primary)';
                         otherButton.style.fontWeight = '600';
+                        otherButton.setAttribute('data-active', 'true');
+                        otherButton.classList.add('active');
                         otherContent.style.display = 'flex';
                         otherContent.style.flexDirection = 'column';
+                        otherContent.classList.add('active');
                     } else {
                         // Deactivate other tabs
                         otherButton.style.background = 'transparent';
                         otherButton.style.borderBottomColor = 'transparent';
                         otherButton.style.color = 'var(--color-foreground-secondary)';
                         otherButton.style.fontWeight = '400';
+                        otherButton.setAttribute('data-active', 'false');
+                        otherButton.classList.remove('active');
                         otherContent.style.display = 'none';
+                        otherContent.classList.remove('active');
                     }
                 });
                 activeTabIndex = index;
@@ -767,10 +953,47 @@ class ContentManager {
                 }
             });
             
-            tabsHeader.appendChild(tabButton);
+            tabsWrapper.appendChild(tabButton);
             tabsContent.appendChild(tabContent);
         });
         
+        // Create copy button for code tabs (copies active tab)
+        const copyButton = this.createCopyButton();
+        copyButton.style.marginLeft = 'auto';
+        copyButton.style.marginRight = '8px';
+        copyButton.style.flexShrink = '0';
+        
+        // Function to copy active tab's code
+        const copyActiveTab = async () => {
+            // Use the tracked activeTabIndex to get the correct tab content
+            const activeContent = tabsContent.children[activeTabIndex];
+            if (activeContent) {
+                const activeCode = activeContent.querySelector('code');
+                if (activeCode) {
+                    const codeText = this.extractCodeText(activeCode);
+                    const success = await this.copyToClipboard(codeText);
+                    if (success) {
+                        this.showCopyFeedback(copyButton);
+                    } else {
+                        const originalText = copyButton.querySelector('.copy-text');
+                        if (originalText) {
+                            originalText.textContent = 'Failed';
+                            setTimeout(() => {
+                                originalText.textContent = 'Copy';
+                            }, 2000);
+                        }
+                    }
+                }
+            }
+        };
+        
+        copyButton.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await copyActiveTab();
+        });
+        
+        tabsHeader.appendChild(tabsWrapper);
+        tabsHeader.appendChild(copyButton);
         tabsContainer.appendChild(tabsHeader);
         tabsContainer.appendChild(tabsContent);
         container.appendChild(tabsContainer);

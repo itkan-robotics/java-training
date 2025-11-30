@@ -1,55 +1,31 @@
+💻 = code works 
+🔗 = links function 
+👀 = information correct
 /
 ├── environment-setup/
-│   ├── wpilib-setup.json
-│   ├── project-creation.json
-│   ├── vs-code-setup.json
-│   ├── gradle-build-system.json
-│   ├── driver-station-setup.json
+│   ├── environment-setup.json 
 │   └── elastic-basics.json
 ├── hardware-vendors/
 │   ├── ctre/
-│   │   ├── ctre-intro.json
-│   │   ├── talon-fx-setup.json
-│   │   ├── talon-fx-motion-magic.json
-│   │   ├── cancoder.json
-│   │   └── pigeon-imu.json
+│   │   ├── ctre-hardware-setup.json 
+│   │   └── ctre-sensors.json 
 │   ├── rev/
-│   │   ├── rev-intro.json
-│   │   ├── spark-max-setup.json
-│   │   ├── spark-max-smart-motion.json
-│   │   ├── rev-encoders.json
-│   │   ├── rev-sensors.json
-│   │   └── rev-hardware-client.json
+│   │   ├── rev-hardware-setup.json 
+│   │   └── rev-sensors-and-encoders.json 
 │   ├── vendor-generic/
-│   │   ├── motor-controller-configuration.json
-│   │   ├── motor-pid-control.json
-│   │   └── motor-current-limiting.json
+│   │   ├── motor-controller-configuration.json 
+│   │   ├── motor-pid-control.json 
+│   │   └── motor-current-limiting.json 
 ├── command-based/
-│   ├── command-based-intro.json
-│   ├── subsystem-design.json
-│   ├── command-creation.json
-│   ├── command-scheduler.json
-│   ├── command-groups.json
-│   ├── default-commands.json
-│   ├── trigger-bindings.json
-│   └── robot-container.json
+│   └── command-based-complete.json 
 ├── control-theory/
-│   ├── pid-control-intro.json
-│   ├── pid-tuning.json
-│   ├── pid-on-controller.json
-│   ├── pid-in-code.json
-│   ├── motion-profiling-basics.json
-│   ├── trapezoidal-profiles.json
-│   ├── exponential-profiles.json
-│   ├── feedforward-control.json
+│   ├── pid-control.json
+│   ├── motor-motion-profiling.json
 │   └── advanced-control-theory.json
 ├── pose-estimation/
 │   ├── pose-estimation-intro.json
-│   ├── odometry-basics.json
-│   ├── swerve-odometry.json
-│   ├── vision-pose-estimation.json
-│   ├── pose-estimation-fusion.json
-│   └── pose-estimation-tuning.json
+│   ├── odometry.json
+│   ├── vision-pose-estimation-complete.json
 ├── external-tools/
 │   ├── pathplanner.json
 │   ├── yass.json
