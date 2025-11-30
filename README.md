@@ -62,9 +62,20 @@ Application
 - **Advanced Tier**: Advanced command-based programming, advanced PedroPathing, computer vision
 
 ### 🏁 FRC-Specific Training
-**Professional FRC robotics development**
-- **FRC Basics**: WPILib framework, motor control, commands & subsystems
-- **Advanced Features**: Command-based programming, PID control systems
+**Professional FRC robotics development** (36 lessons, ~27 hours)
+
+- **Environment Setup**: WPILib installation, Gradle, VS Code, Driver Station, Elastic dashboard, code organization
+- **Hardware Vendors**: 
+  - **CTRE**: Talon FX, CANcoder, Pigeon IMU, sensors
+  - **REV**: SPARK MAX, NEO motors, sensors and encoders
+  - **Vendor Generic**: Motor controller configuration, PID control, current limiting
+- **Command-Based Programming**: WPILib command-based architecture, commands, subsystems, scheduler, triggers
+- **Control Theory**: PID control, motion profiling (trapezoidal & exponential), feedforward, advanced control techniques
+- **Pose Estimation**: Odometry, vision subsystems, AprilTag detection, sensor fusion, fused pose estimation
+- **External Tools**: PathPlanner, YASS (YAGSL, YAMS, YALL, YAMG), AdvantageScope, AdvantageKit
+- **Advanced Topics**: Simulation basics, unit testing, code organization
+
+**Difficulty Distribution**: 5 beginner, 25 intermediate, 6 advanced lessons
 
 ### 🏆 Competitive Coding Training
 **From beginner to LeetCode master**
@@ -144,8 +155,9 @@ python -m http.server 8000
 - **Architecture**: Modular class-based architecture with dependency injection
 - **State Management**: Centralized state management with AppState class
 - **Data**: JSON-based content management system with modular configs
-- **Styling**: Custom CSS with CSS Grid and Flexbox
-- **Theme**: Furo documentation theme adaptation
+- **Styling**: Custom CSS with CSS Grid and Flexbox, following SWYFT Robotics design system
+- **Design System**: Minimal, flat design with Poppins typography (see `STYLING_GUIDE.md`)
+- **Theme**: Light/dark theme support with CSS custom properties
 - **Icons**: Custom SVG icons and emoji
 - **No Build Process**: Pure vanilla JavaScript for simplicity
 
@@ -154,7 +166,8 @@ python -m http.server 8000
 ```
 swyftnav/
 ├── index.html                          # Main application entry point
-├── styles.css                          # Main stylesheet with theme system
+├── css/                                # Stylesheets
+│   └── styles.css                      # Main stylesheet with theme system
 ├── js/                                 # Modular JavaScript architecture
 │   ├── app-state.js                    # Global state management
 │   ├── config-manager.js               # Configuration loading & caching
@@ -173,7 +186,7 @@ swyftnav/
 │   │   ├── homepage.json               # Home page content
 │   │   ├── java-training-config.json   # Java section config
 │   │   ├── ftc-specific-config.json    # FTC section config (tiers structure)
-│   │   ├── frc-specific-config.json    # FRC section config
+│   │   ├── frc-specific-config.json    # FRC section config (groups structure)
 │   │   └── competitive-training-config.json # Competitive section config
 │   ├── java/                           # Java training content
 │   │   ├── java-basics/                # Basic Java concepts
@@ -184,9 +197,16 @@ swyftnav/
 │   │   ├── onbot-java/                 # OnBot Java development
 │   │   └── android-studio/             # Android Studio development
 │   ├── frc/                            # FRC training content
-│   │   ├── beginner/                   # Beginner FRC concepts
-│   │   ├── intermediate/               # Intermediate FRC concepts
-│   │   └── advanced/                   # Advanced FRC concepts
+│   │   ├── environment-setup/          # Environment setup and tools
+│   │   ├── hardware-vendors/           # Hardware vendor-specific content
+│   │   │   ├── ctre/                   # CTRE hardware (Talon FX, sensors)
+│   │   │   ├── rev/                    # REV hardware (SPARK MAX, NEO)
+│   │   │   └── vendor-generic/         # Common motor controller topics
+│   │   ├── command-based/              # Command-based programming
+│   │   ├── control-theory/             # PID, motion profiling, feedforward
+│   │   ├── pose-estimation/            # Odometry and vision-based pose estimation
+│   │   ├── external-tools/             # PathPlanner, YASS, AdvantageScope, AdvantageKit
+│   │   └── advanced-topics/            # Simulation, unit testing, code organization
 │   └── comp/                           # Competitive coding content
 │       ├── foundation/                 # Problem-solving foundation
 │       ├── data-structures/            # Data structures
@@ -194,6 +214,10 @@ swyftnav/
 │       ├── strategies/                 # Problem-solving strategies
 │       └── advanced/                   # Advanced techniques
 ├── media/                              # Images and icons
+├── docs/                               # Documentation files
+│   ├── DEPLOYMENT_CHECKLIST.md         # Deployment checklist
+│   ├── NETLIFY_DEPLOYMENT.md           # Netlify deployment guide
+│   └── STYLING_GUIDE.md                # Complete styling reference guide
 └── README.md                           # This file
 ```
 
@@ -238,6 +262,42 @@ The platform supports two main navigation structures:
       ]
     }
   ]
+}
+```
+
+#### 3. Groups Structure with Intro (FRC Curriculum)
+```json
+{
+  "title": "Section Title",
+  "description": "Section description",
+  "intro": {
+    "id": "section-intro",
+    "label": "Section Overview",
+    "file": "data/section/intro.json",
+    "type": "overview"
+  },
+  "groups": [
+    {
+      "id": "group-id",
+      "label": "Group Label",
+      "description": "Group description",
+      "icon": "⚙️",
+      "items": [
+        {
+          "id": "item-id",
+          "label": "Item Label",
+          "file": "data/section/item.json",
+          "difficulty": "beginner|intermediate|advanced",
+          "duration": "30 min"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "totalLessons": 10,
+    "estimatedDuration": "5 hours"
+  }
 }
 ```
 
@@ -293,7 +353,25 @@ All content files follow a standardized JSON format:
         "Task 1",
         "Task 2"
       ],
-      "content": "// Example code"
+      "content": "// Example code",
+      "answers": [
+        {
+          "task": "Task 1",
+          "answer": "Answer explanation for task 1",
+          "code": "// Solution code"
+        }
+      ]
+    },
+    {
+      "type": "link-grid",
+      "title": "Related Topics",
+      "links": [
+        {
+          "label": "Related Topic",
+          "url": "#section-id",
+          "description": "Brief description"
+        }
+      ]
     }
   ]
 }
@@ -302,16 +380,16 @@ All content files follow a standardized JSON format:
 ### Supported Content Types
 
 - `text`: Regular paragraphs with HTML formatting
-- `code`: Syntax-highlighted code blocks
+- `code`: Syntax-highlighted code blocks with Java syntax highlighting and copy functionality
 - `code-tabs`: Tabbed code examples showing multiple implementations (e.g., SPARK MAX vs Talon FX, PhotonVision vs Limelight vs WPILib)
-- `rules-box`: Important rules and guidelines
-- `exercise-box`: Interactive practice problems
-- `list`: Key points and bullet lists
-- `emphasis-box`: Important information highlights
-- `data-types-grid`: Interactive data type comparisons
-- `logical-operators`: Operator reference tables
-- `link-grid`: Navigation to Related Topics and Documentation
-- `table`: Structured data tables with headers and rows
+- `rules-box`: Important rules and guidelines with structured formatting
+- `exercise-box`: Interactive practice problems with show/hide answer functionality
+- `list`: Key points and bullet lists (ordered and unordered)
+- `emphasis-box`: Important information highlights (uses rules-box styling)
+- `data-types-grid`: Interactive data type comparison cards
+- `logical-operators`: Operator reference tables with logical and comparison operators
+- `link-grid`: Navigation grid to related topics and documentation
+- `table`: Structured data tables with headers and rows, supports hover effects
 
 ## 🔧 Development Guidelines
 
@@ -434,23 +512,34 @@ class Application {
 ## 🎨 Theming System
 
 ### CSS Custom Properties
-The theme system uses CSS custom properties for easy customization:
+The theme system uses CSS custom properties for easy customization. The design follows the SWYFT Robotics minimal design system:
 
 ```css
 :root {
-    --color-background: #ffffff;
-    --color-text: #000000;
-    --color-sidebar-background: #f8f9fa;
+    --color-background-primary: #ffffff;
+    --color-foreground-primary: #232323;
+    --color-sidebar-background: #ffffff;
+    --font-stack: 'Poppins', sans-serif;
     /* ... more properties */
 }
 
 [data-theme="dark"] {
-    --color-background: #1a1a1a;
-    --color-text: #ffffff;
-    --color-sidebar-background: #2d2d2d;
+    --color-background-primary: #0f172a;
+    --color-foreground-primary: #f8fafc;
+    --color-sidebar-background: #1e293b;
     /* ... dark theme overrides */
 }
 ```
+
+### Design System
+The website follows the SWYFT Robotics design system with:
+- **Typography**: Poppins font family, 12px base size, uppercase headings
+- **Colors**: Minimal color palette with `#232323` primary text, `#fafafa` backgrounds
+- **Styling**: Flat design with no border radius, shadows, or gradients
+- **Hover Effects**: Simple background color changes only (`#f8f8f8`)
+- **Transitions**: Consistent `all ease 0.3s` transitions
+
+See `STYLING_GUIDE.md` for complete styling reference.
 
 ### Adding New Themes
 1. Add theme variables to `:root`
