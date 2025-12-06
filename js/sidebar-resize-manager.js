@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Sidebar Resize Manager
+ * Mantik - Sidebar Resize Manager
  * Handles sidebar resizing functionality
  */
 

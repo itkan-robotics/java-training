@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Main Application
+ * Mantik - Main Application
  * Coordinates all managers and handles application initialization
  */
 
@@ -105,6 +105,8 @@ class Application {
                 const retryParse = this.navigationManager.parseCurrentUrl();
                 if (retryParse.sectionId && retryParse.sectionId !== 'homepage') {
                     if (retryParse.sectionId && retryParse.tabId) {
+                        // Ensure section content is loaded before navigating
+                        await this.contentManager.loadSectionContent(retryParse.sectionId);
                         await this.navigationManager.navigateToTab(retryParse.tabId);
                     } else if (retryParse.sectionId) {
                         await this.navigationManager.handleSectionNavigation(retryParse.sectionId);
@@ -115,6 +117,22 @@ class Application {
         }
         
         if (sectionId && tabId) {
+            // CRITICAL FIX: Load section content first before navigating to tab
+            // This ensures content is available when navigating directly to a page
+            if (sectionId !== 'homepage') {
+                try {
+                    await this.contentManager.loadSectionContent(sectionId);
+                } catch (error) {
+                    console.error(`Failed to load section ${sectionId}:`, error);
+                    // Fallback to homepage on error
+                    appState.currentSection = 'homepage';
+                    appState.currentTab = null;
+                    this.navigationManager.updateUrl('homepage');
+                    await this.navigationManager.handleSectionNavigation('homepage');
+                    this.contentManager.renderContent('homepage');
+                    return;
+                }
+            }
             await this.navigationManager.navigateToTab(tabId);
         } else if (sectionId) {
             await this.navigationManager.handleSectionNavigation(sectionId);

@@ -1,6 +1,6 @@
-# SwyftNav JavaScript Modules
+# Mantik JavaScript Modules
 
-This directory contains the modular JavaScript architecture for SwyftNav, broken down into logical components for better maintainability and organization.
+This directory contains the modular JavaScript architecture for Mantik, broken down into logical components for better maintainability and organization.
 
 ## Module Structure
 

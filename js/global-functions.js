@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Global Functions
+ * Mantik - Global Functions
  * HTML integration functions and application initialization
  */
 
@@ -52,12 +52,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /**
- * SwyftNav - Global Utility Functions
+ * Mantik - Global Utility Functions
  * Provides utility functions for debugging and development
  */
 
 // Global utility functions for debugging and development
-window.SwyftNavUtils = {
+window.MantikUtils = {
     /**
      * Clear all saved application state
      */
@@ -88,7 +88,7 @@ window.SwyftNavUtils = {
      */
     viewSavedState() {
         try {
-            const savedState = localStorage.getItem('swyftnav_state');
+            const savedState = localStorage.getItem('mantik_state');
             if (savedState) {
                 const state = JSON.parse(savedState);
                 return state;
@@ -174,7 +174,7 @@ window.SwyftNavUtils = {
             stats.localStorageSize = totalSize;
 
             // Get saved state info
-            const savedState = localStorage.getItem('swyftnav_state');
+            const savedState = localStorage.getItem('mantik_state');
             if (savedState) {
                 stats.savedStateSize = savedState.length;
                 const state = JSON.parse(savedState);

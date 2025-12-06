@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Search Index
+ * Mantik - Search Index
  * Pre-builds and manages search index for fast lookups
  */
 
@@ -452,4 +452,10 @@ class SearchIndex {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SearchIndex;
 }
+
+
+
+
+
+
 

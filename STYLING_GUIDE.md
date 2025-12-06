@@ -1,6 +1,6 @@
-# SwyftNav Styling Guide
+# Mantik Styling Guide
 
-This comprehensive styling guide documents the design system used throughout the SwyftNav website, based on the SWYFT Robotics minimal design philosophy. Use this document as a reference when making styling changes or adding new components.
+This comprehensive styling guide documents the design system used throughout the Mantik website, based on the SWYFT Robotics minimal design philosophy. Use this document as a reference when making styling changes or adding new components.
 
 ## Table of Contents
 

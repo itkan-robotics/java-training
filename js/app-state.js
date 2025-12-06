@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Global State Management
+ * Mantik - Global State Management
  * Handles all application state and provides centralized state management
  */
 
@@ -116,7 +116,7 @@ class AppState {
         };
 
         try {
-            localStorage.setItem('swyftnav_state', JSON.stringify(state));
+            localStorage.setItem('mantik_state', JSON.stringify(state));
         } catch (error) {
             // Handle localStorage errors silently
             console.warn('Failed to save state to localStorage:', error);
@@ -128,7 +128,7 @@ class AppState {
      */
     restoreState() {
         try {
-            const savedState = localStorage.getItem('swyftnav_state');
+            const savedState = localStorage.getItem('mantik_state');
             if (!savedState) return null;
             
             const state = JSON.parse(savedState);
@@ -173,7 +173,7 @@ class AppState {
      */
     clearSavedState() {
         try {
-            localStorage.removeItem('swyftnav_state');
+            localStorage.removeItem('mantik_state');
             localStorage.removeItem('lastOpenedTab');
             localStorage.removeItem('theme');
         } catch (error) {

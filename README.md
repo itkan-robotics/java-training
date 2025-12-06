@@ -1,4 +1,4 @@
-# SwyftNav - FIRST Programming Made Easy
+# Mantik - FIRST Programming Made Easy
 
 A comprehensive, interactive web-based learning platform for programming fundamentals, robotics development, and competitive coding. Designed for FTC (FIRST Tech Challenge), FRC (FIRST Robotics Competition) teams, and programming enthusiasts.
 
@@ -164,7 +164,7 @@ python -m http.server 8000
 ## 📁 Project Structure
 
 ```
-swyftnav/
+mantik/
 ├── index.html                          # Main application entry point
 ├── css/                                # Stylesheets
 │   └── styles.css                      # Main stylesheet with theme system
@@ -672,7 +672,7 @@ This project contains content that was generated or assisted by artificial intel
 - **Educational Use**: This content is provided for educational purposes only
 - **No Warranty**: The content is provided "as is" without any warranties
 - **Fair Use**: Users may use this content for personal learning and educational purposes
-- **Attribution**: When using or referencing this content, please attribute to "SwyftNav"
+- **Attribution**: When using or referencing this content, please attribute to "Mantik"
 
 ### Legal Notice
 This project does not claim copyright over AI-generated content. The content is intended for educational use and should be used in accordance with fair use principles. Users are responsible for ensuring their use complies with applicable laws and regulations.

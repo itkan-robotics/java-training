@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Event Manager
+ * Mantik - Event Manager
  * Centralizes all event handling
  */
 

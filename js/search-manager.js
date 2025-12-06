@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Search Manager
+ * Mantik - Search Manager
  * Handles global search functionality
  */
 

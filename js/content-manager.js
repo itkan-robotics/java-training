@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Content Manager
+ * Mantik - Content Manager
  * Handles content loading and rendering
  */
 
@@ -569,11 +569,11 @@ class ContentManager {
      * Updates the page title based on the current content
      */
     updatePageTitle(data) {
-        let title = 'SwyftNav - Programming Fundamentals';
+        let title = 'Mantik - Programming Fundamentals';
         
         if (data && data.title) {
-            // Format: "Page Title - SwyftNav"
-            title = `${data.title} - SwyftNav`;
+            // Format: "Page Title - Mantik"
+            title = `${data.title} - Mantik`;
         }
         
         // Update the document title

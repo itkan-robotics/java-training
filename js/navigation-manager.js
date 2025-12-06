@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Navigation Manager
+ * Mantik - Navigation Manager
  * Manages sidebar navigation and URL routing
  */
 
@@ -682,6 +682,21 @@ class NavigationManager {
                     await this.generateNavigation();
                 }
                 
+                // CRITICAL FIX: Ensure tab content is loaded before rendering
+                // This handles cases where tab data exists but content file hasn't been loaded yet
+                if (targetTab.file && !targetTab.loaded) {
+                    try {
+                        const loadedTabData = await this.contentManager.loadSingleContent(tabId);
+                        if (loadedTabData) {
+                            targetTab = loadedTabData;
+                        }
+                    } catch (error) {
+                        console.error(`Error loading content for tab ${tabId}:`, error);
+                        this.showError('Failed to load content. Please refresh the page.');
+                        return;
+                    }
+                }
+                
                 // Update URL for individual tabs within sections
                 if (!isMainSection) {
                     this.updateUrl(newSection, tabId);
@@ -691,9 +706,15 @@ class NavigationManager {
                 this.highlightNavigation(tabId);
                 // Update header navigation
                 this.updateHeaderNavigation(newSection);
-                // Render content
-                this.contentManager.renderContent(tabId);
-                appState.setCurrentTab(tabId);
+                // Render content (only if we have valid data)
+                const tabData = appState.getTabData(tabId);
+                if (tabData) {
+                    this.contentManager.renderContent(tabId);
+                    appState.setCurrentTab(tabId);
+                } else {
+                    console.error(`No data available for tab ${tabId} after loading`);
+                    this.showError('Content not available. Please try navigating again.');
+                }
                 
                 // Scroll to current tab if sidebar is open
                 const navCheckbox = document.getElementById('__navigation');
@@ -994,14 +1015,14 @@ class NavigationManager {
      * Updates the page title for section navigation
      */
     updateSectionTitle(sectionId, section) {
-        let title = 'SwyftNav - Programming Fundamentals';
+        let title = 'Mantik - Programming Fundamentals';
         
         if (section && section.title) {
-            title = `${section.title} - SwyftNav`;
+            title = `${section.title} - Mantik`;
         } else {
             // Use section ID to generate a title
             const sectionName = this.getSectionDisplayName(sectionId);
-            title = `${sectionName} - SwyftNav`;
+            title = `${sectionName} - Mantik`;
         }
         
         // Update the document title

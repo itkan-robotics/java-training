@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Main Entry Point
+ * Mantik - Main Entry Point
  * Loads all modules in the correct order
  * 
  * Loading Order:

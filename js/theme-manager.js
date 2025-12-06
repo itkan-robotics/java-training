@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Theme Manager
+ * Mantik - Theme Manager
  * Manages theme switching and persistence
  */
 

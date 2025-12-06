@@ -1,5 +1,5 @@
 /**
- * SwyftNav - Configuration Manager
+ * Mantik - Configuration Manager
  * Handles all configuration loading and management
  */
 
